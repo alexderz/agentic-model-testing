@@ -1,0 +1,92 @@
+diff -ruN a/src/mcp/handlers.rs b/src/mcp/handlers.rs
+--- a/src/mcp/handlers.rs	2026-10-10 09:23:16.663100489 -0500
++++ b/src/mcp/handlers.rs	2026-10-10 09:23:16.707609202 -0500
+@@ -569,7 +569,7 @@
+                     .get("description")
+                     .and_then(Value::as_str)
+                     .map(str::to_string),
+-                targets_entities: definition.pointer("/target/entity_id").is_some(),
++                targets_entities: targets_entities(definition),
+                 field_count: field_names.len() as i64,
+                 field_names: sorted(field_names),
+                 required_fields: required_fields(definition),
+@@ -736,6 +736,22 @@
+     Ok(out)
+ }
+ 
++/// Whether a service declares an entity target.
++///
++/// Home Assistant has published two shapes for this. Current releases list entity
++/// filters under `target.entity` (`{"entity": [{"domain": ["lock"]}]}`); older ones
++/// put a selector under `target.entity_id`. A `target` that is present but empty
++/// accepts any entity, device or area. A service with no `target` takes none, even
++/// when one of its fields happens to be called `entity_id`.
++fn targets_entities(definition: &Value) -> bool {
++    match definition.get("target").and_then(Value::as_object) {
++        Some(target) => {
++            target.is_empty() || target.contains_key("entity") || target.contains_key("entity_id")
++        }
++        None => false,
++    }
++}
++
+ fn required_fields(definition: &Value) -> Vec<String> {
+     definition
+         .get("fields")
+diff -ruN a/tests/tools.rs b/tests/tools.rs
+--- a/tests/tools.rs	2026-10-10 09:23:16.665003261 -0500
++++ b/tests/tools.rs	2026-10-10 09:23:16.707609202 -0500
+@@ -915,3 +915,53 @@
+         );
+     }
+ }
++
++#[test]
++fn list_services_recognises_both_entity_target_shapes() {
++    // Current Home Assistant publishes `target.entity` (a list of filters); older
++    // releases published `target.entity_id`. Both mean "this service takes entities".
++    let catalog = json!([
++        {
++            "domain": "lock",
++            "services": {
++                "lock": {"target": {"entity": [{"domain": ["lock"]}]}, "fields": {}},
++                "open": {
++                    "target": {"entity": [{"domain": ["lock"], "supported_features": [1]}]},
++                    "fields": {}
++                },
++                "legacy": {"target": {"entity_id": {}}, "fields": {}}
++            }
++        },
++        {
++            "domain": "homeassistant",
++            "services": {
++                "restart": {"fields": {}},
++                "update_entity": {
++                    "fields": {"entity_id": {"required": true, "selector": {"entity": {}}}}
++                }
++            }
++        }
++    ]);
++    let fake = FakeHa::start(TOKEN, vec![("/api/services", common::Response::ok(catalog))]);
++    let client = common::Client::start(&fake.url);
++
++    let listed = call(&client, "list_services", json!({})).expect_structured("list_services");
++    let flag = |domain: &str, service: &str| -> Value {
++        listed["services"]
++            .as_array()
++            .unwrap()
++            .iter()
++            .find(|row| row["domain"] == domain && row["service"] == service)
++            .unwrap_or_else(|| panic!("{domain}.{service} is listed"))["targets_entities"]
++            .clone()
++    };
++    assert_eq!(flag("lock", "lock"), true, "target.entity is an entity target");
++    assert_eq!(flag("lock", "open"), true, "extra filters do not change that");
++    assert_eq!(flag("lock", "legacy"), true, "target.entity_id still counts");
++    assert_eq!(flag("homeassistant", "restart"), false, "no target at all");
++    assert_eq!(
++        flag("homeassistant", "update_entity"),
++        false,
++        "a field named entity_id is not a target"
++    );
++}

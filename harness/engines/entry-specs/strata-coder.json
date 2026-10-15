@@ -1,0 +1,70 @@
+{
+ "schema": 1,
+ "generated": "2026-10-09T08:42:14-05:00",
+ "cmd_sha256": "f32da674dead5eb9b168cd361d15dedaa097cea71bc110013505cb83ff78093b",
+ "model_meta": "/home/operator/ai/models/llm/qwen3.8-flash-next-coder/bakeoff-model.json",
+ "model_file": "/home/operator/ai/models/llm/qwen3.8-flash-next-coder",
+ "engine": "strata",
+ "engine_version": "strata-0.1.40.3",
+ "served_context": 262144,
+ "parallel": 1,
+ "kv_type": "int8",
+ "thinking": {
+  "default_on": true,
+  "server_budget": 24000,
+  "request_field": null,
+  "budget_tokens": null
+ },
+ "sampling": {},
+ "spec_decode": "strata-mtp",
+ "observability": {
+  "metrics": null,
+  "slots_debug": null,
+  "prompt_tokens_details": null,
+  "force_include_usage": null
+ },
+ "storage": "nas",
+ "multi_agent_ok": false,
+ "placement": {
+  "gpu_layers": null,
+  "experts_on_cpu": null,
+  "mmap": null,
+  "ram_pinned_gb": null
+ },
+ "serving": {
+  "port": 8793,
+  "proxy": "http://strata:8793",
+  "container_name": "strata",
+  "max_num_seqs": null,
+  "batch_tokens": null,
+  "prefix_caching": null,
+  "flash_attn": null
+ },
+ "speculative": {
+  "type": "strata-mtp",
+  "draft_model": null,
+  "n_max": 4,
+  "acceptance_note": null
+ },
+ "templates": {
+  "chat_template_kwargs": null,
+  "reasoning_parser": null,
+  "tool_call_parser": null,
+  "reasoning_start": null,
+  "reasoning_end": null
+ },
+ "endpoints": {
+  "health": "/health",
+  "metrics": null,
+  "slots": null,
+  "props": null
+ },
+ "role": {
+  "daily_driver": null,
+  "bakeoff_status": "fail"
+ },
+ "model_id": "strata-coder",
+ "report": {
+  "label": "Flash-Next Coder (1.6-bit) \u00b7 Strata, GPU expert cache"
+ }
+}

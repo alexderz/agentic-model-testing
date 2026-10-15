@@ -1,0 +1,217 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" font-family="Georgia, serif">
+<defs>
+ <radialGradient id="bg" cx="50%" cy="42%" r="70%">
+  <stop offset="0" stop-color="#1b2030"/><stop offset="1" stop-color="#06070b"/>
+ </radialGradient>
+ <linearGradient id="brass" x1="0" y1="0" x2="1" y2="1">
+  <stop offset="0" stop-color="#f4dd93"/><stop offset=".45" stop-color="#c69a3e"/>
+  <stop offset=".75" stop-color="#8a6520"/><stop offset="1" stop-color="#d9b766"/>
+ </linearGradient>
+ <radialGradient id="sunFace" cx="42%" cy="42%" r="65%">
+  <stop offset="0" stop-color="#fff8e0"/><stop offset=".45" stop-color="#ffd25e"/>
+  <stop offset=".75" stop-color="#f5a623"/><stop offset="1" stop-color="#c47718"/>
+ </radialGradient>
+ <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+  <stop offset="0" stop-color="#ffdf8a" stop-opacity=".9"/>
+  <stop offset=".4" stop-color="#ffab3a" stop-opacity=".35"/>
+  <stop offset="1" stop-color="#ffab3a" stop-opacity="0"/>
+ </radialGradient>
+ <!-- day/night gradients: highlight toward the Sun (-x local = toward center) -->
+ <radialGradient id="gMerc" cx="50%" cy="50%" r="55%" fx="27%" fy="50%">
+  <stop offset="0" stop-color="#e4ddd0"/><stop offset=".4" stop-color="#9d9488"/><stop offset="1" stop-color="#18150f"/>
+ </radialGradient>
+ <radialGradient id="gVenus" cx="50%" cy="50%" r="55%" fx="27%" fy="50%">
+  <stop offset="0" stop-color="#fbefc0"/><stop offset=".4" stop-color="#e0bd6a"/><stop offset="1" stop-color="#3a2c10"/>
+ </radialGradient>
+ <radialGradient id="gEarth" cx="50%" cy="50%" r="55%" fx="27%" fy="50%">
+  <stop offset="0" stop-color="#c6e6ff"/><stop offset=".4" stop-color="#3a7bd5"/><stop offset="1" stop-color="#08141f"/>
+ </radialGradient>
+ <radialGradient id="gMars" cx="50%" cy="50%" r="55%" fx="27%" fy="50%">
+  <stop offset="0" stop-color="#f2a06a"/><stop offset=".4" stop-color="#c1440e"/><stop offset="1" stop-color="#2a0c04"/>
+ </radialGradient>
+ <radialGradient id="gJup" cx="50%" cy="50%" r="55%" fx="27%" fy="50%">
+  <stop offset="0" stop-color="#f6e3bd"/><stop offset=".4" stop-color="#c99a5c"/><stop offset="1" stop-color="#271a0c"/>
+ </radialGradient>
+ <radialGradient id="gSat" cx="50%" cy="50%" r="55%" fx="27%" fy="50%">
+  <stop offset="0" stop-color="#fbf0c8"/><stop offset=".4" stop-color="#d8b858"/><stop offset="1" stop-color="#2e2208"/>
+ </radialGradient>
+ <radialGradient id="gUra" cx="50%" cy="50%" r="55%" fx="27%" fy="50%">
+  <stop offset="0" stop-color="#d9f8fb"/><stop offset=".4" stop-color="#7fd0dc"/><stop offset="1" stop-color="#072328"/>
+ </radialGradient>
+ <radialGradient id="gNep" cx="50%" cy="50%" r="55%" fx="27%" fy="50%">
+  <stop offset="0" stop-color="#aecbff"/><stop offset=".4" stop-color="#3f6fd6"/><stop offset="1" stop-color="#050f28"/>
+ </radialGradient>
+ <filter id="soft"><feGaussianBlur stdDeviation="2"/></filter>
+</defs>
+
+<rect width="1000" height="1000" fill="url(#bg)"/>
+<g fill="#fff" opacity=".55">
+ <circle cx="120" cy="90" r="1.3"/><circle cx="820" cy="60" r="1"/>
+ <circle cx="910" cy="220" r="1.4"/><circle cx="70" cy="300" r="1"/>
+ <circle cx="940" cy="520" r="1.1"/><circle cx="60" cy="600" r="1.2"/>
+ <circle cx="880" cy="820" r="1"/><circle cx="180" cy="930" r="1.1"/>
+ <circle cx="640" cy="950" r="1"/><circle cx="500" cy="30" r="1.2"/>
+</g>
+
+<!-- ornate brass frame -->
+<circle cx="500" cy="500" r="486" fill="none" stroke="url(#brass)" stroke-width="14"/>
+<circle cx="500" cy="500" r="470" fill="none" stroke="#5c4413" stroke-width="3"/>
+<g stroke="#8a6520" stroke-width="2">
+ <line x1="500" y1="18" x2="500" y2="34"/><line x1="500" y1="966" x2="500" y2="982"/>
+ <line x1="18" y1="500" x2="34" y2="500"/><line x1="966" y1="500" x2="982" y2="500"/>
+</g>
+
+<!-- driveshaft from engine to hub -->
+<line x1="170" y1="830" x2="500" y2="500" stroke="#7a5c1e" stroke-width="9" stroke-linecap="round" opacity=".55"/>
+<line x1="170" y1="830" x2="500" y2="500" stroke="#f4dd93" stroke-width="2" stroke-linecap="round" stroke-dasharray="3 9" opacity=".7"/>
+
+<!-- ===== CLOCKWORK ENGINE (meshing gears) ===== -->
+<!-- gear body r, teeth = circle with dasharray (module 6 -> segment 6π≈18.85) -->
+<g stroke="#4a3510" stroke-width="1.5">
+ <!-- G1 N24 r72 : CW 8s -->
+ <g><animateTransform attributeName="transform" type="rotate" from="0 170 830" to="360 170 830" dur="8s" repeatCount="indefinite"/>
+  <circle cx="170" cy="830" r="72" fill="url(#brass)"/>
+  <circle cx="170" cy="830" r="72" fill="none" stroke="url(#brass)" stroke-width="12" stroke-dasharray="11.6 7.25"/>
+  <circle cx="170" cy="830" r="16" fill="#2a2013"/><circle cx="170" cy="830" r="6" fill="#f4dd93"/></g>
+ <!-- G2 N12 r36 : CCW 4s -->
+ <g><animateTransform attributeName="transform" type="rotate" from="15 278 830" to="375 278 830" dur="4s" repeatCount="indefinite"/>
+  <circle cx="278" cy="830" r="36" fill="url(#brass)"/>
+  <circle cx="278" cy="830" r="36" fill="none" stroke="url(#brass)" stroke-width="12" stroke-dasharray="11.6 7.25"/>
+  <circle cx="278" cy="830" r="10" fill="#2a2013"/><circle cx="278" cy="830" r="4" fill="#f4dd93"/></g>
+ <!-- G3 N18 r54 : CW 6s -->
+ <g><animateTransform attributeName="transform" type="rotate" from="0 278 740" to="360 278 740" dur="6s" repeatCount="indefinite"/>
+  <circle cx="278" cy="740" r="54" fill="url(#brass)"/>
+  <circle cx="278" cy="740" r="54" fill="none" stroke="url(#brass)" stroke-width="12" stroke-dasharray="11.6 7.25"/>
+  <circle cx="278" cy="740" r="13" fill="#2a2013"/><circle cx="278" cy="740" r="5" fill="#f4dd93"/></g>
+ <!-- G4 N9 r27 : CCW 3s -->
+ <g><animateTransform attributeName="transform" type="rotate" from="8 278 659" to="368 278 659" dur="3s" repeatCount="indefinite"/>
+  <circle cx="278" cy="659" r="27" fill="url(#brass)"/>
+  <circle cx="278" cy="659" r="27" fill="none" stroke="url(#brass)" stroke-width="12" stroke-dasharray="11.6 7.25"/>
+  <circle cx="278" cy="659" r="8" fill="#2a2013"/><circle cx="278" cy="659" r="3" fill="#f4dd93"/></g>
+ <!-- G5 N15 r45 : CW 5s -->
+ <g><animateTransform attributeName="transform" type="rotate" from="20 359 830" to="380 359 830" dur="5s" repeatCount="indefinite"/>
+  <circle cx="359" cy="830" r="45" fill="url(#brass)"/>
+  <circle cx="359" cy="830" r="45" fill="none" stroke="url(#brass)" stroke-width="12" stroke-dasharray="11.6 7.25"/>
+  <circle cx="359" cy="830" r="11" fill="#2a2013"/><circle cx="359" cy="830" r="4" fill="#f4dd93"/></g>
+</g>
+
+<!-- ===== ORBIT RINGS + ARMS + PLANETS ===== -->
+<g fill="none" stroke="#9a7b34" stroke-width="1.4" opacity=".6">
+ <circle cx="500" cy="500" r="78"/><circle cx="500" cy="500" r="118"/>
+ <circle cx="500" cy="500" r="160"/><circle cx="500" cy="500" r="202"/>
+ <circle cx="500" cy="500" r="278"/><circle cx="500" cy="500" r="350"/>
+ <circle cx="500" cy="500" r="408"/><circle cx="500" cy="500" r="452"/>
+</g>
+
+<!-- Mercury: period 88d -->
+<g><animateTransform attributeName="transform" type="rotate" from="30 500 500" to="390 500 500" dur="2.414s" repeatCount="indefinite"/>
+ <line x1="500" y1="500" x2="578" y2="500" stroke="#c69a3e" stroke-width="1.8" opacity=".5"/>
+ <g transform="translate(578,500)">
+  <circle r="5" fill="url(#gMerc)"/>
+  <g><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="3s" repeatCount="indefinite"/>
+   <clipPath id="cm"><circle r="5"/></clipPath>
+   <g clip-path="url(#cm)" stroke="#7a7268" stroke-width="1"><path d="M-5 -1.5 A5 5 0 0 0 5 -1.5"/><path d="M-4 2 A5 5 0 0 0 4 2"/></g></g>
+ </g></g>
+
+<!-- Venus: 225d -->
+<g><animateTransform attributeName="transform" type="rotate" from="-20 500 500" to="340 500 500" dur="6.164s" repeatCount="indefinite"/>
+ <line x1="500" y1="500" x2="618" y2="500" stroke="#c69a3e" stroke-width="1.8" opacity=".5"/>
+ <g transform="translate(618,500)">
+  <circle r="9" fill="url(#gVenus)"/>
+  <g><animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="5s" repeatCount="indefinite"/>
+   <clipPath id="cv"><circle r="9"/></clipPath>
+   <g clip-path="url(#cv)" fill="#d8a84a" opacity=".6"><ellipse cx="0" cy="-3" rx="8" ry="1.6"/><ellipse cx="0" cy="3" rx="8" ry="1.8"/></g></g>
+ </g></g>
+
+<!-- Earth: 365d -->
+<g><animateTransform attributeName="transform" type="rotate" from="45 500 500" to="405 500 500" dur="10s" repeatCount="indefinite"/>
+ <line x1="500" y1="500" x2="660" y2="500" stroke="#c69a3e" stroke-width="1.8" opacity=".5"/>
+ <g transform="translate(660,500)">
+  <circle r="9" fill="url(#gEarth)"/>
+  <g><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="2.5s" repeatCount="indefinite"/>
+   <clipPath id="ce"><circle r="9"/></clipPath>
+   <g clip-path="url(#ce)" fill="#2e8b57" opacity=".8">
+    <path d="M-3 -6 q4 -2 6 2 q-3 3 -6 1 z"/><path d="M2 2 q5 -1 4 4 q-5 1 -5 -4 z"/><path d="M-6 3 q3 -3 6 0 q-4 3 -6 0 z"/></g></g>
+  <circle r="26" fill="none" stroke="#c69a3e" stroke-width="1.2" stroke-dasharray="2 4">
+   <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="2s" repeatCount="indefinite"/></circle>
+ </g></g>
+
+<!-- Mars: 687d -->
+<g><animateTransform attributeName="transform" type="rotate" from="100 500 500" to="460 500 500" dur="18.82s" repeatCount="indefinite"/>
+ <line x1="500" y1="500" x2="702" y2="500" stroke="#c69a3e" stroke-width="1.8" opacity=".5"/>
+ <g transform="translate(702,500)">
+  <circle r="7" fill="url(#gMars)"/>
+  <g><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="2.6s" repeatCount="indefinite"/>
+   <clipPath id="cmars"><circle r="7"/></clipPath>
+   <g clip-path="url(#cmars)" fill="#7a2208" opacity=".8"><ellipse cx="0" cy="-2" rx="4" ry="1.4"/><circle cx="-2" cy="3" r="1.4"/></g></g>
+ </g></g>
+
+<!-- Jupiter: 4333d -->
+<g><animateTransform attributeName="transform" type="rotate" from="-35 500 500" to="325 500 500" dur="118.6s" repeatCount="indefinite"/>
+ <line x1="500" y1="500" x2="778" y2="500" stroke="#c69a3e" stroke-width="2" opacity=".5"/>
+ <g transform="translate(778,500)">
+  <circle r="24" fill="url(#gJup)"/>
+  <g><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="1.6s" repeatCount="indefinite"/>
+   <clipPath id="cj"><circle r="24"/></clipPath>
+   <g clip-path="url(#cj)">
+    <ellipse cx="0" cy="-16" rx="23" ry="2.6" fill="#b8894f" opacity=".8"/>
+    <ellipse cx="0" cy="-8" rx="23.5" ry="3.4" fill="#e0c79a" opacity=".7"/>
+    <ellipse cx="0" cy="1" rx="24" ry="4" fill="#a5793f" opacity=".8"/>
+    <ellipse cx="0" cy="10" rx="23.5" ry="3.2" fill="#e0c79a" opacity=".6"/>
+    <ellipse cx="0" cy="18" rx="22" ry="2.6" fill="#b8894f" opacity=".7"/>
+    <ellipse cx="6" cy="4" rx="5" ry="3" fill="#a5442f" opacity=".85"/></g></g>
+ </g></g>
+
+<!-- Saturn: 10759d -->
+<g><animateTransform attributeName="transform" type="rotate" from="60 500 500" to="420 500 500" dur="294.8s" repeatCount="indefinite"/>
+ <line x1="500" y1="500" x2="850" y2="500" stroke="#c69a3e" stroke-width="2" opacity=".5"/>
+ <g transform="translate(850,500)">
+  <g transform="rotate(-20)">
+   <path d="M -40 0 A 40 13 0 0 1 40 0" fill="none" stroke="url(#brass)" stroke-width="6" opacity=".85"/>
+   <path d="M -46 0 A 46 15 0 0 1 46 0" fill="none" stroke="#8a6520" stroke-width="2" opacity=".7"/>
+  </g>
+  <circle r="20" fill="url(#gSat)"/>
+  <g><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="1.7s" repeatCount="indefinite"/>
+   <clipPath id="cs"><circle r="20"/></clipPath>
+   <g clip-path="url(#cs)" fill="#c2a040" opacity=".6">
+    <ellipse cx="0" cy="-9" rx="19" ry="2.6"/><ellipse cx="0" cy="2" rx="19.5" ry="3.2"/>
+    <ellipse cx="0" cy="11" rx="18" ry="2.6"/></g></g>
+  <g transform="rotate(-20)">
+   <path d="M 40 0 A 40 13 0 0 1 -40 0" fill="none" stroke="url(#brass)" stroke-width="6" opacity=".85"/>
+   <path d="M 46 0 A 46 15 0 0 1 -46 0" fill="none" stroke="#8a6520" stroke-width="2" opacity=".7"/></g>
+ </g></g>
+
+<!-- Uranus: 30687d -->
+<g><animateTransform attributeName="transform" type="rotate" from="15 500 500" to="375 500 500" dur="840.8s" repeatCount="indefinite"/>
+ <line x1="500" y1="500" x2="908" y2="500" stroke="#c69a3e" stroke-width="1.8" opacity=".5"/>
+ <g transform="translate(908,500)">
+  <circle r="14" fill="url(#gUra)"/>
+  <g><animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="2s" repeatCount="indefinite"/>
+   <clipPath id="cu"><circle r="14"/></clipPath>
+   <g clip-path="url(#cu)" fill="#4fb4c2" opacity=".5"><ellipse cx="0" cy="0" rx="14" ry="2"/><ellipse cx="0" cy="6" rx="13" ry="1.6"/></g></g>
+  <ellipse cx="0" cy="0" rx="22" ry="6" fill="none" stroke="#bfeef4" stroke-width="1.4" opacity=".6" transform="rotate(80)"/></g>
+</g>
+
+<!-- Neptune: 60190d -->
+<g><animateTransform attributeName="transform" type="rotate" from="-10 500 500" to="350 500 500" dur="1649s" repeatCount="indefinite"/>
+ <line x1="500" y1="500" x2="952" y2="500" stroke="#c69a3e" stroke-width="1.8" opacity=".5"/>
+ <g transform="translate(952,500)">
+  <circle r="13" fill="url(#gNep)"/>
+  <g><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="1.9s" repeatCount="indefinite"/>
+   <clipPath id="cn"><circle r="13"/></clipPath>
+   <g clip-path="url(#cn)" fill="#2448a0" opacity=".7"><ellipse cx="0" cy="-4" rx="12" ry="2"/><ellipse cx="1" cy="4" rx="12" ry="2.4"/></g></g>
+ </g></g>
+
+<!-- ===== SUN (on top of hub gear) ===== -->
+<g><animateTransform attributeName="transform" type="rotate" from="0 500 500" to="360 500 500" dur="120s" repeatCount="indefinite"/>
+  <circle cx="500" cy="500" r="95" fill="url(#brass)"/>
+  <circle cx="500" cy="500" r="95" fill="none" stroke="url(#brass)" stroke-width="12" stroke-dasharray="11.6 7.25" opacity=".9"/>
+  <circle cx="500" cy="500" r="20" fill="#2a2013"/></g>
+
+<circle cx="500" cy="500" r="140" fill="url(#glow)"/>
+<circle cx="500" cy="500" r="44" fill="url(#sunFace)"/>
+<circle cx="486" cy="486" r="12" fill="#fff8e0" opacity=".8" filter="url(#soft)"/>
+
+<text x="500" y="60" text-anchor="middle" fill="#e7c877" font-size="26" letter-spacing="4">BRASS CLOCKWORK ORRERY</text>
+<text x="500" y="86" text-anchor="middle" fill="#8a7a4a" font-size="12" letter-spacing="2">ORBITAL PERIODS TO REAL RELATIVE SCALE · 2024</text>
+</svg>

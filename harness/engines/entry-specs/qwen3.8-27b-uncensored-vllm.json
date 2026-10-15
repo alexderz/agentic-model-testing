@@ -1,0 +1,70 @@
+{
+ "schema": 1,
+ "generated": "2026-10-09T08:42:14-05:00",
+ "cmd_sha256": "803c919ded4d36e51d38ffe69a0a260503c20b76d6d2ef41b722888b488377ff",
+ "model_meta": "/home/operator/ai/hyperqwen/models/Qwen3.8-27B-Uncensored-W4A16/bakeoff-model.json",
+ "model_file": "/home/operator/ai/hyperqwen/models/Qwen3.8-27B-Uncensored-W4A16",
+ "engine": "vllm",
+ "engine_version": "hyperqwen-0.30",
+ "served_context": 150000,
+ "parallel": null,
+ "kv_type": null,
+ "thinking": {
+  "default_on": true,
+  "server_budget": null,
+  "request_field": "thinking_token_budget",
+  "budget_tokens": null
+ },
+ "sampling": {},
+ "spec_decode": "mtp",
+ "observability": {
+  "metrics": true,
+  "slots_debug": null,
+  "prompt_tokens_details": true,
+  "force_include_usage": true
+ },
+ "storage": "ssd",
+ "multi_agent_ok": true,
+ "placement": {
+  "gpu_layers": null,
+  "experts_on_cpu": null,
+  "mmap": null,
+  "ram_pinned_gb": null
+ },
+ "serving": {
+  "port": 18020,
+  "proxy": "http://hyperqwen:18020",
+  "container_name": "hyperqwen",
+  "max_num_seqs": null,
+  "batch_tokens": null,
+  "prefix_caching": true,
+  "flash_attn": null
+ },
+ "speculative": {
+  "type": "mtp",
+  "draft_model": null,
+  "n_max": null,
+  "acceptance_note": null
+ },
+ "templates": {
+  "chat_template_kwargs": null,
+  "reasoning_parser": null,
+  "tool_call_parser": null,
+  "reasoning_start": "<think>",
+  "reasoning_end": "</think>"
+ },
+ "endpoints": {
+  "health": "/health",
+  "metrics": "/metrics",
+  "slots": null,
+  "props": null
+ },
+ "role": {
+  "daily_driver": null,
+  "bakeoff_status": "pass"
+ },
+ "model_id": "qwen3.8-27b-uncensored-vllm",
+ "report": {
+  "label": "Qwen3.8-27B Uncensored \u00b7 vLLM, MTP drafts, 150k context"
+ }
+}

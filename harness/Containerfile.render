@@ -1,0 +1,8 @@
+# localhost/bakeoff-render -- headless Chromium for looking at model-written SVG or HTML (test 5).
+# It is only ever run with --network=none (tools/render_svg.sh): the page is untrusted and a browser
+# with a network could fetch or post anything the file tells it to. Build needs the network, runs do not.
+#   tools/podman-eb build -t localhost/bakeoff-render -f /srv/bakeoff/model-bakeoff/Containerfile.render /srv/bakeoff/model-bakeoff/sandbox
+FROM docker.io/library/python:3.12-slim
+RUN apt-get update && apt-get install -y --no-install-recommends chromium fonts-dejavu-core fonts-liberation \
+    && rm -rf /var/lib/apt/lists/*
+WORKDIR /in

@@ -1,0 +1,60 @@
+  gemma-4-26b-a4b-vllm:
+    name: "Gemma 4 26B-A4B on vLLM (AWQ 4-bit + Google MTP drafter)"
+    description: "vLLM 0.30 from the HyperQwen image (plain vllm serve, no Qwen launcher). cyankiwi AWQ 4-bit; Google gemma-4-26B-A4B-it-assistant drafter. Thinking on."
+    # Same container norms as qwen3.8-27b-vllm (approved by Titan's agent):
+    # pinned digest, --name hyperqwen (one vLLM at a time; covered by the
+    # Quadlet cleanup), llama network, no -p, read-only weights, only the
+    # compile cache writable. Settings as flags; nothing read from the host.
+    proxy: "http://hyperqwen:18020"
+    checkEndpoint: /health
+    useModelName: gemma-4-26b-a4b
+    cmd: |
+      podman run --name hyperqwen --rm
+      --network llama
+      --shm-size 16g
+      --device nvidia.com/gpu=all
+      --security-opt label=disable
+      --cap-drop ALL
+      --security-opt no-new-privileges
+      --userns=keep-id
+      -v /home/operator/ai/models/vllm/gemma-4-26b-a4b-awq:/models/target:ro
+      -v /home/operator/ai/models/llm/gemma-4-26b-a4b/assistant-hf:/models/assistant:ro
+      -v /home/operator/ai/hyperqwen/cache:/cache
+      -e HOME=/cache -e HF_HUB_OFFLINE=1 -e VLLM_NO_USAGE_STATS=1 -e DO_NOT_TRACK=1
+      --entrypoint /app/venv/bin/vllm
+      ghcr.io/syv-ai/hyperqwen@sha256:34c2e3a408e2a6ec94d3c6434ff14550b4525301f1ad6c06e40e409db1eefd55
+      serve /models/target
+      --served-model-name gemma-4-26b-a4b
+      --host 0.0.0.0 --port 18020
+      --max-model-len 262144 --gpu-memory-utilization 0.92
+      --kv-cache-dtype fp8 --enable-prefix-caching
+      --enable-auto-tool-choice --tool-call-parser gemma4 --reasoning-parser gemma4
+      --default-chat-template-kwargs '{"enable_thinking":true}'
+      --speculative-config '{"model":"/models/assistant","num_speculative_tokens":4}'
+    cmdStop: /bin/sh -c "podman stop -t 30 hyperqwen || podman rm -f hyperqwen"
+  qwen3.8-27b-uncensored-vllm:
+    name: "Qwen3.8-27B Uncensored on vLLM (HyperQwen, MTP, 150k)"
+    description: "HyperQwen e1459c7 with its supported third-party checkpoint philbert440/Qwen3.8-27B-Uncensored-Aggressive-W4A16-AWQ, prepared (quant_heads_stream + draft vocab). Profile D."
+    # Identical to qwen3.8-27b-vllm except -e MODEL pointing at the prepared
+    # uncensored dir (HyperQwen's own documented path for this checkpoint).
+    proxy: "http://hyperqwen:18020"
+    checkEndpoint: /health
+    useModelName: qwen3.8-27b
+    cmd: |
+      podman run --name hyperqwen --rm
+      --network llama
+      --shm-size 16g
+      --device nvidia.com/gpu=all
+      --security-opt label=disable
+      --cap-drop ALL
+      --security-opt no-new-privileges
+      --userns=keep-id
+      -v /home/operator/ai/hyperqwen/models:/app/models:ro
+      -v /home/operator/ai/hyperqwen/cache:/cache
+      -e MODEL=/app/models/Qwen3.8-27B-Uncensored-W4A16
+      -e SPEC=mtp -e CTX=long -e PREFIX_CACHE=1
+      -e PREPARE=0 -e VERIFY=0 -e HOST=0.0.0.0 -e PORT=18020
+      -e HOME=/cache -e HF_HUB_OFFLINE=1 -e VLLM_NO_USAGE_STATS=1 -e DO_NOT_TRACK=1
+      ghcr.io/syv-ai/hyperqwen@sha256:34c2e3a408e2a6ec94d3c6434ff14550b4525301f1ad6c06e40e409db1eefd55
+      single
+    cmdStop: /bin/sh -c "podman stop -t 30 hyperqwen || podman rm -f hyperqwen"

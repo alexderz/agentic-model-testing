@@ -1,0 +1,76 @@
+{
+ "schema": 1,
+ "generated": "2026-10-10T00:12:31-05:00",
+ "cmd_sha256": "546736e3a0ceecd6869803b2ce4fe0d6a2bbaad36db340cd9c21ee0bb69b612d",
+ "model_meta": "/home/operator/ai/models/llm/kolibri-1/bakeoff-model.json",
+ "model_file": "/home/operator/ai/models/llm/kolibri-1/Q8_0/Kolibri-1-Q8_0-00001-of-00002.gguf",
+ "engine": "llama.cpp",
+ "engine_version": "kolibri",
+ "served_context": 262144,
+ "parallel": null,
+ "kv_type": "q8_0",
+ "thinking": {
+  "default_on": null,
+  "server_budget": 24000,
+  "request_field": null,
+  "budget_tokens": null
+ },
+ "sampling": {
+  "temp": 1.0,
+  "top_p": 0.97,
+  "top_k": 128.0
+ },
+ "spec_decode": null,
+ "observability": {
+  "metrics": true,
+  "slots_debug": true,
+  "prompt_tokens_details": null,
+  "force_include_usage": null
+ },
+ "storage": "nas",
+ "multi_agent_ok": true,
+ "placement": {
+  "gpu_layers": 999,
+  "experts_on_cpu": 39,
+  "mmap": false,
+  "ram_pinned_gb": null
+ },
+ "serving": {
+  "port": 8097,
+  "proxy": "http://llamacpp-kolibri:8097",
+  "container_name": "llamacpp-kolibri",
+  "max_num_seqs": null,
+  "batch_tokens": null,
+  "prefix_caching": true,
+  "flash_attn": true
+ },
+ "speculative": {
+  "type": "none",
+  "draft_model": null,
+  "n_max": null,
+  "acceptance_note": null
+ },
+ "templates": {
+  "chat_template_kwargs": {
+   "reasoning_effort": "high"
+  },
+  "reasoning_parser": null,
+  "tool_call_parser": null,
+  "reasoning_start": null,
+  "reasoning_end": null
+ },
+ "endpoints": {
+  "health": "/health",
+  "metrics": "/metrics",
+  "slots": "/slots",
+  "props": "/props"
+ },
+ "role": {
+  "daily_driver": null,
+  "bakeoff_status": "partial"
+ },
+ "model_id": "kolibri-1",
+ "report": {
+  "label": "Kolibri-1 8-bit \u00b7 llama.cpp 0.6 + patch, experts in RAM"
+ }
+}

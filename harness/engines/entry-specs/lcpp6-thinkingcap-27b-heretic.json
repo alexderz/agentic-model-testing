@@ -1,0 +1,76 @@
+{
+ "schema": 1,
+ "generated": "2026-10-10T00:12:31-05:00",
+ "cmd_sha256": "5698d2eef79b9ae14a5bf253358cf2acbedd3aa894dc4936084d71088a08974d",
+ "model_meta": "/home/operator/ai/models/llm/thinkingcap-27b-heretic/bakeoff-model.json",
+ "model_file": "/home/operator/ai/models/llm/thinkingcap-27b-heretic/ThinkingCap-Qwen3.8-27B-Uncensored-Heretic.Q4_K_M.gguf",
+ "engine": "llama.cpp",
+ "engine_version": "0.6",
+ "served_context": 196608,
+ "parallel": null,
+ "kv_type": "q8_0",
+ "thinking": {
+  "default_on": true,
+  "server_budget": 24000,
+  "request_field": "thinking_budget_tokens",
+  "budget_tokens": null
+ },
+ "sampling": {
+  "top_k": 20.0,
+  "top_p": 0.95,
+  "temp": 1.0
+ },
+ "spec_decode": null,
+ "observability": {
+  "metrics": true,
+  "slots_debug": true,
+  "prompt_tokens_details": null,
+  "force_include_usage": null
+ },
+ "storage": "nas",
+ "multi_agent_ok": true,
+ "placement": {
+  "gpu_layers": 999,
+  "experts_on_cpu": 0,
+  "mmap": true,
+  "ram_pinned_gb": null
+ },
+ "serving": {
+  "port": 8096,
+  "proxy": "http://llamacpp6:8096",
+  "container_name": "llamacpp6",
+  "max_num_seqs": null,
+  "batch_tokens": null,
+  "prefix_caching": true,
+  "flash_attn": true
+ },
+ "speculative": {
+  "type": "none",
+  "draft_model": null,
+  "n_max": null,
+  "acceptance_note": null
+ },
+ "templates": {
+  "chat_template_kwargs": {
+   "enable_thinking": true
+  },
+  "reasoning_parser": null,
+  "tool_call_parser": null,
+  "reasoning_start": null,
+  "reasoning_end": null
+ },
+ "endpoints": {
+  "health": "/health",
+  "metrics": "/metrics",
+  "slots": "/slots",
+  "props": "/props"
+ },
+ "role": {
+  "daily_driver": null,
+  "bakeoff_status": "pass"
+ },
+ "model_id": "lcpp6-thinkingcap-27b-heretic",
+ "report": {
+  "label": "ThinkingCap-27B Heretic \u00b7 llama.cpp 0.6, all on GPU"
+ }
+}

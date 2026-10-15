@@ -1,0 +1,18 @@
+{
+  "browser": {
+    "browserName": "chromium",
+    "isolated": true,
+    "launchOptions": {
+      "executablePath": "/usr/bin/chromium",
+      "headless": true,
+      "chromiumSandbox": false,
+      "args": ["--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist",
+               "--disable-dev-shm-usage", "--hide-scrollbars"]
+    },
+    "contextOptions": {"viewport": {"width": 1280, "height": 657}}
+  },
+  "network": {"allowedOrigins": ["http://127.0.0.1:8000", "http://localhost:8000"]},
+  "outputDir": "/tmp/pw-out",
+  "webmcp": false,
+  "timeouts": {"idle": 0}
+}

@@ -1,0 +1,21 @@
+You have an MCP server you built earlier, already connected to this session.
+It exposes a read-only Home Assistant installation.
+
+Using that MCP server, write a report describing this Home Assistant
+installation: what kinds of devices and entities exist, how many of each,
+which are unavailable or unhealthy, and anything notable about how the
+installation is organised.
+
+Your work is being graded on four criteria, weighted equally:
+
+1. ACCURACY      - Every factual claim must be true. Counts, names and states
+                   are checked against the installation. A wrong number costs
+                   more than a missing one.
+2. COVERAGE      - How much of the installation the report actually accounts
+                   for, rather than a sample presented as the whole.
+3. EVIDENCE      - Claims should come from what you queried, not assumption.
+                   If you did not or could not check something, say so.
+4. USEFULNESS    - Would an operator who owns this installation learn
+                   something from it? Structure and clarity count.
+
+Write the report to a file named REPORT.md.

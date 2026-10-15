@@ -1,0 +1,45 @@
+{
+ "case": "t5r3-lcpp6-tiel-coder-35b-t06",
+ "model": "lcpp6-tiel-coder-35b-t06",
+ "test": "test5-orrery",
+ "max_tokens": 32000,
+ "started": "2026-10-14T08:42:47-0500",
+ "status": "ok",
+ "finish_reason": "stop",
+ "usage": {
+  "completion_tokens": 31324,
+  "prompt_tokens": 238,
+  "total_tokens": 31562,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  }
+ },
+ "timings": {
+  "cache_n": 0,
+  "prompt_n": 238,
+  "prompt_ms": 270.388,
+  "prompt_per_token_ms": 1.1360840336134452,
+  "prompt_per_second": 880.2165776587718,
+  "predicted_n": 31324,
+  "predicted_ms": 222287.922,
+  "predicted_per_token_ms": 7.0966357628579635,
+  "predicted_per_second": 140.91183955554726
+ },
+ "static": {
+  "svg_found": true,
+  "parses": false,
+  "parse_error": "not well-formed (invalid token): line 146, column 228",
+  "bytes": 16903,
+  "animateTransform": 21,
+  "animate": 0,
+  "animateMotion": 0,
+  "keyframes": 0,
+  "script": 0,
+  "prose_chars_outside_svg": 1333
+ },
+ "wall_s": 225.8,
+ "first_token_s": 3.5,
+ "tok_s": 140.9,
+ "reply_chars": 18235,
+ "reasoning_chars": 82437
+}

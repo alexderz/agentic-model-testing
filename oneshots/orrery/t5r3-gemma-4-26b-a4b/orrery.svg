@@ -1,0 +1,161 @@
+<svg viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg" style="background: #05050a;">
+  <defs>
+    <!-- Brass/Gold Gradients -->
+    <radialGradient id="brass" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#f3cf79" />
+      <stop offset="50%" stop-color="#d4af37" />
+      <stop offset="100%" stop-color="#8b5a2b" />
+    </radialGradient>
+    
+    <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fff7e6" />
+      <stop offset="60%" stop-color="#ffcc00" />
+      <stop offset="100%" stop-color="transparent" />
+    </radialGradient>
+
+    <!-- Planet Gradients -->
+    <radialGradient id="earthGrad" cx="30%" cy="30%" r="50%">
+      <stop offset="0%" stop-color="#4facfe" />
+      <stop offset="100%" stop-color="#003366" />
+    </radialGradient>
+    <radialGradient id="marsGrad" cx="30%" cy="30%" r="50%">
+      <stop offset="0%" stop-color="#ff7e5f" />
+      <stop offset="100%" stop-color="#8e2e1c" />
+    </radialGradient>
+    <radialGradient id="jupiterGrad" cx="30%" cy="30%" r="50%">
+      <stop offset="0%" stop-color="#f4d03f" />
+      <stop offset="100%" stop-color="#9a7d0a" />
+    </radialGradient>
+
+    <!-- Shadow Overlay for Day/Night -->
+    <radialGradient id="shadow" cx="100%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="black" stop-opacity="0" />
+      <stop offset="100%" stop-color="black" stop-opacity="0.7" />
+    </radialGradient>
+
+    <!-- Gear Tooth Pattern -->
+    <path id="gearTeeth" d="M-5,-15 L5,-15 L5,-5 L15,-5 L15,5 L5,5 L5,15 L-5,15 L-5,5 L-15,5 L-15,-5 L-5,-5 Z" fill="url(#brass)" />
+  </defs>
+
+  <!-- Styling for animations -->
+  <style>
+    /* Orbit Rotation */
+    @keyframes orbit {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Planetary Self-Rotation (Day/Night) */
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Gear Rotation */
+    @keyframes gearRotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(-360deg); }
+    }
+
+    .orbit-path { stroke: rgba(212, 175, 55, 0.2); stroke-width: 1; fill: none; }
+    .gear-main { transform-origin: 400px 400px; animation: gearRotate 20s linear infinite; }
+    .planet-container { transform-origin: 400px 400px; }
+    .planet-body { transform-origin: center; animation: spin 4s linear infinite; }
+    .shadow-layer { transform-origin: center; animation: spin 4s linear infinite; }
+  </style>
+
+  <!-- Background/Space -->
+  <circle cx="400" cy="400" r="350" fill="none" stroke="#222" stroke-width="2" stroke-dasharray="5,5" opacity="0.3"/>
+
+  <!-- Central Sun -->
+  <circle cx="400" cy="400" r="40" fill="url(#sunGlow)" />
+  <circle cx="400" cy="400" r="30" fill="#ffcc00" />
+  <circle cx="400" cy="400" r="20" fill="#ffffff" opacity="0.5">
+    <animate attributeName="opacity" values="0.3;0.6;0.3" dur="3s" repeatCount="indefinite" />
+  </circle>
+
+  <!-- CENTRAL GEAR (Driving Mechanism) -->
+  <g class="gear-main">
+    <circle cx="400" cy="400" r="45" fill="none" stroke="url(#brass)" stroke-width="4" stroke-dasharray="2,2" />
+    <!-- Gear Teeth representation -->
+    <g transform="translate(400, 400)">
+      <use href="#gearTeeth" transform="rotate(0) scale(2)" />
+      <use href="#gearTeeth" transform="rotate(45) scale(2)" />
+      <use href="#gearTeeth" transform="rotate(90) scale(2)" />
+      <use href="#gearTeeth" transform="rotate(135) scale(2)" />
+      <use href="#gearTeeth" transform="rotate(180) scale(2)" />
+      <use href="#gearTeeth" transform="rotate(225) scale(2)" />
+      <use href="#gearTeeth" transform="rotate(270) scale(2)" />
+      <use href="#gearTeeth" transform="rotate(315) scale(2)" />
+    </g>
+  </g>
+
+  <!-- ORBITAL SYSTEM -->
+  <g id="system">
+    
+    <!-- MERCURY -->
+    <g class="planet-container" style="animation: orbit 5s linear infinite;">
+      <circle class="orbit-path" cx="400" cy="400" r="60" />
+      <g transform="translate(400, 340)">
+        <circle class="planet-body" r="6" fill="#999" />
+        <circle class="shadow-layer" r="6" fill="url(#shadow)" />
+        <!-- Small planet gear -->
+        <g transform="translate(0, 0)" style="animation: gearRotate 1s linear infinite;">
+           <circle r="10" fill="none" stroke="url(#brass)" stroke-width="2" stroke-dasharray="2,1" />
+        </g>
+      </g>
+    </g>
+
+    <!-- VENUS -->
+    <g class="planet-container" style="animation: orbit 12s linear infinite;">
+      <circle class="orbit-path" cx="400" cy="400" r="100" />
+      <g transform="translate(400, 300)">
+        <circle class="planet-body" r="10" fill="#e3e3e3" />
+        <circle class="shadow-layer" r="10" fill="url(#shadow)" />
+        <g transform="translate(0, 0)" style="animation: gearRotate 2s linear infinite;">
+           <circle r="14" fill="none" stroke="url(#brass)" stroke-width="2" stroke-dasharray="3,2" />
+        </g>
+      </g>
+    </g>
+
+    <!-- EARTH -->
+    <g class="planet-container" style="animation: orbit 20s linear infinite;">
+      <circle class="orbit-path" cx="400" cy="400" r="150" />
+      <g transform="translate(400, 250)">
+        <circle class="planet-body" r="12" fill="url(#earthGrad)" />
+        <circle class="shadow-layer" r="12" fill="url(#shadow)" />
+        <g transform="translate(0, 0)" style="animation: gearRotate 3s linear infinite;">
+           <circle r="18" fill="none" stroke="url(#brass)" stroke-width="2" stroke-dasharray="4,2" />
+        </g>
+      </g>
+    </g>
+
+    <!-- MARS -->
+    <g class="planet-container" style="animation: orbit 35s linear infinite;">
+      <circle class="orbit-path" cx="400" cy="400" r="200" />
+      <g transform="translate(400, 200)">
+        <circle class="planet-body" r="10" fill="url(#marsGrad)" />
+        <circle class="shadow-layer" r="10" fill="url(#shadow)" />
+        <g transform="translate(0, 0)" style="animation: gearRotate 4s linear infinite;">
+           <circle r="14" fill="none" stroke="url(#brass)" stroke-width="2" stroke-dasharray="2,2" />
+        </g>
+      </g>
+    </g>
+
+    <!-- JUPITER -->
+    <g class="planet-container" style="animation: orbit 60s linear infinite;">
+      <circle class="orbit-path" cx="400" cy="400" r="260" />
+      <g transform="translate(400, 140)">
+        <circle class="planet-body" r="22" fill="url(#jupiterGrad)" />
+        <circle class="shadow-layer" r="22" fill="url(#shadow)" />
+        <g transform="translate(0, 0)" style="animation: gearRotate 8s linear infinite;">
+           <circle r="30" fill="none" stroke="url(#brass)" stroke-width="3" stroke-dasharray="5,3" />
+        </g>
+      </g>
+    </g>
+
+  </g>
+
+  <!-- Aesthetic Overlays -->
+  <rect width="100%" height="100%" fill="url(#sunGlow)" opacity="0.05" pointer-events="none" />
+</svg>

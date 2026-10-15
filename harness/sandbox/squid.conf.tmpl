@@ -1,0 +1,44 @@
+# Web proxy (service `web`): the sandbox's only path to the internet, for docs and artifacts.
+# Squid, configured only by this file. evalbox.py fills {{DOMAINS}} (one ".domain" per entry:
+# the domain and its subdomains) and writes the result to the run's conf dir, mounted read-only.
+#
+# Enforced: allowlisted domains only; HTTPS only through CONNECT to port 443 (TLS end to end, no
+# interception), plain HTTP only to port 80; destinations that resolve to private, loopback,
+# link-local, CGNAT or multicast addresses are refused (Squid checks the address it connects
+# to, so DNS rebinding cannot slip a private one in); no caching; no client details forwarded.
+# Logs one line per request to /log/web-access.log (host, method, status, bytes, duration).
+
+http_port 3128
+acl allowed_domains dstdomain {{DOMAINS}}
+acl SSL_ports port 443
+acl Safe_ports port 80 443
+acl CONNECT method CONNECT
+acl private_dst dst 0.0.0.0/8 10.0.0.0/8 100.64.0.0/10 127.0.0.0/8 169.254.0.0/16 172.16.0.0/12 192.168.0.0/16 198.18.0.0/15 224.0.0.0/3
+acl edge_clients src {{CLIENT_NET}}
+
+http_access deny !edge_clients
+http_access deny !Safe_ports
+http_access deny CONNECT !SSL_ports
+http_access deny !CONNECT SSL_ports
+http_access deny to_localhost
+http_access deny private_dst
+http_access allow allowed_domains
+http_access deny all
+
+cache deny all
+via off
+forwarded_for delete
+request_header_access X-Forwarded-For deny all
+httpd_suppress_version_string on
+reply_body_max_size 2 GB
+request_body_max_size 64 MB
+client_lifetime 15 minutes
+read_timeout 2 minutes
+max_filedescriptors 4096
+
+logformat evalbox %ts.%03tu %>a %rm %ru %>Hs %<st %tr ms %Ss/%Sh %<a
+access_log stdio:/log/web-access.log evalbox
+cache_log stdio:/log/web-squid.log
+pid_filename /run/squid/squid.pid
+coredump_dir /tmp
+shutdown_lifetime 1 seconds

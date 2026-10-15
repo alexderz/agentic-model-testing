@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 780" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <!-- deep umber background -->
+    <radialGradient id="bg" cx="0.5" cy="0.42" r="0.75">
+      <stop offset="0" stop-color="#2a2119"/>
+      <stop offset="0.6" stop-color="#1a140e"/>
+      <stop offset="1" stop-color="#0e0a06"/>
+    </radialGradient>
+    <radialGradient id="halo" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ffcf7d" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#ffcf7d" stop-opacity="0"/>
+    </radialGradient>
+    <!-- brass tones -->
+    <linearGradient id="band" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d9b168"/>
+      <stop offset="0.5" stop-color="#a5804a"/>
+      <stop offset="1" stop-color="#77592c"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e8cf8f"/>
+      <stop offset="0.45" stop-color="#c29a55"/>
+      <stop offset="0.6" stop-color="#8f6a33"/>
+      <stop offset="1" stop-color="#6b4d24"/>
+    </linearGradient>
+    <radialGradient id="pinionBody" cx="0.38" cy="0.32" r="0.85">
+      <stop offset="0" stop-color="#f0d28c"/>
+      <stop offset="0.6" stop-color="#c19a55"/>
+      <stop offset="1" stop-color="#77592c"/>
+    </radialGradient>
+    <linearGradient id="pillar" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#4a3617"/>
+      <stop offset="0.35" stop-color="#d8b264"/>
+      <stop offset="0.62" stop-color="#93713a"/>
+      <stop offset="1" stop-color="#3a2a10"/>
+    </linearGradient>
+    <linearGradient id="plinth" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6d5426"/>
+      <stop offset="0.35" stop-color="#433114"/>
+      <stop offset="1" stop-color="#221605"/>
+    </linearGradient>
+    <!-- sun -->
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#ffd873" stop-opacity="0.55"/>
+      <stop offset="0.55" stop-color="#f0a83c" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#f0a83c" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="sunCore" cx="0.42" cy="0.38" r="0.85">
+      <stop offset="0" stop-color="#fff7d8"/>
+      <stop offset="0.4" stop-color="#ffd873"/>
+      <stop offset="0.75" stop-color="#f0a83c"/>
+      <stop offset="1" stop-color="#c2681f"/>
+    </radialGradient>
+    <!-- planet spheres + sweeping day/night -->
+    <radialGradient id="sheen" cx="0.36" cy="0.3" r="0.9">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.5"/>
+      <stop offset="0.28" stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="0.55" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="0.82" stop-color="#140a02" stop-opacity="0"/>
+      <stop offset="1" stop-color="#140a02" stop-opacity="0.45"/>
+    </radialGradient>
+    <linearGradient id="night" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#050a14" stop-opacity="0"/>
+      <stop offset="0.38" stop-color="#050a14" stop-opacity="0.12"/>
+      <stop offset="0.5" stop-color="#050a14" stop-opacity="0.8"/>
+      <stop offset="1" stop-color="#050a14" stop-opacity="0.95"/>
+    </linearGradient>
+    <radialGradient id="pMercury" cx="0.38" cy="0.32" r="0.9"><stop offset="0" stop-color="#cfc4b4"/><stop offset="1" stop-color="#6d5f52"/></radialGradient>
+    <radialGradient id="pVenus" cx="0.38" cy="0.32" r="0.9"><stop offset="0" stop-color="#f2dda2"/><stop offset="1" stop-color="#a8783a"/></radialGradient>
+    <radialGradient id="pEarth" cx="0.38" cy="0.32" r="0.9"><stop offset="0" stop-color="#9dc8e8"/><stop offset="1" stop-color="#2f6285"/></radialGradient>
+    <radialGradient id="pMars" cx="0.38" cy="0.32" r="0.9"><stop offset="0" stop-color="#e08a5a"/><stop offset="1" stop-color="#8a3a1c"/></radialGradient>
+    <radialGradient id="pJupiter" cx="0.38" cy="0.32" r="0.9"><stop offset="0" stop-color="#f0cfa0"/><stop offset="0.55" stop-color="#d8a05c"/><stop offset="1" stop-color="#8a5a28"/></radialGradient>
+  </defs>
+
+  <rect width="900" height="780" fill="url(#bg)"/>
+  <ellipse cx="450" cy="380" rx="380" ry="330" fill="url(#halo)"/>
+
+  <!-- ===== plinth ===== -->
+  <rect x="140" y="690" width="620" height="18" rx="4" fill="url(#gold)"/>
+  <rect x="125" y="706" width="650" height="44" rx="5" fill="url(#plinth)"/>
+  <rect x="125" y="706" width="650" height="2" fill="#e8cf8f" opacity="0.35"/>
+  <text x="450" y="728" text-anchor="middle" font-size="15" letter-spacing="6" fill="#0c0804" opacity="0.5">ORRERY</text>
+  <text x="450" y="726.8" text-anchor="middle" font-size="15" letter-spacing="6" fill="#e9d49a" opacity="0.85">ORRERY</text>
+  <text x="450" y="741" text-anchor="middle" font-size="8" letter-spacing="2.5" fill="#d7b877" opacity="0.55">OMNIA SUO MOTU MOVENTUR · EACH AT ITS OWN PACE</text>
+
+  <!-- ===== turned pillars (behind the ring work) ===== -->
+  <g>
+    <rect x="160" y="360" width="12" height="336" rx="5" fill="url(#pillar)"/>
+    <rect x="155" y="600" width="22" height="8" rx="3" fill="url(#gold)"/>
+    <rect x="155" y="455" width="22" height="8" rx="3" fill="url(#gold)"/>
+    <rect x="728" y="360" width="12" height="336" rx="5" fill="url(#pillar)"/>
+    <rect x="723" y="600" width="22" height="8" rx="3" fill="url(#gold)"/>
+    <rect x="723" y="455" width="22" height="8" rx="3" fill="url(#gold)"/>
+  </g>
+
+  <!-- ===== concentric ring wheels — one per planet, geared to its true period ===== -->
+  <!-- Jupiter · period 237.2s (≈ 11.86 yr) -->
+  <g>
+    <circle cx="450" cy="355" r="284" fill="none" stroke="url(#band)" stroke-width="8"/>
+    <circle cx="450" cy="355" r="290" fill="none" stroke="#b9924f" stroke-width="5" stroke-dasharray="8.2 6.98"
+            transform="rotate(6 450 355)"/>
+    <g transform="rotate(6 450 355)">
+      <circle cx="450" cy="355" r="290" fill="none" stroke="#b9924f" stroke-width="5" stroke-dasharray="8.2 6.98"/>
+    </g>
+  </g>
+  <!-- Mars · 37.62s (1.88 yr) -->
+  <g transform="rotate(20 450 355)">
+    <circle cx="450" cy="355" r="226" fill="none" stroke="url(#band)" stroke-width="8"/>
+    <circle cx="450" cy="355" r="232" fill="none" stroke="#b9924f" stroke-width="5" stroke-dasharray="8 6.87">
+      <animateTransform attributeName="transform" type="rotate" from="0 450 355" to="-360 450 355" dur="37.62s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  <!-- Earth · 20s -->
+  <g transform="rotate(120 450 355)">
+    <circle cx="450" cy="355" r="170" fill="none" stroke="url(#band)" stroke-width="8"/>
+    <circle cx="450" cy="355" r="176" fill="none" stroke="#b9924f" stroke-width="5" stroke-dasharray="7.8 6.75">
+      <animateTransform attributeName="transform" type="rotate" from="0 450 355" to="-360 450 355" dur="20s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  <!-- Venus · 12.3s -->
+  <g transform="rotate(200 450 355)">
+    <circle cx="450" cy="355" r="114" fill="none" stroke="url(#band)" stroke-width="8"/>
+    <circle cx="450" cy="355" r="120" fill="none" stroke="#b9924f" stroke-width="5" stroke-dasharray="7.5 6.46">
+      <animateTransform attributeName="transform" type="rotate" from="0 450 355" to="-360 450 355" dur="12.3s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  <!-- Mercury · 4.82s -->
+  <g transform="rotate(40 450 355)">
+    <circle cx="450" cy="355" r="58" fill="none" stroke="url(#band)" stroke-width="8"/>
+    <circle cx="450" cy="355" r="64" fill="none" stroke="#b9924f" stroke-width="5" stroke-dasharray="7.2 6.2">
+      <animateTransform attributeName="transform" type="rotate" from="0 450 355" to="-360 450 355" dur="4.82s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+</svg>

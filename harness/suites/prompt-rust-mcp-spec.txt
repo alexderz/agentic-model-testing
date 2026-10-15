@@ -1,0 +1,39 @@
+Write an MCP (Model Context Protocol) server in Rust that exposes a read-only
+Home Assistant instance to an AI agent.
+
+The official MCP specification is in ./mcp-docs/ — read it. Start with
+mcp-docs/04-transport-stdio.mdx and mcp-docs/05-server-tools.mdx; between them
+they specify everything needed. mcp-docs/07-schema.json is the full JSON Schema
+(181 KB — grep it, do not read it whole). See mcp-docs/README.md for an index.
+
+You have a live Home Assistant REST API to work against:
+
+  Base URL:  $HA_URL
+  Token:     in the environment variable HA_TOKEN
+
+It is READ-ONLY. GET and HEAD succeed; anything else returns 405.
+
+Your server must speak MCP over stdio and expose tools that let an agent
+explore the installation — at minimum listing entities, fetching a single
+entity's state, and retrieving the configuration. It must run with no
+command-line arguments, taking configuration from the environment, because an
+MCP client launches the binary directly.
+
+Your work is being graded on five criteria, weighted equally:
+
+1. COMPLETENESS  - How much of the Home Assistant API is usefully exposed, and
+                   how well-chosen the tools are for an agent exploring an
+                   unfamiliar installation.
+2. CORRECTNESS   - Does it build with `cargo build`? Does a client get a valid
+                   response to initialize, tools/list and tools/call? Are auth,
+                   HTTP errors, timeouts and bad input handled rather than
+                   panicking?
+3. CODE QUALITY  - Structure, naming, readability, sensible error types.
+                   No duplication, no dead code.
+4. TESTS         - Real `cargo test` tests that assert something meaningful.
+                   Tests must not require network access to pass.
+5. USABILITY     - Clear tool names and descriptions, useful schemas, and a
+                   README showing how to run it and wire it into an agent.
+
+It must be a Cargo project that builds with `cargo build` and runs as a stdio
+MCP server. Deliver whatever files the job needs.

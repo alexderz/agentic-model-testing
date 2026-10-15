@@ -1,0 +1,79 @@
+{
+ "schema": 1,
+ "generated": "2026-10-15T08:22:51-05:00",
+ "cmd_sha256": "e1dc310f5cff104c1a9ff5893be5e8e8c7e4bc63856dde36fe27f39d89a6964b",
+ "model_meta": "/home/operator/ai/models/llm/tiel-coder-35b/bakeoff-model.json",
+ "model_file": "/home/operator/ai/models/llm/tiel-coder-35b/Tiel-Coder-35B-A3B-UD-IQ4_XS.gguf",
+ "engine": "llama.cpp",
+ "engine_version": "0.6",
+ "served_context": 262144,
+ "parallel": null,
+ "kv_type": "f16",
+ "thinking": {
+  "default_on": true,
+  "server_budget": 24000,
+  "request_field": "thinking_budget_tokens",
+  "budget_tokens": null
+ },
+ "sampling": {
+  "temp": 0.6,
+  "top_p": 0.95,
+  "top_k": 20.0,
+  "min_p": 0.0,
+  "presence_penalty": 0.0
+ },
+ "spec_decode": null,
+ "observability": {
+  "metrics": true,
+  "slots_debug": true,
+  "prompt_tokens_details": null,
+  "force_include_usage": null
+ },
+ "storage": "nas",
+ "multi_agent_ok": true,
+ "placement": {
+  "gpu_layers": 999,
+  "experts_on_cpu": 0,
+  "mmap": false,
+  "ram_pinned_gb": null
+ },
+ "serving": {
+  "port": 8096,
+  "proxy": "http://llamacpp6:8096",
+  "container_name": "llamacpp6",
+  "max_num_seqs": null,
+  "batch_tokens": null,
+  "prefix_caching": true,
+  "flash_attn": true
+ },
+ "speculative": {
+  "type": "none",
+  "draft_model": null,
+  "n_max": null,
+  "acceptance_note": null
+ },
+ "templates": {
+  "chat_template_kwargs": {
+   "enable_thinking": true
+  },
+  "reasoning_parser": null,
+  "tool_call_parser": null,
+  "reasoning_start": null,
+  "reasoning_end": null
+ },
+ "endpoints": {
+  "health": "/health",
+  "metrics": "/metrics",
+  "slots": "/slots",
+  "props": "/props"
+ },
+ "role": {
+  "daily_driver": null,
+  "bakeoff_status": "untested"
+ },
+ "model_id": "lcpp6-tiel-coder-35b-t06-vis",
+ "report": {
+  "label": "Tiel-Coder-35B 4-bit \u00b7 llama.cpp 0.6, all on GPU, 262k, author's coding sampling (temperature 0.6) + vision",
+  "note": "retry wave: sampling fixed Vision variant: vision head mmproj-BF16.gguf on the CPU."
+ }
+}

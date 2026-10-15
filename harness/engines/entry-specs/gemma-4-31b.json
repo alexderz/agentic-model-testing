@@ -1,0 +1,76 @@
+{
+ "schema": 1,
+ "generated": "2026-10-09T14:59:56-05:00",
+ "cmd_sha256": "07284571712a2ef81325f03ac4ea03a49bd8316d7930b4942d71e866d7697358",
+ "model_meta": "/home/operator/ai/models/llm/gemma-4-31b/bakeoff-model.json",
+ "model_file": "/home/operator/ai/models/llm/gemma-4-31b/gemma-4-31B_q4_0-it.gguf",
+ "engine": "llama.cpp",
+ "engine_version": "0.4-native",
+ "served_context": 131072,
+ "parallel": null,
+ "kv_type": "q4_0",
+ "thinking": {
+  "default_on": true,
+  "server_budget": 22672,
+  "request_field": null,
+  "budget_tokens": null
+ },
+ "sampling": {
+  "top_k": 64.0,
+  "top_p": 0.95,
+  "temp": 1.0
+ },
+ "spec_decode": "draft-mtp",
+ "observability": {
+  "metrics": true,
+  "slots_debug": true,
+  "prompt_tokens_details": null,
+  "force_include_usage": null
+ },
+ "storage": "nas",
+ "multi_agent_ok": true,
+ "placement": {
+  "gpu_layers": 999,
+  "experts_on_cpu": 0,
+  "mmap": true,
+  "ram_pinned_gb": null
+ },
+ "serving": {
+  "port": null,
+  "proxy": null,
+  "container_name": "llama-swap",
+  "max_num_seqs": null,
+  "batch_tokens": null,
+  "prefix_caching": true,
+  "flash_attn": true
+ },
+ "speculative": {
+  "type": "draft-mtp",
+  "draft_model": "/models/llm/gemma-4-31b/unsloth-mtp/mtp-gemma-4-31B-it.gguf",
+  "n_max": 4,
+  "acceptance_note": null
+ },
+ "templates": {
+  "chat_template_kwargs": {
+   "enable_thinking": true
+  },
+  "reasoning_parser": null,
+  "tool_call_parser": null,
+  "reasoning_start": null,
+  "reasoning_end": null
+ },
+ "endpoints": {
+  "health": "/health",
+  "metrics": "/metrics",
+  "slots": "/slots",
+  "props": "/props"
+ },
+ "role": {
+  "daily_driver": null,
+  "bakeoff_status": "pass"
+ },
+ "model_id": "gemma-4-31b",
+ "report": {
+  "label": "Gemma 4 31B 4-bit \u00b7 llama.cpp, all on GPU"
+ }
+}

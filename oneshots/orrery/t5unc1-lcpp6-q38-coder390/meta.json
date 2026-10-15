@@ -1,0 +1,47 @@
+{
+ "case": "t5unc1-lcpp6-q38-coder390",
+ "model": "lcpp6-q38-coder390",
+ "test": "test5-orrery",
+ "max_tokens": 76000,
+ "timeout_s": 36000,
+ "started": "2026-10-15T05:29:53-0500",
+ "status": "ok",
+ "finish_reason": "stop",
+ "usage": {
+  "completion_tokens": 22656,
+  "prompt_tokens": 101,
+  "total_tokens": 22757,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  }
+ },
+ "timings": {
+  "cache_n": 0,
+  "prompt_n": 101,
+  "prompt_ms": 504.561,
+  "prompt_per_token_ms": 4.9956534653465345,
+  "prompt_per_second": 200.174012656547,
+  "predicted_n": 22656,
+  "predicted_ms": 414842.045,
+  "predicted_per_token_ms": 18.311279849922755,
+  "predicted_per_second": 54.61114723798066,
+  "draft_n": 31644,
+  "draft_n_accepted": 14744
+ },
+ "static": {
+  "svg_found": true,
+  "parses": true,
+  "bytes": 16991,
+  "animateTransform": 19,
+  "animate": 2,
+  "animateMotion": 0,
+  "keyframes": 0,
+  "script": 0,
+  "prose_chars_outside_svg": 2039
+ },
+ "wall_s": 426.6,
+ "first_token_s": 11.8,
+ "tok_s": 54.6,
+ "reply_chars": 19021,
+ "reasoning_chars": 45923
+}

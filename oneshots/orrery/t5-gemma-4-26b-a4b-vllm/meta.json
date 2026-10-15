@@ -1,0 +1,38 @@
+{
+ "case": "t5-gemma-4-26b-a4b-vllm",
+ "model": "gemma-4-26b-a4b-vllm",
+ "test": "test5-orrery",
+ "max_tokens": 32000,
+ "started": "2026-10-12T05:42:04-0500",
+ "status": "ok",
+ "finish_reason": "stop",
+ "usage": {
+  "prompt_tokens": 65,
+  "total_tokens": 3916,
+  "completion_tokens": 3851,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "created_cache_tokens": 48
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 1137
+  }
+ },
+ "timings": null,
+ "static": {
+  "svg_found": true,
+  "parses": true,
+  "bytes": 5867,
+  "animateTransform": 14,
+  "animate": 1,
+  "animateMotion": 0,
+  "keyframes": 0,
+  "script": 0,
+  "prose_chars_outside_svg": 2085
+ },
+ "wall_s": 161.9,
+ "first_token_s": 143.0,
+ "tok_s": 204.3,
+ "reply_chars": 7952,
+ "reasoning_chars": 4098
+}

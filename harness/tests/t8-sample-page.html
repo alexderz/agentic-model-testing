@@ -1,0 +1,17 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>t8 sample</title>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"}}</script>
+</head><body style="margin:0">
+<script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+const r = new THREE.WebGLRenderer(); r.setSize(innerWidth, innerHeight); document.body.appendChild(r.domElement);
+const scene = new THREE.Scene(); scene.background = new THREE.Color(0x2040a0);
+const cam = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.1, 100); cam.position.set(3, 3, 3); cam.lookAt(0, 0, 0);
+new OrbitControls(cam, r.domElement);
+scene.add(new THREE.Mesh(new THREE.BoxGeometry(1.5, 1.5, 1.5), new THREE.MeshBasicMaterial({ color: 0xff0000 })));
+r.render(scene, cam);
+window.__t8 = "three " + THREE.REVISION;
+console.log("T8-SAMPLE-RENDERED " + THREE.REVISION);
+fetch("https://example.com/").then(() => console.log("T8-LEAK fetched example.com"), e => console.log("T8-BLOCKED " + e));
+</script></body></html>

@@ -1,0 +1,13 @@
+You are working in /work, which holds only TASK.md, a copy of this message (a long session may drop this message from your context, so read TASK.md again when you need it). Do the task at the end of this message with your tools, not in a single reply: write the result to /work/{ARTIFACT}. That file is all that is graded. Nothing else in /work is looked at, and your final reply only needs to say that you are done.
+
+You have no Internet access. Your only network is the connection to your own model.
+
+You have a web browser, through the browser_* tools. It runs in its own sealed container and its settings are fixed. It can open only the preview server at http://127.0.0.1:8000/, which serves the .html and .svg files in /work. The preview server is already running and has the port, so do not start a server of your own; your shell reaches it at the same address, so curl shows what the browser gets. A page is shown with its three.js URLs pointed at a local copy of three 0.186.1, the same way the grader does it. Other files are not served, because the grader gets only your one file. {VIEW}
+
+{EYES}
+
+You can hand parts of the work to sub-agents with the task tool. They get the same tools as you, and they share your browser.
+
+You have {MINUTES} minutes. When the time is up the session is stopped and /work/{ARTIFACT} is graded as it stands, so keep a working version saved as you go.
+
+The task:

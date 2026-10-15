@@ -1,0 +1,15 @@
+You are working in an existing Rust project in /work: a read-only MCP server for Home Assistant
+(README.md describes it). Below is an issue filed against it. Make the change the issue asks for.
+
+- Work in /work. Build with `cargo build --release` and test with `cargo test`.
+- A read-only Home Assistant test instance is at $HA_URL; its token is in $HA_TOKEN (send it as a
+  Bearer token). The issue calls it "the test instance".
+- Keep the existing tests passing. Do not delete or weaken a test to get there.
+- You have 45 minutes.
+
+When you stop, end your last message with one line that is exactly `STATUS: DONE` or
+`STATUS: NOT DONE`, followed by a sentence or two on how you verified it: which commands you ran and
+what they showed. Say NOT DONE if anything the issue asks for is missing or was not tested.
+
+The issue:
+

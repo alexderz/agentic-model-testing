@@ -1,0 +1,44 @@
+{
+ "case": "t5-lcpp6-tiel-coder-35b-t06",
+ "model": "lcpp6-tiel-coder-35b-t06",
+ "test": "test5-orrery",
+ "max_tokens": 32000,
+ "started": "2026-10-14T08:34:58-0500",
+ "status": "ok",
+ "finish_reason": "stop",
+ "usage": {
+  "completion_tokens": 31231,
+  "prompt_tokens": 238,
+  "total_tokens": 31469,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  }
+ },
+ "timings": {
+  "cache_n": 0,
+  "prompt_n": 238,
+  "prompt_ms": 343.524,
+  "prompt_per_token_ms": 1.4433781512605042,
+  "prompt_per_second": 692.8191334521024,
+  "predicted_n": 31231,
+  "predicted_ms": 221273.996,
+  "predicted_per_token_ms": 7.08530246557797,
+  "predicted_per_second": 141.13723512273896
+ },
+ "static": {
+  "svg_found": true,
+  "parses": true,
+  "bytes": 13553,
+  "animateTransform": 19,
+  "animate": 0,
+  "animateMotion": 0,
+  "keyframes": 0,
+  "script": 0,
+  "prose_chars_outside_svg": 1517
+ },
+ "wall_s": 225.9,
+ "first_token_s": 4.6,
+ "tok_s": 141.1,
+ "reply_chars": 15070,
+ "reasoning_chars": 71126
+}

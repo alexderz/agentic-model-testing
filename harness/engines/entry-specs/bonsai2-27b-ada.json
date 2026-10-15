@@ -1,0 +1,80 @@
+{
+ "schema": 1,
+ "generated": "2026-10-09T14:59:56-05:00",
+ "cmd_sha256": "3e77038441c8eadaa3f94244dd476ae5bb5c1a9f9c11cf96b84a06cd0e204b13",
+ "model_meta": "/home/operator/ai/models/llm/bonsai2-27b-ada-surgery/bakeoff-model.json",
+ "model_file": "/home/operator/ai/models/llm/bonsai2-27b-ada-surgery/Ternary-Bonsai-2-27B-PTQ1_0-mtp-procreations.gguf",
+ "engine": "llama.cpp",
+ "engine_version": "bonsai-ada-5251968",
+ "served_context": 262144,
+ "parallel": 1,
+ "kv_type": "q8_0",
+ "thinking": {
+  "default_on": true,
+  "server_budget": 20480,
+  "request_field": null,
+  "budget_tokens": null
+ },
+ "sampling": {
+  "temp": 1.0,
+  "top_p": 0.95,
+  "top_k": 20.0,
+  "min_p": null
+ },
+ "spec_decode": "draft-mtp",
+ "observability": {
+  "metrics": true,
+  "slots_debug": true,
+  "prompt_tokens_details": null,
+  "force_include_usage": null
+ },
+ "storage": "nas",
+ "multi_agent_ok": true,
+ "placement": {
+  "gpu_layers": 99,
+  "experts_on_cpu": 0,
+  "mmap": true,
+  "ram_pinned_gb": null
+ },
+ "serving": {
+  "port": 8099,
+  "proxy": "http://llamacpp-bonsai:8099",
+  "container_name": "llamacpp-bonsai",
+  "max_num_seqs": null,
+  "batch_tokens": null,
+  "prefix_caching": true,
+  "flash_attn": true
+ },
+ "speculative": {
+  "type": "draft-mtp",
+  "draft_model": "MTP head in the GGUF (blk.64, ProCreations)",
+  "n_max": 2,
+  "acceptance_note": "repo: --spec-draft-n-max 2, 4 at the tail; lookup drafting on by default (patch 0039)"
+ },
+ "templates": {
+  "chat_template_kwargs": {
+   "reasoning_effort": "medium"
+  },
+  "reasoning_parser": null,
+  "tool_call_parser": null,
+  "reasoning_start": null,
+  "reasoning_end": null
+ },
+ "endpoints": {
+  "health": "/health",
+  "metrics": "/metrics",
+  "slots": "/slots",
+  "props": "/props"
+ },
+ "role": {
+  "daily_driver": null,
+  "bakeoff_status": "untested"
+ },
+ "model_id": "bonsai2-27b-ada",
+ "report": {
+  "label": "Bonsai 2 27B PTQ1_0 + MTP \u00b7 bonsai-ada-surgery llama.cpp (46 patches), 262k q8_0, recommended sampling",
+  "arch": "dense 27B ternary",
+  "engine": "llama.cpp-ada-ternary bonsai-q8-product (5251968)",
+  "quant": "PTQ1_0"
+ }
+}

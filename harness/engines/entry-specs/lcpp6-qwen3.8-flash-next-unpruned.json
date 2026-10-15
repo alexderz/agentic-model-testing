@@ -1,0 +1,76 @@
+{
+ "schema": 1,
+ "generated": "2026-10-10T00:12:31-05:00",
+ "cmd_sha256": "6f2ab017307fe36415f7187806527615fef665acf9d48adcde510fecf247682a",
+ "model_meta": "/home/operator/ai/models/llm/qwen3.8-flash-next-unpruned/bakeoff-model.json",
+ "model_file": "/home/operator/ai/models/llm/qwen3.8-flash-next-unpruned/IQ3_S/Qwen3.8-Flash-Next-GSQ-RCO-IQ3_S-00001-of-00002.gguf",
+ "engine": "llama.cpp",
+ "engine_version": "0.6",
+ "served_context": 211968,
+ "parallel": null,
+ "kv_type": "f16",
+ "thinking": {
+  "default_on": true,
+  "server_budget": 24000,
+  "request_field": "thinking_budget_tokens",
+  "budget_tokens": null
+ },
+ "sampling": {
+  "top_k": 20.0,
+  "top_p": 0.95,
+  "temp": 1.0
+ },
+ "spec_decode": null,
+ "observability": {
+  "metrics": true,
+  "slots_debug": true,
+  "prompt_tokens_details": null,
+  "force_include_usage": null
+ },
+ "storage": "nas",
+ "multi_agent_ok": true,
+ "placement": {
+  "gpu_layers": 999,
+  "experts_on_cpu": 39,
+  "mmap": false,
+  "ram_pinned_gb": null
+ },
+ "serving": {
+  "port": 8096,
+  "proxy": "http://llamacpp6:8096",
+  "container_name": "llamacpp6",
+  "max_num_seqs": null,
+  "batch_tokens": null,
+  "prefix_caching": true,
+  "flash_attn": true
+ },
+ "speculative": {
+  "type": "none",
+  "draft_model": null,
+  "n_max": null,
+  "acceptance_note": null
+ },
+ "templates": {
+  "chat_template_kwargs": {
+   "enable_thinking": true
+  },
+  "reasoning_parser": null,
+  "tool_call_parser": null,
+  "reasoning_start": null,
+  "reasoning_end": null
+ },
+ "endpoints": {
+  "health": "/health",
+  "metrics": "/metrics",
+  "slots": "/slots",
+  "props": "/props"
+ },
+ "role": {
+  "daily_driver": null,
+  "bakeoff_status": "untested"
+ },
+ "model_id": "lcpp6-qwen3.8-flash-next-unpruned",
+ "report": {
+  "label": "Flash-Next (unpruned) \u00b7 llama.cpp 0.6, experts in RAM"
+ }
+}

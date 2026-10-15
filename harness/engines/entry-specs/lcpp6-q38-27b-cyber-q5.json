@@ -1,0 +1,78 @@
+{
+ "schema": 1,
+ "generated": "2026-10-09T17:25:27-05:00",
+ "cmd_sha256": "7c31dd3e902eddcafde4b592470f40c1e0d6962c4b9b8ad1e8ee695a4bd63e46",
+ "model_meta": "/home/operator/ai/models/llm/q38-27b-cyber-q5/bakeoff-model.json",
+ "model_file": "/home/operator/ai/models/llm/q38-27b-cyber-q5/Qwen3.8-27B-Uncensored-Cyber-Q5_K_M.gguf",
+ "engine": "llama.cpp",
+ "engine_version": "0.6",
+ "served_context": 81920,
+ "parallel": null,
+ "kv_type": "q8_0",
+ "thinking": {
+  "default_on": true,
+  "server_budget": 14480,
+  "request_field": "thinking_budget_tokens",
+  "budget_tokens": null
+ },
+ "sampling": {
+  "temp": 1.0,
+  "top_p": 0.95,
+  "top_k": 20.0,
+  "min_p": 0.0
+ },
+ "spec_decode": null,
+ "observability": {
+  "metrics": true,
+  "slots_debug": true,
+  "prompt_tokens_details": null,
+  "force_include_usage": null
+ },
+ "storage": "nas",
+ "multi_agent_ok": true,
+ "placement": {
+  "gpu_layers": "all (-ngl 999, -fit off)",
+  "experts_on_cpu": 0,
+  "mmap": true,
+  "ram_pinned_gb": null
+ },
+ "serving": {
+  "port": 8096,
+  "proxy": "http://llamacpp6:8096",
+  "container_name": "llamacpp6",
+  "max_num_seqs": null,
+  "batch_tokens": null,
+  "prefix_caching": true,
+  "flash_attn": true
+ },
+ "speculative": {
+  "type": "none",
+  "draft_model": null,
+  "n_max": null,
+  "acceptance_note": null
+ },
+ "templates": {
+  "chat_template_kwargs": {
+   "enable_thinking": true
+  },
+  "reasoning_parser": null,
+  "tool_call_parser": null,
+  "reasoning_start": null,
+  "reasoning_end": null
+ },
+ "endpoints": {
+  "health": "/health",
+  "metrics": "/metrics",
+  "slots": "/slots",
+  "props": "/props"
+ },
+ "role": {
+  "daily_driver": null,
+  "bakeoff_status": "untested"
+ },
+ "model_id": "lcpp6-q38-27b-cyber-q5",
+ "report": {
+  "label": "Qwen3.8-27B Cyber (abliterated) Q5_K_M \u00b7 llama.cpp 0.6, all on GPU at 80k, recommended sampling",
+  "note": "the author's own quant (philbert440)"
+ }
+}

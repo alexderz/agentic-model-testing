@@ -1,0 +1,76 @@
+{
+ "schema": 1,
+ "generated": "2026-10-10T00:12:31-05:00",
+ "cmd_sha256": "6e57b8afafa8ddaea86e74d184419a226a200da2ca0aa921540dbc2d7b046a8f",
+ "model_meta": "/home/operator/ai/models/llm/orcasaq2-cyber-27b/bakeoff-model.json",
+ "model_file": "/home/operator/ai/models/llm/orcasaq2-cyber-27b/OrcaSAQ-2-27B-Uncensored.gguf",
+ "engine": "llama.cpp",
+ "engine_version": "0.6",
+ "served_context": 94208,
+ "parallel": null,
+ "kv_type": "q8_0",
+ "thinking": {
+  "default_on": true,
+  "server_budget": 13456,
+  "request_field": "thinking_budget_tokens",
+  "budget_tokens": null
+ },
+ "sampling": {
+  "top_k": 20.0,
+  "top_p": 0.95,
+  "temp": 1.0
+ },
+ "spec_decode": "draft-dflash,ngram-mod",
+ "observability": {
+  "metrics": true,
+  "slots_debug": true,
+  "prompt_tokens_details": null,
+  "force_include_usage": null
+ },
+ "storage": "nas",
+ "multi_agent_ok": true,
+ "placement": {
+  "gpu_layers": 999,
+  "experts_on_cpu": 0,
+  "mmap": true,
+  "ram_pinned_gb": null
+ },
+ "serving": {
+  "port": 8096,
+  "proxy": "http://llamacpp6:8096",
+  "container_name": "llamacpp6",
+  "max_num_seqs": null,
+  "batch_tokens": null,
+  "prefix_caching": true,
+  "flash_attn": true
+ },
+ "speculative": {
+  "type": "draft-dflash,ngram-mod",
+  "draft_model": "/models/llm/orcasaq2-cyber-27b/dflash2/Qwen3.8-27B-DFlash2-Q8_0.gguf",
+  "n_max": 4,
+  "acceptance_note": null
+ },
+ "templates": {
+  "chat_template_kwargs": {
+   "enable_thinking": true
+  },
+  "reasoning_parser": null,
+  "tool_call_parser": null,
+  "reasoning_start": null,
+  "reasoning_end": null
+ },
+ "endpoints": {
+  "health": "/health",
+  "metrics": "/metrics",
+  "slots": "/slots",
+  "props": "/props"
+ },
+ "role": {
+  "daily_driver": null,
+  "bakeoff_status": "pass"
+ },
+ "model_id": "lcpp6-orcasaq2-cyber-27b",
+ "report": {
+  "label": "OrcaSAQ-2-Cyber-27B \u00b7 llama.cpp 0.6, DFlash2 + n-gram drafts"
+ }
+}

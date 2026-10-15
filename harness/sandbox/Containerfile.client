@@ -1,0 +1,91 @@
+# evalbox client image (service `client`): the bake-off agent image (../Containerfile.agent, kept in
+# step by hand) plus a full OS upgrade. Separate so rebuilding it never disturbs a running bake-off.
+# Sandbox for running the AGENT, not just for grading its output.
+#
+# The original harness containerised grading because generated code is
+# unreviewed, while the agent that writes that code ran on the host as the
+# user. That is backwards: the agent is the active party. It ran `pip install`
+# 14 times with the user's permissions, created a venv in their home, and
+# installed a package into ~/.local. An audit found nothing malicious, but
+# nothing prevented it either.
+#
+# This image runs Pi or Open Code with:
+#   * no host filesystem beyond the mounted work dir
+#   * a non-root user with no sudo
+#   * network reachable only where the caller allows (inference + data endpoint)
+#   * package installs confined to the container, discarded with it
+FROM docker.io/library/python:3.12-slim
+# evalbox: all OS packages upgraded at build time; the preflight rebuilds this image when it is stale
+# or a scan finds fixable vulnerabilities.
+RUN apt-get update && apt-get -y upgrade && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      curl ca-certificates git jq build-essential pkg-config libssl-dev procps \
+    && rm -rf /var/lib/apt/lists/*
+
+# Node for the agents themselves (Pi and Open Code are both npm-distributed)
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+    && apt-get install -y --no-install-recommends nodejs \
+    && rm -rf /var/lib/apt/lists/*
+
+# Rust, for suites that ask for a Cargo project
+ENV RUSTUP_HOME=/opt/rustup CARGO_HOME=/opt/cargo
+RUN curl -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain stable \
+    && chmod -R a+rwX /opt/cargo /opt/rustup
+ENV PATH=/opt/cargo/bin:$PATH
+# rust-analyzer so opencode's lsp tool has a server to talk to. Without it
+# the tool is advertised and inert, which is worse than not offering it.
+RUN rustup component add rust-analyzer && chmod -R a+rwX /opt/rustup /opt/cargo
+
+# Common Python libraries preinstalled, so a model does not need to reach the
+# index for ordinary work. It still can, inside the container, and that is
+# contained: the layer is thrown away when the run ends.
+RUN pip install --no-cache-dir requests pytest httpx aiohttp click rich tabulate \
+    pyyaml pydantic python-dateutil websockets typer colorama texttable \
+    urllib3 certifi jinja2 pytest-timeout responses requests-mock psycopg2-binary
+
+# The agents themselves. Pinned so a cohort runs one known version; bump
+# deliberately between cohorts rather than silently mid-run.
+# Exact package names, verified against the host install -- NOT guessed. The
+# first attempt used "pi@0.87.1"; npm does have a package called "pi" (an
+# unrelated one at 2.0.5), so a looser spec would have installed the wrong
+# thing and run it as the agent.
+# npm itself pinned to 11.21.0: the 10.9.9 that ships with Node 22 bundles pacote, sigstore,
+# ip-address and picomatch with HIGH CVEs that 11.21.0 fixes or no longer carries.
+RUN npm install -g --no-fund --no-audit npm@11.21.0 && npm cache clean --force
+RUN npm install -g --no-fund --no-audit \
+      @earendil-works/pi-coding-agent@0.87.1 opencode-ai@1.18.32 \
+    && npm cache clean --force
+# Bundled npm dependencies with HIGH CVEs that no npm or Pi release ships fixed yet (2026-10-07):
+# brace-expansion (npm 2.0.2, Pi 5.0.9) and undici (npm 6.28.0). Swap each copy for the fixed
+# release of the same major; dependencies and entry points are unchanged, so npm, Pi and OpenCode
+# stay at their pinned versions. The version check at the end fails the build if a swap broke one.
+RUN fix() { n=$1; v=$2; d=$3; \
+      case "$n@$v" in brace-expansion@1.*) t=1.1.21;; brace-expansion@2.*) t=2.1.7;; brace-expansion@3.*) t=3.0.9;; \
+        brace-expansion@5.*) t=5.0.12;; undici@6.*) t=6.29.0;; undici@7.*) t=7.30.0;; undici@8.*) return 0;; \
+        *) echo "unexpected $n $v in $d"; return 1;; esac; \
+      [ "$v" = "$t" ] && return 0; \
+      (cd /tmp && npm pack -q "$n@$t" >/dev/null) && rm -rf "$d" && mkdir "$d" \
+      && tar -xzf "/tmp/$n-$t.tgz" -C "$d" --strip-components=1 && rm "/tmp/$n-$t.tgz" && echo "patched $d: $v -> $t"; }; \
+    for n in brace-expansion undici; do \
+      for d in $(find /usr/lib/node_modules -type d -path "*node_modules/$n"); do \
+        fix "$n" "$(node -p "require('$d/package.json').version")" "$d" || exit 1; done; done \
+    && npm cache clean --force && npm --version && pi --version && opencode --version
+
+# nftables so the sandbox can enforce its own egress policy, and setpriv so the
+# entrypoint can drop the capability again before the agent ever runs. Rootless
+# podman maps container-root to the invoking user, so this costs no host
+# privilege: "root" here is still an unprivileged account on the host.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      nftables iproute2 iputils-ping dnsutils \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN useradd -m -u 1000 agent \
+    && mkdir -p /home/agent/.config/opencode \
+    && chmod -R a+rX /home/agent
+# /home/agent must be traversable by the container's root user, which has
+# NO CAP_DAC_OVERRIDE once net-policy.sh drops capabilities. Default 0700
+# made the mounted opencode config unreadable and the model unresolvable.
+USER agent
+WORKDIR /work
+ENV HOME=/home/agent

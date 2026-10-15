@@ -1,0 +1,10 @@
+{
+ "schema": 1,
+ "model_id": "maya-glm-5.3-flash-huihui",
+ "model_meta": "/home/operator/ai/models/llm/glm-5.3-flash-huihui-abliterated/bakeoff-model.json",
+ "engine": "maya",
+ "engine_version": "maya-1.3.0",
+ "report": {
+  "label": "GLM-5.3-Flash Huihui abliterated \u00b7 Maya, experts in VRAM and RAM"
+ }
+}

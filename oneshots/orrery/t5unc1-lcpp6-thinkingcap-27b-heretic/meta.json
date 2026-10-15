@@ -1,0 +1,45 @@
+{
+ "case": "t5unc1-lcpp6-thinkingcap-27b-heretic",
+ "model": "lcpp6-thinkingcap-27b-heretic",
+ "test": "test5-orrery",
+ "max_tokens": 128000,
+ "timeout_s": 36000,
+ "started": "2026-10-15T05:37:05-0500",
+ "status": "ok",
+ "finish_reason": "stop",
+ "usage": {
+  "completion_tokens": 33256,
+  "prompt_tokens": 101,
+  "total_tokens": 33357,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  }
+ },
+ "timings": {
+  "cache_n": 0,
+  "prompt_n": 101,
+  "prompt_ms": 303.979,
+  "prompt_per_token_ms": 3.0096930693069304,
+  "prompt_per_second": 332.25979426210364,
+  "predicted_n": 33256,
+  "predicted_ms": 879090.552,
+  "predicted_per_token_ms": 26.43483843031123,
+  "predicted_per_second": 37.82886748622456
+ },
+ "static": {
+  "svg_found": true,
+  "parses": true,
+  "bytes": 21003,
+  "animateTransform": 0,
+  "animate": 0,
+  "animateMotion": 0,
+  "keyframes": 4,
+  "script": 0,
+  "prose_chars_outside_svg": 1553
+ },
+ "wall_s": 889.7,
+ "first_token_s": 10.6,
+ "tok_s": 37.8,
+ "reply_chars": 22269,
+ "reasoning_chars": 78710
+}

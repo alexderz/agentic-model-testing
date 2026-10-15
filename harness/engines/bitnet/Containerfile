@@ -1,0 +1,63 @@
+# bitnet.cpp (microsoft/BitNet) CPU server for the bake-off.
+# I2_S kernels are CPU-only (x86 AVX2 here); the repo's gpu/ path is a PyTorch W2A8
+# GEMV demo for the 2B bf16 checkpoint with no server, so this image is CPU-only.
+# llama-server, llama-cli, llama-embedding and llama-bench come from the pinned
+# llama.cpp fork in 3rdparty/llama.cpp (isHuangXin, branch
+# release-bitnet-embedding-0.6b-270m), which carries the I2_S type and the BitNet
+# embedding architectures.
+#
+# Build (Titan, fenced):  see build.sh beside this file.
+ARG BASE=docker.io/library/ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55
+
+FROM ${BASE} AS build
+ARG BITNET_COMMIT=0b341e582afbf9e1011f24744b554c96a3477eb5
+ARG LLAMA_FORK_COMMIT=390c307752ab78fd8189f359d6954c9ba1be74af
+ARG JOBS=6
+RUN apt-get update \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+      ca-certificates git clang cmake make \
+ && rm -rf /var/lib/apt/lists/*
+WORKDIR /src
+RUN git clone -q https://github.com/microsoft/BitNet.git bitnet \
+ && cd bitnet && git checkout -q ${BITNET_COMMIT} \
+ && git submodule update -q --init --recursive \
+ && test "$(git -C 3rdparty/llama.cpp rev-parse HEAD)" = "${LLAMA_FORK_COMMIT}"
+WORKDIR /src/bitnet
+# Local one-line fix (microsoft/BitNet#588, #602; upstream PR #605 still open on 2026-10-15):
+# the pinned fork builds the BitNet FFN with SiLU, but BitNet-b1.58-2B-4T uses squared ReLU
+# (config.json hidden_act=relu2). Unfixed, the 2B answers "The capital of France is a small
+# city, and ..." (reported perplexity ~100-113 against 17-19). Scoped to arch bitnet-b1.58 with
+# 30 layers (the 2B4T), so 1bitLLM bitnet_b1_58 models (also bitnet-b1.58, SiLU) are unchanged.
+# The test fails the build if the source line is not found exactly once.
+RUN f=3rdparty/llama.cpp/src/models/bitnet.cpp \
+ && test "$(grep -c 'LLM_FFN_SILU, LLM_FFN_PAR, il);' $f)" = 1 \
+ && sed -i 's/LLM_FFN_SILU, LLM_FFN_PAR, il);/(model.arch == LLM_ARCH_BITNET_B158 \&\& model.type == LLM_TYPE_2B) ? LLM_FFN_RELU_SQR : LLM_FFN_SILU, LLM_FFN_PAR, il);/' $f \
+ && test "$(grep -c 'LLM_TYPE_2B) ? LLM_FFN_RELU_SQR : LLM_FFN_SILU, LLM_FFN_PAR, il);' $f)" = 1
+# x86 I2_S path (TL2 off, as setup_env.py does). Titan is a Ryzen 9 5950X: AVX2/FMA/F16C/BMI2,
+# no AVX-512, so set the ISA explicitly instead of GGML_NATIVE. No OpenMP (BitNet's guide
+# builds without it), static binaries, no web UI (no npm, no HF bucket fetch), no OpenSSL.
+RUN cmake -S . -B build \
+      -DCMAKE_BUILD_TYPE=Release \
+      -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ \
+      -DBITNET_X86_TL2=OFF \
+      -DGGML_NATIVE=OFF -DGGML_AVX=ON -DGGML_AVX2=ON -DGGML_FMA=ON -DGGML_F16C=ON -DGGML_BMI2=ON \
+      -DGGML_AVX512=OFF -DGGML_AVX512_VBMI=OFF -DGGML_AVX512_VNNI=OFF -DGGML_AVX512_BF16=OFF -DGGML_AVX_VNNI=OFF \
+      -DGGML_OPENMP=OFF \
+      -DBUILD_SHARED_LIBS=OFF \
+      -DLLAMA_BUILD_COMMON=ON -DLLAMA_BUILD_TOOLS=ON -DLLAMA_BUILD_EXAMPLES=ON -DLLAMA_BUILD_SERVER=ON \
+      -DLLAMA_BUILD_TESTS=OFF -DLLAMA_BUILD_UI=OFF -DLLAMA_USE_PREBUILT_UI=OFF -DLLAMA_OPENSSL=OFF \
+ && cmake --build build -j${JOBS} --target llama-server llama-cli llama-embedding llama-bench \
+ && mkdir -p /out \
+ && cp build/bin/llama-server build/bin/llama-cli build/bin/llama-embedding build/bin/llama-bench /out/ \
+ && printf 'bitnet %s\nllama.cpp-fork %s\npatch relu2-ffn-for-bitnet-b1.58-2B (BitNet#588)\n' "${BITNET_COMMIT}" "${LLAMA_FORK_COMMIT}" > /out/VERSION
+
+FROM ${BASE}
+ARG BITNET_COMMIT=0b341e582afbf9e1011f24744b554c96a3477eb5
+LABEL org.opencontainers.image.source="https://github.com/microsoft/BitNet" \
+      org.opencontainers.image.revision="${BITNET_COMMIT}" \
+      org.opencontainers.image.description="bitnet.cpp CPU llama-server (I2_S) + relu2 FFN fix for 2B4T"
+COPY --from=build /out/ /app/
+WORKDIR /app
+ENV LLAMA_ARG_HOST=0.0.0.0
+EXPOSE 8080
+ENTRYPOINT ["/app/llama-server"]

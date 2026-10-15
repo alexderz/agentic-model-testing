@@ -1,0 +1,60 @@
+  qwen3.8-27b-vllm:
+    name: "Qwen3.8-27B on vLLM (HyperQwen, MTP, 150k)"
+    description: "Patched vLLM 0.30 (syv-ai/HyperQwen e1459c7). Profile D: SPEC=mtp CTX=long. Not llama.cpp."
+    # Container-engine entry, flashnext pattern. Spec approved by Titan's agent 2026-10-03.
+    #   - image pinned by digest, pre-pulled
+    #   - models read-only for serving (prepare/verify run separately, rw);
+    #     the only writable mount is ~/ai/hyperqwen/cache
+    #     (torch.compile / Triton / FlashInfer JIT). Nothing else mounted.
+    #   - no API key, agreed with Titan: reachable only via llama-swap, like flashnext
+    #   - no -p: llama-swap reaches it as hyperqwen:18020 on the llama network
+    #   - settings as -e flags (no secrets): --env-file is read by the podman CLIENT
+    #     inside the llama-swap container, where the host file does not exist
+    #     (first start, 2026-10-03: 'parsing file ... no such file or directory')
+    #   - PREPARE=0 VERIFY=0: preparation and verify.sh run once, separately,
+    #     not on every swap
+    #   - vLLM serves the fixed name qwen3.8-27b; useModelName rewrites it
+    proxy: "http://hyperqwen:18020"
+    checkEndpoint: /health
+    useModelName: qwen3.8-27b
+    cmd: |
+      podman run --name hyperqwen --rm
+      --network llama
+      --shm-size 16g
+      --device nvidia.com/gpu=all
+      --security-opt label=disable
+      --cap-drop ALL
+      --security-opt no-new-privileges
+      --userns=keep-id
+      -v /home/operator/ai/hyperqwen/models:/app/models:ro
+      -v /home/operator/ai/hyperqwen/cache:/cache
+      -e SPEC=mtp -e CTX=long -e PREFIX_CACHE=1
+      -e PREPARE=0 -e VERIFY=0 -e HOST=0.0.0.0 -e PORT=18020
+      -e HOME=/cache -e HF_HUB_OFFLINE=1 -e VLLM_NO_USAGE_STATS=1 -e DO_NOT_TRACK=1
+      ghcr.io/syv-ai/hyperqwen@sha256:34c2e3a408e2a6ec94d3c6434ff14550b4525301f1ad6c06e40e409db1eefd55
+      single
+    cmdStop: /bin/sh -c "podman stop -t 30 hyperqwen || podman rm -f hyperqwen"
+  qwen3.8-27b-vllm-240k:
+    name: "Qwen3.8-27B on vLLM (HyperQwen, DFlash2, 240k KVarN)"
+    description: "Patched vLLM 0.30 (syv-ai/HyperQwen e1459c7). Profile E: SPEC=dflash2 CTX=huge (KVarN 4/2-bit KV). Not llama.cpp."
+    # Same container spec as qwen3.8-27b-vllm; only SPEC/CTX differ. One runs at a time (same --name).
+    proxy: "http://hyperqwen:18020"
+    checkEndpoint: /health
+    useModelName: qwen3.8-27b
+    cmd: |
+      podman run --name hyperqwen --rm
+      --network llama
+      --shm-size 16g
+      --device nvidia.com/gpu=all
+      --security-opt label=disable
+      --cap-drop ALL
+      --security-opt no-new-privileges
+      --userns=keep-id
+      -v /home/operator/ai/hyperqwen/models:/app/models:ro
+      -v /home/operator/ai/hyperqwen/cache:/cache
+      -e SPEC=dflash2 -e CTX=huge -e PREFIX_CACHE=1
+      -e PREPARE=0 -e VERIFY=0 -e HOST=0.0.0.0 -e PORT=18020
+      -e HOME=/cache -e HF_HUB_OFFLINE=1 -e VLLM_NO_USAGE_STATS=1 -e DO_NOT_TRACK=1
+      ghcr.io/syv-ai/hyperqwen@sha256:34c2e3a408e2a6ec94d3c6434ff14550b4525301f1ad6c06e40e409db1eefd55
+      single
+    cmdStop: /bin/sh -c "podman stop -t 30 hyperqwen || podman rm -f hyperqwen"

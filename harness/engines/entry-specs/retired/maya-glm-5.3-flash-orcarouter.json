@@ -1,0 +1,11 @@
+{
+ "schema": 1,
+ "model_id": "maya-glm-5.3-flash-orcarouter",
+ "model_meta": "/home/operator/ai/models/llm/glm-5.3-flash-orcarouter-uncensored/bakeoff-model.json",
+ "engine": "maya",
+ "engine_version": "maya-1.3.0",
+ "report": {
+  "label": "GLM-5.3-Flash Orcarouter Uncensored \u00b7 Maya, experts in VRAM and RAM",
+  "base": "Orcarouter GLM-5.3-Flash Uncensored (GGUF, gated)"
+ }
+}

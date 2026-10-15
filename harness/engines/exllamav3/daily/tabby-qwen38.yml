@@ -1,0 +1,42 @@
+# TabbyAPI configuration of the two exllamav3 llama-swap entries (operator 2026-10-14: "ex+mtp and dflash2 keep").
+# Mounted read-only at /app/config.yml. Each entry picks the drafting mode, the window and the
+# cache through TABBY_* environment variables, which override this file. Paths are inside the container: titan's
+# ~/ai/models is /models. Repo copy: engines/exllamav3/daily/tabby-qwen38.yml; on titan ~/ai/config/exllamav3/.
+network:
+  host: 0.0.0.0            # inside the container; llama-swap reaches it as exllamav3:5000 on the llama network
+  port: 5000
+  disable_auth: true       # no API key, like the vLLM entries: reachable only through llama-swap
+  disable_fetch_requests: true
+  allowed_origins: []
+  web_ui: false
+logging:
+  log_timestamps: true
+model:
+  model_dir: /models/llm/tensorfold-hf/hub/models--turboderp--Qwen3.8-27B-exl3/snapshots
+  model_name: 113cf7ab958054860e43fb7f3063b1af19171095      # branch 4.00bpw
+  max_seq_len: 16384       # set per entry
+  cache_size: 16384        # set per entry
+  cache_mode: FP16         # set per entry
+  vision: false
+  warmup: true             # compile and tune at load, not on the first request
+  reasoning: true          # split <think> ... </think> into reasoning_content
+  reasoning_budget_tokens: 24000   # the bake-off's thinking budget, min(24k, reply cap - 6k); each entry sets its own via TABBY_MODEL_REASONING_BUDGET_TOKENS
+draft_model:
+  draft_mode: disabled     # set per entry: mtp or model
+  draft_model_dir: /models/llm/tensorfold-hf/hub/models--z-lab--Qwen3.8-27B-DFlash2/snapshots
+  draft_model_name: 50307d4c4cde6860d4eee73e2547cd786fe8e8a4
+  draft_cache_mode: FP16
+sampling:
+  # Qwen3.8's recommended sampling (model record) as fallbacks; a request's own values win.
+  temperature:
+    override: 1.0
+    force: false
+  top_k:
+    override: 20
+    force: false
+  top_p:
+    override: 0.95
+    force: false
+  min_p:
+    override: 0.0
+    force: false

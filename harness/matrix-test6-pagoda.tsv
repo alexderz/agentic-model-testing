@@ -1,0 +1,7 @@
+# Test 6 (one-shot voxel pagoda, three.js): the llama-swap entries of the night search of 2026-10-13/14,
+# including the 131k Q4_K_XL + MTP entry that misses the window bar. The exllamav3 setups are not in llama-swap and were not run.
+t6-qwen3.8-27b-vllm	qwen3.8-27b-vllm
+t6-lcpp6-tiel-coder-35b-t06	lcpp6-tiel-coder-35b-t06
+t6-tiel-coder-35b	tiel-coder-35b
+t6-gemma-4-26b-a4b	gemma-4-26b-a4b
+t6-lcpp6-tiel-coder-35b-q4kxl-mtp	lcpp6-tiel-coder-35b-q4kxl-mtp

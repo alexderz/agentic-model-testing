@@ -1,0 +1,26 @@
+[package]
+name = "home-assistant-mcp"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.82"
+description = "Read-only Model Context Protocol (MCP) server that exposes a Home Assistant installation over stdio"
+readme = "README.md"
+keywords = ["mcp", "home-assistant", "model-context-protocol", "stdio"]
+categories = ["command-line-utilities"]
+
+[[bin]]
+name = "ha-mcp"
+path = "src/main.rs"
+
+[lib]
+name = "ha_mcp"
+path = "src/lib.rs"
+
+[dependencies]
+base64 = "0.22"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+ureq = { version = "3.4", default-features = false, features = ["rustls"] }
+
+[profile.release]
+strip = true

@@ -1,0 +1,15 @@
+{"why": "Strata 0.1.44.1 beside 0.1.42 for the Flash-Next speed A/B (operator 2026-10-15, Model Master 2). Applied by queue-new.d/40-strata44-ab.sh with tools/add_clone_entry.py.",
+ "entries": [{
+  "src": "strata42-flash-next-pcie",
+  "new": "strata44-flash-next-pcie",
+  "image": "7d80330ee16ec41144609ccf3ca4819d7a0cf00fd80e7a98640d48dd6035cb8d",
+  "name": "Qwen3.8-Flash-Next IQ3_S (unpruned) on Strata v0.1.44.1, old PCIe share",
+  "description": "Strata (github Niko1221/Strata v0.1.44.1 = 296b59d2, image 7d80330ee16e), config flash-next-44-pcie.json: the same as strata42-flash-next-pcie (release defaults plus STRATA_PCIE_FRAC_DEFAULT=old) with its own log. A/B against 0.1.42. Model Master bakeoff.",
+  "subs": [["57b0b11f8bd6469a8a71197a7643cc9e1bec15994c0968c5825b8074a1924f78", "7d80330ee16ec41144609ccf3ca4819d7a0cf00fd80e7a98640d48dd6035cb8d"],
+           ["--config /data/configs/flash-next-42-pcie.json", "--config /data/configs/flash-next-44-pcie.json"]],
+  "config": {"dir": "/home/operator/ai/strata/data/configs", "src": "flash-next-42-pcie.json",
+             "new": "flash-next-44-pcie.json", "set": {"log": "/logs/flash-next-44-pcie.log"}},
+  "spec": {"engine_version": "strata-0.1.44.1",
+           "role": {"daily_driver": null, "bakeoff_status": "untested"},
+           "report": {"label": "Flash-Next · Strata 0.1.44.1, old PCIe share, 262k context"}}
+ }]}

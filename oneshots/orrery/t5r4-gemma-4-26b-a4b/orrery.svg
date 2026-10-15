@@ -1,0 +1,161 @@
+<svg viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg" style="background: #1a120b; font-family: serif;">
+  <defs>
+    <!-- Brass/Gold Gradients -->
+    <radialGradient id="brass" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#f9d976" />
+      <stop offset="50%" stop-color="#d4af37" />
+      <stop offset="100%" stop-color="#7a5c12" />
+    </radialGradient>
+    
+    <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fff7e6" />
+      <stop offset="40%" stop-color="#ffcc00" />
+      <stop offset="100%" stop-color="#ff8c00" />
+    </radialGradient>
+
+    <!-- Gear Tooth Pattern -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Planet Shadow/3D Effect -->
+    <!-- We use a radial gradient that is offset to simulate light coming from the center -->
+    <radialGradient id="earthShadow" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.4)" />
+      <stop offset="40%" stop-color="rgba(255,255,255,0)" />
+      <stop offset="100%" stop-color="rgba(0,0,0,0.8)" />
+    </radialGradient>
+    
+    <radialGradient id="marsShadow" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="rgba(255,200,200,0.4)" />
+      <stop offset="40%" stop-color="rgba(255,200,200,0)" />
+      <stop offset="100%" stop-color="rgba(50,0,0,0.8)" />
+    </radialGradient>
+
+    <radialGradient id="jupiterShadow" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.4)" />
+      <stop offset="40%" stop-color="rgba(255,255,255,0)" />
+      <stop offset="100%" stop-color="rgba(40,20,0,0.8)" />
+    </radialGradient>
+  </defs>
+
+  <!-- Background Texture/Vignette -->
+  <rect width="800" height="800" fill="#1a120b" />
+  <circle cx="400" cy="400" r="400" fill="none" stroke="#3d2b1f" stroke-width="5" opacity="0.5"/>
+
+  <!-- Orbits (The brass rings) -->
+  <g stroke="#5c4033" stroke-width="1" fill="none" opacity="0.6">
+    <circle cx="400" cy="400" r="60" /> <!-- Mercury -->
+    <circle cx="400" cy="400" r="100" /> <!-- Venus -->
+    <circle cx="400" cy="400" r="150" /> <!-- Earth -->
+    <circle cx="400" cy="400" r="200" /> <!-- Mars -->
+    <circle cx="400" cy="400" r="270" /> <!-- Jupiter -->
+    <circle cx="400" cy="400" r="340" /> <!-- Saturn -->
+  </g>
+
+  <!-- Decorative Gearwork in the center -->
+  <g transform="translate(400, 400)">
+    <!-- Main Sun Gear -->
+    <g id="sunGear">
+      <circle r="55" fill="url(#brass)" stroke="#3d2b1f" stroke-width="2"/>
+      <circle r="45" fill="none" stroke="#3d2b1f" stroke-width="1" stroke-dasharray="2,4" />
+      <path d="M-55,0 L-45,0 L-40,-10 L-35,0 L-25,-10 L-20,0 L-10,-10 L-5,0 L5,-10 L10,0 L20,-10 L25,0 L35,-10 L40,0 L45,-10 L55,0" fill="none" stroke="#3d2b1f" stroke-width="2" />
+      <path d="M-55,0 L-45,0 L-40,10 L-35,0 L-25,10 L-20,0 L-10,10 L-5,0 L5,10 L10,0 L20,10 L25,0 L35,10 L40,0 L45,10 L55,0" fill="none" stroke="#3d2b1f" stroke-width="2" />
+      
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="20s" repeatCount="indefinite" />
+    </g>
+    
+    <!-- Smaller driving gears -->
+    <g opacity="0.7">
+       <circle r="25" fill="url(#brass)" stroke="#3d2b1f" />
+       <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="5s" repeatCount="indefinite" />
+    </g>
+  </g>
+
+  <!-- The Sun -->
+  <g filter="url(#glow)">
+    <circle cx="400" cy="400" r="45" fill="url(#sunGlow)" />
+    <circle cx="400" cy="400" r="40" fill="none" stroke="#ff8c00" stroke-width="2" opacity="0.5">
+       <animate attributeName="r" values="40;48;40" dur="4s" repeatCount="indefinite" />
+    </circle>
+  </g>
+
+  <!-- ORBITAL PLANETS -->
+  <!-- Each planet is wrapped in an Orbit Group that rotates around the center -->
+  
+  <!-- MERCURY: Fast -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="4s" repeatCount="indefinite" />
+    <g transform="translate(400, 340)">
+       <circle r="6" fill="#A5A5A5">
+          <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="2s" repeatCount="indefinite" />
+       </circle>
+       <circle r="6" fill="url(#earthShadow)" pointer-events="none" />
+    </g>
+  </g>
+
+  <!-- VENUS: Fast -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="7s" repeatCount="indefinite" />
+    <g transform="translate(400, 300)">
+       <circle r="10" fill="#E3BB76">
+          <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="4s" repeatCount="indefinite" />
+       </circle>
+       <circle r="10" fill="url(#earthShadow)" pointer-events="none" />
+    </g>
+  </g>
+
+  <!-- EARTH: Medium -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="12s" repeatCount="indefinite" />
+    <g transform="translate(400, 250)">
+       <circle r="14" fill="#2b65ec">
+          <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="6s" repeatCount="indefinite" />
+       </circle>
+       <circle r="14" fill="url(#earthShadow)" pointer-events="none" />
+    </g>
+  </g>
+
+  <!-- MARS: Medium-Slow -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="18s" repeatCount="indefinite" />
+    <g transform="translate(400, 200)">
+       <circle r="11" fill="#e27b58">
+          <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="8s" repeatCount="indefinite" />
+       </circle>
+       <circle r="11" fill="url(#marsShadow)" pointer-events="none" />
+    </g>
+  </g>
+
+  <!-- JUPITER: Slow -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="35s" repeatCount="indefinite" />
+    <g transform="translate(400, 130)">
+       <circle r="25" fill="#d39c7e">
+          <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="15s" repeatCount="indefinite" />
+       </circle>
+       <circle r="25" fill="url(#jupiterShadow)" pointer-events="none" />
+    </g>
+  </g>
+
+  <!-- SATURN: Very Slow -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="50s" repeatCount="indefinite" />
+    <g transform="translate(400, 60)">
+       <!-- Saturn's Rings -->
+       <ellipse cx="400" cy="60" rx="45" ry="15" fill="none" stroke="#c5a059" stroke-width="4" opacity="0.7" transform="rotate(-15, 400, 60)" />
+       <!-- Saturn's Body -->
+       <circle r="20" fill="#e4d5b7">
+          <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="25s" repeatCount="indefinite" />
+       </circle>
+       <circle r="20" fill="url(#earthShadow)" pointer-events="none" />
+    </g>
+  </g>
+
+  <!-- Frame Decoration -->
+  <rect x="10" y="10" width="780" height="780" fill="none" stroke="#d4af37" stroke-width="4" rx="10" opacity="0.3" />
+  <text x="400" y="760" fill="#d4af37" font-size="18" text-anchor="middle" letter-spacing="5" opacity="0.5">MECHANICAL ORRERY</text>
+</svg>

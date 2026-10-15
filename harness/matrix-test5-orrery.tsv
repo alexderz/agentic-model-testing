@@ -1,0 +1,16 @@
+# Test 5 (one-shot orrery SVG): the focus entry, every model the report recommends, and the daily drivers.
+t5-lcpp6-tiel-coder-35b-q4kxl	lcpp6-tiel-coder-35b-q4kxl
+t5-flashnext	flashnext
+t5-qwen3.8-27b-vllm	qwen3.8-27b-vllm
+t5-lcpp6-orcarouter-fn-uncensored	lcpp6-orcarouter-fn-uncensored
+t5-qwen3.8-27b-uncensored-vllm	qwen3.8-27b-uncensored-vllm
+t5-orcasaq2-cyber-27b	orcasaq2-cyber-27b
+t5-strata-swift15	strata-swift15
+t5-lcpp6-flashnext-heretic2	lcpp6-flashnext-heretic2
+t5-cyber-tiel-coder-35b	cyber-tiel-coder-35b
+t5-tiel-coder-35b	tiel-coder-35b
+t5-qwen3.6-27b	qwen3.6-27b
+t5-gemma-4-31b	gemma-4-31b
+t5-gemma-4-26b-a4b-vllm	gemma-4-26b-a4b-vllm
+t5-kolibri-1	kolibri-1
+t5-maya-glm-5.3-flash	maya-glm-5.3-flash

@@ -1,0 +1,55 @@
+<svg width="46" height="24" viewBox="0 0 46 24" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" fill="none" stroke="#d3ab58" stroke-dasharray="2.3 2"/>
+      <circle cx="12" cy="12" r="4.5" fill="#e8b54c"/>
+      <circle cx="33" cy="12" r="7" fill="none" stroke="#d3ab58" stroke-dasharray="2 2"/>
+      <circle cx="33" cy="12" r="3" fill="#c89a44"/>
+    </svg>
+    <h1><span class="row1">Clockwork</span><span class="row2"><em>Orrery</em></span></h1>
+    <p class="sub">Terra · Venus · Mercurius · Mars · Jovis · Saturnus</p>
+
+    <dl class="spec">
+      <div><dt>scale</dt><dd><i>1 s ≈ 4.31 d</i> — Earth's year = 12 s</dd></div>
+      <div><dt>orbits</dt><dd>true sidereal periods, 87.97 d → 10 759 d</dd></div>
+      <div><dt>train</dt><dd>6 pinions <i>10–25 T</i>, 6 wheels <i>41–127 T</i>, sun crown <i>41 T</i></dd></div>
+      <div><dt>face</dt><dd>each planet is tidally locked — the brass-shade terminator sweeps once per orbit</dd></div>
+      <div><dt>modulus</dt><dd>pinion 0.85 · wheel 1.90 — ratio <i>2.24</i></dd></div>
+    </dl>
+
+    <p class="hint">
+      <span class="k">space</span> run / rest &nbsp;
+      <span class="k">1</span><span class="k">2</span><span class="k">3</span> time scale &nbsp;
+      hover for the sun's <b>face</b>
+    </p>
+  </section>
+
+  <section class="stage">
+    <svg class="plate" id="plate" viewBox="0 0 780 780" role="img"
+         aria-label="Animated brass clockwork orrery: six planets orbit a brass sun at true relative speeds, driven by a six-gear train; each planet's face sweeps a day-night terminator.">
+      <title>Clockwork orrery</title>
+      <defs id="defs"></defs>
+
+      <!-- frame -->
+      <g id="frame">
+        <rect x="1.5" y="1.5" width="777" height="777" rx="26" fill="none" stroke="#6b4e28" stroke-width="3"/>
+        <rect x="8" y="8" width="764" height="764" rx="20" fill="#191410" stroke="url(#gframe)" stroke-width="14"/>
+        <rect x="17" y="17" width="746" height="746" rx="14" fill="url(#gpanel)" stroke="#332413" stroke-width="1"/>
+        <circle cx="390" cy="390" r="337" fill="none" stroke="#d3ab58" stroke-width="1" opacity=".12" stroke-dasharray="2 5"/>
+        <circle cx="390" cy="390" r="352" fill="none" stroke="#d3ab58" stroke-width="2.5" opacity=".35"/>
+        <g id="screws"></g>
+        <g font-family="Cormorant Garamond,serif" fill="#d9b871">
+          <text x="390" y="57" text-anchor="middle" font-size="19" letter-spacing="4">ORRERY N° 7</text>
+          <text x="390" y="75" text-anchor="middle" font-size="10.5" letter-spacing="3" fill="#b89a5f">TERRA · VENVS · MERCVRIVS · MARS · IOVIS · SATVRNVS</text>
+          <text x="390" y="739" text-anchor="middle" font-size="11" letter-spacing="2" fill="#b89a5f">A.D. 1652 — 1 s ≈ 4.31 dies</text>
+          <text x="390" y="756" text-anchor="middle" font-size="9" letter-spacing="2" fill="#8f7443">H. BRASSWORK · LOND.</text>
+          <text x="36" y="46" font-size="12" letter-spacing="2" fill="#b89a5f">№ 07</text>
+          <path d="M722 40 l10 6 -10 6" fill="none" stroke="#b89a5f" stroke-width="1.4"/>
+          <circle cx="744" cy="46" r="2.4" fill="#d3ab58"/>
+        </g>
+      </g>
+
+      <g id="gears"></g>
+      <g id="spokes"></g>
+      <g id="rings"></g>
+      <g id="planets"></g>
+      <g id="sun"></g>
+    </svg>

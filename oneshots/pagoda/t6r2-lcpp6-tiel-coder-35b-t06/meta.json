@@ -1,0 +1,47 @@
+{
+ "case": "t6r2-lcpp6-tiel-coder-35b-t06",
+ "model": "lcpp6-tiel-coder-35b-t06",
+ "test": "test6-pagoda",
+ "max_tokens": 32000,
+ "started": "2026-10-14T00:36:03-0500",
+ "status": "ok",
+ "finish_reason": "stop",
+ "usage": {
+  "completion_tokens": 13634,
+  "prompt_tokens": 333,
+  "total_tokens": 13967,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  }
+ },
+ "timings": {
+  "cache_n": 0,
+  "prompt_n": 333,
+  "prompt_ms": 302.38,
+  "prompt_per_token_ms": 0.9080480480480481,
+  "prompt_per_second": 1101.2633110655468,
+  "predicted_n": 13634,
+  "predicted_ms": 93947.822,
+  "predicted_per_token_ms": 6.891206777671826,
+  "predicted_per_second": 145.11246466150115
+ },
+ "static": {
+  "html_found": true,
+  "bytes": 9878,
+  "complete": true,
+  "three_module": true,
+  "importmap": true,
+  "umd_three": false,
+  "external_urls": [
+   "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js"
+  ],
+  "boxes": 2,
+  "instanced": false,
+  "prose_chars_outside_html": 11
+ },
+ "wall_s": 98.5,
+ "first_token_s": 4.6,
+ "tok_s": 145.1,
+ "reply_chars": 9888,
+ "reasoning_chars": 27177
+}

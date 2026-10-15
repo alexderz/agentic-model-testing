@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+# Cooperative lease on Titan's single 3090.
+#
+# llama-swap arbitrates between ITS OWN models, and knows nothing about a
+# process started outside it. A System One runtime holding 8 GB is invisible to
+# llama-swap, which will still try to load a 21 GB model and OOM -- and that
+# reads as a broken model entry, not as contention. This is the shared signal
+# both sides check first.
+#
+#   gpu-lease acquire <holder> [reason]   # fails if someone else holds it
+#   gpu-lease release <holder>
+#   gpu-lease status
+#   gpu-lease wait <holder> [seconds]     # block until free, then acquire
+#
+# Advisory, not enforced: it only works because both sides check. Priority
+# order is set by the operator, not by this script -- eval work yields to real work.
+set -uo pipefail
+LEASE="${GPU_LEASE_FILE:-/tmp/titan-gpu.lease}"
+STALE_AFTER="${GPU_LEASE_STALE:-21600}"   # 6h; a forgotten lease must not wedge the box
+SWAP_ADMIN="${SWAP_ADMIN:-http://127.0.0.1:8080}"
+
+now() { date +%s; }
+read_lease() { [ -f "$LEASE" ] && cat "$LEASE" 2>/dev/null; }
+holder_of()  { read_lease | sed -n '1p'; }
+ts_of()      { read_lease | sed -n '2p'; }
+reason_of()  { read_lease | sed -n '3,$p'; }
+
+expired() {
+  local t; t=$(ts_of); [ -z "$t" ] && return 0
+  [ $(( $(now) - t )) -ge "$STALE_AFTER" ]
+}
+
+vram() { nvidia-smi --query-gpu=memory.used,memory.total --format=csv,noheader 2>/dev/null; }
+
+case "${1:-status}" in
+  acquire|wait)
+    who="${2:?usage: gpu-lease $1 <holder> [reason]}"; shift 2 || true
+    reason="${*:-unspecified}"
+    deadline=$(( $(now) + ${GPU_LEASE_WAIT:-0} ))
+    [ "${1:-}" = "" ] || true
+    while :; do
+      cur=$(holder_of)
+      if [ -z "$cur" ] || [ "$cur" = "$who" ] || expired; then
+        printf '%s\n%s\n%s\n' "$who" "$(now)" "$reason" > "$LEASE"
+        # Free llama-swap so the new holder starts against an empty card --
+        # UNLESS the model we are about to use is the one already loaded or
+        # loading. Unloading it mid-start aborts the load ("upstream command
+        # exited prematurely") and the next request gets a 500, which reads as
+        # "the model failed to load" when in fact we killed it ourselves.
+        keep="${GPU_LEASE_KEEP_MODEL:-}"
+        resident=$(curl -s -m 8 "${SWAP_ADMIN%:*}:8081/running" 2>/dev/null \
+                   | grep -o '"model":"[^"]*"' | head -1 | cut -d'"' -f4)
+        if [ -n "$keep" ] && [ "$keep" = "$resident" ]; then
+          echo "  keeping $resident loaded (GPU_LEASE_KEEP_MODEL)"
+        else
+          curl -s -m 20 "$SWAP_ADMIN/unload" >/dev/null 2>&1 || true
+        fi
+        echo "acquired by $who: $reason"
+        echo "  VRAM now: $(vram)"
+        exit 0
+      fi
+      if [ "$1" != "wait" ] && [ "$(now)" -ge "$deadline" ]; then
+        echo "HELD by $cur since $(date -d "@$(ts_of)" '+%H:%M' 2>/dev/null): $(reason_of)" >&2
+        exit 1
+      fi
+      sleep 20
+    done
+    ;;
+  release)
+    who="${2:?usage: gpu-lease release <holder>}"
+    cur=$(holder_of)
+    if [ -z "$cur" ]; then echo "not held"; exit 0; fi
+    if [ "$cur" != "$who" ]; then
+      echo "held by $cur, not $who -- refusing to release someone else's lease" >&2; exit 1
+    fi
+    rm -f "$LEASE"; echo "released by $who"
+    ;;
+  status)
+    cur=$(holder_of)
+    if [ -z "$cur" ]; then
+      echo "FREE"
+    elif expired; then
+      echo "STALE (was $cur, $(reason_of)) -- treat as free"
+    else
+      echo "HELD by $cur since $(date -d "@$(ts_of)" '+%Y-%m-%d %H:%M' 2>/dev/null)"
+      echo "  reason: $(reason_of)"
+    fi
+    echo "  VRAM: $(vram)"
+    ;;
+  *) echo "usage: gpu-lease {acquire|wait|release|status} <holder> [reason]" >&2; exit 2;;
+esac

@@ -1,0 +1,27 @@
+# TabbyAPI configuration of the exllamav3 arm. Mounted read-only at /app/config.yml by run.sh, which
+# picks the weights and the drafting mode through TABBY_* environment variables (they override this file).
+# Paths are inside the container: titan's ~/ai/models is /models.
+network:
+  host: 0.0.0.0            # inside the container only; run.sh publishes the port on titan's loopback
+  port: 5000
+  disable_auth: true       # loopback only, started by hand for a measurement
+  disable_fetch_requests: true
+  allowed_origins: []
+  web_ui: false
+logging:
+  log_timestamps: true
+model:
+  model_dir: /models/llm/tensorfold-hf/hub/models--turboderp--Qwen3.8-27B-exl3/snapshots
+  model_name: 113cf7ab958054860e43fb7f3063b1af19171095      # branch 4.00bpw
+  max_seq_len: 16384
+  cache_size: 16384
+  cache_mode: FP16
+  vision: false
+  warmup: true             # compile and tune at load, not on the first measured request
+draft_model:
+  draft_mode: model
+  draft_model_dir: /models/llm/tensorfold-hf/hub/models--z-lab--Qwen3.8-27B-DFlash2/snapshots
+  draft_model_name: 50307d4c4cde6860d4eee73e2547cd786fe8e8a4
+  draft_cache_mode: FP16
+sampling:
+  override_preset:         # no fallback sampler values; the benchmark sends temperature 0

@@ -1,0 +1,67 @@
+{
+ "schema": 1,
+ "generated": "2026-10-09T08:42:14-05:00",
+ "cmd_sha256": "4c8c0cf3703d06b08d4d04290893f438fbb73e27a6cee306f1a110289f21508d",
+ "model_meta": "/home/operator/ai/models/llm/qwen3-4b-instruct/bakeoff-model.json",
+ "model_file": "/home/operator/ai/models/llm/qwen3-4b-instruct/Qwen3-4B-Instruct-2507-Q8_0.gguf",
+ "engine": "llama.cpp",
+ "engine_version": "0.4-native",
+ "served_context": 131072,
+ "parallel": null,
+ "kv_type": "q8_0",
+ "thinking": {
+  "default_on": null,
+  "server_budget": null,
+  "request_field": null,
+  "budget_tokens": null
+ },
+ "sampling": {},
+ "spec_decode": null,
+ "observability": {
+  "metrics": true,
+  "slots_debug": true,
+  "prompt_tokens_details": null,
+  "force_include_usage": null
+ },
+ "storage": "nas",
+ "multi_agent_ok": true,
+ "placement": {
+  "gpu_layers": 999,
+  "experts_on_cpu": 0,
+  "mmap": true,
+  "ram_pinned_gb": null
+ },
+ "serving": {
+  "port": null,
+  "proxy": null,
+  "container_name": "llama-swap",
+  "max_num_seqs": null,
+  "batch_tokens": null,
+  "prefix_caching": true,
+  "flash_attn": true
+ },
+ "speculative": {
+  "type": "none",
+  "draft_model": null,
+  "n_max": null,
+  "acceptance_note": null
+ },
+ "templates": {
+  "chat_template_kwargs": null,
+  "reasoning_parser": null,
+  "tool_call_parser": null,
+  "reasoning_start": null,
+  "reasoning_end": null
+ },
+ "endpoints": {
+  "health": "/health",
+  "metrics": "/metrics",
+  "slots": "/slots",
+  "props": "/props"
+ },
+ "role": {
+  "daily_driver": null,
+  "bakeoff_status": "untested"
+ },
+ "model_id": "qwen3-4b-instruct"
+}

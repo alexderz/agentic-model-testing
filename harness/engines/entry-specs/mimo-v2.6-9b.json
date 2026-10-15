@@ -1,0 +1,71 @@
+{
+ "schema": 1,
+ "generated": "2026-10-09T14:59:56-05:00",
+ "cmd_sha256": "dc5b73657b588a58ba99bf31c42574865cad60b057fa9e42223961dd71628e50",
+ "model_meta": "/home/operator/ai/models/llm/mimo-v2.6-9b/bakeoff-model.json",
+ "model_file": "/home/operator/ai/models/llm/mimo-v2.6-9b/MiMo-V2.6-Distill-Qwen-9B-Q8_0.gguf",
+ "engine": "llama.cpp",
+ "engine_version": "0.4-native",
+ "served_context": 131072,
+ "parallel": null,
+ "kv_type": "q8_0",
+ "thinking": {
+  "default_on": null,
+  "server_budget": null,
+  "request_field": null,
+  "budget_tokens": null
+ },
+ "sampling": {
+  "top_k": 20.0,
+  "top_p": 0.95,
+  "temp": 0.6
+ },
+ "spec_decode": null,
+ "observability": {
+  "metrics": true,
+  "slots_debug": true,
+  "prompt_tokens_details": null,
+  "force_include_usage": null
+ },
+ "storage": "nas",
+ "multi_agent_ok": true,
+ "placement": {
+  "gpu_layers": 999,
+  "experts_on_cpu": 0,
+  "mmap": true,
+  "ram_pinned_gb": null
+ },
+ "serving": {
+  "port": null,
+  "proxy": null,
+  "container_name": "llama-swap",
+  "max_num_seqs": null,
+  "batch_tokens": null,
+  "prefix_caching": true,
+  "flash_attn": true
+ },
+ "speculative": {
+  "type": "none",
+  "draft_model": null,
+  "n_max": null,
+  "acceptance_note": null
+ },
+ "templates": {
+  "chat_template_kwargs": null,
+  "reasoning_parser": null,
+  "tool_call_parser": null,
+  "reasoning_start": null,
+  "reasoning_end": null
+ },
+ "endpoints": {
+  "health": "/health",
+  "metrics": "/metrics",
+  "slots": "/slots",
+  "props": "/props"
+ },
+ "role": {
+  "daily_driver": null,
+  "bakeoff_status": "untested"
+ },
+ "model_id": "mimo-v2.6-9b"
+}

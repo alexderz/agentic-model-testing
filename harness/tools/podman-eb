@@ -1,0 +1,14 @@
+#!/bin/bash
+# podman, run as the capped evalbox account. Every local container of the bake-off goes through
+# this. The host lets the caller run only /usr/bin/podman, /usr/bin/nft and /usr/bin/nsenter as
+# evalbox, through sudo, and keeps only XDG_RUNTIME_DIR.
+#
+# Never pass the caller's DBUS_SESSION_BUS_ADDRESS (no `sudo -E`, no `env`): with the caller's bus
+# podman falls back to cgroupfs and the container lands in the caller's cgroup, outside evalbox's
+# memory, CPU and task caps. sudo resets the environment, so it cannot leak here.
+#
+# Paths must be absolute: this runs from / because evalbox cannot enter most callers' directories.
+# Titan's own podman calls (`ssh titan podman ...`) do not use this.
+EB=${EVALBOX_USER:-evalbox}
+uid=$(id -u "$EB") || { echo "podman-eb: no account $EB" >&2; exit 125; }
+cd / && exec sudo -n -u "$EB" XDG_RUNTIME_DIR="/run/user/$uid" /usr/bin/podman "$@"

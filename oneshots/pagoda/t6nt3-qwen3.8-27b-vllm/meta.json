@@ -1,0 +1,43 @@
+{
+ "case": "t6nt3-qwen3.8-27b-vllm",
+ "model": "qwen3.8-27b-vllm",
+ "test": "test6-pagoda",
+ "max_tokens": 32000,
+ "started": "2026-10-14T06:58:26-0500",
+ "thinking": "off (chat_template_kwargs)",
+ "status": "ok",
+ "finish_reason": "stop",
+ "usage": {
+  "prompt_tokens": 156,
+  "total_tokens": 7141,
+  "completion_tokens": 6985,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "created_cache_tokens": 0
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 0
+  }
+ },
+ "timings": null,
+ "static": {
+  "html_found": true,
+  "bytes": 15381,
+  "complete": true,
+  "three_module": true,
+  "importmap": true,
+  "umd_three": false,
+  "external_urls": [
+   "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+   "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+  ],
+  "boxes": 2,
+  "instanced": false,
+  "prose_chars_outside_html": 964
+ },
+ "wall_s": 101.1,
+ "first_token_s": 39.5,
+ "tok_s": 113.3,
+ "reply_chars": 16335,
+ "reasoning_chars": 0
+}

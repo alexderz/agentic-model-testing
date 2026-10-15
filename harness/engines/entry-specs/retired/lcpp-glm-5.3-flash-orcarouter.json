@@ -1,0 +1,11 @@
+{
+ "schema": 1,
+ "model_id": "lcpp-glm-5.3-flash-orcarouter",
+ "model_meta": "/home/operator/ai/models/llm/glm-5.3-flash-orcarouter-uncensored/bakeoff-model.json",
+ "engine": "llama.cpp",
+ "engine_version": "glm5next",
+ "report": {
+  "label": "GLM-5.3-Flash Orcarouter uncensored \u00b7 llama.cpp glm5next, experts in RAM",
+  "engine": "llama.cpp glm5next branch (86ebfef)"
+ }
+}

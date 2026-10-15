@@ -1,0 +1,114 @@
+{
+ "why": "exllamav3 1.6.2 beside 1.6.1 (operator 2026-10-15, Model Master 2): the speed A/B against exl3-qwen3.8-27b-dflash2 and whether DFlash2's 98k window can grow (1.6.1: 131,072 ran out of memory on the first long prompt). Applied by queue-new.d/45-exl3-162-ab.sh with tools/add_clone_entry.py.",
+ "entries": [
+  {
+   "src": "exl3-qwen3.8-27b-dflash2",
+   "new": "exl3-qwen3.8-27b-dflash2-162",
+   "image": "19f324de2269cfe0522e2361cb77df9b479e6678e0e0f67727fa19faa6c414ba",
+   "name": "Qwen3.8-27B EXL3 4.00bpw on exllamav3 1.6.2, DFlash2 drafter, 98k",
+   "description": "TabbyAPI d6e62270 with exllamav3 1.6.2 (engines/exllamav3, image 19f324de2269): the same as exl3-qwen3.8-27b-dflash2 on the new engine, own kernel cache volume exllamav3-162-cache. 98,304-token window, 8-bit cache: the A/B arm. Model Master 2, engine A/B 2026-10-15.",
+   "subs": [
+    [
+     "8eb86a95ffca02949ea056f3bc6fac51bdcd3523239b34ba5e774120976df11e",
+     "19f324de2269cfe0522e2361cb77df9b479e6678e0e0f67727fa19faa6c414ba"
+    ],
+    [
+     "-v exllamav3-cache:/cache",
+     "-v exllamav3-162-cache:/cache"
+    ]
+   ],
+   "spec": {
+    "engine_version": "tabbyapi-d6e62270-exl3-1.6.2",
+    "served_context": 98304,
+    "thinking": {
+     "server_budget": 18576
+    },
+    "role": {
+     "daily_driver": null,
+     "bakeoff_status": "untested"
+    },
+    "report": {
+     "label": "Qwen3.8-27B EXL3 4-bit · exllamav3 1.6.2, DFlash2 drafts, 98k, 8-bit cache"
+    }
+   }
+  },
+  {
+   "src": "exl3-qwen3.8-27b-dflash2",
+   "new": "exl3-qwen3.8-27b-dflash2-162-ctx112k",
+   "image": "19f324de2269cfe0522e2361cb77df9b479e6678e0e0f67727fa19faa6c414ba",
+   "name": "Qwen3.8-27B EXL3 4.00bpw on exllamav3 1.6.2, DFlash2 drafter, 112k window probe",
+   "description": "TabbyAPI d6e62270 with exllamav3 1.6.2 (engines/exllamav3, image 19f324de2269): the same as exl3-qwen3.8-27b-dflash2 on the new engine, own kernel cache volume exllamav3-162-cache. CONTEXT PROBE: 114,688-token window, may run out of memory on long prompts; not for daily use. Model Master 2, engine A/B 2026-10-15.",
+   "subs": [
+    [
+     "8eb86a95ffca02949ea056f3bc6fac51bdcd3523239b34ba5e774120976df11e",
+     "19f324de2269cfe0522e2361cb77df9b479e6678e0e0f67727fa19faa6c414ba"
+    ],
+    [
+     "-v exllamav3-cache:/cache",
+     "-v exllamav3-162-cache:/cache"
+    ],
+    [
+     "-e TABBY_MODEL_MAX_SEQ_LEN=98304 -e TABBY_MODEL_CACHE_SIZE=98304",
+     "-e TABBY_MODEL_MAX_SEQ_LEN=114688 -e TABBY_MODEL_CACHE_SIZE=114688"
+    ],
+    [
+     "TABBY_MODEL_REASONING_BUDGET_TOKENS=18576",
+     "TABBY_MODEL_REASONING_BUDGET_TOKENS=22672"
+    ]
+   ],
+   "spec": {
+    "engine_version": "tabbyapi-d6e62270-exl3-1.6.2",
+    "served_context": 114688,
+    "thinking": {
+     "server_budget": 22672
+    },
+    "role": {
+     "daily_driver": null,
+     "bakeoff_status": "untested"
+    },
+    "report": {
+     "label": "Qwen3.8-27B EXL3 4-bit · exllamav3 1.6.2, DFlash2 drafts, 112k window probe, 8-bit cache"
+    }
+   }
+  },
+  {
+   "src": "exl3-qwen3.8-27b-dflash2",
+   "new": "exl3-qwen3.8-27b-dflash2-162-ctx128k",
+   "image": "19f324de2269cfe0522e2361cb77df9b479e6678e0e0f67727fa19faa6c414ba",
+   "name": "Qwen3.8-27B EXL3 4.00bpw on exllamav3 1.6.2, DFlash2 drafter, 128k window probe",
+   "description": "TabbyAPI d6e62270 with exllamav3 1.6.2 (engines/exllamav3, image 19f324de2269): the same as exl3-qwen3.8-27b-dflash2 on the new engine, own kernel cache volume exllamav3-162-cache. CONTEXT PROBE: 131,072-token window, may run out of memory on long prompts; not for daily use. Model Master 2, engine A/B 2026-10-15.",
+   "subs": [
+    [
+     "8eb86a95ffca02949ea056f3bc6fac51bdcd3523239b34ba5e774120976df11e",
+     "19f324de2269cfe0522e2361cb77df9b479e6678e0e0f67727fa19faa6c414ba"
+    ],
+    [
+     "-v exllamav3-cache:/cache",
+     "-v exllamav3-162-cache:/cache"
+    ],
+    [
+     "-e TABBY_MODEL_MAX_SEQ_LEN=98304 -e TABBY_MODEL_CACHE_SIZE=98304",
+     "-e TABBY_MODEL_MAX_SEQ_LEN=131072 -e TABBY_MODEL_CACHE_SIZE=131072"
+    ],
+    [
+     "TABBY_MODEL_REASONING_BUDGET_TOKENS=18576",
+     "TABBY_MODEL_REASONING_BUDGET_TOKENS=24000"
+    ]
+   ],
+   "spec": {
+    "engine_version": "tabbyapi-d6e62270-exl3-1.6.2",
+    "served_context": 131072,
+    "thinking": {
+     "server_budget": 24000
+    },
+    "role": {
+     "daily_driver": null,
+     "bakeoff_status": "untested"
+    },
+    "report": {
+     "label": "Qwen3.8-27B EXL3 4-bit · exllamav3 1.6.2, DFlash2 drafts, 128k window probe, 8-bit cache"
+    }
+   }
+  }
+ ]
+}

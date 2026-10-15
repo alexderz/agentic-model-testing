@@ -1,0 +1,45 @@
+{
+ "case": "t5unc1-cyber-tiel-coder-35b",
+ "model": "cyber-tiel-coder-35b",
+ "test": "test5-orrery",
+ "max_tokens": 128000,
+ "timeout_s": 36000,
+ "started": "2026-10-15T06:09:48-0500",
+ "status": "ok",
+ "finish_reason": "stop",
+ "usage": {
+  "completion_tokens": 32164,
+  "prompt_tokens": 239,
+  "total_tokens": 32403,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  }
+ },
+ "timings": {
+  "cache_n": 0,
+  "prompt_n": 239,
+  "prompt_ms": 930.23,
+  "prompt_per_token_ms": 3.892175732217573,
+  "prompt_per_second": 256.92570654569295,
+  "predicted_n": 32164,
+  "predicted_ms": 659191.435,
+  "predicted_per_token_ms": 20.49533423499052,
+  "predicted_per_second": 48.7915926880937
+ },
+ "static": {
+  "svg_found": true,
+  "parses": true,
+  "bytes": 17939,
+  "animateTransform": 20,
+  "animate": 0,
+  "animateMotion": 0,
+  "keyframes": 0,
+  "script": 0,
+  "prose_chars_outside_svg": 1883
+ },
+ "wall_s": 684.2,
+ "first_token_s": 25.1,
+ "tok_s": 48.8,
+ "reply_chars": 19821,
+ "reasoning_chars": 78045
+}

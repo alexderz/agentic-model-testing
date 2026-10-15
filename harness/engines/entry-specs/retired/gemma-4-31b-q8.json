@@ -1,0 +1,11 @@
+{
+ "schema": 1,
+ "model_id": "gemma-4-31b-q8",
+ "model_meta": "/home/operator/ai/models/llm/gemma-4-31b/bakeoff-model.json",
+ "engine": "llama.cpp",
+ "engine_version": "0.4-native",
+ "report": {
+  "label": "Gemma 4 31B 8-bit \u00b7 llama.cpp, 72k context",
+  "quant": "Q8_0"
+ }
+}

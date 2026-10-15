@@ -1,0 +1,73 @@
+{
+ "schema": 1,
+ "generated": "2026-10-09T08:42:14-05:00",
+ "cmd_sha256": "8bf80128a8e8ae664d22c682897f98b7bbe3c1b1c550bee640884efb79a7acc3",
+ "model_meta": "/home/operator/ai/models/vllm/gemma-4-26b-a4b-awq/bakeoff-model.json",
+ "model_file": "/home/operator/ai/models/vllm/gemma-4-26b-a4b-awq",
+ "engine": "vllm",
+ "engine_version": "hyperqwen-0.30",
+ "served_context": 73728,
+ "parallel": 8,
+ "kv_type": "auto",
+ "thinking": {
+  "default_on": true,
+  "server_budget": null,
+  "request_field": "thinking_token_budget",
+  "budget_tokens": null
+ },
+ "sampling": {},
+ "spec_decode": "draft-model",
+ "observability": {
+  "metrics": true,
+  "slots_debug": null,
+  "prompt_tokens_details": true,
+  "force_include_usage": true
+ },
+ "storage": "nas",
+ "multi_agent_ok": true,
+ "placement": {
+  "gpu_layers": null,
+  "experts_on_cpu": null,
+  "mmap": null,
+  "ram_pinned_gb": null
+ },
+ "serving": {
+  "port": 18020,
+  "proxy": "http://hyperqwen:18020",
+  "container_name": "hyperqwen",
+  "max_num_seqs": 8,
+  "batch_tokens": 4096,
+  "prefix_caching": true,
+  "flash_attn": null
+ },
+ "speculative": {
+  "type": "draft-model",
+  "draft_model": "/models/assistant",
+  "n_max": 4,
+  "acceptance_note": null
+ },
+ "templates": {
+  "chat_template_kwargs": {
+   "enable_thinking": true
+  },
+  "reasoning_parser": "gemma4",
+  "tool_call_parser": "gemma4",
+  "reasoning_start": "<|channel>thought",
+  "reasoning_end": "<channel|>"
+ },
+ "endpoints": {
+  "health": "/health",
+  "metrics": "/metrics",
+  "slots": null,
+  "props": null
+ },
+ "role": {
+  "daily_driver": null,
+  "bakeoff_status": "pass"
+ },
+ "model_id": "gemma-4-26b-a4b-vllm",
+ "report": {
+  "label": "Gemma 4 26B-A4B \u00b7 vLLM, AWQ, draft model",
+  "engine": "vLLM"
+ }
+}

@@ -1,0 +1,27 @@
+# TensorFold 0.6.6 (github.com/ashhart/TensorFold, Apache-2.0), the Python engine, containerised for evaluation on
+# titan's RTX 3090 (SM 8.6). Upstream refuses cards under SM 8.9; patches/0001 lowers the floor to 8.6 and swaps the
+# one FP8-only kernel file for a stub (see README.md). Inputs pinned: the TensorFold tag and commit (build.sh), the
+# base image by digest, the Python wheels by pip-freeze.txt (written by the first build, enforced after).
+# Plain Ubuntu, not the CUDA runtime image: that one has a /usr/local/cuda without a compiler, torch takes it
+# for the toolkit and TensorFold then never looks for the pip compiler (first try, 2026-10-13: nvcc not found).
+# TensorFold compiles its kernels for the GPU it finds on first start, so nvcc and g++ stay in the image and the
+# build results live in /cache (mount a volume there). Internet only while building.
+ARG BASE=docker.io/library/ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55
+FROM ${BASE}
+RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-venv python3-dev g++ ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+COPY src/ /opt/tensorfold/
+COPY constraints.txt /opt/constraints.txt
+# upstream's RTX route (RUNBOOK.md): torch, ninja and the pip CUDA compiler matching torch's CUDA 13.0
+RUN python3 -m venv /opt/venv \
+ && /opt/venv/bin/pip install --no-cache-dir -c /opt/constraints.txt torch ninja "cuda-toolkit[nvcc,cccl]==13.0.*" \
+ && /opt/venv/bin/pip install --no-cache-dir -c /opt/constraints.txt "/opt/tensorfold[grammar]" \
+ && /opt/venv/bin/pip freeze --exclude tensorfold > /opt/pip-freeze.txt
+RUN useradd --uid 10001 --create-home tf && mkdir -p /cache/torch-ext /cache/triton && chown -R tf:tf /cache
+USER tf
+WORKDIR /opt/tensorfold
+ENV PATH=/opt/venv/bin:$PATH HF_HUB_OFFLINE=1 HF_HUB_DISABLE_TELEMETRY=1 HF_HOME=/models/llm/tensorfold-hf \
+    TORCH_EXTENSIONS_DIR=/cache/torch-ext TRITON_CACHE_DIR=/cache/triton PYTHONUNBUFFERED=1 \
+    TENSORFOLD_NO_UPDATE_CHECK=1
+EXPOSE 8080
+ENTRYPOINT ["tensorfold"]

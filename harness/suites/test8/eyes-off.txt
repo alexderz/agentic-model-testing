@@ -1,0 +1,1 @@
+Your model takes text only in this setup, so screenshots do not come back to you as images. Check the page in other ways: browser_console_messages for errors, browser_evaluate to run JavaScript in the page (for example to read the DOM, the scene, or pixels from a canvas), and browser_snapshot for the page structure.

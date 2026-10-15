@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>五重塔 · Voxel Pagoda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Outfit:wght@300;400;500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#2a1622; --paper:#f4e7dd; --vermilion:#d84a3a; --gold:#c79a4e;
+    --rose:#e39ab2; --dim:#a3877f;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;overflow:hidden;background:#0d0b12}
+  body{font-family:'Outfit',system-ui,sans-serif;color:var(--paper)}
+  #app{position:fixed;inset:0}
+  canvas{display:block}
+
+  .vignette{position:fixed;inset:0;pointer-events:none;z-index:5;
+    background:radial-gradient(125% 100% at 50% 38%, transparent 52%, rgba(12,8,16,.55) 100%)}
+
+  .hud{position:fixed;inset:0;z-index:10;pointer-events:none;
+    display:flex;flex-direction:column;justify-content:space-between;
+    padding:clamp(18px,3.2vw,46px)}
+
+  .brand{display:flex;gap:clamp(12px,1.6vw,22px);align-items:flex-start;
+    animation:rise 1.1s cubic-bezier(.2,.8,.2,1) both}
+  .emblem{width:clamp(54px,6.6vw,82px);height:clamp(54px,6.6vw,82px);flex:none;
+    border:1px solid rgba(244,231,221,.28);display:grid;place-items:center;
+    background:rgba(20,12,18,.32);backdrop-filter:blur(3px);
+    box-shadow:inset 0 0 22px rgba(216,74,58,.16);
+    transition:transform .5s ease, box-shadow .5s ease}
+  .brand:hover .emblem{transform:translateY(-4px) rotate(-3deg);
+    box-shadow:inset 0 0 30px rgba(216,74,58,.32), 0 10px 30px rgba(0,0,0,.4)}
+  .emblem svg{width:74%;height:74%;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5))}
+
+  .brand-text{display:flex;flex-direction:column;gap:3px}
+  .kicker{font-size:clamp(10px,1vw,12px);letter-spacing:.42em;text-transform:uppercase;
+    color:var(--rose);font-weight:500;padding-left:2px}
+  .title{font-family:'Cormorant Garamond',serif;font-weight:600;line-height:.9;
+    font-size:clamp(40px,7.4vw,84px);letter-spacing:.01em;
+    text-shadow:0 2px 24px rgba(0,0,0,.55)}
+  .title .jap{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:700;
+    display:block;font-size:.42em;color:var(--vermilion);letter-spacing:.34em;
+    margin-bottom:.15em}
+  .sub{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:400;
+    font-size:clamp(12px,1.25vw,15px);color:var(--dim);letter-spacing:.05em;margin-top:4px}
+
+  .foot{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;
+    animation:rise 1.1s .15s cubic-bezier(.2,.8,.2,1) both}
+  .meta{display:flex;gap:clamp(14px,2vw,30px);flex-wrap:wrap}
+  .chip{font-size:clamp(10px,1vw,12px);letter-spacing:.24em;text-transform:uppercase;
+    color:var(--dim);display:flex;align-items:center;gap:8px}
+  .chip b{color:var(--paper);font-weight:500;letter-spacing:.12em}
+  .chip .dot{width:6px;height:6px;border-radius:50%;background:var(--vermilion);
+    box-shadow:0 0 10px var(--vermilion)}
+  .hint{font-size:clamp(10px,1vw,12px);letter-spacing:.2em;text-transform:uppercase;
+    color:var(--dim);opacity:.8}
+  .hint kbd{font-family:inherit;border:1px solid rgba(244,231,221,.25);
+    padding:2px 7px;border-radius:4px;color:var(--paper);margin:0 2px}
+
+  @keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+
+  @media (max-width:560px){ .hint{display:none} }
+</style>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+  <div id="app"></div>
+  <div class="vignette"></div>
+
+  <div class="hud">
+    <div class="brand">
+      <div class="emblem">
+        <svg viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g fill="#d84a3a">
+            <rect x="40" y="4" width="20" height="5"/>
+            <rect x="35" y="11" width="30" height="5"/>
+            <rect x="30" y="22" width="40" height="11"/>
+            <rect x="18" y="34" width="64" height="6"/>
+            <rect x="29" y="43" width="42" height="15"/>
+            <rect x="15" y="59" width="70" height="6"/>
+            <rect x="27" y="68" width="46" height="18"/>
+            <rect x="11" y="87" width="78" height="6"/>
+            <rect x="44" y="96" width="12" height="18"/>
+          </g>
+          <g fill="#c79a4e">
+            <rect x="42" y="16" width="16" height="6"/>
+            <rect x="40" y="39" width="20" height="4"/>
+            <rect x="38" y="58" width="24" height="4"/>
+            <rect x="36" y="86" width="28" height="4"/>
+          </g>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <span class="kicker">Voxel Garden · Golden Hour</span>
+        <h1 class="title"><span class="jap">五重塔</span>Pagoda</h1>
+        <p class="sub">五重の塔と桜庭 — five stories of upturned eaves on a stone terrace</p>
+      </div>
+    </div>
+
+    <div class="foot">
+      <div class="meta">
+        <span class="chip"><span class="dot"></span><b id="fps">—</b> fps</span>
+        <span class="chip"><b id="cubes">—</b> cubes</span>
+        <span class="chip">Orbit <b>auto</b></span>
+      </div>
+      <div class="hint">Drag to orbit · Scroll to zoom · <kbd>Space</kbd> orbit</div>
+    </div>
+  </div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const S = 1;                       // voxel size
+const R = Math.random;
+
+/* ---------- renderer / scene / camera ---------- */
+const renderer = new THREE.WebGLRenderer({ antialias:true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.08;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+document.getElementById('app').appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x2a3d5c);
+scene.fog = new THREE.Fog(0x6f7f9c, 62, 168);
+
+const camera = new THREE.PerspectiveCamera(42, innerWidth/innerHeight, 0.1, 500);
+camera.position.set(28, 17, 31);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.06;
+controls.enablePan = false;
+controls.autoRotate = true;
+controls.autoRotateSpeed = 0.42;
+controls.minDistance = 14;
+controls.maxDistance = 72;
+controls.minPolarAngle = 0.12;
+controls.maxPolarAngle = 1.42;
+controls.target.set(0, 8, 0);
+
+/* ---------- lighting ---------- */
+scene.add(new THREE.HemisphereLight(0xbfd4ff, 0x5a4a3a, 0.75));
+const sun = new THREE.DirectionalLight(0xffd3a0, 2.7);
+sun.position.set(30, 42, 20);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.camera.near = 1;
+sun.shadow.camera.far = 160;
+sun.shadow.camera.left = -48; sun.shadow.camera.right = 48;
+sun.shadow.camera.top = 48;   sun.shadow.camera.bottom = -48;
+sun.shadow.bias = -0.0004;
+sun.shadow.normalBias = 0.02;
+scene.add(sun);
+const fill = new THREE.DirectionalLight(0x93a6cf, 0.5);
+fill.position.set(-24, 18, -18);
+scene.add(fill);
+
+/* ---------- voxel system ---------- */
+const boxGeo = new THREE.BoxGeometry(S, S, S);
+const cubeList = [];
+const materials = new Map();
+const matCache = new Map();
+let totalCubes = 0;
+
+function cube(x, y, z, color, o = {}) {
+  const key = (color|0) + '_' + (o.emissive ? 'e' : 'x') + '_' + (o.rough ?? 0.9) + '_' + (o.metal ?? 0);
+  let m = matCache.get(key);
+  if (!m) {
+    m = new THREE.MeshStandardMaterial({
+      color, roughness: o.rough ?? 0.9, metalness: o.metal ?? 0,
+      emissive: o.emissive ? o.emissive : 0x000000,
+      emissiveIntensity: o.emissiveIntensity ?? 1
+    });
+    matCache.set(key, m);
+    materials.set(m, o.rough ?? 0.9);
+  }
+  const mesh = new THREE.Mesh(boxGeo, m);
+  mesh.position.set(x*S, y*S, z*S);
+  if (o.castShadow !== false) mesh.castShadow = true;
+  if (o.receiveShadow !== false) mesh.receiveShadow = true;
+  scene.add(mesh);
+  cubeList.push(mesh);
+  totalCubes++;
+  return mesh;
+}
+function box(x0,y0,z0,x1,y1,z1,color,o={}){
+  for(let x=x0;x<=x1;x++)for(let y=y0;y<=y1;y++)for(let z=z0;z<=z1;z++) cube(x,y,z,color,o);
+}
+function slab(x0,x1,y,z0,z1,color,o={}){ for(let x=x0;x<=x1;x++)for(let z=z0;z<=z1;z++) cube(x,y,z,color,o); }
+function hollow(x0,x1,y,z0,z1,color,o={}){
+  for(let x=x0;x<=x1;x++)for(let z=z0;z<=z1;z++){
+    if(x===x0||x===x1||z===z0||z===z1) cube(x,y,z,color,o);
+  }
+}
+function edge(x0,x1,y,z0,z1,color,o={}){
+  for(let x=x0;x<=x1;x++){ cube(x,y,z0,color,o); cube(x,y,z1,color,o); }
+  for(let z=z0+1;z<=z1-1;z++){ cube(x0,y,z,color,o); cube(x1,y,z,color,o); }
+}
+function line(x0,y0,z0,x1,y1,z1,color,o={}){
+  const nx=Math.abs(x1-x0),ny=Math.abs(y1-y0),nz=Math.abs(z1-z0);
+  const dx=Math.sign(x1-x0),dy=Math.sign(y1-y0),dz=Math.sign(z1-z0);
+  let x=x0,y=y0,z=z0,i=0;
+  do{ cube(x,y,z,color,o); i++; if(x===x1&&y===y1&&z===z1)break;
+    if(nx>ny&&nx>nz)x+=dx; else if(ny>nz)y+=dy; else z+=dz;
+  }while(i<400);
+}
+function jitterColor(base, amt){
+  const c=new THREE.Color(base);
+  const hsl={}; c.getHSL(hsl);
+  c.setHSL(hsl.h, Math.min(1,hsl.s+ (R()-0.5)*amt*0.2),
+          Math.max(0,Math.min(1,hsl.l+(R()-0.5)*amt)));
+  return c.getHex();
+}
+
+/* ---------- palette ---------- */
+const P = {
+  platform:0x8a8a92, platDark:0x6f6f78, platLight:0x9d9da6,
+  wall:0x6f3b2c, wallHi:0x834a38, wallLo:0x5e3326,
+  roof:0x2f3a47, roofHi:0x3b4a5b, roofLo:0x242c36,
+  gold:0xc79a4e, goldHi:0xe2b868, goldLo:0x9c7535,
+  trim:0x3a2a20,
+  torii:0xd84a3a, toriiHi:0xe86450, toriiLo:0xbf3a2c, toriiCap:0x26201b,
+  leaf:0x5d7a37, leafHi:0x739447, leafLo:0x47602b,
+  blossom:0xf0a9c0, blossomHi:0xf7c6d6, blossomLo:0xe087a6, blossomCore:0xf6d3de,
+  trunk:0x6b4a33, trunkHi:0x7d583c, trunkLo:0x573a27,
+  water:0x3a6f86, waterHi:0x5c98ac, waterLo:0x2f5a6e,
+  stone:0x9a9a94, stoneHi:0xb2b2ac, stoneLo:0x7f7f79,
+  leafDrop:0x9cb86a
+};
+
+/* ---------- ground + stone platform ---------- */
+slab(-24,24,0,-24,24,P.platform,{castShadow:false,rough:0.95});
+slab(-22,22,1,-22,22,P.platDark,{castShadow:false});
+slab(-21,21,2,-21,21,P.platform,{castShadow:false});
+slab(-20,20,3,-20,20,P.platLight,{castShadow:false});
+slab(-19,19,4,-19,19,P.platform,{castShadow:false});
+slab(-18,18,5,-18,18,P.platDark,{castShadow:false});
+slab(-17,17,6,-17,17,P.platform,{castShadow:false});
+// scattered stones
+for(let i=0;i<22;i++){
+  const a=R()*Math.PI*2, r=10+R()*10;
+  const x=Math.round(Math.cos(a)*r), z=Math.round(Math.sin(a)*r);
+  if(Math.abs(x)<6&&Math.abs(z)<6) continue;
+  const s=R()<0.5?P.stone:P.stoneLo;
+  cube(x,7,z,s,{rough:0.95});
+  if(R()<0.5) cube(x,8,z,P.stoneHi,{rough:0.95});
+}
+
+/* ---------- pagoda ---------- */
+function roof(xc,zc,r){
+  const baseY=9, wallH=5, roofSlope=3;
+  box(xc-2,xc+2,baseY,zc-2,zc+2,baseY+wallH-1,P.wall,{rough:0.85});
+  slab(xc-2,xc+2,baseY+wallH,zc-2,zc+2,P.roofLo,{rough:0.9});
+  for(let t=0;t<=roofSlope;t++){
+    const ring=r+t;
+    slab(xc-ring,xc+ring,baseY+wallH+t,zc-ring,zc+ring,P.roof,{rough:0.9});
+    // upturned corners (extend past the eave ring)
+    cube(xc-ring,baseY+wallH+t-1,zc-ring,P.roofHi);
+    cube(xc-ring,baseY+wallH+t-1,zc+ring,P.roofHi);
+    cube(xc+ring,baseY+wallH+t-1,zc-ring,P.roofHi);
+    cube(xc+ring,baseY+wallH+t-1,zc+ring,P.roofHi);
+  }
+  const capY=baseY+wallH+roofSlope;
+  slab(xc-1,xc+1,capY,zc-1,zc+1,P.roofHi,{rough:0.85});
+  cube(xc,capY+1,zc,P.gold,{metal:0.5,rough:0.4});
+  // gable ornaments
+  for(const dz of [-1,1]){
+    const z=zc+dz*(r+1);
+    cube(xc,capY+1,z,P.gold,{metal:0.5,rough:0.4});
+    cube(xc,capY+2,z,P.goldHi,{metal:0.5,rough:0.4});
+  }
+  return capY+1;
+}
+function base(xc,zc){
+  box(xc-3,xc+3,7,zc-3,zc+3,8,P.stone,{rough:0.95});
+  box(xc-2,xc+2,9,zc-2,zc+2,9,P.stoneHi,{rough:0.95});
+  return 10;
+}
+function spire(y0){
+  let y=y0;
+  cube(0,y,0,P.goldHi,{metal:0.5,rough:0.4}); y++;
+  cube(0,y,0,P.gold,{metal:0.5,rough:0.4}); y++;
+  cube(0,y,0,P.goldHi,{metal:0.5,rough:0.4}); y++;
+  slab(-1,1,y,-1,1,P.gold,{metal:0.5,rough:0.4}); y++;
+  cube(0,y,0,P.goldHi,{metal:0.5,rough:0.4}); y++;
+  cube(0,y,0,P.gold,{metal:0.5,rough:0.4}); y++;
+  slab(-1,1,y,-1,1,P.goldHi,{metal:0.5,rough:0.4}); y++;
+  cube(0,y,0,P.gold,{metal:0.5,rough:0.4}); y++;
+  cube(0,y,0,P.goldHi,{metal:0.5,rough:0.4}); y++;
+  return y;
+}
+const pagodaTop = (function(){
+  let y = base(0,0);
+  const radii=[6,5,4,3,2];
+  for(let i=0;i<5;i++){
+    y = roof(0,0,radii[i]);
+    y += 1;   // small gap between tiers
+  }
+  return spire(y);
+})();
+
+/* ---------- cherry blossom trees ---------- */
+function blob(x,y,z,r){
+  for(let dx=-r;dx<=r;dx++)for(let dy=-r;dy<=r;dy++)for(let dz=-r;dz<=r;dz++){
+    const d2=dx*dx+dy*dy+dz*dz;
+    if(d2<=r*r && (R()<0.9 || d2>r*r*0.5))
+      cube(x+dx,y+dy,z+dz,jitterColor(R()<0.5?P.blossom:P.blossomHi,0.35),{rough:0.95});
+  }
+}
+function cherry(x,z){
+  let y=7;
+  for(let i=0;i<6;i++){
+    cube(x,y,z,P.trunk,{rough:0.95});
+    if(i===2){ cube(x+1,y,z,P.trunkHi); cube(x,y,z+1,P.trunkHi); }
+    if(i===4){ cube(x-1,y,z,P.trunkLo); }
+    y++;
+  }
+  const ty=y;
+  blob(x,ty+1,z,2);
+  blob(x+2,ty,z+1,2);
+  blob(x-2,ty,z-1,2);
+  blob(x,ty+3,z+1,2);
+  blob(x+1,ty+2,z-2,1);
+  blob(x-1,ty+2,z+2,1);
+  blob(x,ty+4,z,1);
+  // a few darker cores for depth
+  for(let i=0;i<10;i++){
+    const a=R()*Math.PI*2, r=R()*2;
+    cube(x+Math.round(Math.cos(a)*r), ty+Math.round(R()*3), z+Math.round(Math.sin(a)*r), P.blossomLo,{rough:0.95});
+  }
+}
+cherry(-9,-8);
+cherry(9,-8);
+cherry(-9,8);
+cherry(9,8);
+
+/* ---------- pond + rocks + lily pads ---------- */
+function pond(cx,cz){
+  slab(cx-6,cx+6,6,cz-5,cz+5,P.water,{rough:0.35,metal:0.1});
+  for(let x=cx-6;x<=cx+6;x++)for(let z=cz-5;z<=cz+5;z++){
+    if(x===cx-6||x===cx+6||z===cz-5||z===cz+5)
+      cube(x,7,z,jitterColor(P.stone,0.2),{rough:0.95});
+  }
+  const pads=[[cx-2,cz-1],[cx+3,cz+2],[cx-4,cz+3],[cx+1,cz-3]];
+  for(const [px,pz] of pads){
+    cube(px,8,pz,P.leafHi,{rough:0.9});
+    if(R()<0.5) cube(px,9,pz,P.blossomCore,{rough:0.9});
+  }
+}
+pond(13,7);
+
+/* ---------- torii gate ---------- */
+function torii(x,z){
+  const d=2;
+  for(let zz=z-d;zz<=z+d;zz++){
+    cube(x-3,7,zz,P.toriiLo,{rough:0.85});
+    cube(x+3,7,zz,P.toriiLo,{rough:0.85});
+  }
+  for(let i=0;i<8;i++){
+    const c = i%2? P.torii : P.toriiHi;
+    cube(x-3,8+i,zz=z,P.torii); // (kept in-loop below)
+  }
+  // cleaner pillars
+  for(let i=0;i<8;i++){
+    cube(x-3,8+i,z,P.torii,{rough:0.85});
+    cube(x+3,8+i,z,P.torii,{rough:0.85});
+  }
+  // kasagi (top beam) + shimaki
+  slab(x-6,x+6,16,z-d,z+d,P.torii,{rough:0.85});
+  slab(x-5,x+5,17,z-d,z+d,P.toriiHi,{rough:0.85});
+  cube(x-6,18,z,P.toriiCap); cube(x+6,18,z,P.toriiCap); // upturned ends
+  // nuki (lower beam)
+  slab(x-4,x+4,12,z-1,z+1,P.torii,{rough:0.85});
+  // gakuzuka
+  cube(x,13,z,P.toriiHi,{rough:0.85});
+  cube(x,14,z,P.torii,{rough:0.85});
+}
+torii(10,-8);
+
+/* ---------- petals ---------- */
+const petalGeo = new THREE.BoxGeometry(0.14, 0.02, 0.2);
+const petalMat = new THREE.MeshStandardMaterial({ color:0xf4c2d3, roughness:0.8, side:THREE.DoubleSide });
+const petalMatLeaf = new THREE.MeshStandardMaterial({ color:0x9cb86a, roughness:0.8, side:THREE.DoubleSide });
+const petals = [];
+function spawnPetal(){
+  const a=R()*Math.PI*2, r=4+R()*6;
+  const m = new THREE.Mesh(petalGeo, R()<0.15?petalMatLeaf:petalMat);
+  m.position.set(Math.cos(a)*r, 13+R()*6, Math.sin(a)*r);
+  m.rotation.set(R()*Math.PI, R()*Math.PI, R()*Math.PI);
+  m.userData = {
+    vy: -(0.5+R()*0.6),
+    swirl: 0.6+R()*1.2,
+    phase: R()*Math.PI*2,
+    rot: (R()-0.5)*3
+  };
+  scene.add(m);
+  petals.push(m);
+}
+for(let i=0;i<70;i++) spawnPetal();
+
+function updatePetals(dt,t){
+  for(const p of petals){
+    const u=p.userData;
+    p.position.y += u.vy*dt;
+    p.position.x += Math.sin(t*u.swirl+u.phase)*dt*0.8;
+    p.position.z += Math.cos(t*u.swirl*0.8+u.phase)*dt*0.8;
+    p.rotation.x += u.rot*dt;
+    p.rotation.y += u.rot*0.7*dt;
+    if(p.position.y<7.05){
+      p.position.y = 13+R()*6;
+      const a=R()*Math.PI*2, r=4+R()*6;
+      p.position.x=Math.cos(a)*r; p.position.z=Math.sin(a)*r;
+    }
+  }
+}
+
+/* ---------- fps + cube counter ---------- */
+const fpsEl=document.getElementById('fps');
+const cubesEl=document.getElementById('cubes');
+cubesEl.textContent = totalCubes.toLocaleString();
+let frames=0, fpsT=performance.now();
+
+/* ---------- loop ---------- */
+const clock = new THREE.Clock();
+addEventListener('resize', ()=>{
+  camera.aspect=innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight);
+});
+addEventListener('keydown', e=>{
+  if(e.code==='Space'){ e.preventDefault(); controls.autoRotate=!controls.autoRotate; }
+});
+
+function animate(){
+  requestAnimationFrame(animate);
+  const dt=Math.min(clock.getDelta(),0.05);
+  const t=clock.elapsedTime;
+  controls.update();
+  updatePetals(dt,t);
+  renderer.render(scene,camera);
+  frames++;
+  const now=performance.now();
+  if(now-fpsT>=500){
+    fpsEl.textContent=Math.round(frames*1000/(now-fpsT));
+    frames=0; fpsT=now;
+  }
+}
+animate();
+</script>
+</body>
+</html>

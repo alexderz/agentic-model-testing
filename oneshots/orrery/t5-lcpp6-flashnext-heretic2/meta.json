@@ -1,0 +1,44 @@
+{
+ "case": "t5-lcpp6-flashnext-heretic2",
+ "model": "lcpp6-flashnext-heretic2",
+ "test": "test5-orrery",
+ "max_tokens": 32000,
+ "started": "2026-10-12T04:26:48-0500",
+ "status": "ok",
+ "finish_reason": "stop",
+ "usage": {
+  "completion_tokens": 31397,
+  "prompt_tokens": 101,
+  "total_tokens": 31498,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  }
+ },
+ "timings": {
+  "cache_n": 0,
+  "prompt_n": 101,
+  "prompt_ms": 7478.407,
+  "prompt_per_token_ms": 74.04363366336634,
+  "prompt_per_second": 13.505550045618003,
+  "predicted_n": 31397,
+  "predicted_ms": 2201267.631,
+  "predicted_per_token_ms": 70.11299627341063,
+  "predicted_per_second": 14.26269098670992
+ },
+ "static": {
+  "svg_found": true,
+  "parses": true,
+  "bytes": 30686,
+  "animateTransform": 0,
+  "animate": 0,
+  "animateMotion": 0,
+  "keyframes": 8,
+  "script": 1,
+  "prose_chars_outside_svg": 1382
+ },
+ "wall_s": 2603.1,
+ "first_token_s": 401.8,
+ "tok_s": 14.3,
+ "reply_chars": 31308,
+ "reasoning_chars": 63600
+}

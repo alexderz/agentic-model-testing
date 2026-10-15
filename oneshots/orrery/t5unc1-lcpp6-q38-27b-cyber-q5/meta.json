@@ -1,0 +1,46 @@
+{
+ "case": "t5unc1-lcpp6-q38-27b-cyber-q5",
+ "model": "lcpp6-q38-27b-cyber-q5",
+ "test": "test5-orrery",
+ "max_tokens": 76000,
+ "timeout_s": 36000,
+ "started": "2026-10-15T05:59:49-0500",
+ "status": "ok",
+ "finish_reason": "stop",
+ "usage": {
+  "completion_tokens": 19263,
+  "prompt_tokens": 101,
+  "total_tokens": 19364,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  }
+ },
+ "timings": {
+  "cache_n": 0,
+  "prompt_n": 101,
+  "prompt_ms": 325.308,
+  "prompt_per_token_ms": 3.2208712871287126,
+  "prompt_per_second": 310.47499600378717,
+  "predicted_n": 19263,
+  "predicted_ms": 579510.613,
+  "predicted_per_token_ms": 30.085692711037275,
+  "predicted_per_second": 33.238390407183104
+ },
+ "static": {
+  "svg_found": true,
+  "parses": false,
+  "parse_error": "mismatched tag: line 56, column 2",
+  "bytes": 4547,
+  "animateTransform": 2,
+  "animate": 0,
+  "animateMotion": 0,
+  "keyframes": 0,
+  "script": 0,
+  "prose_chars_outside_svg": 17282
+ },
+ "wall_s": 593.1,
+ "first_token_s": 13.6,
+ "tok_s": 33.2,
+ "reply_chars": 21820,
+ "reasoning_chars": 23865
+}

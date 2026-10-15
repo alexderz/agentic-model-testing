@@ -1,0 +1,22 @@
+# localhost/bakeoff-grader -- reconstructed 2026-10-04 from `podman history` of
+# the image built on Pluto 2026-09-26 (sha256:97f665c0...). It had no recipe in
+# the repo. Runs graded code (test 1 CLIs, test 2 Rust MCP servers): Python 3.12
+# with the libraries models commonly import, plus a Rust toolchain.
+#   podman build -t localhost/bakeoff-grader -f Containerfile.grader .
+FROM docker.io/library/python:3.12-slim
+RUN pip install --no-cache-dir requests pytest httpx aiohttp click rich tabulate \
+    pyyaml pydantic python-dateutil websockets typer colorama texttable \
+    urllib3 certifi jinja2 pytest-timeout responses requests-mock
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      build-essential curl ca-certificates pkg-config libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
+ENV RUSTUP_HOME=/opt/rustup CARGO_HOME=/opt/cargo
+RUN curl -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain stable \
+    && chmod -R a+rwX /opt/cargo /opt/rustup
+ENV PATH=/opt/cargo/bin:$PATH
+# Test libraries that graded test suites import (added 2026-10-10 after the grader audit).
+RUN pip install --no-cache-dir respx pytest-mock pytest-asyncio
+RUN useradd -m grader
+USER grader
+WORKDIR /app
+CMD ["python3"]

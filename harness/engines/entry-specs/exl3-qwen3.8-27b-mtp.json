@@ -1,0 +1,75 @@
+{
+ "schema": 1,
+ "generated": "2026-10-14T06:57:42-05:00",
+ "cmd_sha256": "bd8909712d884bc9698f2dd8524707f4cf8315562a4d931c64c82dbbb57e504b",
+ "model_meta": "/home/operator/ai/models/llm/tensorfold-hf/hub/models--turboderp--Qwen3.8-27B-exl3/bakeoff-model.json",
+ "model_file": "/home/operator/ai/models/llm/tensorfold-hf/hub/models--turboderp--Qwen3.8-27B-exl3/snapshots/113cf7ab958054860e43fb7f3063b1af19171095",
+ "engine": "exllamav3",
+ "engine_version": "tabbyapi-a3fed43e-exl3-1.6.1",
+ "served_context": 196608,
+ "parallel": null,
+ "kv_type": "int8",
+ "thinking": {
+  "default_on": true,
+  "server_budget": 24000,
+  "request_field": "thinking_token_budget",
+  "budget_tokens": null
+ },
+ "sampling": {
+  "temp": 1.0,
+  "top_p": 0.95,
+  "top_k": 20,
+  "min_p": 0.0
+ },
+ "spec_decode": "mtp",
+ "observability": {
+  "metrics": false,
+  "slots_debug": null,
+  "prompt_tokens_details": null,
+  "force_include_usage": null
+ },
+ "storage": "nas",
+ "multi_agent_ok": false,
+ "placement": {
+  "gpu_layers": null,
+  "experts_on_cpu": null,
+  "mmap": null,
+  "ram_pinned_gb": null
+ },
+ "serving": {
+  "port": 5000,
+  "proxy": "http://exllamav3:5000",
+  "container_name": "exllamav3",
+  "max_num_seqs": null,
+  "batch_tokens": null,
+  "prefix_caching": true,
+  "flash_attn": null
+ },
+ "speculative": {
+  "type": "mtp",
+  "draft_model": null,
+  "n_max": null,
+  "acceptance_note": "63 % of drafted tokens accepted on the speed bench"
+ },
+ "templates": {
+  "chat_template_kwargs": null,
+  "reasoning_parser": "tabbyapi (reasoning: true)",
+  "tool_call_parser": null,
+  "reasoning_start": "<think>",
+  "reasoning_end": "</think>"
+ },
+ "endpoints": {
+  "health": "/health",
+  "metrics": null,
+  "slots": null,
+  "props": null
+ },
+ "role": {
+  "daily_driver": null,
+  "bakeoff_status": "untested"
+ },
+ "model_id": "exl3-qwen3.8-27b-mtp",
+ "report": {
+  "label": "Qwen3.8-27B EXL3 4-bit \u00b7 exllamav3, MTP drafts, 196k, 8-bit cache"
+ }
+}

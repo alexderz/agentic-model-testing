@@ -1,0 +1,8 @@
+# Web proxy image (service `web`): Squid from Fedora's package on a current Fedora base, so security
+# fixes arrive through Fedora updates; the preflight rebuilds it when the base or squid changes.
+# No custom code: configured only by squid.conf (rendered by evalbox.py from squid.conf.tmpl).
+FROM registry.fedoraproject.org/fedora-minimal:44
+RUN microdnf -y --setopt=install_weak_deps=0 upgrade && microdnf -y --setopt=install_weak_deps=0 install squid \
+ && microdnf clean all && rpm -q squid > /squid-version
+USER squid
+ENTRYPOINT ["/usr/sbin/squid", "-N", "-f", "/etc/evalbox/squid.conf"]

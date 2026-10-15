@@ -1,0 +1,1 @@
+Screenshots (browser_take_screenshot) come back to you as images, so you can look at your work.

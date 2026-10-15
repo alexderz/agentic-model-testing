@@ -1,0 +1,41 @@
+# Project Maya (github.com/mw00/project-maya, MIT): Strata's engine rewritten for GLM-5.3-Flash, containerised
+# for evaluation on titan. Every input pinned: the Maya tag and commit, CUDA base images by digest, the llama.cpp
+# source zip by commit + sha256 (see build.sh; the same commit Strata pins). Internet only while building.
+# Text only: no vision encoder (we test agentic text work). Build context: the dir build.sh assembles.
+ARG CUDA_DEVEL=docker.io/nvidia/cuda:13.0.2-devel-ubuntu24.04@sha256:0eee3094c71518ad31d011a594ae6ed6de72959ee07e318cb31cffe71690e90c
+ARG CUDA_RUNTIME=docker.io/nvidia/cuda:13.0.2-runtime-ubuntu24.04@sha256:6a0e31b59e70890446f2c17356d6efc0d54260090a8c63d6ca7c2ad049db95d2
+
+FROM ${CUDA_DEVEL} AS build
+ARG LLAMA_CPP_COMMIT
+ARG LLAMA_CPP_SHA256
+ARG CUDA_ARCH=86
+ARG JOBS=6
+# git: since v1.1.6 Maya's CMakeLists applies its own third_party/ggml/mmq-fused-swiglu.patch to a copy of the
+# pinned ggml with `git apply` (without git it warns and builds the slower prompt path); v1.0.4 does not use it
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential cmake ninja-build python3 git \
+    && rm -rf /var/lib/apt/lists/*
+WORKDIR /opt/maya
+COPY src/ /opt/maya/
+COPY inputs/llama.cpp-${LLAMA_CPP_COMMIT}.zip /tmp/llama.zip
+RUN echo "${LLAMA_CPP_SHA256}  /tmp/llama.zip" | sha256sum -c - \
+ && python3 -c "import zipfile; zipfile.ZipFile('/tmp/llama.zip').extractall('/tmp/u')" \
+ && mv /tmp/u/llama.cpp-${LLAMA_CPP_COMMIT} /opt/maya/third_party/llama.cpp && rm -rf /tmp/u /tmp/llama.zip
+# maya.py's build_engine(): the `strata` target with native experts, for sm_86 (RTX 3090). nvcc takes 2-4 GB a job.
+RUN cmake -G Ninja -S . -B build -DCMAKE_BUILD_TYPE=Release -DSTRATA_ENABLE_CUDA=ON -DSTRATA_NATIVE_EXPERTS=ON \
+      -DSTRATA_BUILD_TESTS=OFF -DCMAKE_CUDA_ARCHITECTURES=${CUDA_ARCH} -DSTRATA_GGML_DIR=/opt/maya/third_party/llama.cpp \
+ && (cmake --build build --target strata -j ${JOBS} || cmake --build build --target strata -j 2) \
+ && mkdir -p engine && cp build/strata engine/strata && rm -rf build
+
+FROM ${CUDA_RUNTIME}
+RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-venv libgomp1 ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+COPY --from=build /opt/maya /opt/maya
+RUN python3 -m venv /opt/venv \
+ && /opt/venv/bin/pip install --no-cache-dir numpy jinja2 regex pyyaml tqdm requests pillow psutil \
+ && /opt/venv/bin/pip freeze > /opt/maya/pip-freeze.txt
+RUN useradd --uid 10001 --create-home maya
+USER maya
+WORKDIR /opt/maya
+ENV PATH=/opt/venv/bin:$PATH STRATA_GGUF_PY=/opt/maya/third_party/llama.cpp/gguf-py HF_HUB_OFFLINE=1
+EXPOSE 8793
+ENTRYPOINT ["python", "serve/server.py", "--engine", "strata"]

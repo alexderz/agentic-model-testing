@@ -1,0 +1,26 @@
+# exllamav3 1.6.1 (github.com/turboderp-org/exllamav3, MIT) behind TabbyAPI (github.com/theroyallab/tabbyAPI,
+# AGPL-3.0), containerised for the engine comparison on titan's RTX 3090. Nothing is patched: stock
+# exllamav3 has read DFlash2 drafters since v1.5.1. Inputs pinned: the TabbyAPI commit (build.sh), whose cu12 extra
+# names the torch 2.9.0+cu128 and exllamav3 1.6.1 wheels by URL; the base image by digest; every other wheel by
+# pip-freeze.txt (written by the first build, enforced after).
+# Plain Ubuntu as for TensorFold: the torch wheel brings its own CUDA libraries. python3-dev and a C compiler stay
+# in the image because Triton builds a small extension at run time (upstream docker/Dockerfile says the same).
+# Internet only while building.
+ARG BASE=docker.io/library/ubuntu:24.04@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55
+FROM ${BASE}
+RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-venv python3-dev build-essential \
+    ca-certificates && rm -rf /var/lib/apt/lists/*
+WORKDIR /app
+# as upstream's Dockerfile: install the dependency set from pyproject.toml alone, then add the source
+COPY src/pyproject.toml /app/pyproject.toml
+COPY constraints.txt /opt/constraints.txt
+RUN python3 -m venv /opt/venv \
+ && /opt/venv/bin/pip install --no-cache-dir -c /opt/constraints.txt ".[cu12]" \
+ && /opt/venv/bin/pip freeze --exclude tabbyAPI > /opt/pip-freeze.txt
+COPY src/ /app/
+RUN useradd --uid 10001 --create-home tabby && mkdir -p /cache/triton /cache/torch-ext && chown -R tabby:tabby /cache
+USER tabby
+ENV PATH=/opt/venv/bin:$PATH HF_HUB_OFFLINE=1 HF_HUB_DISABLE_TELEMETRY=1 TRITON_CACHE_DIR=/cache/triton \
+    TORCH_EXTENSIONS_DIR=/cache/torch-ext PYTHONUNBUFFERED=1
+EXPOSE 5000
+ENTRYPOINT ["python3", "main.py"]

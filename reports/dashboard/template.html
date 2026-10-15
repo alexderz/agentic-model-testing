@@ -1,0 +1,462 @@
+<title>Titan Model Bake-off</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: one reading column (max 1180px) with a sticky section nav; data blocks run full column width. */
+:root {
+  --bg: #f3f4f1; --panel: #fbfbf9; --ink: #1c2328; --muted: #5d6a70; --line: #d6dbd8;
+  --accent: #0d6b72; --accent-soft: #d9ecec; --spy: #6a3f9c; --spy-soft: #ece4f6;
+  --pass: #2e7a4d; --pass-soft: #dcefe3; --partial: #a8721d; --partial-soft: #f6ead3; --fail: #b03a3a; --fail-soft: #f6dddd;
+  --f-display: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #12171a; --panel: #192024; --ink: #e3e8e6; --muted: #93a1a6; --line: #2c373c;
+  --accent: #5fc2c8; --accent-soft: #163236; --spy: #b896e6; --spy-soft: #2a2138;
+  --pass: #6cc28f; --pass-soft: #17301f; --partial: #e0ac55; --partial-soft: #33281a; --fail: #ec7f7f; --fail-soft: #3a1f1f; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #12171a; --panel: #192024; --ink: #e3e8e6; --muted: #93a1a6; --line: #2c373c;
+  --accent: #5fc2c8; --accent-soft: #163236; --spy: #b896e6; --spy-soft: #2a2138;
+  --pass: #6cc28f; --pass-soft: #17301f; --partial: #e0ac55; --partial-soft: #33281a; --fail: #ec7f7f; --fail-soft: #3a1f1f; color-scheme: dark }
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--ink); font: 15px/1.55 var(--f-body); margin: 0 }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 64px; display: grid; gap: 44px }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; line-height: 1.15 }
+h1 { font-size: clamp(30px, 5vw, 46px); font-weight: 700; letter-spacing: -.01em }
+h2 { font-size: 26px; font-weight: 600 }
+h3 { font-size: 18px; font-weight: 600 }
+p { margin: 0; max-width: 72ch }
+.eyebrow { font: 500 12px/1 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted) }
+.mono, td.num, .num { font-family: var(--f-mono); font-variant-numeric: tabular-nums }
+a { color: var(--accent) }
+header { display: grid; gap: 14px }
+.lede { font-size: 17px; color: var(--ink) }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 18px; color: var(--muted); font: 13px var(--f-mono) }
+.caveat { border-left: 3px solid var(--partial); background: var(--partial-soft); padding: 14px 16px; border-radius: 4px; display: grid; gap: 6px }
+.caveat strong { font-family: var(--f-display); font-size: 16px }
+nav.toc { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line);
+  display: flex; gap: 4px 18px; flex-wrap: wrap; padding-block: 10px; font: 500 13px var(--f-mono) }
+nav.toc a { color: var(--muted); text-decoration: none } nav.toc a:hover, nav.toc a:focus-visible { color: var(--accent) }
+section { display: grid; gap: 18px; scroll-margin-top: 56px }
+.sec-head { display: grid; gap: 6px }
+.sec-head p { color: var(--muted) }
+.picks { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px }
+.pick { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 16px; display: grid; gap: 8px; align-content: start; min-width: 0 }
+.pick.unc { border-color: color-mix(in srgb, var(--spy) 45%, var(--line)) }
+.pick .role { font: 600 12px var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--accent) }
+.pick.unc .role { color: var(--spy) }
+.pick .name { font: 600 19px/1.2 var(--f-display); display: flex; gap: 8px; align-items: center; flex-wrap: wrap }
+.pick .why { color: var(--muted); font-size: 14px }
+.pick .verdict { font-size: 14.5px }
+.picks { grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)) }
+.pick .stats { display: flex; gap: 6px 14px; flex-wrap: wrap; font: 12.5px var(--f-mono); color: var(--ink) }
+.spy { display: inline-flex; align-items: center; gap: 4px; background: var(--spy-soft); color: var(--spy); border-radius: 999px;
+  padding: 1px 8px 1px 5px; font: 600 11px/18px var(--f-mono); letter-spacing: .03em; white-space: nowrap }
+.spy svg { width: 16px; height: 16px; flex: none }
+.pill { display: inline-block; border-radius: 3px; padding: 0 7px; font: 600 11.5px/19px var(--f-mono); white-space: nowrap }
+.pill.pass { background: var(--pass-soft); color: var(--pass) } .pill.partial { background: var(--partial-soft); color: var(--partial) }
+.pill.fail { background: var(--fail-soft); color: var(--fail) } .pill.none { color: var(--muted) }
+.tbl-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; background: var(--panel) }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px }
+th, td { padding: 7px 10px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top }
+th { font: 600 11.5px var(--f-mono); letter-spacing: .04em; text-transform: uppercase; color: var(--muted); background: var(--panel);
+  position: sticky; top: 0; white-space: nowrap }
+th.sortable { cursor: pointer } th.sortable:hover { color: var(--accent) } th[aria-sort] { color: var(--accent) }
+td.num, th.num { text-align: right }
+tr:last-child td { border-bottom: 0 }
+td .sub { color: var(--muted); font-size: 12px }
+.note-cell { max-width: 38ch; color: var(--muted); font-size: 12.5px }
+.controls { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center }
+.controls label { font: 12.5px var(--f-mono); color: var(--muted); display: inline-flex; gap: 6px; align-items: center }
+select, input[type="search"] { font: 13px var(--f-body); color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 5px 8px }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 5px; overflow: hidden }
+.seg button { font: 500 12.5px var(--f-mono); background: var(--panel); color: var(--muted); border: 0; padding: 6px 11px; cursor: pointer }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--bg) }
+button:focus-visible, select:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+.chart-box { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 12px; display: grid; gap: 8px; min-width: 0 }
+.chart-box svg { width: 100%; height: auto; display: block }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font: 12px var(--f-mono); color: var(--muted) }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; vertical-align: -1px }
+.tip { position: fixed; pointer-events: none; background: var(--ink); color: var(--bg); font: 12px/1.4 var(--f-mono); padding: 7px 9px; border-radius: 4px; max-width: 300px; z-index: 20 }
+.bar { height: 8px; background: var(--accent); border-radius: 2px; display: inline-block; vertical-align: middle; margin-right: 6px; opacity: .8 }
+.timeline { display: grid; gap: 0; border-left: 2px solid var(--line); margin-left: 6px }
+.tl { display: grid; grid-template-columns: 112px 1fr; gap: 6px 18px; padding: 0 0 22px 18px; position: relative }
+.tl::before { content: ""; position: absolute; left: -7px; top: 5px; width: 12px; height: 12px; border-radius: 50%; background: var(--panel); border: 2px solid var(--accent) }
+.tl .d { font: 12.5px var(--f-mono); color: var(--muted) } .tl .era { font: 600 12px var(--f-mono); color: var(--accent); text-transform: uppercase; letter-spacing: .05em }
+.tl .body { display: grid; gap: 4px; min-width: 0 } .tl .why { color: var(--muted); font-size: 14px }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px }
+.kv { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; font-size: 14px }
+.kv dt { font: 12.5px var(--f-mono); color: var(--muted) } .kv dd { margin: 0 }
+ul.caveats { margin: 0; padding-left: 18px; display: grid; gap: 8px; max-width: 80ch }
+.foot { color: var(--muted); font: 12.5px var(--f-mono) }
+.rlog { border: 1px solid var(--line); border-radius: 6px; background: var(--panel) }
+.rlog .day { font: 600 11.5px var(--f-mono); letter-spacing: .05em; text-transform: uppercase; color: var(--muted); padding: 9px 12px 5px; border-bottom: 1px solid var(--line) }
+.rl { display: grid; grid-template-columns: 46px 78px 1fr; gap: 4px 10px; padding: 7px 12px; border-bottom: 1px solid var(--line); font-size: 13.5px; align-items: baseline }
+.rl:last-child { border-bottom: 0 }
+.rl .t { font: 12.5px var(--f-mono); color: var(--muted) } .rl .k { font: 600 11px var(--f-mono); letter-spacing: .04em; text-transform: uppercase; color: var(--accent) }
+.rl .k.result { color: var(--muted) } .rl .b { min-width: 0 } .rl .b .sub { color: var(--muted); font-size: 12.5px }
+button.more { font: 500 12.5px var(--f-mono); background: var(--panel); color: var(--muted); border: 1px solid var(--line); border-radius: 5px; padding: 6px 11px; cursor: pointer }
+button.more:hover { color: var(--accent) }
+@media (max-width: 640px) { .rl { grid-template-columns: 46px 1fr } .rl .k { grid-column: 2 } .rl .b { grid-column: 1 / -1 } .tl { grid-template-columns: 1fr } h2 { font-size: 22px } }
+@media (prefers-reduced-motion: no-preference) { .pick { transition: transform .15s } .pick:hover { transform: translateY(-1px) } }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="spy" viewBox="0 0 24 24">
+    <path d="M4 10.2h16l-1.8-5.1c-.3-.8-1.1-1.2-1.9-.9l-2.3.8a3 3 0 0 1-2 0l-2.3-.8c-.8-.3-1.6.1-1.9.9z" fill="currentColor"/>
+    <rect x="2" y="10" width="20" height="1.8" rx=".9" fill="currentColor"/>
+    <path d="M5 14h5.2a1.25 1.25 0 0 1 1.2 1.3l-.3 1.6A2.4 2.4 0 0 1 8.7 19H7.4A2.4 2.4 0 0 1 5 16.7zM19 14h-5.2a1.25 1.25 0 0 0-1.2 1.3l.3 1.6a2.4 2.4 0 0 0 2.4 2.1h1.3a2.4 2.4 0 0 0 2.4-2.3z" fill="currentColor"/>
+    <path d="M11.2 15.2h1.6" stroke="currentColor" stroke-width="1.2"/>
+  </symbol>
+</svg>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">titan · RTX 3090 24 GB · local inference</div>
+    <h1>Titan Model Bake-off</h1>
+    <p class="lede">Which local models can do real agent work on one 24 GB card, how fast, and with what settings. Every result here comes from a model writing software inside a sandbox and that software being run and graded.</p>
+    <div class="meta" id="meta"></div>
+    <div class="caveat" role="note">
+      <strong>A living snapshot, not an apples-to-apples benchmark.</strong>
+      <p>The tests, grading, engines and client settings changed as we learned, and every model ran at its own best fit on the card. Each row is one run. Read results as pass, partial or fail, and see <a href="#timeline">how the tests changed</a> before comparing rows from different eras.</p>
+    </div>
+  </header>
+
+  <nav class="toc" aria-label="Sections">
+    <a href="#recent">Recent</a><a href="#picks">Picks</a><a href="#families">By family</a><a href="#landscape">Landscape</a><a href="#runs">All runs</a><a href="#test3">Test 3</a><a href="#vision">Vision</a>
+    <a href="#engines">Engines</a><a href="#timeline">How the tests changed</a><a href="#method">Method</a>
+  </nav>
+
+  <section id="recent">
+    <div class="sec-head"><div class="eyebrow">Log</div><h2>Recent happenings</h2>
+      <p>Newest first: graded test results with their key numbers, and changes to the queue, models, engines, settings, tests and graders.</p></div>
+    <div class="controls"><div class="seg" id="rc-seg" role="group" aria-label="Show">
+      <button data-k="all" aria-pressed="true">All</button><button data-k="result" aria-pressed="false">Results</button><button data-k="change" aria-pressed="false">Changes</button></div></div>
+    <div class="rlog" id="rc"></div>
+    <div><button class="more" id="rc-more" type="button">Show older</button></div>
+  </section>
+
+  <section id="picks">
+    <div class="sec-head"><div class="eyebrow">Recommendations</div><h2>What to run today</h2>
+      <p>"Competent" means it passed test 2: it built an MCP server a real client could connect to and call. "Smartest" weighs how much working server and how many tests it produced.</p></div>
+    <div class="picks" id="picks-overall"></div>
+    <div class="sec-head"><h3><span class="spy"><svg><use href="#spy"/></svg>uncensored</span>&nbsp; For red-team work on our own software</h3></div>
+    <div class="picks" id="picks-unc"></div>
+  </section>
+
+  <section id="families">
+    <div class="sec-head"><div class="eyebrow">Per family</div><h2>Best in each model family</h2></div>
+    <div class="tbl-wrap"><table id="fam-table"></table></div>
+  </section>
+
+  <section id="landscape">
+    <div class="sec-head"><div class="eyebrow">The field</div><h2>Speed, quality, context and offload</h2>
+      <p>Speed is set by how much of the model sits in VRAM. Models that fit the GPU ran at 25 to 150 tok/s; models that keep experts in system RAM ran at 3 to 25 tok/s, whatever their size. The engine moves a model within its tier by 2 to 5 times.</p></div>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Test">
+        <button type="button" id="ch-t2" aria-pressed="true">Test 2 · MCP server</button><button type="button" id="ch-t1" aria-pressed="false">Test 1 · CLI</button>
+      </div>
+      <label><input type="checkbox" id="ch-unc"> uncensored only</label>
+    </div>
+    <div class="chart-box">
+      <svg id="chart" viewBox="0 0 900 420" role="img" aria-label="Scatter of speed against result size"></svg>
+      <div class="legend" id="chart-legend"></div>
+    </div>
+    <div class="sec-head"><h3>Fit on the card</h3><p>Best passing run per model: context it ran at, how many expert layers sat in system RAM (<span class="mono">-ncmoe</span>), KV cache type, and speed over the whole run.</p></div>
+    <div class="tbl-wrap"><table id="fit-table"></table></div>
+  </section>
+
+  <section id="runs">
+    <div class="sec-head"><div class="eyebrow">Every graded run</div><h2>All runs</h2>
+      <p>Test 1: a Python CLI for the Home Assistant API, graded by running it (5 checks) plus its own tests. Test 2: a Rust MCP server, graded by connecting to it as a client. Click a column to sort.</p></div>
+    <div class="controls">
+      <label>test <select id="f-test"><option value="all">both</option><option value="2">test 2</option><option value="1">test 1</option></select></label>
+      <label>family <select id="f-fam"></select></label>
+      <label>engine <select id="f-eng"></select></label>
+      <label>result <select id="f-ver"><option value="all">any</option><option value="pass">pass</option><option value="partial">partial</option><option value="fail">fail</option></select></label>
+      <label><input type="checkbox" id="f-unc"> uncensored only</label>
+      <label>search <input type="search" id="f-q" placeholder="model or case"></label>
+    </div>
+    <p class="sub">Failed builds: Rust builds that failed out of all builds (Python runs show error outputs instead). Errors / 1k lines: compiler and interpreter errors the model hit on the way, per 1,000 lines of its final code. Lower means cleaner code from the start; a model that brute-forces against the compiler scores high.</p>
+    <div class="tbl-wrap"><table id="runs-table"></table></div>
+    <div class="foot" id="runs-count"></div>
+  </section>
+
+  <section id="test3">
+    <div class="sec-head"><div class="eyebrow">Test 3 · subagents</div><h2>Use an MCP server through a subagent, and fix it</h2>
+      <p class="sub">The model gets an MCP server's source and a probe subagent whose only tools are that server's. It must get 14 facts through the probe, check them against the REST API, and fix the server if it is wrong. 3G gives it a known-good server, 3O its own server from test 2. Rubric: six items scored 0-2 from the transcript (brief, sizing, structured output, checking, handling a failing probe, trust-or-fix decision).</p></div>
+    <div class="tbl-wrap"><table id="t3-table"></table></div>
+    <p class="sub" id="t3-sum"></p>
+  </section>
+
+  <section id="vision">
+    <div class="sec-head"><div class="eyebrow">Vision</div><h2>Which models see images, and what it costs</h2>
+      <p id="vis-lede"></p></div>
+    <div class="tbl-wrap"><table id="vis-table"></table></div>
+    <div class="chart-box"><h3>What loading a vision head costs</h3><ul class="caveats" id="vis-method"></ul></div>
+  </section>
+
+  <section id="engines">
+    <div class="sec-head"><div class="eyebrow">Engines</div><h2>Same weights, different engines</h2>
+      <p>Short-prompt probe at 49k context, thinking off, temperature 0 (decode, a copy-heavy "quote" answer, and prefill, tok/s). Real agent runs average lower: they include long prompts, tools and thinking.</p></div>
+    <div class="tbl-wrap"><table id="ab-table"></table></div>
+    <p class="sub" id="ab-failed"></p>
+    <div class="grid2" id="engine-notes"></div>
+  </section>
+
+  <section id="timeline">
+    <div class="sec-head"><div class="eyebrow">History</div><h2>How the tests changed</h2>
+      <p>Each change came from a failure that turned out to be the harness, not the model. Rows from different eras are not directly comparable.</p></div>
+    <div class="timeline" id="tl"></div>
+  </section>
+
+  <section id="method">
+    <div class="sec-head"><div class="eyebrow">Method</div><h2>How to read this</h2></div>
+    <div class="grid2">
+      <div class="chart-box"><h3>Caveats</h3><ul class="caveats" id="caveats"></ul></div>
+      <div class="chart-box"><h3>Rig</h3><dl class="kv" id="hw"></dl>
+        <h3 style="margin-top:10px">Settings glossary</h3>
+        <dl class="kv">
+          <dt>-c</dt><dd>context window in tokens</dd>
+          <dt>-ncmoe N</dt><dd>keep the experts of N layers in system RAM (MoE models); always with -lm none</dd>
+          <dt>KV f16 / q8_0</dt><dd>attention cache precision; f16 costs VRAM, not speed</dd>
+          <dt>budget</dt><dd>thinking cap: min(24k, reply cap − 6k)</dd>
+          <dt>long horizon</dt><dd>8 h cap, temp 1.0 / top-p 0.95 / top-k 20, 26k thinking budget</dd>
+        </dl>
+      </div>
+    </div>
+    <p class="foot" id="gen"></p>
+  </section>
+</div>
+<div class="tip" id="tip" hidden></div>
+
+<script>
+const D = /*__DATA__*/null;
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const M = D.models;
+const spy = '<span class="spy" title="uncensored"><svg><use href="#spy"/></svg>uncensored</span>';
+const label = id => M[id] ? M[id].label : id;
+const isUnc = id => M[id] && M[id].uncensored;
+const pill = v => v ? `<span class="pill ${v}">${v}</span>` : '<span class="pill none">–</span>';
+const fmtCtx = c => c ? (c % 1024 === 0 ? c / 1024 + "k" : Math.round(c / 1000) + "k") : "–";
+const fmt = (v, d = 0) => v == null ? "–" : Number(v).toFixed(d);
+const runsOf = id => D.runs.filter(r => r.model === id);
+// vision of one setup: what the model can see, and where this setup keeps its head (blind when it loads none)
+const visCell = id => { const v = M[id]?.vision; if (!v) return "–"; const s = v.setup;
+  const tok = s && s.shot_tokens ? ` · ${s.tokens_src === "est." ? "~" : ""}${s.shot_tokens} tokens per screenshot${s.tokens_src === "est." ? " est." : ""}` : "";
+  return `${esc(v.label)}<div class="sub">${s ? "head: " + esc(s.where) + " · " + esc(s.extra_vram) + (s.extra_src === "est." ? " est." : "") + tok
+    : (v.status && v.status !== "none" ? (v.loadable === false ? "no engine we have loads its head" : "this setup: blind") : "")}</div>`; };
+function best(id, test) {
+  const rs = runsOf(id).filter(r => r.test === test);
+  const rank = {pass: 2, partial: 1, fail: 0};
+  return rs.sort((a, b) => rank[b.verdict] - rank[a.verdict] || (test === 2 ? (b.tools - a.tools) : 0) || ((b.tests_pass || 0) - (a.tests_pass || 0)))[0];
+}
+
+$("#meta").innerHTML = [`snapshot ${esc(D.generated)}`, `${D.runs.length} graded runs`, `${Object.keys(M).length} model setups`,
+  `${new Set(Object.values(M).map(m => m.family)).size} families`].map(x => `<span>${x}</span>`).join("");
+
+function pickCard(p, unc) {
+  // three rows per card (owner comment): one-line verdict, stats from the cited run, one tradeoff line
+  const r = D.runs.find(x => x.case === (p.cases || [])[0]) || best(p.model, 2) || best(p.model, 1);
+  const st = [];
+  if (r) {
+    st.push(M[r.model]?.engine || "");
+    if (r.test === 2) st.push(`${r.tools} tools`); else st.push(`${r.checks}/5 checks`);
+    if (r.tests_pass != null) st.push(`${r.tests_pass} tests`);
+    if (r.minutes) st.push(`${r.minutes} min`);
+    if (r.tps) st.push(`${fmt(r.tps, 1)} tok/s`);
+    if (r.ctx) st.push(`${fmtCtx(r.ctx)} context`);
+  }
+  return `<article class="pick${unc ? " unc" : ""}"><div class="role">${esc(p.role)}</div>
+    <div class="name">${esc(label(p.model))}${isUnc(p.model) ? spy : ""}</div>
+    <p class="verdict">${esc(p.verdict)}</p>
+    <div class="stats">${st.filter(Boolean).map(x => `<span>${esc(x)}</span>`).join("")}</div>
+    <p class="why">${esc(p.tradeoff)}</p></article>`;
+}
+$("#picks-overall").innerHTML = D.recs.overall.map(p => pickCard(p, false)).join("");
+$("#picks-unc").innerHTML = D.recs.uncensored.map(p => pickCard(p, true)).join("");
+
+const cell = (id, none) => id ? `${esc(label(id))}${isUnc(id) ? " " + spy : ""}` : `<span class="sub">${none || "none tested"}</span>`;
+$("#fam-table").innerHTML = `<thead><tr><th>Family</th><th>Smartest</th><th>Fastest competent</th><th>Uncensored smartest</th><th>Uncensored fastest</th><th>Notes</th></tr></thead><tbody>` +
+  D.recs.families.map(f => `<tr><td><strong>${esc(f.family)}</strong></td><td>${cell(f.smartest)}</td><td>${cell(f.fastest, "none passed test 2")}</td><td>${cell(f.unc_smartest)}</td><td>${cell(f.unc_fastest)}</td><td class="note-cell">${esc(f.note)}</td></tr>`).join("") + "</tbody>";
+
+/* ---------- chart ---------- */
+let chartTest = 2;
+const tip = $("#tip");
+function drawChart() {
+  const unc = $("#ch-unc").checked;
+  const rs = D.runs.filter(r => r.test === chartTest && r.tps && (!unc || isUnc(r.model)));
+  const W = 900, H = 420, L = 60, R = 20, T = 18, B = 48;
+  const yv = r => chartTest === 2 ? (r.tools || 0) : (r.tests_pass || 0);
+  const ymax = chartTest === 2 ? 14 : Math.max(50, Math.ceil(Math.max(...rs.map(yv), 1) / 50) * 50);
+  const xmin = 2, xmax = 200, lx = v => L + (Math.log10(v) - Math.log10(xmin)) / (Math.log10(xmax) - Math.log10(xmin)) * (W - L - R);
+  const ly = v => H - B - (v / ymax) * (H - T - B);
+  const css = getComputedStyle(document.documentElement), c = n => css.getPropertyValue(n).trim();
+  let g = "";
+  for (const t of [2, 5, 10, 20, 50, 100, 200]) g += `<line x1="${lx(t)}" x2="${lx(t)}" y1="${T}" y2="${H - B}" stroke="${c("--line")}"/><text x="${lx(t)}" y="${H - B + 18}" fill="${c("--muted")}" font-size="12" text-anchor="middle" font-family="IBM Plex Mono, monospace">${t}</text>`;
+  const step = chartTest === 2 ? 2 : (ymax <= 100 ? 25 : 50);
+  for (let v = 0; v <= ymax; v += step) g += `<line x1="${L}" x2="${W - R}" y1="${ly(v)}" y2="${ly(v)}" stroke="${c("--line")}"/><text x="${L - 8}" y="${ly(v) + 4}" fill="${c("--muted")}" font-size="12" text-anchor="end" font-family="IBM Plex Mono, monospace">${v}</text>`;
+  g += `<text x="${(W + L) / 2}" y="${H - 8}" fill="${c("--muted")}" font-size="12.5" text-anchor="middle" font-family="IBM Plex Mono, monospace">tok/s over the whole run (log scale)</text>`;
+  g += `<text transform="translate(16 ${(H - B + T) / 2}) rotate(-90)" fill="${c("--muted")}" font-size="12.5" text-anchor="middle" font-family="IBM Plex Mono, monospace">${chartTest === 2 ? "tools the server exposes" : "own tests passing"}</text>`;
+  const col = {pass: c("--pass"), partial: c("--partial"), fail: c("--fail")};
+  rs.forEach((r, i) => {
+    const x = lx(Math.min(Math.max(r.tps, xmin), xmax)), y = ly(Math.min(yv(r), ymax));
+    const u = isUnc(r.model);
+    g += `<circle data-i="${i}" cx="${x}" cy="${y}" r="${u ? 7 : 6}" fill="${col[r.verdict]}" fill-opacity=".8" stroke="${u ? c("--spy") : c("--panel")}" stroke-width="${u ? 3 : 1.5}" tabindex="0"/>`;
+  });
+  const svg = $("#chart"); svg.innerHTML = g;
+  svg.querySelectorAll("circle").forEach(el => {
+    const r = rs[+el.dataset.i];
+    const show = e => { tip.hidden = false;
+      tip.innerHTML = `<strong>${esc(label(r.model))}</strong>${isUnc(r.model) ? " · uncensored" : ""}<br>${esc(r.case)}<br>${r.verdict} · ${fmt(r.tps, 1)} tok/s · ${r.minutes ?? "–"} min<br>${chartTest === 2 ? (r.tools + " tools · " + (r.tests_pass ?? "–") + " tests") : (r.checks + "/5 · " + (r.tests_pass ?? "–") + " tests")}<br>${esc(M[r.model].engine)} · ctx ${fmtCtx(r.ctx)}`;
+      const b = el.getBoundingClientRect(); tip.style.left = Math.min(b.right + 8, innerWidth - 310) + "px"; tip.style.top = (b.top - 6) + "px"; };
+    el.addEventListener("mouseenter", show); el.addEventListener("focus", show);
+    el.addEventListener("mouseleave", () => tip.hidden = true); el.addEventListener("blur", () => tip.hidden = true);
+  });
+  $("#chart-legend").innerHTML = `<span><i style="background:var(--pass)"></i>pass</span><span><i style="background:var(--partial)"></i>partial</span><span><i style="background:var(--fail)"></i>fail</span><span><i style="background:transparent;border:3px solid var(--spy)"></i>uncensored</span><span>${rs.length} runs</span>`;
+}
+$("#ch-t2").onclick = () => { chartTest = 2; $("#ch-t2").setAttribute("aria-pressed", "true"); $("#ch-t1").setAttribute("aria-pressed", "false"); drawChart(); };
+$("#ch-t1").onclick = () => { chartTest = 1; $("#ch-t1").setAttribute("aria-pressed", "true"); $("#ch-t2").setAttribute("aria-pressed", "false"); drawChart(); };
+$("#ch-unc").onchange = drawChart;
+drawChart();
+matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", drawChart);
+
+/* ---------- fit table ---------- */
+(() => {
+  const rows = Object.keys(M).map(id => {
+    const ok = runsOf(id).filter(r => r.verdict !== "fail" && r.tps);
+    if (!ok.length) return null;
+    const r = ok.sort((a, b) => (b.test - a.test) || (b.tps - a.tps))[0];
+    return {id, r, tier: r.ncmoe > 0 || /Strata|SGLang/.test(M[id].engine) ? "experts in RAM" : "GPU-resident"};
+  }).filter(Boolean).sort((a, b) => b.r.tps - a.r.tps);
+  const mx = Math.max(...rows.map(x => x.r.tps));
+  $("#fit-table").innerHTML = `<thead><tr><th>Model</th><th>Arch</th><th>Engine · quant</th><th>Tier</th><th class="num">Context</th><th class="num">-ncmoe</th><th>KV</th><th>Vision</th><th>tok/s over run</th><th>Best result</th></tr></thead><tbody>` +
+    rows.map(({id, r, tier}) => `<tr><td>${esc(label(id))} ${isUnc(id) ? spy : ""}</td><td class="sub">${esc(M[id].arch)}</td><td class="sub">${esc(M[id].engine)} · ${esc(M[id].quant)}</td><td>${tier}</td>
+      <td class="num">${fmtCtx(r.ctx)}</td><td class="num">${r.ncmoe || "–"}</td><td class="mono">${r.kv || "–"}</td><td>${visCell(id)}</td>
+      <td class="num" style="white-space:nowrap"><span class="bar" style="width:${Math.max(3, r.tps / mx * 90)}px"></span>${fmt(r.tps, 1)}</td><td>t${r.test} ${pill(r.verdict)}</td></tr>`).join("") + "</tbody>";
+})();
+
+/* ---------- runs table ---------- */
+const fams = [...new Set(Object.values(M).map(m => m.family))].sort();
+const engs = [...new Set(Object.values(M).map(m => m.engine))].sort();
+$("#f-fam").innerHTML = `<option value="all">all</option>` + fams.map(f => `<option>${esc(f)}</option>`).join("");
+$("#f-eng").innerHTML = `<option value="all">all</option>` + engs.map(f => `<option>${esc(f)}</option>`).join("");
+let sortKey = "test", sortDir = -1;
+const cols = [
+  ["model", "Model", r => label(r.model)], ["test", "Test", r => r.test], ["verdict", "Result", r => ({pass: 2, partial: 1, fail: 0})[r.verdict]],
+  ["score", "Score", r => r.test === 2 ? r.tools : r.checks], ["tests_pass", "Own tests", r => r.tests_pass ?? -1],
+  ["tps", "tok/s", r => r.tps ?? -1], ["minutes", "Minutes", r => r.minutes ?? -1], ["compactions", "Compactions", r => r.compactions ?? -1],
+  ["fails", "Failed builds", r => r.struggle ? r.struggle.failed_compiles : -1], ["ekloc", "Errors / 1k lines", r => r.struggle && r.struggle.errors_per_kloc != null ? r.struggle.errors_per_kloc : -1],
+  ["ctx", "Context", r => r.ctx ?? -1], ["engine", "Engine", r => M[r.model].engine], ["note", "Notes", r => r.note || ""]];
+function strug(r) {
+  const s = r.struggle; if (!s) return "–";
+  if (s.compiles) return `${s.failed_compiles}/${s.compiles}`;
+  return s.py_error_outputs ? `${s.py_error_outputs} py` : "0";
+}
+function drawRuns() {
+  const t = $("#f-test").value, fa = $("#f-fam").value, en = $("#f-eng").value, ve = $("#f-ver").value, un = $("#f-unc").checked, q = $("#f-q").value.toLowerCase();
+  let rs = D.runs.filter(r => (t === "all" || r.test == t) && (fa === "all" || M[r.model].family === fa) && (en === "all" || M[r.model].engine === en)
+    && (ve === "all" || r.verdict === ve) && (!un || isUnc(r.model)) && (!q || (r.case + " " + label(r.model)).toLowerCase().includes(q)));
+  const k = cols.find(c => c[0] === sortKey)[2];
+  rs.sort((a, b) => { const x = k(a), y = k(b); return (x > y ? 1 : x < y ? -1 : 0) * sortDir || ((b.tps || 0) - (a.tps || 0)); });
+  $("#runs-table").innerHTML = `<thead><tr>${cols.map(c => `<th class="sortable${["score","tests_pass","tps","minutes","compactions","ctx","fails","ekloc"].includes(c[0]) ? " num" : ""}" data-k="${c[0]}"${c[0] === sortKey ? ` aria-sort="${sortDir > 0 ? "ascending" : "descending"}"` : ""}>${c[1]}${c[0] === sortKey ? (sortDir > 0 ? " ↑" : " ↓") : ""}</th>`).join("")}</tr></thead><tbody>` +
+    rs.map(r => `<tr><td>${esc(label(r.model))} ${isUnc(r.model) ? spy : ""}<div class="sub mono">${esc(r.case)}${r.agent === "Pi" ? " · Pi agent" : ""}${r.trust ? ` · test 2T (planted docs): <strong>${esc(r.trust)}</strong>` : ""}</div></td>
+      <td class="mono">t${r.test}</td><td>${pill(r.verdict)}</td>
+      <td class="num">${r.test === 2 ? (r.tools || 0) + " tools" : r.checks + "/5"}</td><td class="num">${r.tests_pass ?? "–"}</td>
+      <td class="num">${fmt(r.tps, 1)}</td><td class="num">${r.minutes ?? "–"}</td><td class="num">${r.compactions ?? "–"}</td><td class="num">${strug(r)}</td><td class="num">${r.struggle && r.struggle.errors_per_kloc != null ? fmt(r.struggle.errors_per_kloc, 1) : "–"}</td><td class="num">${fmtCtx(r.ctx)}</td>
+      <td class="sub">${esc(M[r.model].engine)}</td><td class="note-cell">${esc(r.note || (r.test === 1 && r.subcmds ? r.subcmds + " subcommands" : ""))}</td></tr>`).join("") + "</tbody>";
+  $("#runs-count").textContent = `${rs.length} of ${D.runs.length} runs`;
+  $("#runs-table").querySelectorAll("th.sortable").forEach(th => th.onclick = () => { const k2 = th.dataset.k; sortDir = sortKey === k2 ? -sortDir : -1; sortKey = k2; drawRuns(); });
+}
+["#f-test", "#f-fam", "#f-eng", "#f-ver", "#f-unc"].forEach(s => $(s).addEventListener("change", drawRuns));
+$("#f-q").addEventListener("input", drawRuns);
+drawRuns();
+
+/* ---------- test 3 ---------- */
+{ const T = D.test3 || [];
+  $("#t3-table").innerHTML = `<thead><tr><th>Model</th><th>Server</th><th class="num">Facts (MCP)</th><th class="num">Probes</th><th class="num">Probe calls</th><th>Changed the server</th><th class="num">Rubric</th><th class="num">tok/s</th><th class="num">Min</th><th>How it ran the probe</th></tr></thead><tbody>` +
+    T.map(r => `<tr><td>${esc(label(r.model))} ${isUnc(r.model) ? spy : ""}</td><td class="mono">${r.flavor === "3G" ? "3G known-good" : "3O own"}</td>
+      <td class="num">${esc(r.mcp_facts)}</td><td class="num">${r.probe_sessions}</td><td class="num">${r.probe_calls}</td>
+      <td>${r.changed ? `fixed: ${esc(r.fixed_tools)} tools, ${esc(r.fixed_tests)} tests pass` : "no"}</td>
+      <td class="num">${r.rubric == null ? "–" : r.rubric + "/12"}</td><td class="num">${fmt(r.tps, 1)}</td><td class="num">${fmt(r.minutes)}</td>
+      <td class="sub">${esc(r.note)}</td></tr>`).join("") + "</tbody>";
+  $("#t3-sum").textContent = T.length ? `${T.length} runs. Every run got all 14 facts and scored 12/12, so test 3 does not yet separate these models; speed and how deep each one checked do. Every 3O run found and fixed a real defect in its own server, and one 3G run found one in the known-good server (list_services missed the newer target.entity shape).` : ""; }
+
+/* ---------- vision ---------- */
+{ const V = D.vision || {records: [], method: []};
+  const est = src => src === "est." ? ' <span class="sub">est.</span>' : (src === "measured" ? ' <span class="sub">measured</span>' : "");
+  const setupLine = s => `<div><span>${esc(M[s.entry] ? label(s.entry) : (M[s.source] ? label(s.source) + " + vision" : s.entry))}</span>${s.status === "planned" ? ' <span class="sub">(planned, not configured)</span>' : ""}<div class="sub">head: ${esc(s.where)} · VRAM ${esc(s.extra_vram)}${est(s.extra_src)}${s.ram ? " · " + esc(s.ram) : ""}${s.encode_s != null ? ` · ${fmt(s.encode_s, 1)} s per screenshot request` : ""}${s.probe && s.probe !== "ok" ? " · vision probe: " + esc(s.probe) : ""}${s.two_images && s.two_images !== "ok" ? " · two images: " + esc(s.two_images) : ""}${s.errors ? " · " + esc(s.errors) : ""}</div></div>`;
+  const tok = r => { const m = r.setups.find(s => s.tokens_src === "measured");
+    return m ? `${m.shot_tokens}${est("measured")}` : (r.shot_tokens ? `~${r.shot_tokens}${est("est.")}` : "–"); };
+  const nSetups = st => V.records.reduce((n, r) => n + r.setups.filter(s => s.status === st).length, 0);
+  const withSetup = V.records.filter(r => r.setups.length), configured = V.records.filter(r => r.setups.some(s => s.status === "configured"));
+  const unwired = V.records.filter(r => r.status && r.status !== "none" && !r.setups.length);
+  $("#vis-lede").textContent = `Of the ${V.records.length} models in this report, ${withSetup.length} have a setup that loads a vision head or tower: `
+    + `${configured.length} with one configured today (${nSetups("configured")} setups), the rest only with setups planned for test 8 (${nSetups("planned")} planned). `
+    + `${unwired.length} more have a head or tower that no setup loads, so they run blind here. `
+    + (V.smoke ? `Measured setups: ${V.smoke}; the rest are estimates.` : "No image has been sent to any of them yet: VRAM and token figures are estimates.");
+  const order = {head: 0, native: 1, "base-head-unverified": 2, none: 3};
+  $("#vis-table").innerHTML = `<thead><tr><th>Model</th><th>Vision</th><th>Head</th><th class="num">Head size</th><th class="num">Tokens per 1280x720 screenshot</th><th>Setups that load it</th></tr></thead><tbody>` +
+    [...V.records].sort((a, b) => (order[a.status] ?? 4) - (order[b.status] ?? 4) || b.setups.length - a.setups.length || a.model.localeCompare(b.model)).map(r =>
+      `<tr><td>${esc(r.model)}</td><td>${esc(r.label)}</td><td class="sub">${esc(r.projector || "–")}</td>
+      <td class="num">${r.head_gb ? fmt(r.head_gb, 2) + " GB" : (r.status === "native" ? '<span class="sub">in checkpoint</span>' : "–")}</td>
+      <td class="num">${r.status && r.status !== "none" ? tok(r) : "–"}</td>
+      <td class="note-cell">${r.setups.length ? r.setups.map(setupLine).join("") : (r.status && r.status !== "none" ? `<span class="sub">${r.loadable === false ? "none: no engine we have loads this head" : "none: every setup runs blind"}</span>` : "")}</td></tr>`).join("") + "</tbody>";
+  $("#vis-method").innerHTML = (V.method || []).map(c => `<li>${esc(c)}</li>`).join(""); }
+
+/* ---------- engines ---------- */
+$("#ab-table").innerHTML = `<thead><tr><th>Model</th><th>llama.cpp</th><th>Variant</th><th class="num">Decode</th><th class="num">Quote</th><th class="num">Prefill</th><th class="num">VRAM MiB</th></tr></thead><tbody>` +
+  D.ab.filter(a => a.decode).map(a => `<tr><td>${esc(M[a.model]?.label || a.model)} ${isUnc(a.model) || ["orcasaq2-cyber-27b","q38-27b-cyber","orcarouter-fn-uncensored","cyber-tiel-coder-35b"].includes(a.model) ? spy : ""}</td><td class="mono">${esc(a.engine)}</td><td>${esc(a.variant)}</td>
+    ${a.decode ? `<td class="num">${fmt(a.decode, 1)}</td><td class="num">${fmt(a.quote, 1)}</td><td class="num">${fmt(a.prefill, 0)}</td><td class="num">${a.vram || "–"}</td>` : `<td colspan="4" class="sub">did not load: ${esc(a.error.slice(-80))}</td>`}</tr>`).join("") + "</tbody>";
+{ const g = {};
+  D.ab.filter(a => !a.decode).forEach(a => { const k = M[a.model]?.label || a.model; const v = `${a.engine} ${a.variant}`; (g[k] = g[k] || []); if (!g[k].includes(v)) g[k].push(v); });
+  const ks = Object.keys(g);
+  $("#ab-failed").textContent = ks.length ? "Not measured: " + ks.map(k => `${k} (${g[k].join("; ")})`).join("; ") +
+    ". Each failed to load in the probe: llama.cpp could not fit it in GPU memory with the draft model attached." : ""; }
+$("#engine-notes").innerHTML = [
+  ["vLLM (HyperQwen)", "For models that fit the GPU. 2-4x llama.cpp on agent work: prefix cache, MTP drafting. MTP drafts at 150k context is the default setup."],
+  ["SGLang (EXL3)", "Flash-Next with a GPU expert cache: the best test-2 server of all runs. Single session only."],
+  ["Strata", "Flash-Next family at 30-45 tok/s decode. Set reasoning_budget_tokens (off by default) and allowed_hosts."],
+  ["llama.cpp 0.6", "2.5-4x faster than 0.4 on Flash-Next MoE; MTP drafts lift the dense 27B from 45 to 82 tok/s. Pass -fit off with hand-set offload."],
+].map(([h, p]) => `<div class="chart-box"><h3>${h}</h3><p class="sub">${p}</p></div>`).join("");
+
+/* ---------- recent happenings ---------- */
+{
+  const pill = v => `<span class="pill ${v}">${v}</span>`;
+  const sp = r => `${r.minutes ?? "–"} min · ${fmt(r.tps, 1)} tok/s`;
+  const items = (D.events || []).map(e => ({when: e.when, kind: e.kind, grp: "change", html: esc(e.text)}));
+  for (const r of D.runs) if (r.finished) items.push({when: r.finished, kind: "test " + r.test + (r.trust ? "T" : ""), grp: "result",
+    html: `${esc(label(r.model))} ${isUnc(r.model) ? spy : ""} ${pill(r.verdict)} <span class="sub">` + (r.test === 1
+      ? `${r.checks}/5 checks · ${r.tests_pass ?? "–"} tests pass${r.tests_fail ? `, ${r.tests_fail} fail` : ""} · ${r.subcmds} subcommands`
+      : `${r.builds ? "builds" : "no build"} · ${r.tools} tools · tool call ${esc(r.tool_call || "–")} · ${r.tests_pass ?? "–"} tests pass${r.trust ? ` · ${esc(r.trust)}` : ""}`)
+      + ` · ${sp(r)}</span><div class="sub mono">${esc(r.case)}</div>`});
+  for (const r of D.test3) if (r.finished) items.push({when: r.finished, kind: "test " + r.flavor, grp: "result",
+    html: `${esc(label(r.model))} ${isUnc(r.model) ? spy : ""} <span class="sub">${r.flavor === "3G" ? "known-good server" : "own server"} · facts ${esc(r.mcp_facts)} through the server, ${esc(r.api_facts)} through the API ${r.facts_file === "malformed" ? " (answer file in the wrong layout)" : r.facts_file === "no" ? " (no answer file)" : ""} · rubric ${r.rubric ?? "–"}/12 · ${sp(r)}</span><div class="sub mono">${esc(r.case)}</div>`});
+  items.sort((a, b) => a.when < b.when ? 1 : a.when > b.when ? -1 : 0);
+  let grp = "all", shown = 30;
+  const draw = () => {
+    const xs = items.filter(i => grp === "all" || i.grp === grp); let day = "", h = "";
+    for (const i of xs.slice(0, shown)) {
+      const d = i.when.slice(0, 10);
+      if (d !== day) { day = d; h += `<div class="day">${d}</div>`; }
+      h += `<div class="rl"><div class="t">${i.when.slice(11)}</div><div class="k ${i.grp}">${esc(i.kind)}</div><div class="b">${i.html}</div></div>`;
+    }
+    $("#rc").innerHTML = h || `<div class="rl"><div class="b sub">Nothing recorded yet.</div></div>`;
+    $("#rc-more").hidden = xs.length <= shown;
+    $("#rc-more").textContent = `Show older (${Math.max(0, xs.length - shown)} more)`;
+  };
+  $("#rc-seg").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return;
+    grp = b.dataset.k; shown = 30; for (const x of $("#rc-seg").children) x.setAttribute("aria-pressed", x === b); draw(); });
+  $("#rc-more").addEventListener("click", () => { shown += 60; draw(); });
+  draw();
+}
+
+/* ---------- timeline, method ---------- */
+$("#tl").innerHTML = D.timeline.map(t => `<div class="tl"><div><div class="d">${esc(t.date)}</div><div class="era">${esc(t.era)}</div></div>
+  <div class="body"><h3>${esc(t.title)}</h3><p>${esc(t.what)}</p><p class="why">Why: ${esc(t.why)}</p></div></div>`).join("");
+$("#caveats").innerHTML = D.caveats.map(c => `<li>${esc(c)}</li>`).join("");
+$("#hw").innerHTML = Object.entries(D.hardware).map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("");
+$("#gen").textContent = `Generated ${D.generated} by tools/build_report.py from the graded results in the model-bakeoff repo. Snapshot: re-generated as new runs are graded.`;
+</script>

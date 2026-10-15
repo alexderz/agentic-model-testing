@@ -1,0 +1,45 @@
+{
+ "case": "t5nm1-lcpp6-lfm25-24b-ud-q5kxl",
+ "model": "lcpp6-lfm25-24b-ud-q5kxl",
+ "test": "test5-orrery",
+ "max_tokens": 126976,
+ "timeout_s": 14400,
+ "started": "2026-10-15T14:15:44-0500",
+ "status": "ok",
+ "finish_reason": "stop",
+ "usage": {
+  "completion_tokens": 7496,
+  "prompt_tokens": 63,
+  "total_tokens": 7559,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  }
+ },
+ "timings": {
+  "cache_n": 0,
+  "prompt_n": 63,
+  "prompt_ms": 133.869,
+  "prompt_per_token_ms": 2.124904761904762,
+  "prompt_per_second": 470.60932702866234,
+  "predicted_n": 7496,
+  "predicted_ms": 34785.499,
+  "predicted_per_token_ms": 4.641160640426952,
+  "predicted_per_second": 215.46334580395123
+ },
+ "static": {
+  "svg_found": true,
+  "parses": true,
+  "bytes": 3356,
+  "animateTransform": 0,
+  "animate": 0,
+  "animateMotion": 0,
+  "keyframes": 2,
+  "script": 0,
+  "prose_chars_outside_svg": 1211
+ },
+ "wall_s": 39.2,
+ "first_token_s": 4.4,
+ "tok_s": 215.5,
+ "reply_chars": 4567,
+ "reasoning_chars": 23098
+}

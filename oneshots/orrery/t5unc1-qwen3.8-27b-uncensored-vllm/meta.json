@@ -1,0 +1,40 @@
+{
+ "case": "t5unc1-qwen3.8-27b-uncensored-vllm",
+ "model": "qwen3.8-27b-uncensored-vllm",
+ "test": "test5-orrery",
+ "max_tokens": 140000,
+ "timeout_s": 36000,
+ "started": "2026-10-15T05:07:59-0500",
+ "thinking_budget": 64000,
+ "status": "ok",
+ "finish_reason": "stop",
+ "usage": {
+  "prompt_tokens": 101,
+  "total_tokens": 80565,
+  "completion_tokens": 80464,
+  "prompt_tokens_details": {
+   "cached_tokens": 0,
+   "created_cache_tokens": 0
+  },
+  "completion_tokens_details": {
+   "reasoning_tokens": 63962
+  }
+ },
+ "timings": null,
+ "static": {
+  "svg_found": true,
+  "parses": true,
+  "bytes": 36374,
+  "animateTransform": 36,
+  "animate": 1,
+  "animateMotion": 0,
+  "keyframes": 0,
+  "script": 0,
+  "prose_chars_outside_svg": 1946
+ },
+ "wall_s": 915.9,
+ "first_token_s": 47.1,
+ "tok_s": 92.6,
+ "reply_chars": 38295,
+ "reasoning_chars": 168957
+}

@@ -1,0 +1,78 @@
+{
+ "schema": 1,
+ "generated": "2026-10-10T00:12:31-05:00",
+ "cmd_sha256": "68e7a18d73e1b15919eb5788f28b3e371022c1e437186657d7fdb75412d3f8a3",
+ "model_meta": "/home/operator/ai/models/llm/bonsai2-27b/bakeoff-model.json",
+ "model_file": "/home/operator/ai/models/llm/bonsai2-27b/Ternary-Bonsai-2-27B-PQ2_0.gguf",
+ "engine": "llama.cpp",
+ "engine_version": "prism",
+ "served_context": 253952,
+ "parallel": null,
+ "kv_type": "f16",
+ "thinking": {
+  "default_on": null,
+  "server_budget": 24000,
+  "request_field": null,
+  "budget_tokens": null
+ },
+ "sampling": {
+  "temp": 1.0,
+  "top_p": 0.95,
+  "top_k": 20.0,
+  "min_p": 0.05
+ },
+ "spec_decode": null,
+ "observability": {
+  "metrics": true,
+  "slots_debug": true,
+  "prompt_tokens_details": null,
+  "force_include_usage": null
+ },
+ "storage": "nas",
+ "multi_agent_ok": true,
+ "placement": {
+  "gpu_layers": 999,
+  "experts_on_cpu": 0,
+  "mmap": true,
+  "ram_pinned_gb": null
+ },
+ "serving": {
+  "port": 8098,
+  "proxy": "http://llamacpp-prism:8098",
+  "container_name": "llamacpp-prism",
+  "max_num_seqs": null,
+  "batch_tokens": null,
+  "prefix_caching": true,
+  "flash_attn": true
+ },
+ "speculative": {
+  "type": "none",
+  "draft_model": null,
+  "n_max": null,
+  "acceptance_note": null
+ },
+ "templates": {
+  "chat_template_kwargs": {
+   "reasoning_effort": "medium"
+  },
+  "reasoning_parser": null,
+  "tool_call_parser": null,
+  "reasoning_start": null,
+  "reasoning_end": null
+ },
+ "endpoints": {
+  "health": "/health",
+  "metrics": "/metrics",
+  "slots": "/slots",
+  "props": "/props"
+ },
+ "role": {
+  "daily_driver": null,
+  "bakeoff_status": "partial"
+ },
+ "model_id": "bonsai2-27b-pq2-med",
+ "report": {
+  "label": "Bonsai 2 27B PQ2 \u00b7 PrismML fork 2026-10-05, effort medium, 24k budget",
+  "arch": "dense 27B ternary"
+ }
+}

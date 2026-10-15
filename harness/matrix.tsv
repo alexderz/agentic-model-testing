@@ -1,0 +1,32 @@
+# case	model	flags	note
+# ---- ordered fastest -> slowest by expected throughput ----
+# tier 1: small dense / MoE with few active params, weights mostly on GPU
+# EXCLUDED mimo-9b-max: preflight FAIL. MiMo emits fully concatenated
+# <tool_call><function=x><parameter=y> XML; no parser in llama.cpp build
+# b1-4260903 terminates on it, so every turn runs to the output-token
+# limit and is rejected. Not a capability result -- excluded, not scored.
+#mimo-9b-max	mimo-v2.6-9b	-ngl 999 -c 196608	9B dense Q8, 64KB/tok, bandwidth-bound: expected fastest
+coder30-speed	qwen3-coder-30b-a3b	-ngl 999 -ncmoe 8 -c 65536	MoE 3.3B active, most weights on GPU
+coder30-max	qwen3-coder-30b-a3b	-ngl 999 -ncmoe 36 -c 262144	same model, context maxed, more experts on CPU
+qwen35b-speed	qwen3.6-35b-a3b	-ngl 999 -ncmoe 12 -c 131072	daily driver, measured 89.8 tok/s here
+qwen35b-max	qwen3.6-35b-a3b	-ngl 999 -ncmoe 16 -c 262144	daily driver, 256k native, measured 77.9 tok/s
+nano30-speed	nemotron3-nano-30b	-ngl 999 -ncmoe 24 -c 262144	hybrid Mamba, only 3KB/tok KV
+nano30-max	nemotron3-nano-30b	-ngl 999 -ncmoe 30 -c 1048576	full 1M native context
+# tier 2: mid dense / heavier offload
+devstral24-max	devstral-small-2-24b	-ngl 999 -c 98304	dense 24B; also tests whether Pi trips the Jinja bug OpenClaw hit
+glm47-speed	glm-4.7-flash	-ngl 999 -ncmoe 12 -c 65536	MLA, cheap KV
+glm47-max	glm-4.7-flash	-ngl 999 -ncmoe 30 -c 202752	native max context
+qwen38-27b-max	qwen3.8-27b	-ngl 999 -c 49152	dense 27B at 130KB/tok: context-starved by KV cost
+qwen36-27b-max	qwen3.6-27b	-ngl 999 -c 81920	dense 27B, desktop now off so more headroom
+# tier 3: heavy CPU offload, slow by construction
+glm45air-max	glm-4.5-air	-ngl 999 -ncmoe 47 -c 131072	106B-A12B, all experts on CPU
+super120-max	nemotron3-super-120b	-ngl 999 -ncmoe 88 -c 1048576	measured 10.5 tok/s; 4KB/tok so 1M is affordable
+qwen235-max	qwen3-235b-a22b	-ngl 999 -ncmoe 94 -c 40960	142GB > 125GB RAM: mmap thrash, expect very slow
+# ---- adjusted-setting reruns ----
+# qwen38-27b-max failed for a SETTING reason, not a capability one: it spent its
+# entire 32768-token output budget inside a <think> block and hit stop=length
+# before emitting any content or tool call. The original failure stays on record
+# in results/qwen38-27b-max. These retry the same model with the reasoning knob.
+qwen38-27b-nothink	qwen3.8-27b	-ngl 999 -c 49152 --reasoning off	thinking disabled entirely
+qwen38-27b-budget	qwen3.8-27b	-ngl 999 -c 49152 --reasoning-budget 4096	bounded thinking, then forced to answer
+qwen38-27b-budget16k	qwen3.8-27b	-ngl 999 -c 49152 --reasoning-budget 16384	generous budget: does it converge given room, or loop regardless

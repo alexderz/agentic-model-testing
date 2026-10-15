@@ -1,0 +1,51 @@
+{
+ "case": "t6unc1-q38-27b-cyber",
+ "model": "q38-27b-cyber",
+ "test": "test6-pagoda",
+ "max_tokens": 128000,
+ "timeout_s": 36000,
+ "started": "2026-10-14T22:25:57-0500",
+ "status": "ok",
+ "finish_reason": "stop",
+ "usage": {
+  "completion_tokens": 14340,
+  "prompt_tokens": 196,
+  "total_tokens": 14536,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  }
+ },
+ "timings": {
+  "cache_n": 0,
+  "prompt_n": 196,
+  "prompt_ms": 394.486,
+  "prompt_per_token_ms": 2.012683673469388,
+  "prompt_per_second": 496.84906435209365,
+  "predicted_n": 14340,
+  "predicted_ms": 334591.948,
+  "predicted_per_token_ms": 23.334399051537762,
+  "predicted_per_second": 42.855185504942284
+ },
+ "static": {
+  "html_found": true,
+  "bytes": 22490,
+  "complete": true,
+  "three_module": true,
+  "importmap": true,
+  "umd_three": false,
+  "external_urls": [
+   "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+   "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/",
+   "https://fonts.googleapis.com/css2?family=Rozha+One&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap",
+   "https://fonts.gstatic.com"
+  ],
+  "boxes": 3,
+  "instanced": true,
+  "prose_chars_outside_html": 993
+ },
+ "wall_s": 346.3,
+ "first_token_s": 11.7,
+ "tok_s": 42.9,
+ "reply_chars": 23451,
+ "reasoning_chars": 13022
+}

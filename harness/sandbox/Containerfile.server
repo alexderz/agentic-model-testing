@@ -1,0 +1,12 @@
+# Default server image: Python + psycopg (installed at build time; the server has no route out at
+# run time). All OS packages upgraded; the preflight rebuilds it when stale or vulnerable.
+FROM docker.io/library/python:3.12-slim
+RUN apt-get update && apt-get -y upgrade && rm -rf /var/lib/apt/lists/* \
+ && pip install --no-cache-dir --upgrade pip "psycopg[binary]==3.2.*" && useradd -r -u 1001 server \
+ && pip uninstall -y pip && rm -rf /usr/local/lib/python3.12/ensurepip
+# pip is removed after use: the server has no route to an index, and pip's vendored copies (msgpack, urllib3,
+# setuptools' pkg_resources) and the ensurepip wheel were the image's only fixable HIGH findings.
+COPY server/demo_api.py /server/demo_api.py
+# The uid must stay below EVALBOX_USERNS_SIZE (8192): ids above the range are not mapped.
+USER 1001
+CMD ["python3", "/server/demo_api.py"]

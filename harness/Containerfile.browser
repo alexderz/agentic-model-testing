@@ -1,0 +1,16 @@
+# localhost/bakeoff-browser -- the locked-down browser for test 8 (suites/test8/README.md): Playwright MCP driving the
+# same Chromium as the grader's renderer (it builds on localhost/bakeoff-render, so the browser binary is the one that
+# renders the frames that are graded). Only ever run with --network=none, a read-only root and its settings mounted
+# read-only (run-case-test8.sh); the agent reaches it over a unix socket. Build needs the network, runs do not.
+#   tools/podman-eb build -t localhost/bakeoff-browser -f /srv/bakeoff/model-bakeoff/Containerfile.browser /srv/bakeoff/model-bakeoff/sandbox
+FROM localhost/bakeoff-render
+# Node for Playwright MCP, socat to put its stdio on the socket. Installing these must not move Chromium: the build
+# fails if the Chromium version changes from the render image's.
+RUN chromium --version > /tmp/chromium-before \
+    && apt-get update && apt-get install -y --no-install-recommends nodejs npm socat \
+    && rm -rf /var/lib/apt/lists/* \
+    && chromium --version | cmp - /tmp/chromium-before && rm /tmp/chromium-before
+# Pinned; it drives /usr/bin/chromium, so Playwright's own browser download is skipped.
+ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+RUN npm install -g --no-fund --no-audit @playwright/mcp@0.0.83 && npm cache clean --force
+WORKDIR /tmp

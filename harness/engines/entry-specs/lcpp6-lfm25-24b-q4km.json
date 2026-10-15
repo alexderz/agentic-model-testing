@@ -1,0 +1,76 @@
+{
+ "schema": 1,
+ "generated": "2026-10-13T17:52:00-05:00",
+ "cmd_sha256": "9363dd819f20083bd1aba6c3dffa1be925cf0757dec8e3717d76f6524ae57fcc",
+ "model_meta": "/home/operator/ai/models/llm/lfm2.5-24b-a2b/bakeoff-model.json",
+ "model_file": "/home/operator/ai/models/llm/lfm2.5-24b-a2b/LFM2.5-24B-A2B-Q4_K_M.gguf",
+ "engine": "llama.cpp",
+ "engine_version": "0.6",
+ "served_context": 32768,
+ "parallel": null,
+ "kv_type": "f16",
+ "thinking": {
+  "default_on": true,
+  "server_budget": null,
+  "request_field": null,
+  "budget_tokens": null
+ },
+ "sampling": {
+  "temp": 0.1,
+  "top_k": 50
+ },
+ "spec_decode": null,
+ "observability": {
+  "metrics": true,
+  "slots_debug": true,
+  "prompt_tokens_details": null,
+  "force_include_usage": null
+ },
+ "storage": "nas",
+ "multi_agent_ok": false,
+ "placement": {
+  "gpu_layers": 999,
+  "experts_on_cpu": null,
+  "mmap": null,
+  "ram_pinned_gb": null
+ },
+ "serving": {
+  "port": 8100,
+  "proxy": "http://llamacpp6:8100",
+  "container_name": "llamacpp6",
+  "max_num_seqs": null,
+  "batch_tokens": null,
+  "prefix_caching": true,
+  "flash_attn": true
+ },
+ "speculative": {
+  "type": "none",
+  "draft_model": null,
+  "n_max": null,
+  "acceptance_note": null
+ },
+ "templates": {
+  "chat_template_kwargs": null,
+  "reasoning_parser": null,
+  "tool_call_parser": null,
+  "reasoning_start": "<think>",
+  "reasoning_end": "</think>"
+ },
+ "endpoints": {
+  "health": "/health",
+  "metrics": "/metrics",
+  "slots": "/slots",
+  "props": "/props"
+ },
+ "role": {
+  "daily_driver": null,
+  "bakeoff_status": "untested"
+ },
+ "model_id": "lcpp6-lfm25-24b-q4km",
+ "report": {
+  "label": "LFM2.5-24B-A2B Q4_K_M \u00b7 llama.cpp 0.6",
+  "note": "one test 1, card sampling",
+  "base": "LiquidAI/LFM2.5-24B-A2B",
+  "arch": "MoE 24B / 2B active"
+ }
+}

@@ -1,0 +1,80 @@
+{
+ "schema": 1,
+ "generated": "2026-10-10T09:13:20-05:00",
+ "cmd_sha256": "8d5f24ea21cb448fe8e186120738212d2b1853467a47d3b0877092ebbefbe662",
+ "model_meta": "/home/operator/ai/models/llm/nemotron3.5-lightning-30b/bakeoff-model.json",
+ "model_file": "/home/operator/ai/models/llm/nemotron3.5-lightning-30b/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-Q8_0.gguf",
+ "engine": "llama.cpp",
+ "engine_version": "0.6",
+ "served_context": 131072,
+ "parallel": null,
+ "kv_type": "f16",
+ "thinking": {
+  "default_on": true,
+  "server_budget": 24000,
+  "request_field": "thinking_budget_tokens",
+  "budget_tokens": null
+ },
+ "sampling": {
+  "temp": 1.0,
+  "top_p": 0.95,
+  "top_k": 0.0,
+  "min_p": 0.0
+ },
+ "spec_decode": null,
+ "observability": {
+  "metrics": true,
+  "slots_debug": true,
+  "prompt_tokens_details": null,
+  "force_include_usage": null
+ },
+ "storage": "nas",
+ "multi_agent_ok": true,
+ "placement": {
+  "gpu_layers": 999,
+  "experts_on_cpu": 24,
+  "mmap": false,
+  "ram_pinned_gb": null
+ },
+ "serving": {
+  "port": 8096,
+  "proxy": "http://llamacpp6:8096",
+  "container_name": "llamacpp6",
+  "max_num_seqs": null,
+  "batch_tokens": null,
+  "prefix_caching": true,
+  "flash_attn": true
+ },
+ "speculative": {
+  "type": "none",
+  "draft_model": null,
+  "n_max": null,
+  "acceptance_note": null
+ },
+ "templates": {
+  "chat_template_kwargs": {
+   "enable_thinking": true
+  },
+  "reasoning_parser": null,
+  "tool_call_parser": null,
+  "reasoning_start": null,
+  "reasoning_end": null
+ },
+ "endpoints": {
+  "health": "/health",
+  "metrics": "/metrics",
+  "slots": "/slots",
+  "props": "/props"
+ },
+ "role": {
+  "daily_driver": null,
+  "bakeoff_status": "untested"
+ },
+ "model_id": "lcpp6-nemotron35-lightning-30b",
+ "report": {
+  "label": "Nemotron 3.5 Lightning 30B-A3B Q8 \u00b7 llama.cpp 0.6, 24 expert layers in RAM, 131k",
+  "note": "first test",
+  "base": "nvidia/Nemotron-3.5-Lightning-30B-A3B",
+  "arch": "MoE 30B / 3B active"
+ }
+}

@@ -1,0 +1,30 @@
+Write a Python module `durations.py` in the current directory.
+
+It must provide exactly these three public functions:
+
+  parse_duration(text: str) -> int
+      Parse an ISO-8601 duration and return whole seconds.
+      Support: PnDTnHnMnS, and the time-only form PTnHnMnS.
+      Weeks: PnW. Fractional seconds are truncated toward zero.
+      A missing or malformed value must raise ValueError.
+
+  format_duration(seconds: int) -> str
+      The inverse. Produce the shortest correct ISO-8601 form.
+      0 seconds must render as "PT0S". Negative input raises ValueError.
+
+  humanize(seconds: int) -> str
+      "2d 3h 4m 5s", omitting any zero component.
+      0 seconds must render as "0s".
+
+Also provide a CLI: `python durations.py parse PT1H30M` prints the integer,
+`python durations.py format 5400` prints the duration string. Unknown input
+must exit non-zero with a short message on stderr and no traceback.
+
+Write your own tests in `test_durations.py` using pytest.
+
+You are graded only on whether the code RUNS CORRECTLY. Specifically:
+the module imports cleanly, the three functions return correct values for
+ordinary and edge-case inputs, malformed input raises ValueError rather than
+crashing some other way, the CLI behaves as described, and your tests pass.
+
+Do not write a README. Do not explain your work. Write the two files.

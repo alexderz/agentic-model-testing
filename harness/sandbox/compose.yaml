@@ -1,0 +1,179 @@
+# evalbox: the locked-down eval sandbox for HIGHLY UNTRUSTED code and models, declared in one place.
+# Edit this file to change the db, server or client, or the two proxies; run it with
+# `sandbox/evalbox.py up NAME` (not `docker compose up`: compose cannot install the firewall before a
+# container starts, cannot run the update preflight, and does not refuse edits that weaken the
+# lockdown). README.md explains every setting and how to change one safely.
+#
+# Trust (operator 2026-10-07): the db is trusted (our image), and it trusts the server, which holds
+# its credentials. The server is our code but it is the test subject and may act in untrusted ways,
+# so it is UNTRUSTED from the outside; it does not trust the client by default (that takes auth).
+# The client is UNTRUSTED by definition. The two proxies (Envoy and Squid, configured only by config
+# files) are trusted. A trusted service gets no extra reach here: the db still has no route, no
+# outside rule and no host mount. The launcher refuses an untrusted service on a routed network or
+# with any outside destination: untrusted code never has a route.
+#
+# Standard compose keys (image, build, entrypoint, command, environment, volumes, tmpfs, networks, user,
+# working_dir, hostname, mem_limit, cpus, pids_limit, ulimits, cap_drop, read_only, security_opt,
+# depends_on) plus two extensions per service:
+#   x-trusted: true      our own code or image (default: untrusted); grants nothing by itself
+#   x-role: proxy        with x-trusted only: may have a routed network, outside rules and its
+#                        config/log binds (Envoy and Squid; nothing else)
+#   x-firewall:          nftables policy of the container's network namespace; out / in rule lists:
+#     {net: <network>, port: <n>?}                  a sandbox network's subnet (any port if omitted)
+#     {service: <svc>, net: <network>, port: <n>}   one container's address on that network
+#     {host: <ipv4>, port: <n>}                     one outside address (out only; trusted only)
+#     {dns: [<network>, ...]}                       podman's resolver on those networks (out only)
+#     {internet: true, ports: [<n>, ...]}           public IPv4 on those TCP ports (out only; trusted only)
+#   Everything not listed is dropped; IPv6 is dropped. Established traffic and loopback pass.
+# Variables: ${NAME}, ${LOGDIR}, ${CONF} (rendered proxy configs), ${SECCOMP} (the generated strict
+# profile), ${TITAN_IP}, ${TITAN_PORT},
+# and any ${VAR:-default} from the environment of evalbox.py.
+
+x-locked: &locked                    # every container (README lock 3); the launcher checks these
+  cap_drop: [ALL]
+  security_opt: [no-new-privileges, "seccomp=${SECCOMP}"]
+  read_only: true
+  pids_limit: 512
+  ulimits: {nofile: 4096, core: 0}
+
+# The web proxy's allowlist: docs and package registries. Each entry allows the domain and its
+# subdomains. Add a domain only when a test needs it (README); EXTRA_DOMAINS adds more per run.
+x-web-allow: [pypi.org, files.pythonhosted.org, docs.python.org, crates.io, static.rust-lang.org,
+              doc.rust-lang.org, docs.rs, registry.npmjs.org, nodejs.org, developer.mozilla.org,
+              github.com, objects.githubusercontent.com, raw.githubusercontent.com,
+              www.postgresql.org, modelcontextprotocol.io, www.home-assistant.io, developers.home-assistant.io]
+
+networks:
+  db:    {internal: true}            # db + server; no route anywhere
+  api:   {internal: true}            # server + client; no route anywhere
+  edge:  {internal: true}            # client + both proxies; no route anywhere
+  titan: {}                          # inference proxy only: routed, filtered to titan
+  out:   {}                          # web proxy only: routed, filtered to public addresses
+
+services:
+
+  # --- db: Postgres (trusted; trusts the server). Answers only the server. No route anywhere. -----
+  db:
+    <<: *locked
+    x-trusted: true                  # our image; gets nothing a locked untrusted service lacks
+    image: ${DB_IMAGE:-localhost/evalbox-db:latest}
+    build: {context: ., dockerfile: Containerfile.db}        # rebuilt by the preflight when stale
+    hostname: db
+    mem_limit: 2g
+    cpus: 2
+    environment: {POSTGRES_USER: server, POSTGRES_PASSWORD: ${DEMO_DB_PASSWORD:?set DEMO_DB_PASSWORD}, POSTGRES_DB: server}   # the server's credentials; the client never gets them
+    tmpfs:
+      - /var/lib/pgsql/data:rw,mode=0700,U,size=2g
+      - /run/postgresql:rw,U,size=16m
+      - /tmp:rw,mode=1777,size=256m
+    networks: {db: {aliases: [db]}}
+    x-firewall:
+      out:
+        - dns: [db]
+      in:
+        - {service: server, net: db, port: 5432}   # only the server
+
+  # --- server: the code under test, offering an API. Untrusted from outside. Reaches only the db. -
+  server:
+    <<: *locked
+    image: ${SERVER_IMAGE:-localhost/evalbox-server:latest}
+    build: {context: ., dockerfile: Containerfile.server}    # rebuilt by the preflight when stale
+    command: ${SERVER_CMD:-}                                  # empty: the image's own command
+    hostname: server
+    mem_limit: 2g
+    cpus: 2
+    environment:
+      DATABASE_URL: postgresql://server:${DEMO_DB_PASSWORD}@db:5432/server
+      PORT: ${SERVER_PORT:-8000}
+    tmpfs: ["/tmp:rw,mode=1777,size=512m"]
+    networks: {db: {}, api: {aliases: [server]}}
+    depends_on: [db]
+    x-firewall:
+      out:
+        - {net: db, port: 5432}
+        - dns: [db, api]
+      in:
+        - {net: api}                 # the client may use any port on the server
+
+  # --- inference proxy (Envoy): the sandbox's only path to titan. Config: envoy.yaml.tmpl. -------
+  edge:
+    <<: *locked
+    x-trusted: true
+    x-role: proxy
+    image: docker.io/envoyproxy/envoy:v1.39-latest
+    entrypoint: [/usr/local/bin/envoy]
+    command: [-c, /etc/evalbox/envoy.yaml, --log-level, warn, --concurrency, "2", --disable-hot-restart]  # hot restart needs /dev/shm
+    user: "101:101"
+    hostname: edge
+    mem_limit: 512m
+    cpus: 1
+    tmpfs: ["/tmp:rw,size=64m"]
+    volumes:
+      - ${CONF}/envoy.yaml:/etc/evalbox/envoy.yaml:ro,Z
+      - ${LOGDIR}/edge:/log:rw,Z,U
+    networks: {edge: {aliases: [edge]}, titan: {}}
+    x-firewall:
+      out:
+        - {host: "${TITAN_IP}", port: "${TITAN_PORT}"}
+      in:
+        - {net: edge, port: 8080}
+
+  # --- web proxy (Squid, Fedora package): the only path to the internet. Config: squid.conf.tmpl --
+  web:
+    <<: *locked
+    x-trusted: true
+    x-role: proxy
+    image: localhost/evalbox-squid:latest
+    build: {context: ., dockerfile: Containerfile.squid}     # rebuilt by the preflight when stale
+    hostname: web
+    mem_limit: 512m
+    cpus: 1
+    tmpfs: ["/run/squid:rw,U,size=16m", "/var/spool/squid:rw,size=64m", "/var/log/squid:rw,size=64m", "/tmp:rw,size=64m",
+            "/dev/shm:rw,U,mode=0700,size=16m"]     # Squid 7 needs shared memory even with one worker
+    volumes:
+      - ${CONF}/squid.conf:/etc/evalbox/squid.conf:ro,Z
+      - ${LOGDIR}/web:/log:rw,Z,U
+    networks: {edge: {aliases: [web]}, out: {}}
+    x-firewall:
+      out:
+        - dns: [out]                 # the proxy resolves names; the client cannot
+        - {internet: true, ports: [80, 443]}   # public IPv4, TCP 80/443 only (kernel); Squid adds the domains
+      in:
+        - {net: edge, port: 3128}
+
+  # --- client: the integration tester (the agent). Untrusted. The server on any port, titan via
+  # edge, the web via web. Never the db. No route. -----------------------------------------------
+  client:
+    <<: *locked
+    image: ${CLIENT_IMAGE:-localhost/evalbox-client:latest}
+    build: {context: ., dockerfile: Containerfile.client}    # rebuilt by the preflight when stale
+    user: root                       # root of its own user range, no capabilities
+    hostname: client
+    working_dir: /work
+    mem_limit: 8g
+    cpus: 4
+    command: [sleep, infinity]       # tests run with: podman exec ${NAME}-client <cmd>
+    environment:
+      HOME: /home/agent
+      CARGO_HOME: /home/agent/.cargo
+      SERVER_URL: http://server:${SERVER_PORT:-8000}
+      INFERENCE_URL: http://edge:8080
+      HTTP_PROXY: http://web:3128
+      HTTPS_PROXY: http://web:3128
+      http_proxy: http://web:3128
+      https_proxy: http://web:3128
+      NO_PROXY: server,edge,localhost,127.0.0.1
+      no_proxy: server,edge,localhost,127.0.0.1
+    tmpfs:
+      - /work:rw,exec,mode=1777,size=8g     # seeded and collected by evalbox.py (no host bind)
+      - /tmp:rw,exec,mode=1777,size=4g
+      - /home/agent:rw,exec,size=8g
+    networks: {api: {}, edge: {}}
+    depends_on: [server, edge, web]
+    x-firewall:
+      out:
+        - {service: server, net: api}   # any port on the server, its address only (not the subnet or gateway)
+        - {service: edge, net: edge, port: 8080}
+        - {service: web, net: edge, port: 3128}
+        - dns: [api, edge]           # container names only: internal networks do not forward
+      in: []                         # nothing new comes in

@@ -1,0 +1,19 @@
+diff --git a/src/core/glm_fast_path.cu b/src/core/glm_fast_path.cu
+index d9614a3..0fb2dce 100644
+--- a/src/core/glm_fast_path.cu
++++ b/src/core/glm_fast_path.cu
+@@ -671,8 +671,13 @@ bool Glm5Model::fast_setup(std::string& err) {
+                 cls_weight.push_back(0.0);
+             }
+             F->layer_rc[(size_t) il] = c;
++            // bakeoff patch (STRATA_GLM_RAM_ALL=1): size the RAM tier for EVERY expert of the layer, not only the ones
++            // the VRAM pool does not hold, so a VRAM victim always has a free RAM slot to be demoted into instead of
++            // being dropped and read back from disk later.  Needs RAM for the whole model's experts.
++            static const bool ram_all = getenv("STRATA_GLM_RAM_ALL") && std::atoi(getenv("STRATA_GLM_RAM_ALL")) != 0;
+             cls_weight[(size_t) c] +=
+-                (double) std::max(2, g.n_expert - F->lp[(size_t) il].n + gf::kSpares + 2) * (double) st;
++                (double) std::max(2, (ram_all ? g.n_expert : g.n_expert - F->lp[(size_t) il].n) + gf::kSpares + 2) *
++                (double) st;
+         }
+         double wsum = 0;
+         for (double w : cls_weight) wsum += w;

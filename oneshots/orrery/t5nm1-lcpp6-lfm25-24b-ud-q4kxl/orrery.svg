@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="100%" height="100%">
+  <style>
+    /* Gear rotations */
+    .central-gear { animation: spin 20s linear infinite; }
+    .mercury-gear { animation: spin 8s linear infinite; }
+    .venus-gear { animation: spin 12s linear infinite; }
+    .earth-gear { animation: spin 16s linear infinite; }
+    .mars-gear { animation: spin 20s linear infinite; }
+
+    /* Planet orbit rotations (driven by gears) */
+    .orbit-mercury { animation: orbit 8s linear infinite; }
+    .orbit-venus { animation: orbit 12s linear infinite; }
+    .orbit-earth { animation: orbit 16s linear infinite; }
+    .orbit-mars { animation: orbit 20s linear infinite; }
+
+    /* Day/night shadow sweeping across planets */
+    .shadow-mercury { animation: shadow-sweep 4s linear infinite; }
+    .shadow-venus { animation: shadow-sweep 6s linear infinite; }
+    .shadow-earth { animation: shadow-sweep 8s linear infinite; }
+    .shadow-mars { animation: shadow-sweep 10s linear infinite; }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes orbit {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes shadow-sweep {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  </style>
+
+  <!-- Central Sun -->
+  <circle cx="400" cy="400" r="35" fill="#FFD700" stroke="#B8860B" stroke-width="3"/>
+
+  <!-- Central drive gear (drives the whole mechanism) -->
+  <g class="central-gear">
+    <circle cx="400" cy="400" r="25" fill="none" stroke="#8B4513" stroke-width="4"/>
+    <!-- Teeth on central gear -->
+    <circle cx="400" cy="400" r="5" fill="#8B4513"/>
+    <circle cx="350" cy="400" r="5" fill="#8B4513"/>
+    <circle cx="450" cy="400" r="5" fill="#8B4513"/>
+    <circle cx="400" cy="350" r="5" fill="#8B4513"/>
+    <circle cx="400" cy="450" r="5" fill="#8B4513"/>
+  </g>
+
+  <!-- Planet Gears (meshing with central gear) -->
+  <!-- Mercury Gear -->
+  <g class="mercury-gear" transform-origin="400 400">
+    <circle cx="450" cy="400" r="12" fill="none" stroke="#8B4513" stroke-width="2"/>
+    <circle cx="445" cy="400" r="2" fill="#8B4513"/>
+    <circle cx="455" cy="400" r="2" fill="#8B4513"/>
+    <circle cx="450" cy="397" r="2" fill="#8B4513"/>
+    <circle cx="450" cy="403" r="2" fill="#8B4513"/>
+  </g>
+  <!-- Venus Gear -->
+  <g class="venus-gear" transform-origin="400 400">
+    <circle cx="380" cy="420" r="12" fill="none" stroke="#8B4513" stroke-width="2"/>
+    <circle cx="375" cy="420" r="2" fill="#8B4513"/>
+    <circle cx="385" cy="420" r="2" fill="#8B4513"/>
+    <circle cx="380" cy="417" r="2" fill="#8B4513"/>
+    <circle cx="380" cy="423" r="2" fill="#8B4513"/>
+  </g>
+  <!-- Earth Gear -->
+  <g class="earth-gear" transform-origin="400 400">
+    <circle cx="310" cy="380" r="12" fill="none" stroke="#8B4513" stroke-width="2"/>
+    <circle cx="305" cy="380" r="2" fill="#8B4513"/>
+    <circle cx="315" cy="380" r="2" fill="#8B4513"/>
+    <circle cx="310" cy="377" r="2" fill="#8B4513"/>
+    <circle cx="310" cy="383" r="2" fill="#8B4513"/>
+  </g>
+  <!-- Mars Gear -->
+  <g class="mars-gear" transform-origin="400 400">
+    <circle cx="450" cy="310" r="12" fill="none" stroke="#8B4513" stroke-width="2"/>
+    <circle cx="445" cy="310" r="2" fill="#8B4513"/>
+    <circle cx="455" cy="310" r="2" fill="#8B4513"/>
+    <circle cx="450" cy="307" r="2" fill="#8B4513"/>
+    <circle cx="450" cy="313" r="2" fill="#8B4513"/>
+  </g>
+
+  <!-- Orbits (dashed circles) -->
+  <circle cx="400" cy="400" r="100" fill="none" stroke="#555" stroke-width="1" stroke-dasharray="5,5"/>
+  <circle cx="400" cy="400" r="150" fill="none" stroke="#777" stroke-width="1" stroke-dasharray="5,5"/>
+  <circle cx="400" cy="400" r="200" fill="none" stroke="#AAA" stroke-width="1" stroke-dasharray="5,5"/>
+  <circle cx="400" cy="400" r="250" fill="none" stroke="#BBB" stroke-width="1" stroke-dasharray="5,5"/>
+
+  <!-- Mercury -->
+  <g class="orbit-mercury">
+    <line x1="450" y1="400" x2="480" y2="400" stroke="#555" stroke-width="3"/>
+    <circle cx="480" cy="400" r="10" fill="#88bbff"/>
+    <!-- Day/Night shadow -->
+    <polygon points="475,395 485,405 475,415" fill="rgba(0,0,0,0.4)">
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="4s" repeatCount="indefinite"/>
+    </polygon>
+  </g>
+
+  <!-- Venus -->
+  <g class="orbit-venus">
+    <line x1="380" y1="420" x2="410" y2="440" stroke="#555" stroke-width="3"/>
+    <circle cx="425" cy="440" r="14" fill="#ffaa33"/>
+    <polygon points="420,435 432,445 420,455" fill="rgba(0,0,0,0.4)">
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="6s" repeatCount="indefinite"/>
+    </polygon>
+  </g>
+
+  <!-- Earth -->
+  <g class="orbit-earth">
+    <line x1="310" y1="380" x2="280" y2="350" stroke="#555" stroke-width="3"/>
+    <circle cx="260" cy="330" r="16" fill="#4da6ff"/>
+    <polygon points="255,325 265,335 255,345" fill="rgba(0,0,0,0.4)">
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="8s" repeatCount="indefinite"/>
+    </polygon>
+  </g>
+
+  <!-- Mars -->
+  <g class="orbit-mars">
+    <line x1="450" y1="310" x2="470" y2="280" stroke="#555" stroke-width="3"/>
+    <circle cx="440" cy="260" r="12" fill="#ff4444"/>
+    <polygon points="435,255 445,265 435,275" fill="rgba(0,0,0,0.4)">
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="10s" repeatCount="indefinite"/>
+    </polygon>
+  </g>
+
+  <!-- Additional decorative brass elements (gears on arms) -->
+  <g class="mercury-gear" transform="translate(450,400) rotate(0)">
+    <circle cx="0" cy="0" r="8" fill="none" stroke="#A0522D" stroke-width="1.5"/>
+    <circle cx="-8" cy="0" r="1.5" fill="#8B4513"/>
+    <circle cx="8" cy="0" r="1.5" fill="#8B4513"/>
+    <circle cx="0" cy="-8" r="1.5" fill="#8B4513"/>
+    <circle cx="0" cy="8" r="1.5" fill="#8B4513"/>
+  </g>
+</svg>

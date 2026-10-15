@@ -1,0 +1,79 @@
+{
+ "schema": 1,
+ "generated": "2026-10-15T08:22:51-05:00",
+ "cmd_sha256": "9e734dc8710698b848c0a7fec6f7f096bf278bf16189bd199c7f0cd33d559af1",
+ "model_meta": "/home/operator/ai/models/llm/q38-27b-coder390-et/bakeoff-model.json",
+ "model_file": "/home/operator/ai/models/llm/q38-27b-coder390-et/GGUF/Qwen3.8-27B-Coder390-EfficientThink-Q4LynnStyle-Q8MTP.gguf",
+ "engine": "llama.cpp",
+ "engine_version": "0.6",
+ "served_context": 81920,
+ "parallel": 2,
+ "kv_type": "q8_0",
+ "thinking": {
+  "default_on": true,
+  "server_budget": 14480,
+  "request_field": "thinking_budget_tokens",
+  "budget_tokens": null
+ },
+ "sampling": {
+  "temp": 1.0,
+  "top_p": 0.95,
+  "top_k": 20.0,
+  "min_p": 0.0
+ },
+ "spec_decode": "draft-mtp",
+ "observability": {
+  "metrics": true,
+  "slots_debug": true,
+  "prompt_tokens_details": null,
+  "force_include_usage": null
+ },
+ "storage": "nas",
+ "multi_agent_ok": true,
+ "placement": {
+  "gpu_layers": "all (-ngl 999, -fit off)",
+  "experts_on_cpu": 0,
+  "mmap": true,
+  "ram_pinned_gb": null
+ },
+ "serving": {
+  "port": 8096,
+  "proxy": "http://llamacpp6:8096",
+  "container_name": "llamacpp6",
+  "max_num_seqs": null,
+  "batch_tokens": null,
+  "prefix_caching": true,
+  "flash_attn": true
+ },
+ "speculative": {
+  "type": "draft-mtp",
+  "draft_model": null,
+  "n_max": 4,
+  "acceptance_note": "41% in a 1,500-token load test (53 tok/s)"
+ },
+ "templates": {
+  "chat_template_kwargs": {
+   "enable_thinking": true
+  },
+  "reasoning_parser": null,
+  "tool_call_parser": null,
+  "reasoning_start": null,
+  "reasoning_end": null
+ },
+ "endpoints": {
+  "health": "/health",
+  "metrics": "/metrics",
+  "slots": "/slots",
+  "props": "/props"
+ },
+ "role": {
+  "daily_driver": null,
+  "bakeoff_status": "untested"
+ },
+ "model_id": "lcpp6-q38-coder390-vis",
+ "report": {
+  "label": "Qwen3.8-27B Coder390 EfficientThink (uncensored) Q4 with Q8 MTP heads \u00b7 llama.cpp 0.6, MTP drafts, all on GPU at 80k, two slots + vision",
+  "note": "nerkyor's coding tune with short thinking; GGUF from the author Vision variant: vision head mmproj-Qwen3.8-27B-Q8_0.gguf on the CPU.",
+  "quant": "Q4 (Lynn style) + Q8 MTP"
+ }
+}

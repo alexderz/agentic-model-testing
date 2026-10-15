@@ -1,0 +1,76 @@
+{
+ "schema": 1,
+ "generated": "2026-10-09T14:59:56-05:00",
+ "cmd_sha256": "d845e2673ff827dd85c372eaf6ffbddf0ef8235d723ab1b02fe68e02a1d11124",
+ "model_meta": "/home/operator/ai/models/llm/bonsai2-27b/bakeoff-model.json",
+ "model_file": "/home/operator/ai/models/llm/bonsai2-27b/Ternary-Bonsai-2-27B-PQ2_0.gguf",
+ "engine": "llama.cpp",
+ "engine_version": "prism",
+ "served_context": 253952,
+ "parallel": null,
+ "kv_type": "f16",
+ "thinking": {
+  "default_on": null,
+  "server_budget": null,
+  "request_field": null,
+  "budget_tokens": null
+ },
+ "sampling": {
+  "top_k": 20.0,
+  "top_p": 0.95,
+  "temp": 1.0
+ },
+ "spec_decode": null,
+ "observability": {
+  "metrics": true,
+  "slots_debug": false,
+  "prompt_tokens_details": null,
+  "force_include_usage": null
+ },
+ "storage": "nas",
+ "multi_agent_ok": true,
+ "placement": {
+  "gpu_layers": 999,
+  "experts_on_cpu": 0,
+  "mmap": true,
+  "ram_pinned_gb": null
+ },
+ "serving": {
+  "port": null,
+  "proxy": null,
+  "container_name": "llama-swap",
+  "max_num_seqs": null,
+  "batch_tokens": null,
+  "prefix_caching": true,
+  "flash_attn": true
+ },
+ "speculative": {
+  "type": "none",
+  "draft_model": null,
+  "n_max": null,
+  "acceptance_note": null
+ },
+ "templates": {
+  "chat_template_kwargs": null,
+  "reasoning_parser": null,
+  "tool_call_parser": null,
+  "reasoning_start": null,
+  "reasoning_end": null
+ },
+ "endpoints": {
+  "health": "/health",
+  "metrics": "/metrics",
+  "slots": "/slots",
+  "props": "/props"
+ },
+ "role": {
+  "daily_driver": null,
+  "bakeoff_status": "partial"
+ },
+ "model_id": "bonsai2-27b-pq2",
+ "report": {
+  "label": "Bonsai 2 27B PQ2",
+  "arch": "dense 27B ternary",
+  "engine": "llama.cpp 0.4"
+ }
+}

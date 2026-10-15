@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Voxel pagoda</title>
+<style>html,body{margin:0;height:100%;overflow:hidden;background:#f6d6c8}canvas{display:block}</style>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js"}}
+</script>
+</head>
+<body>
+<script type="module">
+import * as THREE from 'three';
+
+// ---- voxel store: one entry per integer cell, colour as hex -------------------------------------------------
+const vox = new Map();
+const key = (x, y, z) => x + ',' + y + ',' + z;
+const set = (x, y, z, c) => vox.set(key(x, y, z), [x, y, z, c]);
+const del = (x, y, z) => vox.delete(key(x, y, z));
+const box = (x0, y0, z0, x1, y1, z1, c) => {
+  for (let x = x0; x <= x1; x++) for (let y = y0; y <= y1; y++) for (let z = z0; z <= z1; z++) set(x, y, z, typeof c === 'function' ? c(x, y, z) : c);
+};
+let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+const pick = a => a[Math.floor(rnd() * a.length)];
+
+// ---- ground, with a little height and colour noise ------------------------------------------------------------
+const R = 30;
+const GRASS = [0x6f9a4a, 0x76a352, 0x678f43, 0x7fa957];
+for (let x = -R; x <= R; x++) for (let z = -R; z <= R; z++) {
+  if (x * x + z * z > R * R + 20) continue;
+  set(x, -1, z, 0x5b4a36);
+  set(x, 0, z, pick(GRASS));
+}
+
+// ---- pond with stepping stones and lily pads (south-east) ----------------------------------------------------
+const pond = (x, z) => ((x - 15) ** 2) / 49 + ((z - 13) ** 2) / 25 < 1;
+for (let x = 6; x <= 24; x++) for (let z = 6; z <= 20; z++) if (pond(x, z)) {
+  set(x, 0, z, (x + z) % 3 ? 0x3d7fb0 : 0x4a8fc0); set(x, -1, z, 0x2c5f86);
+  if (!pond(x + 1, z) || !pond(x - 1, z) || !pond(x, z + 1) || !pond(x, z - 1)) set(x, 1, z, pick([0x9a9a92, 0x8b8b84, 0xa7a79f]));
+}
+[[12, 12], [17, 15], [14, 16]].forEach(([x, z]) => set(x, 1, z, 0x4f8f3a));
+set(12, 1, 12, 0x4f8f3a); set(13, 1, 12, 0xf2b8c6);
+
+// ---- stone platform: three steps -------------------------------------------------------------------------------
+const STONE = [0xb9b4a8, 0xaca79b, 0xc4bfb3];
+box(-10, 1, -10, 10, 1, 10, () => pick(STONE));
+box(-9, 2, -9, 9, 2, 9, () => pick(STONE));
+box(-8, 3, -8, 8, 3, 8, () => pick(STONE));
+for (let s = 0; s < 3; s++) box(-2, 1 + s, 10 - s + 1, 2, 1 + s, 10 - s + 1, 0xa39e92);   // front stairs
+box(-1, 1, 12, 1, 0, 30, 0xb0aa9c);                                                            // path to the torii
+
+// ---- pagoda: five storeys, each a body, a balcony and an upturned roof ----------------------------------------
+const RED = 0xb8352b, WOOD = 0x5a2e1e, WALL = 0xeee6d2, TILE = 0x3b3f4a, TILE2 = 0x2f333c, GOLD = 0xd9a93a;
+let y = 4;
+const widths = [6, 5, 5, 4, 3];          // half width of each storey body
+for (let s = 0; s < 5; s++) {
+  const w = widths[s], h = s === 0 ? 5 : 4;
+  box(-w, y, -w, w, y + h - 1, w, (x, yy, z) => {
+    const edge = Math.abs(x) === w && Math.abs(z) === w;
+    if (edge) return RED;                                         // corner pillars
+    if (yy === y + h - 1) return WOOD;                            // lintel
+    if ((Math.abs(x) === w && Math.abs(z) % 3 === 0) || (Math.abs(z) === w && Math.abs(x) % 3 === 0)) return RED;
+    return WALL;
+  });
+  box(-w + 1, y + 1, -w + 1, w - 1, y + h - 2, w - 1, WALL);
+  for (let yy = y; yy < y + h - 1; yy++) for (let x = -w + 1; x < w; x++) for (let z = -w + 1; z < w; z++) del(x, yy, z); // hollow
+  // a door on the ground floor, windows above
+  if (s === 0) { box(-1, y, w, 1, y + 2, w, WOOD); } else { set(0, y + 1, w, WOOD); set(0, y + 1, -w, WOOD); set(w, y + 1, 0, WOOD); set(-w, y + 1, 0, WOOD); }
+  y += h;
+  // roof: two layers stepping out, the corners lifted (the upturned eaves)
+  const e = w + 3;
+  for (let x = -e; x <= e; x++) for (let z = -e; z <= e; z++) {
+    const d = Math.max(Math.abs(x), Math.abs(z));
+    if (d < w - 1) continue;
+    const corner = Math.abs(x) >= e - 1 && Math.abs(z) >= e - 1;
+    const nearCorner = (Math.abs(x) >= e - 2 && Math.abs(z) >= e - 3) || (Math.abs(z) >= e - 2 && Math.abs(x) >= e - 3);
+    let ry = y + (d <= w + 1 ? 1 : 0);
+    if (corner) ry = y + 2; else if (nearCorner && d === e) ry = y + 1;
+    set(x, ry, z, (x + z) % 2 ? TILE : TILE2);
+    if (d === e) set(x, ry - 1, z, WOOD);                          // dark rafter ends under the eave
+  }
+  box(-w + 1, y + 2, -w + 1, w - 1, y + 2, w - 1, TILE);
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) set(sx * e, y + 3, sz * e, GOLD);  // gilded tips
+  y += 3;
+}
+// spire (sorin): a column with nine rings and a jewel
+box(-1, y, -1, 1, y, 1, TILE);
+for (let i = 0; i < 12; i++) set(0, y + 1 + i, 0, GOLD);
+for (let i = 0; i < 9; i++) if (i % 1 === 0) { const yy = y + 2 + i; [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(([dx, dz]) => i % 2 || set(dx, yy, dz, GOLD)); }
+set(0, y + 13, 0, 0xe8584c);
+
+// ---- torii gate at the end of the path ---------------------------------------------------------------------------
+const TZ = 24, VERM = 0xd8452f, BLACK = 0x222222;
+box(-5, 1, TZ, -5, 10, TZ, VERM); box(5, 1, TZ, 5, 10, TZ, VERM);
+box(-5, 0, TZ, -5, 0, TZ, BLACK); box(5, 0, TZ, 5, 0, TZ, BLACK);
+box(-6, 8, TZ, 6, 8, TZ, VERM);                                      // nuki
+box(-7, 11, TZ, 7, 11, TZ, VERM); box(-8, 12, TZ, 8, 12, TZ, BLACK);   // kasagi
+set(-9, 13, TZ, BLACK); set(9, 13, TZ, BLACK);                         // upturned ends
+set(0, 9, TZ, VERM); set(0, 10, TZ, VERM);                             // gakuzuka
+
+// ---- cherry trees --------------------------------------------------------------------------------------------------
+const PINK = [0xf7c6d5, 0xf2b0c4, 0xfadbe4, 0xee9fb8, 0xffe4ec];
+function tree(tx, tz, h, r) {
+  for (let i = 1; i <= h; i++) set(tx + (i > h - 2 ? Math.sign(tx) : 0), i, tz, 0x4a3226);
+  const cy = h + 2, cx = tx + Math.sign(tx);
+  for (let x = -r; x <= r; x++) for (let yy = -r + 1; yy <= r - 1; yy++) for (let z = -r; z <= r; z++) {
+    const d = (x * x) / (r * r) + (yy * yy) / ((r - 1) * (r - 1)) + (z * z) / (r * r);
+    if (d < 1 && rnd() > d * 0.55) set(cx + x, cy + yy, tz + z, pick(PINK));
+  }
+  for (let k = 0; k < 14; k++) set(tx + Math.round((rnd() - .5) * r * 3), 1, tz + Math.round((rnd() - .5) * r * 3), pick(PINK)); // fallen petals
+}
+tree(-18, -6, 7, 4); tree(-15, 12, 6, 4); tree(19, -12, 8, 5); tree(-20, -20, 6, 3); tree(23, 3, 6, 3);
+// stone lanterns flanking the stairs
+for (const sx of [-6, 6]) { box(sx, 1, 15, sx, 3, 15, 0x9d988c); box(sx - 1, 4, 14, sx + 1, 4, 16, 0x8e897d); set(sx, 5, 15, 0x9d988c); set(sx, 4, 15, 0xffd27a); }
+
+// ---- build: one InstancedMesh per colour ---------------------------------------------------------------------------
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+document.body.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xf6d6c8);
+scene.fog = new THREE.Fog(0xf6d6c8, 110, 200);
+const camera = new THREE.PerspectiveCamera(42, innerWidth / innerHeight, 0.5, 400);
+
+const geo = new THREE.BoxGeometry(1, 1, 1);
+const byColour = new Map();
+for (const v of vox.values()) (byColour.get(v[3]) || byColour.set(v[3], []).get(v[3])).push(v);
+const m4 = new THREE.Matrix4();
+for (const [c, list] of byColour) {
+  const mat = new THREE.MeshStandardMaterial({ color: c, roughness: c === GOLD ? 0.35 : 0.85, metalness: c === GOLD ? 0.6 : 0 });
+  if (c === 0xffd27a) { mat.emissive = new THREE.Color(0xffb347); mat.emissiveIntensity = 1.2; }
+  const mesh = new THREE.InstancedMesh(geo, mat, list.length);
+  list.forEach(([x, yy, z], i) => mesh.setMatrixAt(i, m4.makeTranslation(x, yy, z)));
+  mesh.castShadow = mesh.receiveShadow = true;
+  scene.add(mesh);
+}
+const water = [...vox.values()].filter(v => v[3] === 0x3d7fb0 || v[3] === 0x4a8fc0).length;
+
+// ---- light ---------------------------------------------------------------------------------------------------------
+scene.add(new THREE.HemisphereLight(0xfff1e6, 0x6a7a55, 1.1));
+const sun = new THREE.DirectionalLight(0xffe2c4, 2.6);
+sun.position.set(-40, 60, 30); sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+Object.assign(sun.shadow.camera, { left: -45, right: 45, top: 45, bottom: -45, near: 1, far: 160 });
+sun.shadow.bias = -0.0005;
+scene.add(sun);
+
+// ---- petals: small pink cubes that drift down, sway and come back to the top ----------------------------------------
+const N = 220;
+const petals = new THREE.InstancedMesh(new THREE.BoxGeometry(0.35, 0.08, 0.35), new THREE.MeshStandardMaterial({ color: 0xf7b9cb }), N);
+const P = [];
+for (let i = 0; i < N; i++) P.push({ x: (rnd() - .5) * 60, y: rnd() * 40, z: (rnd() - .5) * 60, s: 1.5 + rnd() * 2, p: rnd() * 6.28, r: rnd() * 6.28 });
+petals.castShadow = true; scene.add(petals);
+const q = new THREE.Quaternion(), e = new THREE.Euler(), one = new THREE.Vector3(1, 1, 1), pos = new THREE.Vector3();
+
+// ---- animate: slow orbit, petals ------------------------------------------------------------------------------------
+const clock = new THREE.Clock();
+let last = 0;
+renderer.setAnimationLoop(() => {
+  const t = clock.getElapsedTime(), dt = Math.min(t - last, 0.05); last = t;
+  const a = t * 0.12 + 0.6;
+  camera.position.set(Math.sin(a) * 88, 36 + Math.sin(t * 0.2) * 5, Math.cos(a) * 88);
+  camera.lookAt(0, 21, 0);
+  for (let i = 0; i < N; i++) {
+    const p = P[i];
+    p.y -= p.s * dt; p.x += Math.sin(t * 0.9 + p.p) * dt * 1.2 + dt * 0.6; p.z += Math.cos(t * 0.7 + p.p) * dt * 0.8;
+    if (p.y < 0.6) { p.y = 30 + rnd() * 12; p.x = (rnd() - .5) * 60; p.z = (rnd() - .5) * 60; }
+    e.set(t * 1.3 + p.r, t * 0.8 + p.p, 0); q.setFromEuler(e);
+    petals.setMatrixAt(i, m4.compose(pos.set(p.x, p.y, p.z), q, one));
+  }
+  petals.instanceMatrix.needsUpdate = true;
+  renderer.render(scene, camera);
+});
+addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
+console.log('voxels', vox.size, 'water', water);
+</script>
+</body>
+</html>

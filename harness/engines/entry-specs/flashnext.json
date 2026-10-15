@@ -1,0 +1,70 @@
+{
+ "schema": 1,
+ "generated": "2026-10-09T08:42:14-05:00",
+ "cmd_sha256": "2c13c56437023f02e9cd2b7d42da7c92b909e849763723bbd53f0d56915808e4",
+ "model_meta": "/home/operator/ai/models/llm/turboderp-Qwen3.8-Flash-Next-exl3-3.05bpw_h5_ng5/bakeoff-model.json",
+ "model_file": "/home/operator/ai/models/llm/turboderp-Qwen3.8-Flash-Next-exl3-3.05bpw_h5_ng5",
+ "engine": "sglang",
+ "engine_version": "sglang-exl3",
+ "served_context": 204800,
+ "parallel": 2,
+ "kv_type": null,
+ "thinking": {
+  "default_on": true,
+  "server_budget": null,
+  "request_field": null,
+  "budget_tokens": null
+ },
+ "sampling": {},
+ "spec_decode": null,
+ "observability": {
+  "metrics": null,
+  "slots_debug": null,
+  "prompt_tokens_details": null,
+  "force_include_usage": null
+ },
+ "storage": "nas",
+ "multi_agent_ok": false,
+ "placement": {
+  "gpu_layers": null,
+  "experts_on_cpu": null,
+  "mmap": null,
+  "ram_pinned_gb": null
+ },
+ "serving": {
+  "port": 30100,
+  "proxy": "http://flashnext:30100",
+  "container_name": "flashnext",
+  "max_num_seqs": 2,
+  "batch_tokens": null,
+  "prefix_caching": null,
+  "flash_attn": null
+ },
+ "speculative": {
+  "type": "none",
+  "draft_model": null,
+  "n_max": null,
+  "acceptance_note": null
+ },
+ "templates": {
+  "chat_template_kwargs": null,
+  "reasoning_parser": "qwen3",
+  "tool_call_parser": "qwen3_coder",
+  "reasoning_start": null,
+  "reasoning_end": null
+ },
+ "endpoints": {
+  "health": "/health",
+  "metrics": null,
+  "slots": null,
+  "props": null
+ },
+ "role": {
+  "daily_driver": null,
+  "bakeoff_status": "partial"
+ },
+ "model_id": "flashnext",
+ "report": {
+  "label": "Flash-Next \u00b7 SGLang, EXL3 3-bit, GPU expert cache"
+ }
+}

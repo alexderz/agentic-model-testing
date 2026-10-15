@@ -1,0 +1,71 @@
+diff --git a/serve/frontend.py b/serve/frontend.py
+index f753f5c..8010184 100644
+--- a/serve/frontend.py
++++ b/serve/frontend.py
+@@ -260,6 +260,8 @@ def parse_tool_call(body: str, schema: dict | None = None) -> ToolCall:
+     when the tool's schema says the parameter is not a string (or, without a schema, when they parse as JSON
+     objects/arrays/numbers/booleans)."""
+     body = body.strip()
++    if not body.startswith("<function=") and "<arg_key>" in body or (body and "<" not in body):
++        return _parse_glm_tool_call(body, schema)
+     if not body.startswith("<function=") or ">" not in body:
+         raise ValueError("malformed tool call: " + body[:80])
+     name = body[len("<function="):body.index(">")]
+@@ -288,6 +290,48 @@ def parse_tool_call(body: str, schema: dict | None = None) -> ToolCall:
+     return ToolCall(name=name, arguments=args)
+ 
+ 
++def tool_call_name(body: str) -> str:
++    """The function name of a call body in either format (bakeoff patch, see _parse_glm_tool_call)."""
++    b = body.strip()
++    if b.startswith("<function="):
++        return b[len("<function="):].split(">", 1)[0]
++    return b.split("<arg_key>", 1)[0].strip()
++
++
++def _parse_glm_tool_call(body: str, schema: dict | None = None) -> ToolCall:
++    """bakeoff patch: GLM-5.3's own chat template (the one in the pack's tokenizer dir) asks for
++    `NAME<arg_key>K</arg_key><arg_value>V</arg_value>...` inside <tool_call>, with non-string values written as JSON;
++    the upstream parser knew only the Qwen form above and rejected every GLM call as malformed."""
++    name = body.split("<arg_key>", 1)[0].strip()
++    if not name or any(c in name for c in "<>\n"):
++        raise ValueError("malformed tool call: " + body[:80])
++    props = ((schema or {}).get("parameters") or {}).get("properties") or {}
++    args, rest = {}, body[len(body.split("<arg_key>", 1)[0]):]
++    while "<arg_key>" in rest:
++        rest = rest[rest.index("<arg_key>") + len("<arg_key>"):]
++        k_end = rest.find("</arg_key>")
++        if k_end < 0:
++            raise ValueError("malformed tool call: " + body[:80])
++        key = rest[:k_end].strip()
++        rest = rest[k_end + len("</arg_key>"):]
++        v_start = rest.find("<arg_value>")
++        if v_start < 0:
++            raise ValueError("malformed tool call: " + body[:80])
++        rest = rest[v_start + len("<arg_value>"):]
++        v_end = rest.find("</arg_value>")
++        value = rest[:v_end] if v_end >= 0 else rest
++        rest = rest[v_end + len("</arg_value>"):] if v_end >= 0 else ""
++        declared = (props.get(key) or {}).get("type")
++        if declared == "string":
++            args[key] = value
++        else:
++            try:
++                args[key] = json.loads(value)
++            except ValueError:
++                args[key] = value
++    return ToolCall(name=name, arguments=args)
++
++
+ class OutputParser:
+     """Incremental parser of the model's text. Feed deltas; get events. A tag split across deltas is held back
+     until it is complete, so clients never see `<tool_` or `</thi`."""
+@@ -475,7 +519,7 @@ class OutputParser:
+                     return out
+                 body = self.buf[:i]
+                 self.buf = self.buf[i + len(CALL_END):]
+-                name = body.strip()[len("<function="):].split(">", 1)[0]
++                name = tool_call_name(body)
+                 call = parse_tool_call(body, self.schemas.get(name))
+                 if self.scall is not None:
+                     call.id = self.scall.id

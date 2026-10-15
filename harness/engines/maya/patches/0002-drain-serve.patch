@@ -1,0 +1,39 @@
+diff --git a/src/core/glm_fast_path.cu b/src/core/glm_fast_path.cu
+index 0fb2dce..56f628c 100644
+--- a/src/core/glm_fast_path.cu
++++ b/src/core/glm_fast_path.cu
+@@ -2014,6 +2014,11 @@ void Glm5Model::fast_boundary() {
+             R.st[(size_t) d.rslot] = FastState::kRHold;
+             upd(F->rtab_key(d.key), (unsigned long long) (R.base + (size_t) d.rslot * R.stride));
+         }
++        {   // bakeoff patch (STRATA_GLM_DRAIN_SERVE=1): the VRAM entry kept while draining goes now, unless the expert
++            // took a new VRAM slot meanwhile (slot_of set again), whose entry is the live one
++            static const bool drain_serve = getenv("STRATA_GLM_DRAIN_SERVE") && std::atoi(getenv("STRATA_GLM_DRAIN_SERVE")) != 0;
++            if (drain_serve && F->slot_of[(size_t) d.key] < 0) upd(F->tab_key(d.key), 0ull);
++        }
+         char& vst = F->lp[(size_t) d.il].st[(size_t) d.vslot];
+         if (vst == FastState::kDraining) vst = FastState::kFree;   // (a lent slot stays lent)
+         F->ev_free.push_back(d.ev);
+@@ -2054,7 +2059,13 @@ void Glm5Model::fast_boundary() {
+             }
+             if (v < 0) break;
+             const int vkey = il * g.n_expert + P.key[(size_t) v];
+-            upd(F->tab_key(vkey), 0ull);
++            // bakeoff patch (STRATA_GLM_DRAIN_SERVE=1): a victim demoted into RAM keeps its VRAM table entry until the
++            // D2H lands (its slot stays kDraining, untouched, until then), so a route in that window hits VRAM instead
++            // of missing both tiers and reading the expert from disk.  The landing below clears the entry and makes
++            // the RAM copy live in the same table update.  A dropped victim (no RAM copy) is forgotten at once, as before.
++            static const bool drain_serve = getenv("STRATA_GLM_DRAIN_SERVE") && std::atoi(getenv("STRATA_GLM_DRAIN_SERVE")) != 0;
++            bool vtab_kept = false;
++            if (!drain_serve) upd(F->tab_key(vkey), 0ull); else vtab_kept = true;
+             F->slot_of[(size_t) vkey] = -1;
+             ++P.evictions;
+             // demote it into the RAM tier: a free slot, else the RAM tier's victim (if colder than it)
+@@ -2093,6 +2104,7 @@ void Glm5Model::fast_boundary() {
+             } else {
+                 // colder than everything in RAM: dropped (disk only); the slot can be a spare right away - the
+                 // table edit that forgets it runs before any route of the next token
++                if (vtab_kept) upd(F->tab_key(vkey), 0ull);
+                 P.st[(size_t) v] = FastState::kSpare;
+                 P.key[(size_t) v] = -1;
+                 P.spare[j] = v;

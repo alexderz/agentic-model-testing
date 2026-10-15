@@ -1,0 +1,15 @@
+You are working alone in /work, a sandbox with Python 3.12, Node 22, Rust (cargo) and C (gcc), and no
+Internet. The task is below and also in /work/TASK.md, with its checker /work/verify.py. Read TASK.md
+again whenever you are unsure of a rule, for example after your conversation has been shortened.
+
+Take the time you need to do it well: you have up to three hours. Nobody will answer questions, so make
+sensible choices and note them in NOTES.md. When the time is up the session is stopped and /work is graded
+as it stands, so keep a working `generate`, `labyrinth.json`, `SHOWCASE_SEED` and `NOTES.md` saved as you go.
+
+When you stop, end your last message with one line that is exactly `STATUS: DONE` or
+`STATUS: NOT DONE`, followed by a sentence or two on how you verified it: which commands you ran and
+what they showed. Say NOT DONE if your showcase fails verify.py or your generator fails on seeds you
+tried.
+
+The task:
+

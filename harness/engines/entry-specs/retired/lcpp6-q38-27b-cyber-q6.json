@@ -1,0 +1,74 @@
+{
+ "schema": 1,
+ "generated": "2026-10-09T14:59:56-05:00",
+ "cmd_sha256": "ec5e309d02feed9e8185a966ec2d1912d84cac365e34269946c915d78f51ec44",
+ "model_meta": "/home/operator/ai/models/llm/q38-27b-cyber-q6q8/bakeoff-model.json",
+ "model_file": "/home/operator/ai/models/llm/q38-27b-cyber-q6q8/Qwen3.8-27B-Uncensored-Cyber-Q6_K.gguf",
+ "engine": "llama.cpp",
+ "engine_version": "0.6",
+ "served_context": 131072,
+ "parallel": null,
+ "kv_type": "q8_0",
+ "thinking": {
+  "default_on": true,
+  "server_budget": 24000,
+  "request_field": "thinking_budget_tokens",
+  "budget_tokens": null
+ },
+ "sampling": {
+  "temp": 1.0,
+  "top_p": 0.95,
+  "top_k": 20.0,
+  "min_p": 0.0
+ },
+ "spec_decode": null,
+ "observability": {
+  "metrics": true,
+  "slots_debug": true,
+  "prompt_tokens_details": null,
+  "force_include_usage": null
+ },
+ "storage": "nas",
+ "multi_agent_ok": true,
+ "placement": {
+  "gpu_layers": "auto (--fit on)",
+  "experts_on_cpu": 0,
+  "mmap": true,
+  "ram_pinned_gb": null
+ },
+ "serving": {
+  "port": 8096,
+  "proxy": "http://llamacpp6:8096",
+  "container_name": "llamacpp6",
+  "max_num_seqs": null,
+  "batch_tokens": null,
+  "prefix_caching": true,
+  "flash_attn": true
+ },
+ "speculative": {
+  "type": "none",
+  "draft_model": null,
+  "n_max": null,
+  "acceptance_note": null
+ },
+ "templates": {
+  "chat_template_kwargs": {
+   "enable_thinking": true
+  },
+  "reasoning_parser": null,
+  "tool_call_parser": null,
+  "reasoning_start": null,
+  "reasoning_end": null
+ },
+ "endpoints": {
+  "health": "/health",
+  "metrics": "/metrics",
+  "slots": "/slots",
+  "props": "/props"
+ },
+ "role": {
+  "daily_driver": null,
+  "bakeoff_status": "untested"
+ },
+ "model_id": "lcpp6-q38-27b-cyber-q6"
+}

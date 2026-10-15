@@ -1,0 +1,50 @@
+{
+ "case": "t6r4-gemma-4-26b-a4b",
+ "model": "gemma-4-26b-a4b",
+ "test": "test6-pagoda",
+ "max_tokens": 32000,
+ "started": "2026-10-14T07:49:55-0500",
+ "status": "ok",
+ "finish_reason": "stop",
+ "usage": {
+  "completion_tokens": 4291,
+  "prompt_tokens": 167,
+  "total_tokens": 4458,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  }
+ },
+ "timings": {
+  "cache_n": 0,
+  "prompt_n": 167,
+  "prompt_ms": 215.641,
+  "prompt_per_token_ms": 1.291263473053892,
+  "prompt_per_second": 774.4352882800581,
+  "predicted_n": 4291,
+  "predicted_ms": 20449.568,
+  "predicted_per_token_ms": 4.7667990675990675,
+  "predicted_per_second": 209.78438273121466,
+  "draft_n": 5180,
+  "draft_n_accepted": 2996
+ },
+ "static": {
+  "html_found": true,
+  "bytes": 9217,
+  "complete": true,
+  "three_module": true,
+  "importmap": true,
+  "umd_three": false,
+  "external_urls": [
+   "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+   "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+  ],
+  "boxes": 2,
+  "instanced": false,
+  "prose_chars_outside_html": 11
+ },
+ "wall_s": 26.1,
+ "first_token_s": 5.7,
+ "tok_s": 210.3,
+ "reply_chars": 9228,
+ "reasoning_chars": 5103
+}

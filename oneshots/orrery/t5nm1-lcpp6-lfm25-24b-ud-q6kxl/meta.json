@@ -1,0 +1,46 @@
+{
+ "case": "t5nm1-lcpp6-lfm25-24b-ud-q6kxl",
+ "model": "lcpp6-lfm25-24b-ud-q6kxl",
+ "test": "test5-orrery",
+ "max_tokens": 118784,
+ "timeout_s": 14400,
+ "started": "2026-10-15T14:17:56-0500",
+ "status": "ok",
+ "finish_reason": "stop",
+ "usage": {
+  "completion_tokens": 4878,
+  "prompt_tokens": 63,
+  "total_tokens": 4941,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  }
+ },
+ "timings": {
+  "cache_n": 0,
+  "prompt_n": 63,
+  "prompt_ms": 132.09,
+  "prompt_per_token_ms": 2.0966666666666667,
+  "prompt_per_second": 476.9475357710652,
+  "predicted_n": 4878,
+  "predicted_ms": 24570.947,
+  "predicted_per_token_ms": 5.038127332376461,
+  "predicted_per_second": 198.48644824312225
+ },
+ "static": {
+  "svg_found": true,
+  "parses": false,
+  "parse_error": "duplicate attribute: line 95, column 34",
+  "bytes": 4709,
+  "animateTransform": 6,
+  "animate": 4,
+  "animateMotion": 0,
+  "keyframes": 0,
+  "script": 0,
+  "prose_chars_outside_svg": 1349
+ },
+ "wall_s": 28.3,
+ "first_token_s": 3.7,
+ "tok_s": 198.6,
+ "reply_chars": 6058,
+ "reasoning_chars": 12393
+}

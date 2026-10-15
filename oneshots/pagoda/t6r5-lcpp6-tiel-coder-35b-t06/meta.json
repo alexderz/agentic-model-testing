@@ -1,0 +1,48 @@
+{
+ "case": "t6r5-lcpp6-tiel-coder-35b-t06",
+ "model": "lcpp6-tiel-coder-35b-t06",
+ "test": "test6-pagoda",
+ "max_tokens": 32000,
+ "started": "2026-10-14T07:48:35-0500",
+ "status": "ok",
+ "finish_reason": "stop",
+ "usage": {
+  "completion_tokens": 10339,
+  "prompt_tokens": 333,
+  "total_tokens": 10672,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  }
+ },
+ "timings": {
+  "cache_n": 0,
+  "prompt_n": 333,
+  "prompt_ms": 288.468,
+  "prompt_per_token_ms": 0.8662702702702704,
+  "prompt_per_second": 1154.3741420192187,
+  "predicted_n": 10339,
+  "predicted_ms": 70544.928,
+  "predicted_per_token_ms": 6.823846778874056,
+  "predicted_per_second": 146.54490823209855
+ },
+ "static": {
+  "html_found": true,
+  "bytes": 9610,
+  "complete": true,
+  "three_module": true,
+  "importmap": true,
+  "umd_three": false,
+  "external_urls": [
+   "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+   "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+  ],
+  "boxes": 2,
+  "instanced": false,
+  "prose_chars_outside_html": 303
+ },
+ "wall_s": 74.1,
+ "first_token_s": 3.5,
+ "tok_s": 146.6,
+ "reply_chars": 9913,
+ "reasoning_chars": 21405
+}

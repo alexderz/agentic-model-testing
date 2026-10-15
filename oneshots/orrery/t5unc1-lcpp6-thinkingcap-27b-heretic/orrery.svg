@@ -1,0 +1,307 @@
+<svg viewBox="0 0 1520 1520" xmlns="http://www.w3.org/2000/svg" font-family="Georgia, 'Times New Roman', serif">
+  <title>The Grand Orrery — true-ratio clockwork, 1 min = 1 year</title>
+  <defs>
+    <radialGradient id="bgG" cx="50%" cy="44%" r="75%">
+      <stop offset="0" stop-color="#141a22"/><stop offset=".6" stop-color="#0a0d12"/><stop offset="1" stop-color="#05070a"/>
+    </radialGradient>
+    <linearGradient id="caseG" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8a6a30"/><stop offset=".25" stop-color="#d9b25f"/><stop offset=".5" stop-color="#8a6a30"/>
+      <stop offset=".75" stop-color="#caa452"/><stop offset="1" stop-color="#5c4418"/>
+    </linearGradient>
+    <radialGradient id="dialG" cx="50%" cy="46%" r="60%">
+      <stop offset="0" stop-color="#262016"/><stop offset="1" stop-color="#120d07"/>
+    </radialGradient>
+    <radialGradient id="gearG" cx="32%" cy="30%" r="80%">
+      <stop offset="0" stop-color="#e8c778"/><stop offset=".55" stop-color="#b3894a"/><stop offset="1" stop-color="#7c5c2b"/>
+    </radialGradient>
+    <radialGradient id="sunG" cx="38%" cy="35%" r="75%">
+      <stop offset="0" stop-color="#fffbe6"/><stop offset=".35" stop-color="#ffe89a"/><stop offset=".65" stop-color="#ffb340"/>
+      <stop offset=".85" stop-color="#e6721c"/><stop offset="1" stop-color="#933d08"/>
+    </radialGradient>
+    <radialGradient id="rayG" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#ffd977" stop-opacity=".55"/><stop offset="1" stop-color="#ffd977" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="armG" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#6e5222"/><stop offset=".5" stop-color="#d4ab55"/><stop offset="1" stop-color="#8a6a30"/>
+    </linearGradient>
+    <!-- gloss (light always from the sun, local -x) -->
+    <radialGradient id="gloss" cx="28%" cy="42%" r="80%">
+      <stop offset="0" stop-color="#fff" stop-opacity=".4"/><stop offset=".55" stop-color="#fff" stop-opacity=".08"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+    <!-- day/night terminator -->
+    <linearGradient id="dn" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#04070d" stop-opacity="0"/><stop offset=".48" stop-color="#04070d" stop-opacity=".18"/>
+      <stop offset=".52" stop-color="#04070d" stop-opacity=".82"/><stop offset="1" stop-color="#03050b" stop-opacity=".96"/>
+    </linearGradient>
+    <radialGradient id="vign" cx="50%" cy="50%" r="72%">
+      <stop offset="0" stop-color="#000" stop-opacity="0"/><stop offset=".82" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".55"/>
+    </radialGradient>
+  </defs>
+
+  <style>
+    .rot{animation:rot linear infinite}
+    .rev{animation:rev linear infinite}
+    @keyframes rot{to{transform:rotate(360deg)}}
+    @keyframes rev{to{transform:rotate(-360deg)}}
+    @keyframes tw{0%,100%{opacity:.15}50%{opacity:.9}}
+    .tw{animation:tw ease-in-out infinite}
+    @keyframes sh{0%,100%{opacity:.28}50%{opacity:.6}}
+    .sh{animation:sh 7s ease-in-out infinite}
+    text{font-family:Georgia,'Times New Roman',serif}
+  </style>
+
+  <!-- ═════════ BACKDROP ═════════ -->
+  <rect width="1520" height="1520" fill="url(#bgG)"/>
+  <g fill="#cfd8e6">
+    <circle class="tw" cx="120" cy="150" r="2"   style="animation-duration:3.4s;animation-delay:-1s"/>
+    <circle class="tw" cx="410" cy="80"  r="1.6" style="animation-duration:4.6s;animation-delay:-2.2s"/>
+    <circle class="tw" cx="980" cy="120" r="2"   style="animation-duration:3.9s;animation-delay:-.6s"/>
+    <circle class="tw" cx="1380" cy="220" r="1.7" style="animation-duration:5.2s;animation-delay:-3s"/>
+    <circle class="tw" cx="1440" cy="720" r="2"   style="animation-duration:4.1s;animation-delay:-1.8s"/>
+    <circle class="tw" cx="90"  cy="860" r="1.8" style="animation-duration:5.6s;animation-delay:-2.6s"/>
+    <circle class="tw" cx="220" cy="1360" r="2"  style="animation-duration:3.7s;animation-delay:-.9s"/>
+    <circle class="tw" cx="1240" cy="1400" r="1.6" style="animation-duration:4.9s;animation-delay:-3.4s"/>
+  </g>
+
+  <!-- ═════════ CASE + ENGRAVED CHAPTERS (365 day-ticks) ═════════ -->
+  <circle cx="760" cy="760" r="744" fill="#0b0805"/>
+  <circle cx="760" cy="760" r="738" fill="none" stroke="url(#caseG)" stroke-width="34"/>
+  <circle cx="760" cy="760" r="754" fill="none" stroke="#e8cf8a" stroke-width="1.6" opacity=".85"/>
+  <circle cx="760" cy="760" r="721" fill="none" stroke="#e8cf8a" stroke-width="1" opacity=".6"/>
+  <circle cx="760" cy="760" r="731" fill="none" stroke="#c9a954" stroke-width="2.2" stroke-dasharray="2.2 10.414" transform="rotate(.54795 760 760)" opacity=".9"/>
+  <!-- planet names + true periods, engraved -->
+  <g font-size="14.5" letter-spacing="2.6" fill="#c7a961" opacity=".92" text-anchor="middle">
+    <text transform="translate(760,62)  rotate(0)">MERCURY · 88 D</text>
+    <text transform="translate(1255.1,164.9) rotate(45)">VENUS · 225 D</text>
+    <text transform="translate(1458,760)   rotate(90)">EARTH · 365 D</text>
+    <text transform="translate(1255.1,1355.1) rotate(135)">MARS · 687 D</text>
+    <text transform="translate(760,1458)  rotate(180)">JUPITER · 4333 D</text>
+    <text transform="translate(264.9,1355.1) rotate(225)">SATURN · 10759 D</text>
+    <text transform="translate(62,760)    rotate(270)">URANUS · 30687 D</text>
+    <text transform="translate(264.9,164.9) rotate(315)">NEPTUNE · 60190 D</text>
+  </g>
+  <!-- case screws -->
+  <g stroke="#5d4720" stroke-width="2" fill="url(#gearG)">
+    <g transform="translate(227.6,227.6)"><circle r="10"/><line x1="-6" y1="0" x2="6" y2="0" transform="rotate(30)"/></g>
+    <g transform="translate(1292.4,227.6)"><circle r="10"/><line x1="-6" y1="0" x2="6" y2="0" transform="rotate(-20)"/></g>
+    <g transform="translate(227.6,1292.4)"><circle r="10"/><line x1="-6" y1="0" x2="6" y2="0" transform="rotate(75)"/></g>
+    <g transform="translate(1292.4,1292.4)"><circle r="10"/><line x1="-6" y1="0" x2="6" y2="0" transform="rotate(5)"/></g>
+  </g>
+  <circle cx="760" cy="760" r="716" fill="url(#dialG)"/>
+  <circle cx="760" cy="760" r="716" fill="none" stroke="#caa955" stroke-width="1.4" opacity=".55"/>
+  <circle cx="760" cy="760" r="700" fill="none" stroke="#caa955" stroke-width=".8" opacity=".3"/>
+  <circle cx="760" cy="760" r="60"  fill="none" stroke="#8a6a30" stroke-width=".8" opacity=".35"/>
+  <!-- orbit tracks -->
+  <g fill="none" stroke="#b99a4f" opacity=".38">
+    <circle cx="760" cy="760" r="156"/><circle cx="760" cy="760" r="236"/><circle cx="760" cy="760" r="316"/>
+    <circle cx="760" cy="760" r="400"/><circle cx="760" cy="760" r="488"/><circle cx="760" cy="760" r="572"/>
+    <circle cx="760" cy="760" r="648"/><circle cx="760" cy="760" r="716"/>
+  </g>
+  <g fill="#e5cd85" opacity=".85">
+    <circle cx="916" cy="760" r="3"/><circle cx="996" cy="760" r="3"/><circle cx="1076" cy="760" r="3"/>
+    <circle cx="1160" cy="760" r="3"/><circle cx="1248" cy="760" r="3"/><circle cx="1332" cy="760" r="3"/>
+    <circle cx="1408" cy="760" r="3"/><circle cx="1476" cy="760" r="3"/>
+  </g>
+
+  <!-- ═════════ MECHANISM ═════════ -->
+  <g transform="translate(760,760)">
+
+    <!-- fixed SUN-WHEEL: N=36, pitch r=96, 50% teeth; tooth-centres at 2.5°+10°k — every planet starts meshed -->
+    <g>
+      <circle r="88" fill="url(#gearG)" stroke="#4e3a14" stroke-width="1.5"/>
+      <circle r="83" fill="none" stroke="#f2dc9c" stroke-width="1" opacity=".35"/>
+      <circle r="96" fill="none" stroke="#c99e4a" stroke-width="13" stroke-dasharray="8.3776 8.3776"/>
+      <circle r="89.5" fill="none" stroke="#4e3a14" stroke-width="1" opacity=".6"/>
+      <circle r="102.5" fill="none" stroke="#4e3a14" stroke-width="1" opacity=".6"/>
+    </g>
+    <circle class="sh" r="54" fill="#ff9a2e"/>
+    <circle r="50" fill="url(#sunG)"/>
+    <g class="rot" style="animation-duration:203s"><!-- sun's own 25.4 d rotation -->
+      <circle r="73" fill="url(#rayG)"/>
+      <g fill="#f4cf6b" opacity=".45">
+        <circle cx="73" r="2.6"/><circle cx="51.63" cy="51.63" r="2.6"/><circle cx="0" cy="73" r="2.6"/>
+        <circle cx="-51.63" cy="51.63" r="2.6"/><circle cx="-73" r="2.6"/><circle cx="-51.63" cy="-51.63" r="2.6"/>
+        <circle cx="0" cy="-73" r="2.6"/><circle cx="51.63" cy="-51.63" r="2.6"/>
+      </g>
+    </g>
+    <g stroke="#4e3a14" stroke-width="2" fill="url(#gearG)">
+      <g transform="translate(40.4,0)"><circle r="5.5"/><line x1="-3" y1="0" x2="3" y2="0" transform="rotate(40)"/></g>
+      <g transform="translate(-20,34.64)"><circle r="5.5"/><line x1="-3" y1="0" x2="3" y2="0" transform="rotate(10)"/></g>
+      <g transform="translate(-20,-34.64)"><circle r="5.5"/><line x1="-3" y1="0" x2="3" y2="0" transform="rotate(65)"/></g>
+    </g>
+
+    <!-- shared arm pointer -->
+    <g id="arm"><path d="M 12 -7.5 L 146 -4 L 146 4 L 12 7.5 Z" fill="url(#armG)" stroke="#4e3a14" stroke-width="1"/></g>
+
+    <!-- ── MERCURY · R156 · N24 · p60 · T 14.451 s · gear 5.558 s · day 469.2 s ── -->
+    <g class="rot" style="animation-duration:14.451s" transform="rotate(2.5)">
+      <use href="#arm"/><ellipse cx="160" cy="5" rx="13" ry="10" fill="#000" opacity=".32"/>
+      <g transform="translate(156,0)">
+        <g transform="rotate(7.5)"><g class="rot" style="animation-duration:5.558s">
+          <circle r="55" fill="url(#gearG)" stroke="#4e3a14" stroke-width="1"/>
+          <circle r="60" fill="none" stroke="#c99e4a" stroke-width="13" stroke-dasharray="7.8540 7.8540"/>
+          <circle r="53.5" fill="none" stroke="#4e3a14" stroke-width="1" opacity=".55"/>
+          <circle r="66.5" fill="none" stroke="#4e3a14" stroke-width="1" opacity=".55"/>
+          <circle r="8" fill="#8a6a30" stroke="#4e3a14"/>
+        </g></g>
+        <circle r="10" fill="#9d948a"/><g class="rot" style="animation-duration:469.2s">
+          <circle cx="4" cy="-2" r="1.7" fill="#7c7369"/><circle cx="-3" cy="4" r="1.3" fill="#7c7369"/>
+          <circle cx="-4" cy="-4" r="1.1" fill="#6e675e"/>
+        </g>
+        <circle r="10" fill="url(#gloss)"/><circle r="10" fill="url(#dn)"/><circle r="10" fill="none" stroke="#0a0e14" stroke-width=".8" opacity=".5"/>
+      </g>
+    </g>
+
+    <!-- ── VENUS · R236 · N60 · p140 · T 36.911 s · gear 21.90 s · day −1944 s ── -->
+    <g class="rev" style="animation-duration:36.911s" transform="rotate(42.5)">
+      <use href="#arm"/><ellipse cx="240" cy="6" rx="19" ry="14" fill="#000" opacity=".32"/>
+      <g transform="translate(236,0)">
+        <g transform="rotate(3)"><g class="rev" style="animation-duration:21.9s">
+          <circle r="134" fill="url(#gearG)" stroke="#4e3a14" stroke-width="1"/>
+          <circle r="140" fill="none" stroke="#c99e4a" stroke-width="13" stroke-dasharray="7.3304 7.3304"/>
+          <circle r="133.5" fill="none" stroke="#4e3a14" stroke-width="1" opacity=".55"/>
+          <circle r="146.5" fill="none" stroke="#4e3a14" stroke-width="1" opacity=".55"/>
+          <circle r="9" fill="#8a6a30" stroke="#4e3a14"/>
+        </g></g>
+        <circle r="16" fill="#d9b57c"/><g class="rev" style="animation-duration:1944s">
+          <path d="M -9 -5 Q 0 -9 9 -4" stroke="#f2ddb0" stroke-width="2.4" fill="none" opacity=".9"/>
+          <path d="M -10 4 Q 0 1 8 5" stroke="#c19a58" stroke-width="2" fill="none" opacity=".8"/>
+        </g>
+        <circle r="16" fill="url(#gloss)"/><circle r="16" fill="url(#dn)"/><circle r="16" fill="none" stroke="#0a0e14" stroke-width=".8" opacity=".5"/>
+      </g>
+    </g>
+
+    <!-- ── EARTH · R316 · N90 · p220 · T 60 s · gear 41.772 s · day 8 s ── -->
+    <g class="rot" style="animation-duration:60s" transform="rotate(82.5)">
+      <use href="#arm"/><ellipse cx="320" cy="6" rx="20" ry="15" fill="#000" opacity=".32"/>
+      <g transform="translate(316,0)">
+        <g transform="rotate(2)"><g class="rot" style="animation-duration:41.772s">
+          <circle r="213" fill="url(#gearG)" stroke="#4e3a14" stroke-width="1"/>
+          <circle r="220" fill="none" stroke="#c99e4a" stroke-width="13" stroke-dasharray="7.6823 7.6823"/>
+          <circle r="213.5" fill="none" stroke="#4e3a14" stroke-width="1" opacity=".55"/>
+          <circle r="226.5" fill="none" stroke="#4e3a14" stroke-width="1" opacity=".55"/>
+          <circle r="10" fill="#8a6a30" stroke="#4e3a14"/>
+        </g></g>
+        <circle r="17" fill="#2f6fa8"/><g class="rot" style="animation-duration:8s">
+          <path d="M -6 -9 C -1 -11 5 -8 4 -4 C 1 -2 -5 -4 -6 -9 Z" fill="#4f9a52"/>
+          <path d="M 6 3 C 10 1 13 5 10 8 C 6 10 4 6 6 3 Z" fill="#57a15a"/>
+          <path d="M -11 5 Q -7 8 -3 6" stroke="#fff" stroke-width="1.8" fill="none" opacity=".8"/>
+        </g>
+        <circle r="17" fill="url(#gloss)"/><circle r="17" fill="url(#dn)"/><circle r="17" fill="none" stroke="#0a0e14" stroke-width=".8" opacity=".5"/>
+      </g>
+    </g>
+
+    <!-- ── MARS · R400 · N120 · p304 · T 112.85 s · gear 85.77 s · day 8.21 s ── -->
+    <g class="rot" style="animation-duration:112.85s" transform="rotate(122.5)">
+      <use href="#arm"/><ellipse cx="404" cy="6" rx="16" ry="12" fill="#000" opacity=".32"/>
+      <g transform="translate(400,0)">
+        <g transform="rotate(1.5)"><g class="rot" style="animation-duration:85.77s">
+          <circle r="297" fill="url(#gearG)" stroke="#4e3a14" stroke-width="1"/>
+          <circle r="304" fill="none" stroke="#c99e4a" stroke-width="13" stroke-dasharray="7.9565 7.9565"/>
+          <circle r="297.5" fill="none" stroke="#4e3a14" stroke-width="1" opacity=".55"/>
+          <circle r="310.5" fill="none" stroke="#4e3a14" stroke-width="1" opacity=".55"/>
+          <circle r="10" fill="#8a6a30" stroke="#4e3a14"/>
+        </g></g>
+        <circle r="13" fill="#bd5b34"/><g class="rot" style="animation-duration:8.21s">
+          <path d="M -4 -8 C 0 -10 4 -8 3 -5 C 0 -3 -4 -5 -4 -8 Z" fill="#e9d8c6" opacity=".95"/>
+          <path d="M -7 3 Q 0 6 7 2" stroke="#8e3f22" stroke-width="2" fill="none" opacity=".8"/>
+          <circle cx="5" cy="-4" r="1.6" fill="#8e3f22" opacity=".7"/>
+        </g>
+        <circle r="13" fill="url(#gloss)"/><circle r="13" fill="url(#dn)"/><circle r="13" fill="none" stroke="#0a0e14" stroke-width=".8" opacity=".5"/>
+      </g>
+    </g>
+
+    <!-- ── JUPITER · R488 · N160 · p392 · T 711.69 s · gear 571.7 s · day 3.31 s ── -->
+    <g class="rev" style="animation-duration:711.69s" transform="rotate(162.5)">
+      <use href="#arm"/><ellipse cx="492" cy="8" rx="34" ry="25" fill="#000" opacity=".3"/>
+      <g transform="translate(488,0)">
+        <g transform="rotate(1.125)"><g class="rev" style="animation-duration:571.7s">
+          <circle r="384" fill="url(#gearG)" stroke="#4e3a14" stroke-width="1"/>
+          <circle r="392" fill="none" stroke="#c99e4a" stroke-width="13" stroke-dasharray="7.7042 7.7042"/>
+          <circle r="385.5" fill="none" stroke="#4e3a14" stroke-width="1" opacity=".55"/>
+          <circle r="398.5" fill="none" stroke="#4e3a14" stroke-width="1" opacity=".55"/>
+          <circle r="11" fill="#8a6a30" stroke="#4e3a14"/>
+        </g></g>
+        <circle r="30" fill="#d9b380"/>
+        <g class="rev" style="animation-duration:3.31s">
+          <circle r="22.5" fill="none" stroke="#c49a64" stroke-width="4" opacity=".85"/>
+          <circle r="15" fill="none" stroke="#efe0bd" stroke-width="3.4" opacity=".85"/>
+          <circle r="7.5" fill="none" stroke="#a06a44" stroke-width="3" opacity=".8"/>
+          <circle cx="14.5" cy="0" r="4.6" fill="#c14e33" stroke="#7e2f1c" stroke-width="1"/>
+        </g>
+        <circle r="30" fill="url(#gloss)"/><circle r="30" fill="url(#dn)"/><circle r="30" fill="none" stroke="#0a0e14" stroke-width=".8" opacity=".5"/>
+      </g>
+    </g>
+
+    <!-- ── SATURN · R572 · N192 · p476 · T 1767.4 s · gear 1470.8 s · day 3.55 s ── -->
+    <g class="rot" style="animation-duration:1767.4s" transform="rotate(202.5)">
+      <use href="#arm"/><ellipse cx="576" cy="8" rx="30" ry="23" fill="#000" opacity=".3"/>
+      <g transform="translate(572,0)">
+        <g transform="rotate(.9375)"><g class="rot" style="animation-duration:1470.8s">
+          <circle r="468" fill="url(#gearG)" stroke="#4e3a14" stroke-width="1"/>
+          <circle r="476" fill="none" stroke="#c99e4a" stroke-width="13" stroke-dasharray="7.7941 7.7941"/>
+          <circle r="469.5" fill="none" stroke="#4e3a14" stroke-width="1" opacity=".55"/>
+          <circle r="482.5" fill="none" stroke="#4e3a14" stroke-width="1" opacity=".55"/>
+          <circle r="11" fill="#8a6a30" stroke="#4e3a14"/>
+        </g></g>
+        <ellipse rx="41" ry="27" fill="none" stroke="#000" stroke-width="5" opacity=".25"/>
+        <ellipse rx="41" ry="27" fill="none" stroke="#d6c08c" stroke-width="6" opacity=".85"/>
+        <ellipse rx="35" ry="22" fill="none" stroke="#b89a60" stroke-width="2.5" opacity=".8"/>
+        <circle r="24" fill="#e0c58c"/><g class="rot" style="animation-duration:3.55s">
+          <circle r="16" fill="none" stroke="#cdb27b" stroke-width="3" opacity=".6"/>
+          <circle r="9" fill="none" stroke="#efe0bc" stroke-width="2.4" opacity=".6"/>
+        </g>
+        <circle r="24" fill="url(#gloss)"/><circle r="24" fill="url(#dn)"/><circle r="24" fill="none" stroke="#0a0e14" stroke-width=".8" opacity=".5"/>
+      </g>
+    </g>
+
+    <!-- ── URANUS · R648 · N220 · p552 · T 5039.5 s · gear 4292.9 s · day −5.75 s ── -->
+    <g class="rot" style="animation-duration:5039.5s" transform="rotate(242.5)">
+      <use href="#arm"/><ellipse cx="652" cy="7" rx="22" ry="17" fill="#000" opacity=".3"/>
+      <g transform="translate(648,0)">
+        <g transform="rotate(.81818)"><g class="rot" style="animation-duration:4292.9s">
+          <circle r="544" fill="url(#gearG)" stroke="#4e3a14" stroke-width="1"/>
+          <circle r="552" fill="none" stroke="#c99e4a" stroke-width="13" stroke-dasharray="7.8905 7.8905"/>
+          <circle r="545.5" fill="none" stroke="#4e3a14" stroke-width="1" opacity=".55"/>
+          <circle r="558.5" fill="none" stroke="#4e3a14" stroke-width="1" opacity=".55"/>
+          <circle r="11" fill="#8a6a30" stroke="#4e3a14"/>
+        </g></g>
+        <ellipse rx="30" ry="20" fill="none" stroke="#bfe0dc" stroke-width="3" opacity=".5"/>
+        <circle r="18" fill="#93c9c4"/><g class="rev" style="animation-duration:5.75s">
+          <circle r="12" fill="none" stroke="#a8d4cf" stroke-width="2.6" opacity=".55"/>
+          <circle r="6" fill="none" stroke="#bfe0db" stroke-width="2" opacity=".5"/>
+        </g>
+        <circle r="18" fill="url(#gloss)"/><circle r="18" fill="url(#dn)"/><circle r="18" fill="none" stroke="#0a0e14" stroke-width=".8" opacity=".5"/>
+      </g>
+    </g>
+
+    <!-- ── NEPTUNE · R716 · N240 · p620 · T 9886 s · gear 8559.8 s · day 5.37 s ── -->
+    <g class="rot" style="animation-duration:9886s" transform="rotate(282.5)">
+      <use href="#arm"/><ellipse cx="720" cy="7" rx="21" ry="16" fill="#000" opacity=".3"/>
+      <g transform="translate(716,0)">
+        <g transform="rotate(.75)"><g class="rot" style="animation-duration:8559.8s">
+          <circle r="612" fill="url(#gearG)" stroke="#4e3a14" stroke-width="1"/>
+          <circle r="620" fill="none" stroke="#c99e4a" stroke-width="13" stroke-dasharray="8.1123 8.1123"/>
+          <circle r="613.5" fill="none" stroke="#4e3a14" stroke-width="1" opacity=".55"/>
+          <circle r="626.5" fill="none" stroke="#4e3a14" stroke-width="1" opacity=".55"/>
+          <circle r="11" fill="#8a6a30" stroke="#4e3a14"/>
+        </g></g>
+        <circle r="18" fill="#3561b3"/><g class="rot" style="animation-duration:5.37s">
+          <circle r="11.5" fill="none" stroke="#4a78c8" stroke-width="2.6" opacity=".6"/>
+          <circle r="5.5" fill="none" stroke="#28498e" stroke-width="2.2" opacity=".6"/>
+          <circle cx="8" cy="3" r="2.6" fill="#1d3a76"/>
+        </g>
+        <circle r="18" fill="url(#gloss)"/><circle r="18" fill="url(#dn)"/><circle r="18" fill="none" stroke="#0a0e14" stroke-width=".8" opacity=".5"/>
+      </g>
+    </g>
+  </g>
+
+  <!-- ═════════ LIGHT + PLATE ═════════ -->
+  <circle cx="760" cy="760" r="744" fill="url(#vign)" pointer-events="none"/>
+  <g class="rot" style="animation-duration:60s" opacity=".13" pointer-events="none">
+    <path d="M 760 760 L 760 20 A 740 740 0 0 1 1243.3 276.7 Z" fill="#fff7dc"/>
+    <path d="M 760 760 L 276.7 1443.3 A 740 740 0 0 1 20 760 Z" fill="#fff7dc"/>
+  </g>
+  <text x="760" y="1482" text-anchor="middle" font-size="21" letter-spacing="5" fill="#c9a954" opacity=".92">THE GRAND ORRERY · I MINUTE = I YEAR · WHEELS IN TRUE RATIO</text>
+  <text x="760" y="1506" text-anchor="middle" font-size="12" letter-spacing="3.5" fill="#8a6a30" opacity=".85">SIDEREAL DAYS 88.4 · −243 · 23.93 · 24.62 · 9.93 · 10.66 · −17.24 · 16.11 HOURS</text>
+</svg>

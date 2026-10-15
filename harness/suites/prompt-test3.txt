@@ -1,0 +1,51 @@
+You are working with a Home Assistant MCP server and a read-only Home Assistant installation.
+
+What you have:
+
+- The MCP server's Rust source in /work/mcp-src. You may read, change and rebuild it
+  (cd /work/mcp-src && cargo build --release). A new build is picked up automatically on the next
+  MCP call; you do not restart anything.
+- A subagent named mcp-probe. Its only tools are the MCP server's tools; it has no shell, no files
+  and no web access, and it knows nothing except what you tell it. You cannot call the MCP tools
+  yourself: to use the server, give mcp-probe a task with your task tool.
+- The installation's REST API at $HA_URL, with the token in $HA_TOKEN (Bearer). You can call it
+  yourself, for example with curl.
+
+Your job:
+
+1. Using mcp-probe, find out these facts about the installation through the MCP server:
+   a. the total number of entities;
+   b. the number of lights, and how many of them are on, off and unavailable;
+   c. the number of switches;
+   d. the number of entities, of any kind, whose state is "unavailable";
+   e. the installation's location name, Home Assistant version and time zone;
+   f. the current temperature and the HVAC mode of climate.trane_ac_upstairs;
+   g. the state of person.avery;
+   h. the services the lock domain offers.
+2. Check the same facts against the REST API yourself.
+3. Decide whether the MCP server gives correct answers. If it does not, find out why. If you can fix
+   it, fix it, rebuild it, and check the fixed server through mcp-probe again.
+4. Write two files.
+
+/work/facts.json, exactly this shape (numbers as numbers, lock_services as a sorted list of names):
+
+{
+  "mcp": {"total_entities": 0, "lights_total": 0, "lights_on": 0, "lights_off": 0,
+          "lights_unavailable": 0, "switches_total": 0, "unavailable_total": 0,
+          "location_name": "", "version": "", "time_zone": "",
+          "upstairs_current_temperature": 0, "upstairs_hvac_mode": "",
+          "person_avery_state": "", "lock_services": []},
+  "api": { the same keys, from your own REST API calls },
+  "mcp_correct": true or false,
+  "server_changed": true or false
+}
+
+"mcp" holds what mcp-probe reported through the MCP server, from its last check if you fixed the
+server. Use null for a fact the MCP server could not give you. "mcp_correct" is your judgement of
+the server as it is when you finish.
+
+/work/REPORT.md: the facts, where each one came from and whether the two sources agreed; your
+assessment of the MCP server (what works, what is wrong, how you know); what you changed in it, if
+anything, and why; and how you used mcp-probe.
+
+This whole task is also saved as /work/TASK.md. Read it again before you write the two files.

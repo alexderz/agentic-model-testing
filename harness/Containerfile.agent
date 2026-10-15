@@ -1,0 +1,75 @@
+# Sandbox for running the AGENT, not just for grading its output.
+#
+# The original harness containerised grading because generated code is
+# unreviewed, while the agent that writes that code ran on the host as the
+# user. That is backwards: the agent is the active party. It ran `pip install`
+# 14 times with the user's permissions, created a venv in their home, and
+# installed a package into ~/.local. An audit found nothing malicious, but
+# nothing prevented it either.
+#
+# This image runs Pi or Open Code with:
+#   * no host filesystem beyond the mounted work dir
+#   * a non-root user with no sudo
+#   * network reachable only where the caller allows (inference + data endpoint)
+#   * package installs confined to the container, discarded with it
+FROM docker.io/library/python:3.12-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      curl ca-certificates git jq build-essential pkg-config libssl-dev procps \
+    && rm -rf /var/lib/apt/lists/*
+
+# Node for the agents themselves (Pi and Open Code are both npm-distributed)
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+    && apt-get install -y --no-install-recommends nodejs \
+    && rm -rf /var/lib/apt/lists/*
+
+# Rust, for suites that ask for a Cargo project
+ENV RUSTUP_HOME=/opt/rustup CARGO_HOME=/opt/cargo
+RUN curl -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain stable \
+    && chmod -R a+rwX /opt/cargo /opt/rustup
+ENV PATH=/opt/cargo/bin:$PATH
+# rust-analyzer so opencode's lsp tool has a server to talk to. Without it
+# the tool is advertised and inert, which is worse than not offering it.
+RUN rustup component add rust-analyzer && chmod -R a+rwX /opt/rustup /opt/cargo
+
+# Common Python libraries preinstalled, so a model does not need to reach the
+# index for ordinary work. It still can, inside the container, and that is
+# contained: the layer is thrown away when the run ends.
+RUN pip install --no-cache-dir requests pytest httpx aiohttp click rich tabulate \
+    pyyaml pydantic python-dateutil websockets typer colorama texttable \
+    urllib3 certifi jinja2 pytest-timeout responses requests-mock psycopg2-binary
+
+# The agents themselves. Pinned so a cohort runs one known version; bump
+# deliberately between cohorts rather than silently mid-run.
+# Exact package names, verified against the host install -- NOT guessed. The
+# first attempt used "pi@0.87.1"; npm does have a package called "pi" (an
+# unrelated one at 2.0.5), so a looser spec would have installed the wrong
+# thing and run it as the agent.
+RUN npm install -g --no-fund --no-audit \
+      @earendil-works/pi-coding-agent@0.87.1 opencode-ai@1.18.32 \
+    && npm cache clean --force
+
+# nftables so the sandbox can enforce its own egress policy, and setpriv so the
+# entrypoint can drop the capability again before the agent ever runs. Rootless
+# podman maps container-root to the invoking user, so this costs no host
+# privilege: "root" here is still an unprivileged account on the host.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      nftables iproute2 iputils-ping dnsutils \
+    && rm -rf /var/lib/apt/lists/*
+
+# ripgrep on the PATH (checklist C16, 2026-10-11): OpenCode's glob and grep tools shell out to `rg`. Without it
+# OpenCode unpacks its own copy with tar, and tar cannot chown inside a case container (root in the user namespace,
+# no CAP_CHOWN), so both tools returned tar errors in every sandboxed case until now. Its own layer, placed late, so
+# the toolchain layers above stay exactly as the earlier cases ran them.
+RUN apt-get update && apt-get install -y --no-install-recommends ripgrep \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN useradd -m -u 1000 agent \
+    && mkdir -p /home/agent/.config/opencode \
+    && chmod -R a+rX /home/agent
+# /home/agent must be traversable by the container's root user, which has
+# NO CAP_DAC_OVERRIDE once net-policy.sh drops capabilities. Default 0700
+# made the mounted opencode config unreadable and the model unresolvable.
+USER agent
+WORKDIR /work
+ENV HOME=/home/agent

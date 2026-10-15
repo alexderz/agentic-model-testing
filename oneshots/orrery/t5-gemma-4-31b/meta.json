@@ -1,0 +1,46 @@
+{
+ "case": "t5-gemma-4-31b",
+ "model": "gemma-4-31b",
+ "test": "test5-orrery",
+ "max_tokens": 32000,
+ "started": "2026-10-12T05:39:33-0500",
+ "status": "ok",
+ "finish_reason": "stop",
+ "usage": {
+  "completion_tokens": 4762,
+  "prompt_tokens": 65,
+  "total_tokens": 4827,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  }
+ },
+ "timings": {
+  "cache_n": 0,
+  "prompt_n": 65,
+  "prompt_ms": 213.11,
+  "prompt_per_token_ms": 3.2786153846153847,
+  "prompt_per_second": 305.0068039979353,
+  "predicted_n": 4762,
+  "predicted_ms": 60123.436,
+  "predicted_per_token_ms": 12.628320940978787,
+  "predicted_per_second": 79.1870910371789,
+  "draft_n": 5208,
+  "draft_n_accepted": 3459
+ },
+ "static": {
+  "svg_found": true,
+  "parses": true,
+  "bytes": 7174,
+  "animateTransform": 0,
+  "animate": 0,
+  "animateMotion": 0,
+  "keyframes": 1,
+  "script": 0,
+  "prose_chars_outside_svg": 1724
+ },
+ "wall_s": 144.7,
+ "first_token_s": 84.6,
+ "tok_s": 79.3,
+ "reply_chars": 8898,
+ "reasoning_chars": 3785
+}

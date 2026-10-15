@@ -1,0 +1,131 @@
+diff -ruN a/README.md b/README.md
+--- a/README.md	2026-10-10 09:23:16.673854856 -0500
++++ b/README.md	2026-10-10 09:23:16.722400014 -0500
+@@ -99,7 +99,7 @@
+ | `get_config` | `sections` `[]`, `include_components` `true` | `GET /api/config`. Narrow it with `sections`; names that do not exist come back in `missing_sections`. `components_count` is reported even when the list itself is dropped. |
+ | `list_integrations` | `query` `""`, `limit` `100`, `cursor` `""` | The `components` array, grouped by its first segment, so `mqtt.light` appears under `mqtt`. |
+ | `list_domains` | `query` `""`, `sort_by` `count`\|`domain`, `limit` `40`, `cursor` `""` | `GET /api/states`, grouped by domain with entity counts, example entities and the three most common states. |
+-| `list_entities` | `query` `""`, `domain` `""`, `state` `""`, `only_available` `false`, `include_attributes` `false`, `sort_by` `entity_id`\|`domain`\|`friendly_name`\|`state`\|`last_updated`, `sort_dir` `asc`\|`desc`, `limit` `50`, `cursor` `""` | `GET /api/states`, filtered client-side (Home Assistant's REST API ignores filters). Hidden entities are returned flagged `hidden: true`; `only_available: true` drops them. |
++| `list_entities` | `query` `""`, `domain` `""`, `state` `""`, `device_class` `""`, `count_only` `false`, `only_available` `false`, `include_attributes` `false`, `sort_by` `entity_id`\|`domain`\|`friendly_name`\|`state`\|`last_updated`, `sort_dir` `asc`\|`desc`, `limit` `50`, `cursor` `""` | `GET /api/states`, filtered client-side (Home Assistant's REST API ignores filters). Hidden entities are returned flagged `hidden: true`; `only_available: true` drops them. `device_class` keeps only entities with that device class (case-insensitive). `count_only: true` returns the counts alone: `entities` is `[]`, `returned` is `0`, `next_cursor` is `null`. |
+ | `get_entity` | `entity_id` *required* | `GET /api/states/{entity_id}`, with every attribute preserved. Members this server does not model are kept under `extra` rather than discarded. |
+ | `get_entities` | `entity_ids` *required*, `include_attributes` `false` | One `GET /api/states` request serving many ids; ids that do not exist are listed in `missing`. |
+ | `list_services` | `domain` `""`, `query` `""`, `limit` `100`, `cursor` `""` | `GET /api/services`, flattened to one row per `domain.service` with field names and which fields are required. |
+diff -ruN a/src/mcp/handlers.rs b/src/mcp/handlers.rs
+--- a/src/mcp/handlers.rs	2026-10-10 09:23:16.675981073 -0500
++++ b/src/mcp/handlers.rs	2026-10-10 09:23:16.721440823 -0500
+@@ -396,12 +396,17 @@
+     let needle = terms(args.string("query"));
+     let domain = args.string("domain").trim().to_ascii_lowercase();
+     let wanted_state = args.string("state").trim().to_ascii_lowercase();
++    let device_class = args.string("device_class").trim().to_ascii_lowercase();
+     let include_attributes = args.boolean("include_attributes");
+     let hide_unavailable = args.boolean("only_available");
+ 
+     states.retain(|state| {
+         (domain.is_empty() || state.domain().eq_ignore_ascii_case(&domain))
+             && (wanted_state.is_empty() || state.state.eq_ignore_ascii_case(&wanted_state))
++            && (device_class.is_empty()
++                || state
++                    .string_attribute("device_class")
++                    .is_some_and(|value| value.eq_ignore_ascii_case(&device_class)))
+             && (!hide_unavailable || !state.is_hidden())
+             && (needle.is_empty()
+                 || matches(
+@@ -414,6 +419,14 @@
+                 ))
+     });
+ 
++    if args.boolean("count_only") {
++        // Counting needs neither an order nor a page, so `limit` and `cursor` are moot.
++        let mut out = page_fields(states.len(), 0, &None);
++        out.insert("total_entities".into(), json!(total_entities as i64));
++        out.insert("entities".into(), Value::Array(Vec::new()));
++        return Ok(Value::Object(out));
++    }
++
+     sort_states(
+         &mut states,
+         args.string("sort_by"),
+diff -ruN a/src/mcp/tools.rs b/src/mcp/tools.rs
+--- a/src/mcp/tools.rs	2026-10-10 09:23:16.676512996 -0500
++++ b/src/mcp/tools.rs	2026-10-10 09:23:16.720380239 -0500
+@@ -260,14 +260,17 @@
+             name: "list_entities",
+             title: "List and search entities",
+             description: "Searches current entity states by entity id, object id or friendly name (`query`, \
+-             space-separated terms all match), by `domain`, and by exact state value (`state`). Home \
+-             Assistant's REST API has no server-side filters, so these run here over one /api/states fetch. \
+-             Entities hidden in the UI are included and marked `hidden`.",
++             space-separated terms all match), by `domain`, by exact state value (`state`) and by \
++             `device_class`. Home Assistant's REST API has no server-side filters, so these run here over \
++             one /api/states fetch. Entities hidden in the UI are included and marked `hidden`. Set \
++             `count_only` to get just the number of matches.",
+             input_schema: input_schema(
+                 &[
+                     ("query", prop_query("Terms every entity must match, case-insensitively, across its entity id and friendly name, e.g. \"living room\".")),
+                     ("domain", prop_domain("Only entities in this domain, e.g. \"light\".")),
+                     ("state", prop_domain("Only entities whose state equals this value, e.g. \"on\" or \"unavailable\".")),
++                    ("device_class", prop_domain("Only entities whose device_class attribute equals this value, case-insensitively, e.g. \"temperature\" or \"motion\". Entities without a device class never match.")),
++                    ("count_only", boolean("Return only the counts: `entities` is empty, `returned` is 0 and `next_cursor` is null, while `matched` still counts every entity the filters select.", false)),
+                     ("sort_by", enum_with_default("Which field to sort on.", &["entity_id", "domain", "friendly_name", "state", "last_updated"], "entity_id")),
+                     ("sort_dir", enum_with_default("Sort direction.", &["asc", "desc"], "asc")),
+                     ("only_available", boolean("Skip entities hidden in the Home Assistant UI.", false)),
+diff -ruN a/tests/tools.rs b/tests/tools.rs
+--- a/tests/tools.rs	2026-10-10 09:23:16.677085580 -0500
++++ b/tests/tools.rs	2026-10-10 09:23:16.722400014 -0500
+@@ -915,3 +915,55 @@
+         );
+     }
+ }
++
++#[test]
++fn list_entities_filters_by_device_class_and_can_count_only() {
++    let fake = FakeHa::standard();
++    let client = common::Client::start(&fake.url);
++
++    let by_class = call(
++        &client,
++        "list_entities",
++        json!({"device_class": "Temperature"}),
++    )
++    .expect_structured("list_entities by device class");
++    assert_eq!(by_class["total_entities"], 6);
++    assert_eq!(by_class["matched"], 1, "the match is case-insensitive");
++    assert_eq!(
++        by_class["entities"][0]["entity_id"],
++        "sensor.outside_temperature"
++    );
++
++    let none = call(&client, "list_entities", json!({"device_class": "gas"}))
++        .expect_structured("list_entities with an unused device class");
++    assert_eq!(none["matched"], 0);
++    assert_eq!(none["entities"], json!([]));
++
++    let unfiltered = call(&client, "list_entities", json!({"device_class": ""}))
++        .expect_structured("list_entities with an empty device class");
++    assert_eq!(unfiltered["matched"], 6, "empty means no filter");
++
++    let counted = call(&client, "list_entities", json!({"count_only": true}))
++        .expect_structured("list_entities count only");
++    assert_eq!(counted["matched"], 6);
++    assert_eq!(counted["total_entities"], 6);
++    assert_eq!(counted["returned"], 0);
++    assert_eq!(counted["entities"], json!([]));
++    assert!(counted["next_cursor"].is_null());
++
++    let counted_lights = call(
++        &client,
++        "list_entities",
++        json!({"count_only": true, "domain": "light", "limit": 1}),
++    )
++    .expect_structured("list_entities count only, filtered");
++    assert_eq!(counted_lights["matched"], 2);
++    assert_eq!(counted_lights["returned"], 0);
++    assert!(counted_lights["next_cursor"].is_null());
++
++    let wrong_type = call(&client, "list_entities", json!({"count_only": "yes"}));
++    assert_eq!(
++        wrong_type.expect_tool_error("a string for count_only")["_meta"]["errorKind"],
++        "invalid-arguments"
++    );
++}

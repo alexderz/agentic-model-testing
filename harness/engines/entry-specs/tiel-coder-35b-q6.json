@@ -1,0 +1,74 @@
+{
+ "schema": 1,
+ "generated": "2026-10-09T14:59:56-05:00",
+ "cmd_sha256": "913a3a9b967a9a41194922e8866c764d31cf4684fc5d02f3ea1285b762ba1d96",
+ "model_meta": "/home/operator/ai/models/llm/tiel-coder-35b-q6/bakeoff-model.json",
+ "model_file": "/home/operator/ai/models/llm/tiel-coder-35b-q6/Tiel-Coder-35B-A3B-UD-Q6_K_XL.gguf",
+ "engine": "llama.cpp",
+ "engine_version": "0.4-native",
+ "served_context": 262144,
+ "parallel": null,
+ "kv_type": "f16",
+ "thinking": {
+  "default_on": null,
+  "server_budget": 24000,
+  "request_field": null,
+  "budget_tokens": null
+ },
+ "sampling": {
+  "top_k": 20.0,
+  "top_p": 0.95,
+  "temp": 1.0
+ },
+ "spec_decode": null,
+ "observability": {
+  "metrics": true,
+  "slots_debug": true,
+  "prompt_tokens_details": null,
+  "force_include_usage": null
+ },
+ "storage": "nas",
+ "multi_agent_ok": true,
+ "placement": {
+  "gpu_layers": 999,
+  "experts_on_cpu": 20,
+  "mmap": false,
+  "ram_pinned_gb": null
+ },
+ "serving": {
+  "port": null,
+  "proxy": null,
+  "container_name": "llama-swap",
+  "max_num_seqs": null,
+  "batch_tokens": null,
+  "prefix_caching": true,
+  "flash_attn": true
+ },
+ "speculative": {
+  "type": "none",
+  "draft_model": null,
+  "n_max": null,
+  "acceptance_note": null
+ },
+ "templates": {
+  "chat_template_kwargs": null,
+  "reasoning_parser": null,
+  "tool_call_parser": null,
+  "reasoning_start": null,
+  "reasoning_end": null
+ },
+ "endpoints": {
+  "health": "/health",
+  "metrics": "/metrics",
+  "slots": "/slots",
+  "props": "/props"
+ },
+ "role": {
+  "daily_driver": null,
+  "bakeoff_status": "pass"
+ },
+ "model_id": "tiel-coder-35b-q6",
+ "report": {
+  "label": "Tiel-Coder-35B 6-bit \u00b7 llama.cpp, 20 expert layers in RAM"
+ }
+}

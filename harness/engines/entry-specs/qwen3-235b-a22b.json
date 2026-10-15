@@ -1,0 +1,67 @@
+{
+ "schema": 1,
+ "generated": "2026-10-09T08:42:14-05:00",
+ "cmd_sha256": "4750252a784359edd2d00b00d7183dd50647189c5e39b75f4941d7a4114ff659",
+ "model_meta": "/home/operator/ai/models/llm/qwen3-235b-a22b/bakeoff-model.json",
+ "model_file": "/home/operator/ai/models/llm/qwen3-235b-a22b/Q4_K_M/Qwen3-235B-A22B-Q4_K_M-00001-of-00003.gguf",
+ "engine": "llama.cpp",
+ "engine_version": "0.4-native",
+ "served_context": 131072,
+ "parallel": null,
+ "kv_type": "f16",
+ "thinking": {
+  "default_on": null,
+  "server_budget": null,
+  "request_field": null,
+  "budget_tokens": null
+ },
+ "sampling": {},
+ "spec_decode": null,
+ "observability": {
+  "metrics": true,
+  "slots_debug": true,
+  "prompt_tokens_details": null,
+  "force_include_usage": null
+ },
+ "storage": "nas",
+ "multi_agent_ok": true,
+ "placement": {
+  "gpu_layers": 999,
+  "experts_on_cpu": 82,
+  "mmap": false,
+  "ram_pinned_gb": null
+ },
+ "serving": {
+  "port": null,
+  "proxy": null,
+  "container_name": "llama-swap",
+  "max_num_seqs": null,
+  "batch_tokens": null,
+  "prefix_caching": true,
+  "flash_attn": true
+ },
+ "speculative": {
+  "type": "none",
+  "draft_model": null,
+  "n_max": null,
+  "acceptance_note": null
+ },
+ "templates": {
+  "chat_template_kwargs": null,
+  "reasoning_parser": null,
+  "tool_call_parser": null,
+  "reasoning_start": null,
+  "reasoning_end": null
+ },
+ "endpoints": {
+  "health": "/health",
+  "metrics": "/metrics",
+  "slots": "/slots",
+  "props": "/props"
+ },
+ "role": {
+  "daily_driver": null,
+  "bakeoff_status": "untested"
+ },
+ "model_id": "qwen3-235b-a22b"
+}

@@ -1,0 +1,310 @@
+diff -ruN a/README.md b/README.md
+--- a/README.md	2026-10-10 09:23:16.684437879 -0500
++++ b/README.md	2026-10-10 09:24:31.506566083 -0500
+@@ -78,6 +78,9 @@
+ | `HA_URL` | yes | — | Home Assistant root URL, e.g. `http://homeassistant.local:8123`. No trailing `/api`. Alias: `HA_BASE_URL`. |
+ | `HA_TOKEN` | yes | — | Long-lived access token. Alias: `HA_LONG_LIVED_ACCESS_TOKEN`. |
+ | `HA_MCP_TIMEOUT_SECS` | no | `15` | Per-request timeout. Range 1–600. |
++| `HA_MCP_CONNECT_TIMEOUT_SECS` | no | `5` | Longest wait for the connection to open. Range 1–600; never longer than `HA_MCP_TIMEOUT_SECS`. |
++| `HA_MCP_RETRIES` | no | `0` | Extra attempts after a request fails with a connection failure, a timeout or HTTP 502, 503 or 504. Range 0–10. Other failures are never retried. |
++| `HA_MCP_RETRY_DELAY_MS` | no | `500` | Pause between two attempts, in milliseconds. Range 0–60000. |
+ | `HA_MCP_MAX_RESPONSE_BYTES` | no | `33554432` | Refuse a response larger than this (4 KiB – 256 MiB). |
+ | `HA_MCP_TLS_NO_VERIFY` | no | `false` | Skip certificate verification for `https://` URLs. Intended for a self-signed home lab, not for the internet. |
+ | `HA_MCP_LOG_LEVEL` | no | `info` | `off`, `error`, `warning`, `info`, `debug`. Logs go to stderr. |
+@@ -175,7 +178,7 @@
+ | Every tool says `unauthorized` (401) | The token is missing, expired or not a long-lived access token. |
+ | Every tool says `forbidden` (403) | Something is in front of Home Assistant that blocks the request, or a write was attempted. |
+ | `unreachable` | Wrong `HA_URL` (check scheme, host, port, and that it is the root URL, not `/api`), or Home Assistant is down. |
+-| `timeout` | The instance is slow. Raise `HA_MCP_TIMEOUT_SECS`, or narrow the call with a smaller `limit` or a filter. |
++| `timeout` | The instance is slow. Raise `HA_MCP_TIMEOUT_SECS`, set `HA_MCP_RETRIES`, or narrow the call with a smaller `limit` or a filter. |
+ | TLS errors behind a self-signed certificate | Use a proper certificate, or set `HA_MCP_TLS_NO_VERIFY=1` on a trusted LAN. |
+ | Nothing useful on stderr | Set `HA_MCP_LOG_LEVEL=debug`; every request, tool call and HTTP failure is logged there, never on stdout. |
+ 
+diff -ruN a/src/config.rs b/src/config.rs
+--- a/src/config.rs	2026-10-10 09:23:16.684730074 -0500
++++ b/src/config.rs	2026-10-10 09:24:31.504180042 -0500
+@@ -24,6 +24,11 @@
+ const DEFAULT_TOOL_PAGE_SIZE: usize = 50;
+ const MIN_TIMEOUT_SECS: u64 = 1;
+ const MAX_TIMEOUT_SECS: u64 = 600;
++const DEFAULT_CONNECT_TIMEOUT_SECS: usize = 5;
++const DEFAULT_RETRIES: usize = 0;
++const MAX_RETRIES: usize = 10;
++const DEFAULT_RETRY_DELAY_MS: usize = 500;
++const MAX_RETRY_DELAY_MS: usize = 60_000;
+ const MIN_PAGE_SIZE: usize = 1;
+ const MAX_PAGE_SIZE: usize = 100;
+ const MIN_RESPONSE_BYTES: usize = 4 * 1024;
+@@ -38,6 +43,12 @@
+     pub token: String,
+     /// End-to-end timeout for one Home Assistant request.
+     pub request_timeout: Duration,
++    /// Longest wait for the connection to open. Never applied beyond `request_timeout`.
++    pub connect_timeout: Duration,
++    /// Extra attempts after a request fails in a way that may pass (0 = try once).
++    pub retries: u32,
++    /// Pause between two attempts.
++    pub retry_delay: Duration,
+     /// Refuse to buffer a response larger than this.
+     pub max_response_bytes: usize,
+     /// Skip TLS certificate verification (LAN installations with self-signed certs).
+@@ -103,6 +114,30 @@
+             request_timeout: Duration::from_secs(parse_timeout_secs(lookup(
+                 "HA_MCP_TIMEOUT_SECS",
+             ))?),
++            connect_timeout: Duration::from_secs(parse_usize(
++                lookup("HA_MCP_CONNECT_TIMEOUT_SECS"),
++                DEFAULT_CONNECT_TIMEOUT_SECS,
++                MIN_TIMEOUT_SECS as usize,
++                MAX_TIMEOUT_SECS as usize,
++                "HA_MCP_CONNECT_TIMEOUT_SECS",
++                "a whole number of seconds between {min} and {max}",
++            )? as u64),
++            retries: parse_usize(
++                lookup("HA_MCP_RETRIES"),
++                DEFAULT_RETRIES,
++                0,
++                MAX_RETRIES,
++                "HA_MCP_RETRIES",
++                "a whole number of retries between {min} and {max}",
++            )? as u32,
++            retry_delay: Duration::from_millis(parse_usize(
++                lookup("HA_MCP_RETRY_DELAY_MS"),
++                DEFAULT_RETRY_DELAY_MS,
++                0,
++                MAX_RETRY_DELAY_MS,
++                "HA_MCP_RETRY_DELAY_MS",
++                "a whole number of milliseconds between {min} and {max}",
++            )? as u64),
+             max_response_bytes: parse_usize(
+                 lookup("HA_MCP_MAX_RESPONSE_BYTES"),
+                 DEFAULT_MAX_RESPONSE_BYTES,
+@@ -328,6 +363,9 @@
+         assert_eq!(cfg.base_url, BASE);
+         assert_eq!(cfg.token, TOKEN);
+         assert_eq!(cfg.request_timeout, Duration::from_secs(15));
++        assert_eq!(cfg.connect_timeout, Duration::from_secs(5));
++        assert_eq!(cfg.retries, 0, "by default a request is tried once");
++        assert_eq!(cfg.retry_delay, Duration::from_millis(500));
+         assert_eq!(cfg.max_response_bytes, 32 * 1024 * 1024);
+         assert_eq!(cfg.tool_page_size, 50);
+         assert_eq!(cfg.log_level, Level::Info);
+@@ -420,6 +458,41 @@
+             );
+         }
+     }
++
++    #[test]
++    fn connect_timeout_retries_and_delay_are_read_and_validated() {
++        let cfg = config(&base_pairs(&[
++            ("HA_MCP_CONNECT_TIMEOUT_SECS", "2"),
++            ("HA_MCP_RETRIES", "3"),
++            ("HA_MCP_RETRY_DELAY_MS", "0"),
++        ]));
++        assert_eq!(cfg.connect_timeout, Duration::from_secs(2));
++        assert_eq!(cfg.retries, 3);
++        assert_eq!(cfg.retry_delay, Duration::ZERO);
++        assert_eq!(config(&base_pairs(&[("HA_MCP_RETRIES", "10")])).retries, 10);
++        assert_eq!(
++            config(&base_pairs(&[("HA_MCP_RETRY_DELAY_MS", "60000")])).retry_delay,
++            Duration::from_secs(60)
++        );
++
++        for (var, bad) in [
++            ("HA_MCP_CONNECT_TIMEOUT_SECS", "0"),
++            ("HA_MCP_CONNECT_TIMEOUT_SECS", "601"),
++            ("HA_MCP_CONNECT_TIMEOUT_SECS", "soon"),
++            ("HA_MCP_RETRIES", "-1"),
++            ("HA_MCP_RETRIES", "11"),
++            ("HA_MCP_RETRIES", "1.5"),
++            ("HA_MCP_RETRY_DELAY_MS", "-1"),
++            ("HA_MCP_RETRY_DELAY_MS", "60001"),
++            ("HA_MCP_RETRY_DELAY_MS", "abc"),
++        ] {
++            let err = config_err(&base_pairs(&[(var, bad)]));
++            assert!(
++                matches!(&err, ConfigError::Invalid { var: named, .. } if *named == var),
++                "{var}={bad:?} was accepted or blamed on another variable: {err}"
++            );
++        }
++    }
+ 
+     #[test]
+     fn boolean_and_size_knobs_are_validated() {
+diff -ruN a/src/ha/mod.rs b/src/ha/mod.rs
+--- a/src/ha/mod.rs	2026-10-10 09:23:16.684730074 -0500
++++ b/src/ha/mod.rs	2026-10-10 09:24:31.506000428 -0500
+@@ -29,12 +29,14 @@
+     token: String,
+     max_bytes: usize,
+     timeout: Duration,
++    retries: u32,
++    retry_delay: Duration,
+ }
+ 
+ impl HaClient {
+     pub fn new(config: &Config) -> HaClient {
+         let tls = TlsConfig::builder().disable_verification(config.tls_no_verify);
+-        let connect_timeout = config.request_timeout.min(Duration::from_secs(5));
++        let connect_timeout = config.request_timeout.min(config.connect_timeout);
+         let http = HttpConfig::builder()
+             // Status codes are inspected by hand so the response body can be
+             // quoted back to the caller instead of being swallowed.
+@@ -48,6 +50,8 @@
+             token: config.token.clone(),
+             max_bytes: config.max_response_bytes,
+             timeout: config.request_timeout,
++            retries: config.retries,
++            retry_delay: config.retry_delay,
+         }
+     }
+ 
+@@ -124,8 +128,30 @@
+         self.fetch(&url, "*/*")
+     }
+ 
+-    /// The single HTTP entry point: auth header, size cap, status handling.
++    /// The single HTTP entry point. A failure that may pass on its own (see
++    /// [`is_transient`]) is tried again up to `retries` more times, `retry_delay`
++    /// apart; the last failure is the one reported.
+     fn fetch(&self, url: &str, accept: &str) -> Result<String, HaError> {
++        let mut attempt: u32 = 0;
++        loop {
++            match self.fetch_once(url, accept) {
++                Err(error) if attempt < self.retries && is_transient(&error) => {
++                    attempt += 1;
++                    crate::debug!(
++                        "GET {url} failed ({error}); retry {attempt} of {}",
++                        self.retries
++                    );
++                    if !self.retry_delay.is_zero() {
++                        std::thread::sleep(self.retry_delay);
++                    }
++                }
++                outcome => return outcome,
++            }
++        }
++    }
++
++    /// One attempt: auth header, size cap, status handling.
++    fn fetch_once(&self, url: &str, accept: &str) -> Result<String, HaError> {
+         crate::debug!("GET {url}");
+         let response = self
+             .agent
+@@ -233,6 +259,17 @@
+     }
+ }
+ 
++/// Failures worth another attempt: the connection could not be made, the request
++/// timed out, or a gateway said the instance is not ready (502, 503, 504). Anything
++/// Home Assistant actually decided - a 4xx, a 500, an unusable body - is final.
++fn is_transient(error: &HaError) -> bool {
++    match error {
++        HaError::Timeout { .. } | HaError::Unreachable { .. } => true,
++        HaError::Status { status, .. } => matches!(status, 502..=504),
++        _ => false,
++    }
++}
++
+ /// Builds the `/api/logbook` query string; `None` values are omitted.
+ fn logbook_query(start_time: Option<&str>, end_time: Option<&str>) -> String {
+     let mut parts: Vec<String> = Vec::new();
+@@ -290,6 +327,36 @@
+     }
+ 
+     #[test]
++    fn only_passing_failures_are_retried() {
++        let status = |status: u16| HaError::Status {
++            status,
++            url: "u".into(),
++            detail: String::new(),
++        };
++        assert!(is_transient(&status(502)));
++        assert!(is_transient(&status(503)));
++        assert!(is_transient(&status(504)));
++        assert!(!is_transient(&status(500)));
++        assert!(!is_transient(&status(400)));
++        assert!(is_transient(&HaError::Timeout {
++            url: "u".into(),
++            secs: 1
++        }));
++        assert!(is_transient(&HaError::Unreachable {
++            url: "u".into(),
++            reason: "refused".into()
++        }));
++        assert!(!is_transient(&HaError::NotFound {
++            url: "u".into(),
++            detail: String::new()
++        }));
++        assert!(!is_transient(&HaError::Unauthorized {
++            status: 401,
++            detail: String::new()
++        }));
++    }
++
++    #[test]
+     fn error_detail_prefers_the_message_field() {
+         assert_eq!(
+             error_detail(r#"{"message":"Entity not found: light.nope"}"#),
+diff -ruN a/tests/common/mod.rs b/tests/common/mod.rs
+--- a/tests/common/mod.rs	2026-10-10 09:23:16.686488603 -0500
++++ b/tests/common/mod.rs	2026-10-10 09:24:31.507044451 -0500
+@@ -295,6 +295,9 @@
+             .env_remove("HA_MCP_TOOL_PAGE_SIZE")
+             .env_remove("HA_MCP_STRICT_META")
+             .env_remove("HA_MCP_TIMEOUT_SECS")
++            .env_remove("HA_MCP_CONNECT_TIMEOUT_SECS")
++            .env_remove("HA_MCP_RETRIES")
++            .env_remove("HA_MCP_RETRY_DELAY_MS")
+             .env_remove("HA_MCP_MAX_RESPONSE_BYTES")
+             .env_remove("HA_MCP_TLS_NO_VERIFY")
+             .stdin(Stdio::piped())
+diff -ruN a/tests/tools.rs b/tests/tools.rs
+--- a/tests/tools.rs	2026-10-10 09:23:16.686360830 -0500
++++ b/tests/tools.rs	2026-10-10 09:24:31.507044451 -0500
+@@ -915,3 +915,45 @@
+         );
+     }
+ }
++
++#[test]
++fn transient_failures_are_retried_only_when_asked() {
++    let down = || {
++        vec![(
++            "/api/config",
++            common::Response::json(503, json!({"message": "restarting"})),
++        )]
++    };
++
++    let fake = FakeHa::start(TOKEN, down());
++    let client = common::Client::start(&fake.url);
++    let result = call(&client, "get_config", json!({})).expect_tool_error("a 503 without retries");
++    assert_eq!(result["_meta"]["errorKind"], "http-status");
++    assert_eq!(fake.count("/api/config"), 1, "the default is one attempt");
++
++    let fake = FakeHa::start(TOKEN, down());
++    let client = common::Client::with_env(
++        &fake.url,
++        TOKEN,
++        &[("HA_MCP_RETRIES", "2"), ("HA_MCP_RETRY_DELAY_MS", "0")],
++    );
++    let result = call(&client, "get_config", json!({})).expect_tool_error("a 503 with retries");
++    assert_eq!(result["_meta"]["httpStatus"], 503);
++    assert_eq!(fake.count("/api/config"), 3, "one attempt plus two retries");
++
++    let fake = FakeHa::start(TOKEN, vec![]);
++    let client = common::Client::with_env(
++        &fake.url,
++        TOKEN,
++        &[("HA_MCP_RETRIES", "3"), ("HA_MCP_RETRY_DELAY_MS", "0")],
++    );
++    let result = call(&client, "get_config", json!({})).expect_tool_error("a 404 with retries on");
++    assert_eq!(result["_meta"]["errorKind"], "not-found");
++    assert_eq!(fake.count("/api/config"), 1, "a 404 is final");
++}
++
++#[test]
++fn a_bad_retry_setting_stops_the_server_at_start() {
++    let fake = FakeHa::standard();
++    common::Client::with_env(&fake.url, TOKEN, &[("HA_MCP_RETRIES", "many")]).expect_exit_code(2);
++}

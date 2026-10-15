@@ -1,0 +1,45 @@
+{
+ "why": "Maya v1.1.11 beside v1.0.4 on GLM-5.3-Flash (operator 2026-10-15, Model Master 2): the split-digit recheck, then speed and quality. Our three v1.0.4 patches are upstream (engines/maya/patches-v1.1.11/README.md): STRATA_GLM_RAM_RESIDENT=1 replaces RAM_ALL and DRAIN_SERVE. Applied by queue-new.d/50-maya1111-ab.sh with tools/add_clone_entry.py.",
+ "entries": [
+  {
+   "src": "maya-glm-5.3-flash",
+   "new": "maya1111-glm-5.3-flash",
+   "image": "f0be5e848bbb574f9ae49433ec7bc3dd77ad7adf00a6f5f84bc220bd22f1ba72",
+   "name": "GLM-5.3-Flash Maya-S IQ2_XXS on Project Maya v1.1.11",
+   "description": "Project Maya (github mw00/project-maya v1.1.11 = 89313399, unpatched, image f0be5e848bbb), config glm-5.3-flash-v1111.json: the same as maya-glm-5.3-flash (131k ctx, 24k thinking budget, RAM tier 95 GB) with STRATA_GLM_RAM_RESIDENT=1 in place of our RAM_ALL/DRAIN_SERVE patches, own log. A/B against v1.0.4. Model Master bakeoff.",
+   "subs": [
+    [
+     "0b1e71f83065da12cfe5eb91ad16bfe57b5b3209b23062e75a1a9b94759c82df",
+     "f0be5e848bbb574f9ae49433ec7bc3dd77ad7adf00a6f5f84bc220bd22f1ba72"
+    ],
+    [
+     "--config /data/configs/glm-5.3-flash.json",
+     "--config /data/configs/glm-5.3-flash-v1111.json"
+    ]
+   ],
+   "config": {
+    "dir": "/home/operator/ai/maya/configs",
+    "src": "glm-5.3-flash.json",
+    "new": "glm-5.3-flash-v1111.json",
+    "set": {
+     "log": "/logs/glm-5.3-flash-v1111.log"
+    },
+    "env": {
+     "STRATA_GLM_RAM_ALL": null,
+     "STRATA_GLM_DRAIN_SERVE": null,
+     "STRATA_GLM_RAM_RESIDENT": "1"
+    }
+   },
+   "spec": {
+    "engine_version": "maya-1.1.11",
+    "role": {
+     "daily_driver": null,
+     "bakeoff_status": "untested"
+    },
+    "report": {
+     "label": "GLM-5.3-Flash · Maya v1.1.11, 131k context"
+    }
+   }
+  }
+ ]
+}

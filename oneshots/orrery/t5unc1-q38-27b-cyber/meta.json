@@ -1,0 +1,46 @@
+{
+ "case": "t5unc1-q38-27b-cyber",
+ "model": "q38-27b-cyber",
+ "test": "test5-orrery",
+ "max_tokens": 128000,
+ "timeout_s": 36000,
+ "started": "2026-10-15T05:52:01-0500",
+ "status": "ok",
+ "finish_reason": "stop",
+ "usage": {
+  "completion_tokens": 16129,
+  "prompt_tokens": 101,
+  "total_tokens": 16230,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  }
+ },
+ "timings": {
+  "cache_n": 0,
+  "prompt_n": 101,
+  "prompt_ms": 321.93,
+  "prompt_per_token_ms": 3.1874257425742574,
+  "prompt_per_second": 313.7327990556953,
+  "predicted_n": 16129,
+  "predicted_ms": 377685.318,
+  "predicted_per_token_ms": 23.417988467261907,
+  "predicted_per_second": 42.702215922515684
+ },
+ "static": {
+  "svg_found": true,
+  "parses": false,
+  "parse_error": "junk after document element: line 7, column 4",
+  "bytes": 3318,
+  "animateTransform": 0,
+  "animate": 0,
+  "animateMotion": 0,
+  "keyframes": 0,
+  "script": 0,
+  "prose_chars_outside_svg": 21895
+ },
+ "wall_s": 461.4,
+ "first_token_s": 83.7,
+ "tok_s": 42.7,
+ "reply_chars": 25180,
+ "reasoning_chars": 12236
+}

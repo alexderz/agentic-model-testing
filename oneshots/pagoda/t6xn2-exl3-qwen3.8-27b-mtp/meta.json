@@ -1,0 +1,63 @@
+{
+ "case": "t6xn2-exl3-qwen3.8-27b-mtp",
+ "model": "exl3-qwen3.8-27b-mtp",
+ "test": "test6-pagoda",
+ "max_tokens": 32000,
+ "started": "2026-10-14T08:25:00-0500",
+ "thinking": "off (chat_template_kwargs)",
+ "status": "ok",
+ "finish_reason": "stop",
+ "usage": {
+  "prompt_tokens": 156,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  },
+  "prompt_time": 5.68,
+  "prompt_tokens_per_sec": 27.46,
+  "completion_tokens": 8475,
+  "completion_tokens_details": {
+   "accepted_prediction_tokens": 6175,
+   "rejected_prediction_tokens": 3025
+  },
+  "completion_time": 86.73,
+  "completion_tokens_per_sec": 97.72,
+  "total_tokens": 8631,
+  "total_time": 92.46
+ },
+ "timings": {
+  "cache_n": 0,
+  "prompt_n": 156,
+  "prompt_ms": 5680.0,
+  "prompt_per_token_ms": 36.41025641025641,
+  "prompt_per_second": 27.464788732394364,
+  "predicted_n": 8475,
+  "predicted_ms": 86730.0,
+  "predicted_per_token_ms": 10.23362831858407,
+  "predicted_per_second": 97.71705292286406,
+  "draft_n": 9200,
+  "draft_n_accepted": 6175
+ },
+ "static": {
+  "html_found": true,
+  "bytes": 19402,
+  "complete": true,
+  "three_module": true,
+  "importmap": true,
+  "umd_three": false,
+  "external_urls": [
+   "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+   "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/",
+   "https://fonts.googleapis.com",
+   "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap",
+   "https://fonts.gstatic.com"
+  ],
+  "boxes": 6,
+  "instanced": false,
+  "prose_chars_outside_html": 1187
+ },
+ "wall_s": 124.0,
+ "first_token_s": 31.8,
+ "tok_s": 91.9,
+ "reply_chars": 20571,
+ "reasoning_chars": 0
+}
