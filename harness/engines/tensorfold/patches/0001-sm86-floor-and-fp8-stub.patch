@@ -1,0 +1,401 @@
+diff --git a/README.md b/README.md
+index 755335e..3daf8dd 100644
+--- a/README.md
++++ b/README.md
+@@ -13,11 +13,12 @@ On a Mac, Homebrew installs it too: `brew install ashhart/tensorfold/tensorfold`
+ Use `http://127.0.0.1:8080/v1` as the client base URL and the model ID from `/v1/models`. Both backends serve chat
+ completions, completions, OpenAI Responses (`/v1/responses`) and Anthropic Messages (`/v1/messages`); see the [API reference](docs/api.md).
+ Python 3.11 or newer is required, and MLX 0.32.2 or newer on a Mac (pip installs it). See the [runbook](RUNBOOK.md)
+-for installation and a first request. On NVIDIA GPUs the CUDA kernels need compute capability 8.9 or newer: Ada (RTX 40
+-series), Hopper and Blackwell, including the DGX Spark's GB10 and the RTX 50 series. NVFP4 and FP8 checkpoints run from
+-8.9: their own math where the GPU has each mma (FP4 on 12.x, FP8 from 8.9), W4A16 elsewhere; the RTX 40, Hopper and
+-B200 builds are compiled and bit-checked on Blackwell but not yet run on those cards. RTX 30 cards (8.6) aren't
+-supported, and the server refuses a GPU below 8.9 at startup.
++for installation and a first request. On NVIDIA GPUs the CUDA kernels need compute capability 8.6 or newer: Ampere (RTX 30
++series), Ada (RTX 40 series), Hopper and Blackwell, including the DGX Spark's GB10 and the RTX 50 series. NVFP4 and FP8
++checkpoints run from 8.9: their own math where the GPU has each mma (FP4 on 12.x, FP8 from 8.9), W4A16 elsewhere; the
++RTX 40, Hopper and B200 builds are compiled and bit-checked on Blackwell but not yet run on those cards. RTX 30 cards
++(8.6) run the 4-bit MLX and EXL3 checkpoints with bf16 prompts (measured on an RTX 3090 with Qwen3.8-27B); they have no
++FP8 mma, so NVFP4 and FP8 checkpoints and `--prefill-fp8` are refused there. The server refuses a GPU below 8.6 at startup.
+ 
+ ## Image input
+ 
+diff --git a/RUNBOOK.md b/RUNBOOK.md
+index 1d64da2..8e88a0c 100644
+--- a/RUNBOOK.md
++++ b/RUNBOOK.md
+@@ -124,7 +124,7 @@ explicit `--context`.
+ Native Windows is experimental: its host layer is in, but it has not served a request on a Windows PC yet. It runs
+ one GPU a process, since CUDA on Windows has no NCCL for two ranks; it reads weights through pinned buffers where
+ Linux uses O_DIRECT, sizes memory with Windows' own API, and prints every thread's stack on Ctrl+Break. GPUs below
+-compute capability 8.9 are refused at startup. WSL2 runs the Linux engine instead: inside Ubuntu, follow
++compute capability 8.6 are refused at startup. WSL2 runs the Linux engine instead: inside Ubuntu, follow
+ [RTX cards without Docker](#rtx-cards-without-docker). We have not run it under WSL2 yet either.
+ 
+ ## Memory and context
+diff --git a/docs/recipes/README.md b/docs/recipes/README.md
+index cf55a2b..0252e42 100644
+--- a/docs/recipes/README.md
++++ b/docs/recipes/README.md
+@@ -19,7 +19,7 @@ Quoted from the family pages, not measured per card.
+ 
+ | Engine | Floor |
+ | --- | --- |
+-| CUDA, other families | Compute capability 8.9 or newer: Ada RTX 40, Hopper, and Blackwell cards (RTX 50, RTX PRO 6000, DGX Spark GB10). RTX 30 (8.6) is not supported yet. |
++| CUDA, other families | Compute capability 8.6 or newer: Ampere RTX 30, Ada RTX 40, Hopper, and Blackwell cards (RTX 50, RTX PRO 6000, DGX Spark GB10). NVFP4 and FP8 checkpoints and `--prefill-fp8` need 8.9 (FP8 mma). |
+ | Flash Next, CUDA | sm_120 and sm_121 only: DGX Spark GB10, RTX 50, RTX PRO 6000. A card below sm_120 refuses Flash Next at startup. |
+ | MLX, Apple Silicon | GLM-5.3-Flash is written for a 256 GB Mac, about 151 GiB resident. DeepSeek-V4-Flash is the same, about 151 GiB resident. Flash Next's default command sizes to a 128 GiB M4 Max. Qwen3.8-27B on a 32 GB Mac needs more than the default 22.4 GiB. Machine classes, not measured minimums. |
+ 
+diff --git a/src/tensorfold/cli.py b/src/tensorfold/cli.py
+index 58121f1..dd1b754 100644
+--- a/src/tensorfold/cli.py
++++ b/src/tensorfold/cli.py
+@@ -275,6 +275,13 @@ def _serve_cuda(args: argparse.Namespace, family: Any, model_dir: Path, context:
+     from tensorfold.cuda import precision, prompt_precision
+ 
+     asked = getattr(args, "prefill_fp8", None)
++    if asked:                                           # FP8 prompts need FP8 MMA: refused before the engine loads
++        from tensorfold.cuda import build
++
++        try:
++            build.refuse_old_gpu(build.FP8, "FP8 prompts")
++        except ValueError as exc:
++            raise ValueError(f"--prefill-fp8: {exc}. Drop the flag: prompts then run bf16 activations") from None
+     prompt_precision.set_fp8(prompt_precision.FP8_BY_DEFAULT if asked is None else asked)   # before any weight loads
+     chosen = getattr(args, "precision", None)
+     precision.set_mode(chosen or precision.CHECKPOINT, asked=chosen is not None)
+diff --git a/src/tensorfold/cuda/build.py b/src/tensorfold/cuda/build.py
+index dab3473..28e5e04 100644
+--- a/src/tensorfold/cuda/build.py
++++ b/src/tensorfold/cuda/build.py
+@@ -10,7 +10,8 @@ import sys
+ import threading
+ from typing import Any
+ 
+-MIN_CAPABILITY = (8, 9)         # FP8 MMA and e4m3 conversions (Ada); kernels with clusters use them from 9.0
++MIN_CAPABILITY = (8, 6)         # bf16 MMA, cp.async, ldmatrix (Ampere): all the 4-bit and EXL3 kernels use
++FP8 = (8, 9)                    # FP8 MMA and e4m3 conversions (Ada): FP8 prompts and NVFP4 checkpoints
+ CLUSTERS = (9, 0)               # extensions built only on thread-block clusters (NVFP4) need Hopper or newer
+ FLASHNEXT_FLOOR = (12, 0)       # Flash Next serves CUDA on sm_120/sm_121 cards only; anything below is refused by name
+ # stop first: when the lock goes, a waiting start imports whatever module is there without building, even an old one
+@@ -18,22 +19,24 @@ HINT = "if no other build is running, a killed build left it: stop this start, d
+ LOCK_WAIT_SECONDS = 60.0        # a start still waiting on the same lock this long says so again
+ 
+ 
+-def arch_flags(need: tuple[int, int] = MIN_CAPABILITY, arch_specific: bool = False) -> list[str]:
+-    """nvcc flags for this GPU alone (``arch_specific``: its ``a`` target); a GPU under ``need`` is refused by name."""
++def arch_flags(need: tuple[int, int] = MIN_CAPABILITY, arch_specific: bool = False,
++               what: str = "these weights") -> list[str]:
++    """nvcc flags for this GPU alone (``arch_specific``: its ``a`` target); a GPU under ``need`` is refused by name,
++    with ``what`` it is that needs more than the floor."""
+ 
+     import torch
+ 
+     major, minor = torch.cuda.get_device_capability()
+     if (major, minor) < need:
+-        why = "thread-block clusters" if need >= CLUSTERS else "FP8 MMA"
++        why = "thread-block clusters" if need >= CLUSTERS else "FP8 MMA" if need >= FP8 else "bf16 MMA"
+         raise RuntimeError(f"TensorFold's CUDA kernels need compute capability {need[0]}.{need[1]} or newer ({why}"
+-                           f"{' for these weights' if need > MIN_CAPABILITY else ''}); this GPU "
++                           f"{f' for {what}' if need > MIN_CAPABILITY else ''}); this GPU "
+                            f"({torch.cuda.get_device_name()}) is {major}.{minor}")
+     a = "a" if arch_specific else ""
+     return [f"-gencode=arch=compute_{major}{minor}{a},code=sm_{major}{minor}{a}"]
+ 
+ 
+-def refuse_old_gpu(need: tuple[int, int] = MIN_CAPABILITY) -> None:
++def refuse_old_gpu(need: tuple[int, int] = MIN_CAPABILITY, what: str = "these weights") -> None:
+     """At startup, before any weight loads: a GPU older than ``need`` is refused by name (no GPU: skipped)."""
+ 
+     try:
+@@ -42,7 +45,7 @@ def refuse_old_gpu(need: tuple[int, int] = MIN_CAPABILITY) -> None:
+         return
+     if torch.cuda.is_available():
+         try:
+-            arch_flags(need)
++            arch_flags(need, what=what)
+         except RuntimeError as exc:
+             raise ValueError(str(exc)) from None
+ 
+@@ -197,4 +200,4 @@ def _say(text: str) -> None:
+     print(f"[tensorfold] {text}", flush=True)
+ 
+ 
+-__all__ = ["CLUSTERS", "MIN_CAPABILITY", "arch_flags", "load", "pip_toolkit"]
++__all__ = ["CLUSTERS", "FP8", "MIN_CAPABILITY", "arch_flags", "load", "pip_toolkit"]
+diff --git a/src/tensorfold/cuda/capacity.py b/src/tensorfold/cuda/capacity.py
+index 18730cc..52b89bd 100644
+--- a/src/tensorfold/cuda/capacity.py
++++ b/src/tensorfold/cuda/capacity.py
+@@ -286,11 +286,12 @@ def choose(plan: Plan, peers: list[list[int]] | None = None) -> int:
+ 
+ 
+ def floor(model_dir: str | Path) -> tuple[int, int]:
+-    """The compute capability a checkpoint's kernels need: 8.9 for every format (clusters are taken where present)."""
++    """The compute capability a checkpoint's kernels need: 8.6, or 8.9 for a ModelOpt / compressed-tensors checkpoint."""
+ 
+     from tensorfold.cuda import build
++    from tensorfold.cuda.nvfp4 import format as nvfp4_format
+ 
+-    return build.MIN_CAPABILITY
++    return build.FP8 if nvfp4_format.is_quantized(model_dir) else build.MIN_CAPABILITY
+ 
+ 
+ def admit(model_dir: str | Path, requested: int | None, explicit: bool | None, torch,
+diff --git a/src/tensorfold/cuda/kernels/qmm.py b/src/tensorfold/cuda/kernels/qmm.py
+index f91fd0b..96fae6d 100644
+--- a/src/tensorfold/cuda/kernels/qmm.py
++++ b/src/tensorfold/cuda/kernels/qmm.py
+@@ -17,10 +17,15 @@ from .qmm_tiles import group_tile
+ def _ext():
+     from tensorfold.cuda.build import load
+ 
++    from tensorfold.cuda.build import FP8
++
+     here = Path(__file__).parent
+-    return load(name="tensorfold_qmm_v5", sources=[str(here / "qmm.cpp"), str(here / "qmm.cu"),
+-                                                   str(here / "qmm_group.cu"), str(here / "qmm_prefill.cu"),
+-                                                   str(here / "qmm_prefill8.cu")],
++    # under SM 8.9 the FP8 prompt kernel cannot be assembled: a stub that refuses takes its place (bf16 prompts run)
++    fp8 = torch.cuda.get_device_capability() >= FP8
++    return load(name="tensorfold_qmm_v5" if fp8 else "tensorfold_qmm_v5_nofp8",
++                sources=[str(here / "qmm.cpp"), str(here / "qmm.cu"), str(here / "qmm_group.cu"),
++                         str(here / "qmm_prefill.cu"),
++                         str(here / ("qmm_prefill8.cu" if fp8 else "qmm_prefill8_stub.cu"))],
+                 extra_cuda_cflags=["-O3"], verbose=False)
+ 
+ 
+diff --git a/src/tensorfold/cuda/kernels/qmm_prefill8_stub.cu b/src/tensorfold/cuda/kernels/qmm_prefill8_stub.cu
+new file mode 100644
+index 0000000..a16b248
+--- /dev/null
++++ b/src/tensorfold/cuda/kernels/qmm_prefill8_stub.cu
+@@ -0,0 +1,14 @@
++// FP8 prefill needs FP8 MMA (compute capability 8.9). On older GPUs this stub is built in its place and refuses;
++// prompts run the bf16 kernel (qmm_prefill.cu), the default.
++
++#include <ATen/ATen.h>
++
++void qmm_prefill8_cuda(const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&,
++                       const at::Tensor&, at::Tensor&, int, int, bool, int) {
++    TORCH_CHECK(false, "FP8 prompts (--prefill-fp8) need compute capability 8.9 or newer; drop the flag");
++}
++
++void qmm_prefill8w_cuda(const at::Tensor&, const at::Tensor&, const at::Tensor&, const at::Tensor&, at::Tensor&, int,
++                        int, bool, int, bool) {
++    TORCH_CHECK(false, "FP8 prompt weights need compute capability 8.9 or newer");
++}
+diff --git a/src/tensorfold/cuda/nvfp4/checkpoint.py b/src/tensorfold/cuda/nvfp4/checkpoint.py
+index dcf209f..7f5e6a7 100644
+--- a/src/tensorfold/cuda/nvfp4/checkpoint.py
++++ b/src/tensorfold/cuda/nvfp4/checkpoint.py
+@@ -34,13 +34,13 @@ def _capability() -> tuple[int, int]:
+ @lru_cache(maxsize=1)
+ def _ext():
+     from tensorfold.cuda import precision
+-    from tensorfold.cuda.build import MIN_CAPABILITY, load
++    from tensorfold.cuda.build import FP8, load
+ 
+     here = Path(__file__).parent
+     return load(name="tensorfold_nvfp4_ck_v6",
+                 sources=[str(here / "checkpoint.cpp"), str(here / "act.cu"), str(here / "lane4.cu"),
+                          str(here / "gemm_ck.cu"), str(here / "gemm_ws.cu")],
+-                need=MIN_CAPABILITY, arch_specific=precision.own_math(_capability())["nvfp4"],
++                need=FP8, arch_specific=precision.own_math(_capability())["nvfp4"],
+                 extra_include_paths=[str(here)], extra_cuda_cflags=["-O3"], verbose=False)
+ 
+ 
+diff --git a/src/tensorfold/cuda/nvfp4/linear.py b/src/tensorfold/cuda/nvfp4/linear.py
+index b1f82f1..4024c07 100644
+--- a/src/tensorfold/cuda/nvfp4/linear.py
++++ b/src/tensorfold/cuda/nvfp4/linear.py
+@@ -15,21 +15,21 @@ FP4, FP8, MXFP8, FP8G = 0, 1, 2, 3
+ 
+ @lru_cache(maxsize=1)
+ def _ext():
+-    from tensorfold.cuda.build import MIN_CAPABILITY, load
++    from tensorfold.cuda.build import FP8, load
+ 
+     here = Path(__file__).parent
+     return load(name="tensorfold_nvfp4_v3", sources=[str(here / "qmmf.cpp"), str(here / "qmmf.cu"),
+-                                                      str(here / "experts.cu")], need=MIN_CAPABILITY,
++                                                      str(here / "experts.cu")], need=FP8,
+                 extra_include_paths=[str(here)], extra_cuda_cflags=["-O3"], verbose=False)
+ 
+ 
+ @lru_cache(maxsize=1)
+ def _prompt_ext():
+-    from tensorfold.cuda.build import load
++    from tensorfold.cuda.build import FP8, load
+ 
+     here = Path(__file__).parent
+     return load(name="tensorfold_nvfp4_prompt_v1", sources=[str(here / "prompt.cpp"), str(here / "prompt.cu")],
+-                extra_include_paths=[str(here)], extra_cuda_cflags=["-O3"], verbose=False)
++                need=FP8, extra_include_paths=[str(here)], extra_cuda_cflags=["-O3"], verbose=False)
+ 
+ 
+ PROMPT_TILE = 4             # ``prompt.cu``'s tile (128x128 on four 64x64 warps, two blocks an SM): never changes bits
+diff --git a/tests/cuda/test_qwen27_prefill.py b/tests/cuda/test_qwen27_prefill.py
+index 3fe7f0d..a58bc12 100644
+--- a/tests/cuda/test_qwen27_prefill.py
++++ b/tests/cuda/test_qwen27_prefill.py
+@@ -7,7 +7,7 @@ import torch
+ if not torch.cuda.is_available():
+     pytest.skip("CUDA only", allow_module_level=True)
+ 
+-from tensorfold.cuda import prompt_precision  # noqa: E402
++from tensorfold.cuda import build, prompt_precision  # noqa: E402
+ from tensorfold.cuda.kernels import attention as tree_attention  # noqa: E402
+ from tensorfold.cuda.kernels import qmm as shared  # noqa: E402
+ from tensorfold.cuda.kernels.prefill_attention import attention  # noqa: E402
+@@ -18,12 +18,16 @@ from tensorfold.families.qwen3_5.cuda.qmm_fast import prepare  # noqa: E402
+ from tensorfold.families.qwen3_5.cuda.weights import Attention, Config, GDN, Layer, QLinear, Weights  # noqa: E402
+ 
+ V = 256
++FP8_GPU = torch.cuda.get_device_capability() >= build.FP8          # FP8 prompt kernels: Ada or newer
++needs_fp8 = pytest.mark.skipif(not FP8_GPU, reason="FP8 prompts need compute capability 8.9")
+ 
+ 
+ @pytest.fixture(params=[False, True], ids=["bf16", "fp8"])
+ def fp8(request):
+     """Each test once with bf16 prompts (the default) and once with --prefill-fp8."""
+ 
++    if request.param and not FP8_GPU:
++        pytest.skip("FP8 prompts need compute capability 8.9")
+     with prompt_precision.using(request.param):
+         yield request.param
+ 
+@@ -175,6 +179,7 @@ def test_a_long_prompt_tree_window_equals_serial_on_every_path(policy, monkeypat
+             commit(serial, record, [0])
+ 
+ 
++@needs_fp8
+ def test_bf16_prompts_track_decode_closer_than_fp8():
+     """bf16 prompt rows sit nearer decode's arithmetic than FP8 rows do (this model, 300 rows: 0.26% against 0.57%)."""
+ 
+@@ -240,6 +245,7 @@ def test_prefill_attention_rows_do_not_depend_on_chunking(heads, kv_heads, dim):
+     assert ((whole.float() - ref).norm() / ref.norm()).item() < 1e-2
+ 
+ 
++@needs_fp8
+ @pytest.mark.parametrize("gs", [64, 32])
+ def test_fp8_prefill_matmul_rows_do_not_depend_on_chunking(gs):
+     gen = torch.Generator(device="cuda").manual_seed(8)
+diff --git a/tests/test_cuda_build.py b/tests/test_cuda_build.py
+index 2a64402..a220c92 100644
+--- a/tests/test_cuda_build.py
++++ b/tests/test_cuda_build.py
+@@ -38,9 +38,13 @@ def test_the_flags_name_only_this_gpu(monkeypatch):
+ 
+ @pytest.mark.torch
+ def test_an_older_gpu_is_refused_by_name(monkeypatch):
+-    _gpu(monkeypatch, (8, 6), "NVIDIA GeForce RTX 3090")
+-    with pytest.raises(RuntimeError, match=r"capability 8\.9 or newer \(FP8 MMA\).*RTX 3090.*is 8\.6"):
++    _gpu(monkeypatch, (8, 0), "NVIDIA A100")
++    with pytest.raises(RuntimeError, match=r"capability 8\.6 or newer \(bf16 MMA\).*A100.*is 8\.0"):
+         build.arch_flags()
++    _gpu(monkeypatch, (8, 6), "NVIDIA GeForce RTX 3090")
++    assert build.arch_flags() == ["-gencode=arch=compute_86,code=sm_86"]
++    with pytest.raises(RuntimeError, match=r"capability 8\.9 or newer \(FP8 MMA for these weights\).*RTX 3090.*is 8\.6"):
++        build.arch_flags(build.FP8)
+ 
+ 
+ @pytest.mark.torch
+@@ -152,8 +156,8 @@ def test_a_build_directory_argument_is_the_one_checked(ext, tmp_path):
+ 
+ @pytest.mark.torch
+ def test_an_older_gpu_is_refused_before_any_line(ext, monkeypatch):
+-    _gpu(monkeypatch, (8, 6), "NVIDIA GeForce RTX 3090")
+-    with pytest.raises(RuntimeError, match="RTX 3090"):
++    _gpu(monkeypatch, (8, 0), "NVIDIA A100")
++    with pytest.raises(RuntimeError, match="A100"):
+         ext.build.load(name="tf_test", sources=ext.sources, verbose=False)
+     assert ext.said == [] and ext.calls == []
+ 
+diff --git a/tests/test_cuda_cli.py b/tests/test_cuda_cli.py
+index 6a4ec52..f64f55e 100644
+--- a/tests/test_cuda_cli.py
++++ b/tests/test_cuda_cli.py
+@@ -128,8 +128,9 @@ def test_the_prompt_precision_is_set_before_loading_and_shown(tmp_path, monkeypa
+     refuses the flag by name and serves bf16 prompts otherwise."""
+ 
+     import tensorfold.cuda.server as server
+-    from tensorfold.cuda import prompt_precision
++    from tensorfold.cuda import build, prompt_precision
+ 
++    monkeypatch.setattr(build, "refuse_old_gpu", lambda *a: None)          # whatever GPU the tests run on
+     asked = prompt_precision.FP8_BY_DEFAULT if fp8 is None else fp8
+     seen = []
+ 
+@@ -155,6 +156,18 @@ def test_the_prompt_precision_is_set_before_loading_and_shown(tmp_path, monkeypa
+         prompt_precision.set_fp8(prompt_precision.FP8_BY_DEFAULT)
+ 
+ 
++def test_fp8_prompts_are_refused_below_ada_before_the_engine_loads(tmp_path, monkeypatch):
++    torch = pytest.importorskip("torch")
++    monkeypatch.setattr(torch.cuda, "is_available", lambda: True)
++    monkeypatch.setattr(torch.cuda, "get_device_capability", lambda *a: (8, 6))
++    monkeypatch.setattr(torch.cuda, "get_device_name", lambda *a: "NVIDIA GeForce RTX 3090")
++    family = _family(cuda_engine=lambda *a, **k: pytest.fail("the engine loaded on a GPU without FP8 MMA"))
++    family.model_type = "test"
++    args = cli.build_parser().parse_args(["serve", str(tmp_path), "--backend", "cuda", "--no-drafts", "--prefill-fp8"])
++    with pytest.raises(ValueError, match=r"--prefill-fp8.*8\.9 or newer \(FP8 MMA for FP8 prompts\).*RTX 3090.*is 8\.6.*Drop the flag"):
++        cli._serve_cuda(args, family, tmp_path, 8192)
++
++
+ def test_serve_parses_the_kv_cache_flag():
+     plain = cli.build_parser().parse_args(["serve", "owner/model"])
+     assert plain.kv_dtype == "bf16"                        # the cache stays bf16 unless it is asked for
+diff --git a/tests/test_cuda_gpu_floor.py b/tests/test_cuda_gpu_floor.py
+index ed83b3f..4dd63ce 100644
+--- a/tests/test_cuda_gpu_floor.py
++++ b/tests/test_cuda_gpu_floor.py
+@@ -8,8 +8,8 @@ torch = pytest.importorskip("torch")
+ 
+ from tensorfold.cuda import build, capacity  # noqa: E402
+ 
+-GPUS = [((8, 6), "NVIDIA GeForce RTX 3090"), ((8, 9), "NVIDIA GeForce RTX 4090"), ((9, 0), "NVIDIA H100"),
+-        ((12, 1), "NVIDIA GB10")]
++GPUS = [((8, 0), "NVIDIA A100"), ((8, 6), "NVIDIA GeForce RTX 3090"), ((8, 9), "NVIDIA GeForce RTX 4090"),
++        ((9, 0), "NVIDIA H100"), ((12, 1), "NVIDIA GB10")]
+ 
+ 
+ def _gpu(monkeypatch, capability, name):
+@@ -19,7 +19,7 @@ def _gpu(monkeypatch, capability, name):
+ 
+ 
+ @pytest.mark.parametrize("capability,name", GPUS)
+-@pytest.mark.parametrize("need", [build.MIN_CAPABILITY, build.CLUSTERS])
++@pytest.mark.parametrize("need", [build.MIN_CAPABILITY, build.FP8, build.CLUSTERS])
+ def test_the_startup_check_names_the_gpu(monkeypatch, capability, name, need):
+     _gpu(monkeypatch, capability, name)
+     if capability < need:
+@@ -37,10 +37,12 @@ def test_no_gpu_leaves_it_to_the_engine(monkeypatch):
+ 
+ @pytest.mark.parametrize("quantization", [{"group_size": 64, "bits": 4}, {"quant_method": "compressed-tensors"},
+                                           {"quant_method": "modelopt", "quant_algo": "NVFP4"}])
+-def test_every_checkpoint_runs_from_ada(tmp_path, quantization):
++def test_mlx_checkpoints_run_from_ampere_and_fp8_ones_from_ada(tmp_path, quantization):
+     key = "quantization" if "bits" in quantization else "quantization_config"
+     (tmp_path / "config.json").write_text(json.dumps({"model_type": "qwen3_5", key: quantization}))
+-    assert capacity.floor(tmp_path) == build.MIN_CAPABILITY == (8, 9)
++    want = build.MIN_CAPABILITY if "bits" in quantization else build.FP8
++    assert capacity.floor(tmp_path) == want
++    assert (build.MIN_CAPABILITY, build.FP8) == ((8, 6), (8, 9))
+ 
+ 
+ def test_an_nvfp4_checkpoint_below_ada_is_refused_before_any_weight_loads(monkeypatch, tmp_path):
+diff --git a/tests/test_cuda_precision.py b/tests/test_cuda_precision.py
+index 21d671b..a5ff2f1 100644
+--- a/tests/test_cuda_precision.py
++++ b/tests/test_cuda_precision.py
+@@ -53,6 +53,9 @@ def test_prefill_fp8_is_refused_under_the_checkpoints_math(tmp_path, monkeypatch
+         max_len=8192, w=SimpleNamespace(fast_prefill=False, precision="checkpoint")))
+     family.model_type = "test"
+     monkeypatch.setattr(server, "serve", lambda *a: None)
++    from tensorfold.cuda import build
++
++    monkeypatch.setattr(build, "refuse_old_gpu", lambda *a: None)          # whatever GPU the tests run on
+     args = cli.build_parser().parse_args(["serve", str(tmp_path), "--backend", "cuda", "--no-drafts", "--prefill-fp8"])
+     try:
+         with pytest.raises(ValueError, match="--precision full"):

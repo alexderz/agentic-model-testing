@@ -1,0 +1,23 @@
+{
+  "code": [
+    "Write a Python function that parses an ISO 8601 duration string such as P3DT4H30M into a timedelta. Include type hints and handle invalid input.",
+    "Write a Rust function that merges overlapping closed intervals in a Vec<(i64, i64)> and returns them sorted. Add unit tests.",
+    "Write a TypeScript class implementing an LRU cache with get, set and delete in O(1), generic over key and value types.",
+    "Write a Go HTTP handler that accepts a JSON body with fields name and email, validates both, and answers with JSON errors per field.",
+    "Write a Python script that walks a directory tree, hashes every file with SHA-256 and prints groups of duplicate files, largest first."
+  ],
+  "prose": [
+    "Explain to a curious adult why the sky is blue at noon and red at sunset. About four paragraphs.",
+    "Write a short essay on why public libraries still matter in a town where everyone owns a phone.",
+    "Describe how a bill becomes a law in a parliamentary system, in plain language, for a school newspaper.",
+    "Write a product description for a hand-forged kitchen knife: who makes it, how, and how to care for it.",
+    "Tell the story of the first ascent of a fictional mountain, as a mountaineering magazine would report it."
+  ],
+  "structured": [
+    "Return only JSON: an array of 12 objects describing fictional employees, each with id, first_name, last_name, department, salary, start_date, and skills (array of 3 strings).",
+    "Return only JSON: a product catalog with 3 categories, each holding 4 products with sku, name, price, currency, in_stock, and dimensions {width_mm, height_mm, depth_mm}.",
+    "Return only JSON: an OpenAPI-style description of 5 endpoints of a to-do list API, each with method, path, summary, parameters (array) and responses (object keyed by status code).",
+    "Return only JSON: a weekly schedule, one key per weekday, each an array of 4 events with start, end, title, location and attendees (array of 2 names).",
+    "Return only YAML: a Kubernetes Deployment and a Service for a web app named storefront with 3 replicas, resource limits, liveness and readiness probes, and two environment variables."
+  ]
+}

@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "public_repository": "https://github.com/alexderz/agentic-model-testing",
+  "public_commit": "0b9187ec944aca3df8a7703be469acff0477e374",
+  "source_harness": "harness/tools/bench_tasks.py",
+  "source_harness_sha256": "fcb2cf572f2a47d967f8bfb4c1deadf5e57a3d43555d4579b28958ac6cc701c9",
+  "tasks_literal_sha256": "c3bc6dedc9c394eedd81040679e767bd5a47a306afc2d790b34ce6322a1551ca",
+  "fixtures_json_sha256": "5389de4ec2af9c048813a8e5223aabb4ad389c844ac8c75e5d4a8b78dfc7b816",
+  "patch_sha256": "8617da6b46509962adde7680ac534f3f1da484d36803951588d5f2c0f2729fcc",
+  "prompts": [
+    {
+      "task": "code",
+      "index": 1,
+      "sha256": "a5b8d25e8bb83229b6e64f420cf722c6642a2a1650c67e6881c0fbe829e1759f"
+    },
+    {
+      "task": "code",
+      "index": 2,
+      "sha256": "1e27221f3d15b1d12646267534aa8e732694d99242748b875bc488d2f59df8be"
+    },
+    {
+      "task": "code",
+      "index": 3,
+      "sha256": "0bc2acd2069a8ad571fa9b920904e0a037e03829a4ef552aaf39e877d9ad8aa1"
+    },
+    {
+      "task": "code",
+      "index": 4,
+      "sha256": "4eedf2ea18eaff326eb1f826f402a6a14d31c00ad141c0a164e7c5fd6df5cbbb"
+    },
+    {
+      "task": "code",
+      "index": 5,
+      "sha256": "c0ae7618db3996108d5f5a8ff7e5c01441d5bfddcdf9d99c862689c50cfaaa11"
+    },
+    {
+      "task": "prose",
+      "index": 1,
+      "sha256": "772a5f5e554b930d8126cad8125d46f1910d563a547544da0a32e524bbf830ae"
+    },
+    {
+      "task": "prose",
+      "index": 2,
+      "sha256": "ad6858f947173c7d3a263ff499cec9bbec45279597956b2ae4454d3a8096ea5b"
+    },
+    {
+      "task": "prose",
+      "index": 3,
+      "sha256": "4ad439072357edb457cb41939b245bbc078c7381526780c2ddee43731893565b"
+    },
+    {
+      "task": "prose",
+      "index": 4,
+      "sha256": "c7c5b5622ab02cdc8c1f6eb200c04821a0883d9f5ec5c7edfb931e1f4289d75b"
+    },
+    {
+      "task": "prose",
+      "index": 5,
+      "sha256": "667c36ffecd77b35875c4fdbc9545e6573a6a91278a79eb54544edb0ca6b90ed"
+    },
+    {
+      "task": "structured",
+      "index": 1,
+      "sha256": "d3869624a54c811bf77a445fb178c1539925d4753bc2afb3ebad3ff6ead83e2e"
+    },
+    {
+      "task": "structured",
+      "index": 2,
+      "sha256": "a8aa825d4d9b6e26cb3a61f4a6a860fffaeb4d90680868fdf825ba5daf674734"
+    },
+    {
+      "task": "structured",
+      "index": 3,
+      "sha256": "809c758568f722a62a38a30baa5b377b7f113ae9fe59cf56cddb30e1bf24880d"
+    },
+    {
+      "task": "structured",
+      "index": 4,
+      "sha256": "9e2119ba123b1d91675cea68bbd72d001849f1305fa42057b0f5ce508e4a521f"
+    },
+    {
+      "task": "structured",
+      "index": 5,
+      "sha256": "f84473ce1be26dd00be5aa75abbaed2ae8e188513057fb72c22de82b53ff7b41"
+    }
+  ],
+  "model": {
+    "repository": "TensorFold/Qwen3.8-27B-MLX-4bit",
+    "revision": "22d8d538154e0e5b6f8dcb1fcc74a60a0798104c",
+    "receipt_revision": "22d8d538"
+  },
+  "drafter": {
+    "repository": "z-lab/Qwen3.8-27B-DFlash2",
+    "revision": "50307d4c4cde6860d4eee73e2547cd786fe8e8a4",
+    "receipt_revision": "50307d4c"
+  },
+  "revision_resolution": "Public Hugging Face API metadata, independently verified by coordinating parent 2026-10-16"
+}
