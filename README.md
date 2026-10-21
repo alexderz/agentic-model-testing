@@ -6,8 +6,9 @@ creative tests of a long-running model bake-off on a single machine: **Titan**, 
 RTX 3090 (24 GB) with 125 GB of system RAM, serving one model at a time through llama-swap.
 
 The work started in the `agentic-toolbox` repository from the same owner, under
-`docs/model-research/`. That history stays there; a copy of those notes is in
-[`docs/model-research/`](docs/model-research/README.md), and new work lands here.
+`docs/model-research/`. Those notes now live in
+[`docs/model-research/`](docs/model-research/README.md). The toolbox keeps only a
+pointer, and new work lands here.
 
 ## What is here
 
@@ -16,7 +17,7 @@ The work started in the `agentic-toolbox` repository from the same owner, under
 | [`reports/`](reports/) | Written reports and method documents: test results, candidate and exclusion lists, and the bake-off dashboard (`reports/dashboard/`: a static HTML page and its `data.json`). |
 | [`oneshots/`](oneshots/README.md) | Test 5 (brass orrery, SVG) and test 6 (voxel pagoda, three.js) one-shot replies: the model-written source, rendered frames and grades. **Untrusted model output**: read the README before opening any of it. |
 | [`harness/`](harness/) | The harness: case runners (`run-case*.sh`, `run-matrix.sh`), graders and rubric (`grade-*.py`, `rubric.py`, `score-*.py`), the Home Assistant replay server and read-only proxy (`ha-replay.py`, `ha-readonly-proxy.py`, `ha-record.py`), the sandboxed eval box (`sandbox/`), test suites and prompts (`suites/`), entry and spec tooling (`tools/`, `engines/ENTRY-SPEC.md`, `engines/entry-specs/`), engine build and setup notes (`engines/`), and the harness's own tests (`tests/`). |
-| [`docs/model-research/`](docs/model-research/README.md) | Method, conclusions, per-model cards and the story test, copied from `agentic-toolbox`. |
+| [`docs/model-research/`](docs/model-research/README.md) | Method, conclusions, per-model cards and the story test. Moved here from `agentic-toolbox`, which keeps only a pointer. |
 
 ## The tests in one paragraph each
 
