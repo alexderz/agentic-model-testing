@@ -1,0 +1,475 @@
+<svg id="stage" viewBox="0 0 1200 820" width="1200" height="820" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="ttl">
+<title id="ttl">Brass clockwork orrery — planets in true relative orbit, gears meshing, day and night shadow sweeping each globe</title>
+<style>
+:root{
+  --ink:#0b1114; --ink2:#121b20; --paper:#0d1519; --paper2:#080d10;
+  --brass:#c99a42; --brass-hi:#f3d78e; --brass-lo:#8a6a2c; --brass-dk:#4a3714;
+  --steel:#93a7bc; --steel-lo:#3b4c5c;
+  --patina:#7fcbc2; --patina-lo:#2c5f5b;
+  --copper:#c2703f; --copper-lo:#5b3218;
+  --txt:#c3d1d5; --txt2:#7c8b93; --hair:#33464f;
+  --serif:"Iowan Old Style","Hoefler Text","Palatino Linotype",Palatino,Georgia,serif;
+  --mono:"Iosevka","SF Mono",ui-monospace,"DejaVu Sans Mono",Consolas,monospace;
+}
+html,body{margin:0;background:#05080a}
+svg{display:block;width:100%;height:auto;background:#05080a}
+text{font-family:var(--serif);fill:var(--txt)}
+.mono{font-family:var(--mono)}
+.h1{font-size:34px;letter-spacing:.13em;fill:#e9d7a6;font-weight:400}
+.kick{font-size:9px;letter-spacing:.42em;fill:#8b7c58}
+.lbl{font-size:10px;letter-spacing:.24em;fill:#9eb0b6;font-family:var(--mono)}
+.lbl b{fill:#f0d79b;font-weight:400}
+.small{font-size:8.5px;letter-spacing:.18em;fill:#6f8288;font-family:var(--mono)}
+.lead{stroke:#3c4d55;stroke-width:.7;fill:none;stroke-dasharray:2 3}
+.grp{cursor:pointer}
+.grp .lead{transition:stroke .35s, opacity .35s}
+.grp:hover .lead{stroke:#7c9aa2;opacity:.95}
+.grp:hover .pinion{stroke:var(--brass-hi);stroke-opacity:.65}
+.grp .ringg,.grp .pinion{transition:stroke .35s}
+
+@keyframes spin {to{transform:rotate(var(--a1,360deg))}}
+@keyframes aol  {to{stroke-dashoffset:var(--s1,0)}}
+@keyframes tw   {0%,100%{opacity:.12}50%{opacity:.75}}
+@keyframes breathe{0%,100%{opacity:.1}50%{opacity:.26}}
+@keyframes bob  {0%,100%{transform:rotate(1.15deg)}50%{transform:rotate(-1.15deg)}}
+@keyframes beat {0%,100%{transform:rotate(-13deg)}50%{transform:rotate(13deg)}}
+@keyframes rise {0%{transform:translate(0,0);opacity:0}18%{opacity:.55}100%{transform:translate(10px,-110px);opacity:0}}
+@keyframes sway {0%,100%{transform:rotate(.6deg)}50%{transform:rotate(-.6deg)}}
+
+.spin{transform-box:view-box;transform-origin:var(--o);transform:rotate(var(--a0));
+ animation:spin var(--t,20s) linear infinite;animation-delay:var(--d,0s)}
+.spin2{animation:spin var(--t,20s) linear infinite,aol var(--d1,80s) linear infinite}
+.spin3{animation:spin var(--t,20s) linear infinite,aol var(--d1,80s) linear infinite reverse}
+.sw{animation:bob 11s ease-in-out infinite;transform-box:view-box;transform-origin:var(--o)}
+.bt{animation:breathe var(--t,8s) ease-in-out infinite}
+.bt2{animation:breathe var(--t,14s) ease-in-out infinite;transform-box:view-box;transform-origin:var(--o)}
+.bw{animation:beat 1.4s cubic-bezier(.5,-.3,.5,1.3) infinite;transform-box:view-box;transform-origin:var(--o)}
+.glint{animation:tw var(--t,3s) ease-in-out infinite}
+.dust{animation:rise var(--t,16s) linear infinite}
+</style>
+
+<defs>
+ <linearGradient id="caseGrad" x1="0" y1="0" x2=".35" y2="1">
+  <stop offset="0" stop-color="#1b2228"/><stop offset=".45" stop-color="#10171b"/><stop offset="1" stop-color="#070b0d"/>
+ </linearGradient>
+ <radialGradient id="pool" cx=".42" cy=".3" r=".7">
+  <stop offset="0" stop-color="#f3c86c" stop-opacity=".16"/><stop offset=".55" stop-color="#c08a37" stop-opacity=".05"/>
+  <stop offset="1" stop-color="#000" stop-opacity=".35"/>
+ </radialGradient>
+ <linearGradient id="brassFace" x1=".05" y1="0" x2=".95" y2="1">
+  <stop offset="0" stop-color="#f6dfa6"/><stop offset=".35" stop-color="#c99a42"/><stop offset=".7" stop-color="#95671f"/><stop offset="1" stop-color="#e0b968"/>
+ </linearGradient>
+ <linearGradient id="brassRail" x1="0" y1="0" x2="1" y2="0">
+  <stop offset="0" stop-color="#7d5a1e"/><stop offset=".3" stop-color="#f0d489"/><stop offset=".62" stop-color="#b8842f"/><stop offset="1" stop-color="#6d4f19"/>
+ </linearGradient>
+ <linearGradient id="armGrad" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0" stop-color="#f7e2ae"/><stop offset=".3" stop-color="#c99a42"/><stop offset=".72" stop-color="#8a6a2c"/><stop offset="1" stop-color="#d3a752"/>
+ </linearGradient>
+ <linearGradient id="plinth" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0" stop-color="#33261a"/><stop offset=".18" stop-color="#211a13"/><stop offset="1" stop-color="#0d0a08"/>
+ </linearGradient>
+ <linearGradient id="gNight" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="118" y2="68">
+  <stop offset="0" stop-color="#030607" stop-opacity="0"/><stop offset=".4" stop-color="#030607" stop-opacity=".18"/>
+  <stop offset=".72" stop-color="#04070a" stop-opacity=".62"/><stop offset="1" stop-color="#04070a" stop-opacity=".92"/>
+ </linearGradient>
+ <radialGradient id="gSun" cx=".38" cy=".34" r=".78">
+  <stop offset="0" stop-color="#fff3c9"/><stop offset=".4" stop-color="#e5b352"/><stop offset="1" stop-color="#8c6420"/>
+ </radialGradient>
+ <radialGradient id="gSunGlow">
+  <stop offset="0" stop-color="#ffd580" stop-opacity=".5"/><stop offset=".45" stop-color="#c9822b" stop-opacity=".16"/><stop offset="1" stop-color="#c9822b" stop-opacity="0"/>
+ </radialGradient>
+ <radialGradient id="gSteel" cx=".38" cy=".34" r=".8">
+  <stop offset="0" stop-color="#c9d8e2"/><stop offset=".55" stop-color="#6f8492"/><stop offset="1" stop-color="#2e3b45"/>
+ </radialGradient>
+ <radialGradient id="shadow" cx=".5" cy=".5" r=".5">
+  <stop offset=".6" stop-color="#000" stop-opacity=".42"/><stop offset="1" stop-color="#000" stop-opacity="0"/>
+ </radialGradient>
+ <pattern id="dots" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(18)">
+  <circle cx="1" cy="1" r=".55" fill="#5d7d86" fill-opacity=".16"/>
+ </pattern>
+ <pattern id="reed" width="6" height="10" patternUnits="userSpaceOnUse">
+  <rect width="2" height="10" fill="#f0d489" fill-opacity=".1"/><rect x="3" width="1" height="10" fill="#000" fill-opacity=".22"/>
+ </pattern>
+</defs>
+
+<!-- ══════════ case, ground plane, ambient light ══════════ -->
+<g id="scene">
+ <rect width="1200" height="820" fill="url(#caseGrad)"/>
+ <rect width="1200" height="820" fill="url(#pool)"/>
+ <g opacity=".5">
+  <rect x="34" y="34" width="1132" height="752" rx="14" fill="url(#dots)"/>
+  <rect x="34" y="34" width="1132" height="752" rx="14" fill="none" stroke="url(#brassRail)" stroke-opacity=".45" stroke-width="1.2"/>
+  <rect x="46" y="46" width="1108" height="728" rx="9" fill="none" stroke="#b89038" stroke-opacity=".22"/>
+ </g>
+ <g opacity=".18" stroke="#4f6b73" fill="none">
+  <path d="M0 116H1200M0 690H1200" stroke-dasharray="1 8"/>
+ </g>
+ <!-- ambient sweep — a specular sheet travelling over the dial -->
+ <g id="fx"></g>
+ <!-- ground plane -->
+ <g>
+  <rect x="0" y="622" width="1200" height="198" fill="url(#plinth)"/>
+  <rect x="0" y="622" width="1200" height="14" fill="url(#reed)" opacity=".5"/>
+  <path d="M0 622h1200" stroke="#d8ab52" stroke-opacity=".3"/>
+  <rect x="330" y="714" width="540" height="26" rx="3" fill="url(#brassRail)" opacity=".85"/>
+  <rect x="330" y="714" width="540" height="26" rx="3" fill="none" stroke="#f6dfa6" stroke-opacity=".3"/>
+  <text x="600" y="732" text-anchor="middle" class="kick" fill="#2a2013" opacity=".9">HOROLOGIUM  ·  SOLARIS  ·  VERE  ·  SPEEDS</text>
+  <text x="600" y="770" text-anchor="middle" class="small">EIGHT WORLDS IN TRUE RELATIVE PERIODS  ·  MERCURY IN LAPS NEPTUNE 204 TIMES</text>
+  <text x="600" y="786" text-anchor="middle" class="small" opacity=".6">DAY AND NIGHT CIRCLE SWEEPING EACH GLOBE AS IT TURNS ON ITS AXIS</text>
+ </g>
+ <g id="orn"></g>
+ <g id="cards"></g>
+ <g id="stars"></g>
+</g>
+
+<!-- ══════════ the orrery ══════════ -->
+<g id="rings"></g>
+<g id="train"></g>
+<g id="labels"></g>
+
+<script>/* <![CDATA[ */
+(function(){
+const NS="http://www.w3.org/2000/svg",TAU=Math.PI*2,D=Math.PI/180;
+const svg=(document.currentScript&&document.currentScript.ownerSVGElement)||document.querySelector("svg");
+const S=id=>svg.querySelector("#"+id);
+const g=(n,a,p)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e};
+const tx=(p,s,x,y,at)=>{const t=g("text",Object.assign({x:x,y:y},at||{}),p);t.textContent=s;t.textContent!==undefined&&t.setAttribute("xml:space","preserve");t.textContent=s;t.firstChild&&0;t.textContent=s;return t};
+const txt=(p,s,x,y,at)=>{const t=g("text",Object.assign({x:x,y:y},at||{}),p);t.textContent=s;return t};
+const pt=(r,a)=>[r*Math.cos(a*D),r*Math.sin(a*D)];
+
+/* ── real data ─────────────────────────────────────────────────────────
+   orbitR: display radius   P: orbital period (days)   a: geocentric ecliptic
+   longitude 2026-03-01     rot: sidereal rotation period (days)          */
+const CX=600,CY=352,YR=900;
+const W=[
+ {n:"MERCURY",R:64, P:87.97,   rot:58.65, a:232, sz:7,   col:"#b9a488", sp:18, spin:144.4,nite:-1},
+ {n:"VENUS",  R:90, P:224.70,  rot:-243.0,a:183, sz:10.5,col:"#e3c275", sp:13, spin:240,  nite:1},
+ {n:"EARTH",  R:116,P:365.25,  rot:0.997, a:341, sz:10,  col:"#8fb6bd", sp:12, spin:2.47, nite:-1},
+ {n:"MARS",   R:142,P:686.98,  rot:1.026, a:102, sz:8.5, col:"#cc7a4c", sp:11, spin:2.53, nite:1},
+ {n:"JUPITER",R:170,P:4332.6,  rot:0.4135,a:62,  sz:19,  col:"#d7a869", sp:10, spin:1.0,  nite:-1},
+ {n:"SATURN", R:198,P:10759,   rot:0.444, a:345, sz:16,  col:"#e0c68e", sp:10, spin:1.07, nite:1},
+ {n:"URANUS", R:224,P:30687,   rot:-0.718,a:51,  sz:12,  col:"#8fcfc9", sp:9,  spin:1.72, nite:-1},
+ {n:"NEPTUNE",R:248,P:60190,   rot:0.671, a:1,   sz:11.5,col:"#7fa3c9", sp:10, spin:1.98, nite:1}
+];
+const dur =p=>YR*p;                       /* seconds for one revolution      */
+const aol =p=>-(dur(p)*(W.p0||0));         /* placeholder                     */
+const O=S("rings"),T=S("train"),L=S("labels"),F=S("fx"),ST=S("stars"),C=S("cards"),ORN=S("orn");
+
+/* ── machinery ─────────────────────────────────────────────────────────── */
+function spin(parent,d,a0,cls,rev){
+  const p=g("g",{class:cls||"spin"},parent);
+  p.style.setProperty("--o",CX+"px "+CY+"px");
+  p.style.setProperty("--a0",(-a0)+"deg");
+  p.style.setProperty("--a1",rev?"-360deg":"360deg");
+  p.style.animationDuration=d+"s"+(p.classList.contains("spin2")?","+Math.round(d*3)+"s":"");
+  p.style.animationDelay=(-d*a0/360)+"s";
+  return p;
+}
+function toothRing(parent,r,n,cy){
+  const p=(cy!==undefined?cy:CY)*0+0; /* keep signature */
+  const c=g("circle",{cx:CX,cy:cy!==undefined?cy:CY,r:r,fill:"none",stroke:"#c99a42","stroke-opacity":.42,
+    "stroke-width":3.2,"stroke-linecap":"butt","stroke-dasharray":(TAU*r/n*.46).toFixed(2)+" "+(TAU*r/n*.54).toFixed(2),
+    "stroke-dashoffset":0,class:"spin2"},parent);
+  c.style.setProperty("--o",CX+"px "+(cy!==undefined?cy:CY)+"px");
+  c.style.setProperty("--t","1800s");c.style.setProperty("--s1",-TAU*r);
+  c.style.animationDuration="1800s,"+dur(60190)+"s";
+  return c;
+}
+function gear(parent,cx,cy,R,n,hw,fill,op){
+  const Ri=R-hw,Ta=TAU/n,t1=Ta*.14,t2=Ta*.58,t3=Ta*.14,t4=Ta*.14;let d="";let a=-t1/2-t2/2-t3-t4;
+  for(let j=0;j<n;j++){
+    const P=(r,ang)=>[cx+r*Math.cos(ang*D),cy+r*Math.sin(ang*D)];
+    let q=P(Ri,a),k=P(R,a+t1+t2*.12);d+=(j?"L":"M")+q[0].toFixed(1)+" "+q[1].toFixed(1);
+    k=P(R,a+t1+t2*.88);d+="L"+k[0].toFixed(1)+" "+k[1].toFixed(1);
+    a+=t1+t2; q=P(Ri,a);d+="L"+q[0].toFixed(1)+" "+q[1].toFixed(1);
+    a+=t3+t4;
+  }
+  d+="Z";
+  const p=g("path",{d:d,fill:fill||"url(#brassFace)","fill-opacity":op||1,stroke:"#f6dfa6","stroke-opacity":.3,"stroke-width":.5},parent);
+  g("circle",{cx:cx,cy:cy,r:R-hw-.6,fill:"none",stroke:"#2a1e0c","stroke-opacity":.35,"stroke-width":.6},parent);
+  return p;
+}
+function spokeWheel(parent,cx,cy,R,n,spokes,hw){
+  gear(parent,cx,cy,R,n,hw||R*.13,"url(#brassFace)",.92);
+  const p=g("g",{class:"spin2"},parent);
+  p.style.setProperty("--o",cx+"px "+cy+"px");p.style.setProperty("--t",(spokes||40)+"s");p.style.setProperty("--s1",spokes<0?-TAU*R*.62:TAU*R*.62);
+  if(spokes<0)p.setAttribute("class","spin3");
+  g("circle",{cx:cx,cy:cy,r:R*.72,fill:"none",stroke:"#f0d489","stroke-opacity":.14,"stroke-width":1.6,"stroke-dasharray":"6 10"},p);
+  for(let k=0;k<5;k++){const a=(k*72+14)*D;
+    g("path",{d:"M"+(cx+R*.16*Math.cos(a)).toFixed(1)+" "+(cy+R*.16*Math.sin(a)).toFixed(1)+
+      "L"+(cx+R*.66*Math.cos(a)).toFixed(1)+" "+(cy+R*.66*Math.sin(a)).toFixed(1),
+      stroke:"#f6dfa6","stroke-opacity":.18,"stroke-width":2.6,"stroke-linecap":"round"},p);}
+  g("circle",{cx:cx,cy:cy,r:R*.14,fill:"#22190e",stroke:"#e2bd6c","stroke-opacity":.5,"stroke-width":1},parent);
+  g("circle",{cx:cx,cy:cy,r:R*.055,fill:"#7e919a","fill-opacity":.75},parent);
+}
+function globe(parent,p){
+  const p0=g("g",{},parent);
+  /* day side */
+  g("circle",{r:p.sz,fill:p.col,"fill-opacity":.9},p0);
+  const grp=g("g",{},p0);
+  const clip=g("clipPath",{id:"cl"+p.n},svg.querySelector("defs"));
+  g("circle",{r:p.sz},clip);
+  grp.setAttribute("clip-path","url(#cl"+p.n+")");
+  g("circle",{r:p.sz,fill:"url(#gSun)","fill-opacity":.55},grp);
+  /* lathe-turned meridians */
+  for(let k=0;k<3;k++)g("ellipse",{rx:p.sz*(0.3+k*.31),ry:p.sz,cx:0,cy:0,fill:"none",stroke:"#2a1e0c","stroke-opacity":.22,"stroke-width":.5},grp);
+  g("line",{x1:-p.sz,y1:0,x2:p.sz,y2:0,stroke:"#2a1e0c","stroke-opacity":.22,"stroke-width":.5},grp);
+  if(p.deco)p.deco(grp,p.sz);
+  /* the night circle: sweeping as the world turns */
+  const r=p.sz,th=p.nite*30*Math.PI/180,q=Math.PI/2-th;
+  const P1=[r*Math.cos(th-q),r*Math.sin(th-q)],P2=[r*Math.cos(th+q),r*Math.sin(th+q)];
+  const night=g("path",{fill:"#03060a","fill-opacity":.5,stroke:"none"},grp);
+  const mk=rx=>"M"+P1[0].toFixed(1)+" "+P1[1].toFixed(1)+"Q"+(r*Math.cos(th)*rx).toFixed(1)+" "+(r*Math.sin(th)*rx).toFixed(1)+
+    " "+P2[0].toFixed(1)+" "+P2[1].toFixed(1)+"A"+r+" "+r+" 0 0 1 "+P1[0].toFixed(1)+" "+P1[1].toFixed(1)+"Z";
+  const an=g("animate",{attributeName:"d",dur:p.spin+"s",repeatCount:"indefinite",calcMode:"spline",
+    keySplines:".45 0 .55 1;.45 0 .55 1",values:mk(-.85)+";"+mk(.9)+";"+mk(-.85)},night);
+  an.beginElement&&0;
+  night.setAttribute("d",mk(0));
+  night.appendChild(g("animate",{attributeName:"d",dur:p.spin+"s",repeatCount:"indefinite",
+    values:mk(-.85)+";"+mk(.9)+";"+mk(-.85)},night));
+  night.removeChild(night.lastChild);an.remove&&0;
+  night.appendChild(g("animate",{attributeName:"d",dur:p.spin+"s",repeatCount:"indefinite",
+    values:mk(-.85)+";"+mk(.9)+";"+mk(-.85)},night));
+  g("path",{fill:"none",stroke:"#020507","stroke-opacity":.7,"stroke-width":1.1},grp)
+    .setAttribute("d","M"+P1[0].toFixed(1)+" "+P1[1].toFixed(1)+"A"+r+" "+r+" 0 0 1 "+P2[0].toFixed(1)+" "+P2[1].toFixed(1));
+  g("circle",{r:p.sz,fill:"none",stroke:"#f6dfa6","stroke-opacity":.45,"stroke-width":.6},p0);
+  const gl=g("g",{class:"glint"},p0);gl.style.setProperty("--t",(p.sp)+"s");
+  g("circle",{cx:-p.sz*.34,cy:-p.sz*.4,r:Math.max(1.1,p.sz*.24),fill:"#fff6d8","fill-opacity":.5},gl);
+  return p0;
+}
+function arm(g0,p){
+  const a=g("g",{},g0);
+  g("path",{d:"M20 0L0,-2.8L"+(p.R-9)+",-2L"+(p.R-9)+",2L0,2.8Z",fill:"url(#armGrad)","fill-opacity":.88,
+    stroke:"#f6dfa6","stroke-opacity":.22,"stroke-width":.5},a);
+  g("circle",{cx:p.R,cy:0,r:6,fill:"url(#brassFace)","fill-opacity":.9,stroke:"#f6dfa6","stroke-opacity":.25},a);
+  g("circle",{cx:p.R,cy:0,r:2.6,fill:"#12191d",stroke:"#7fcbc2","stroke-opacity":.45,"stroke-width":.6},a);
+  g("circle",{cx:34,cy:0,r:2.2,fill:"#12191d","fill-opacity":.6},a);
+  /* the pinion that rides the arbor and drives the world */
+  const pi=g("g",{class:"pinion"},a);
+  const pr=Math.max(8,11+p.sz*.34);
+  const pc=[p.R*.55,0];
+  g("circle",{cx:pc[0],cy:pc[1],r:pr,fill:"none",stroke:"#c99a42","stroke-opacity":.4,"stroke-width":2.6,
+    "stroke-dasharray":(TAU*pr/16*.5).toFixed(2)+" "+(TAU*pr/16*.5).toFixed(2)},pi);
+  g("circle",{cx:pc[0],cy:pc[1],r:pr-2,fill:"url(#brassFace)","fill-opacity":.22},pi);
+  g("circle",{cx:pc[0],cy:pc[1],r:1.4,fill:"#f0d489","fill-opacity":.5},pi);
+  return a;
+}
+
+/* ── the dial: turned ebony plate, index ring, spokes ──────────────────── */
+g("circle",{cx:CX,cy:CY,r:262,fill:"#0a1013","fill-opacity":.72},O);
+g("circle",{cx:CX,cy:CY,r:262,fill:"none",stroke:"#6b5322","stroke-opacity":.5,"stroke-width":2},O);
+g("circle",{cx:CX,cy:CY,r:252,fill:"none",stroke:"#33464f","stroke-opacity":.55,"stroke-width":.7},O);
+(function(){ /* engraved lathe rings */
+  [78,104,130,155,181,206,231,252].forEach(r=>g("circle",{cx:CX,cy:CY,r:r,fill:"none",
+    stroke:"#79c6bd","stroke-opacity":.13,"stroke-width":.6},O));
+  for(let a=0;a<360;a+=2){const[l1,l2,l3]=a%90===0?[243,252,1.4]:a%30===0?[246,252,1.1]:a%6===0?[248,252,.8]:[250,252,.5];
+    const p1=pt(l1,a),p2=pt(l2,a);
+    g("line",{x1:CX+p1[0],y1:CY+p1[1],x2:CX+p2[0],y2:CY+p2[1],stroke:"#c99a42","stroke-opacity":a%30===0?.5:.26,"stroke-width":l3},O);}
+  for(let a=0;a<360;a+=30){const p1=pt(236,a),p2=pt(242,a);
+    g("line",{x1:CX+p1[0],y1:CY+p1[1],x2:CX+p2[0],y2:CY+p2[1],stroke:"#f0d489","stroke-opacity":.4,"stroke-width":1.4},O);}
+})();
+/* brass index arm carrying a follower off Neptune's rim */
+(function(){
+  const a=g("g",{class:"spin2"},O);
+  a.style.setProperty("--o",CX+"px "+CY+"px");a.style.setProperty("--t",dur(60190)+"s");a.style.setProperty("--a0","-30deg");
+  a.style.animationDuration=dur(60190)+"s,400s";a.style.animationDelay=(-dur(60190)*30/360)+"s";
+  g("path",{d:"M0 0L"+(CX+232-CX)+",0",stroke:"none"},a);
+  const t=g("g",{transform:"translate("+CX+" "+CY+")"},a);
+  g("path",{d:"M18 0L"+236+",-3.4L"+236+",3.4L18 0Z",transform:"rotate(-30)",fill:"#c99a42","fill-opacity":.16,
+    stroke:"#e2bd6c","stroke-opacity":.3,"stroke-width":.7},t);
+  for(const r of[52,60,68,76,84,92,100,108,116,124,132,140,148,156,164,172,180,188,196,204,212,220,228])
+    g("circle",{cx:r*Math.cos(-30*D),cy:r*Math.sin(-30*D),r:1.2,fill:"#f0d489","fill-opacity":.22},t);
+  g("circle",{cx:236*Math.cos(-30*D),cy:236*Math.sin(-30*D),r:4,fill:"none",stroke:"#7fcbc2","stroke-opacity":.5,"stroke-width":1},t);
+})();
+
+/* ── the gear train in the belly of the case ──────────────────────────── */
+(function(){
+ const tr=T;
+ /* mainspring barrel */
+ const bw=g("g",{class:"spin2"},tr);
+ bw.style.setProperty("--o","196px 540px");bw.style.setProperty("--t",dur(10759)+"s");bw.style.setProperty("--a0","-40deg");
+ bw.style.animationDuration=dur(10759)+"s,"+dur(10759)*.5+"s";
+ g("circle",{cx:196,cy:540,r:34,fill:"url(#brassFace)","fill-opacity":.3},tr);
+ for(let k=-11;k<11;k++)g("line",{x1:196+30*Math.cos(k*26*D),y1:540+30*Math.sin(k*26*D),
+   x2:196+33*Math.cos((k*26+30)*D),y2:540+33*Math.sin((k*26+30)*D),stroke:"#f6dfa6","stroke-opacity":.3,"stroke-width":1.4},tr);
+ g("circle",{cx:196,cy:540,r:33,fill:"none",stroke:"#c99a42","stroke-opacity":.55,"stroke-width":4,
+   "stroke-dasharray":"3 4"},bw);
+ g("circle",{cx:196,cy:540,r:26,fill:"none",stroke:"#33464f","stroke-opacity":.5,"stroke-width":.7},tr);
+ /* the train: each wheel cut at its planet's period, each pinion meshing with the next rim */
+ const tr8=[[336,578,30,30,dur(10759),150],[438,598,24,26,dur(10759)*.9,232],[532,606,27,28,dur(30687),118],
+            [632,598,22,24,dur(30687)*.8,255],[730,576,29,30,dur(60190),52],[836,552,24,26,dur(60190)*.9,310]];
+ tr8.forEach(w=>{
+   const gg=g("g",{},tr);
+   spokeWheel(gg,w[0],w[1],w[2],w[3],w[4],w[2]*.2);
+   gear(gg,w[0],w[1],w[2],w[3]*2,w[2]*.11,"none",0);
+   gg.lastChild&&0;
+ });
+ /* rack + ratchet with a click that flicks */
+ const rc=g("g",{class:"spin"},tr);rc.style.setProperty("--o","960px 520px");rc.style.setProperty("--t",dur(30687)*2+"s");
+ g("circle",{cx:960,cy:520,r:14,fill:"none",stroke:"#c99a42","stroke-opacity":.45,"stroke-width":5,
+   "stroke-dasharray":"2.2 5"},rc);
+ g("circle",{cx:960,cy:520,r:8,fill:"none",stroke:"#c99a42","stroke-opacity":.25,"stroke-width":2,
+   "stroke-dasharray":"1.6 3.4"},rc);
+ g("path",{d:"M960 520L1006 486",stroke:"#c99a42","stroke-opacity":.4,"stroke-width":2.4,"stroke-linecap":"round"},tr);
+ /* balance wheel swinging, and the escape wheel ticking in steps */
+ const bal=g("g",{},tr);
+ g("circle",{cx:172,cy:222,r:46,fill:"none",stroke:"#c99a42","stroke-opacity":.4,"stroke-width":3},bal);
+ for(let k=0;k<12;k++){const a=k*30*D;p1=pt(40,a),p2=pt(46,a);
+   g("line",{x1:172+p1[0],y1:222+p1[1],x2:172+p2[0],y2:222+p2[1],stroke:"#c99a42","stroke-opacity":.22,"stroke-width":1},bal);}
+ const balw=g("g",{class:"sw"},bal);balw.style.setProperty("--o","172px 222px");balw.style.animationDuration="14s";
+ g("circle",{cx:172,cy:222,r:44,fill:"none",stroke:"#7fcbc2","stroke-opacity":.22,"stroke-width":1},balw);
+ g("path",{d:"M172 222m-30 0a30 30 0 1 1 60 0a24 24 0 1 0 -48 0",fill:"none",stroke:"#93a7bc","stroke-opacity":.3,"stroke-width":1},balw);
+ g("circle",{cx:172,cy:222,r:3,fill:"#93a7bc","fill-opacity":.6},balw);
+ /* pendulum rod + bob dropping through the dial */
+ const pd=g("g",{class:"sw"},tr);pd.style.setProperty("--o","1040px 128px");
+ g("line",{x1:1040,y1:128,x2:1040,y2:332,stroke:"#c99a42","stroke-opacity":.45,"stroke-width":1.6},pd);
+ g("path",{d:"M1032 120h16",stroke:"#c99a42","stroke-opacity":.4,"stroke-width":2},pd);
+ g("circle",{cx:1040,cy:332,r:17,fill:"url(#brassFace)","fill-opacity":.5,stroke:"#f6dfa6","stroke-opacity":.3},pd);
+ g("circle",{cx:1040,cy:332,r:4,fill:"none",stroke:"#7fcbc2","stroke-opacity":.4},pd);
+ /* the anchor, rocking */
+ const an=g("g",{class:"bw"},tr);an.style.setProperty("--o","232px 462px");
+ g("path",{d:"M232 462L232 414M232 414l-16 12M232 414l16 12",stroke:"#93a7bc","stroke-opacity":.5,"stroke-width":2,
+   "stroke-linecap":"round",fill:"none"},an);
+ g("circle",{cx:232,cy:462,r:2.6,fill:"#93a7bc","fill-opacity":.6},an);
+ const ew=g("g",{class:"spin3"},tr);ew.style.setProperty("--o","232px 470px");ew.style.setProperty("--t",dur(60190)*.9+"s");
+ ew.style.animationDuration=dur(60190)*.9+"s,"+dur(60190)*.45+"s";
+ const ewp=g("g",{},tr);
+ g("path",{d:"M232 470m-16 0a16 16 0 1 1 32 0a16 16 0 1 1 -32 0",fill:"none",stroke:"#c99a42","stroke-opacity":.4,"stroke-width":2},ewp);
+ for(let k=0;k<15;k++){const a=k*24*D;g("path",{d:"M"+(232+14*Math.cos(a*D)).toFixed(1)+" "+(470+14*Math.sin(a*D)).toFixed(1)+
+   "l"+(6*Math.cos((a+90)*D)).toFixed(1)+" "+(6*Math.sin((a+90)*D)).toFixed(1),stroke:"#c99a42","stroke-opacity":.35,"stroke-width":1.2},ewp);}
+ const dot=g("circle",{cx:232,cy:496,r:2.2,fill:"#7fcbc2"},tr);
+ dot.appendChild(g("animate",{attributeName:"opacity",values:".2;.85;.2",dur:"1.4s",repeatCount:"indefinite"}));
+})();
+
+/* ── the eight worlds: gears meshing, shadows sweeping ─────────────────── */
+const gears=[];
+W.forEach(p=>{
+  const gg=g("g",{},O);
+  const s=spin(gg,dur(p.P),p.a,"spin",p.nite<0?false:false);
+  /* the ring gear this world rides */
+  const c=g("circle",{cx:CX,cy:CY,r:p.R,fill:"none",stroke:"#c99a42","stroke-opacity":.5,"stroke-width":2.6,
+    "stroke-dasharray":(TAU*p.R/(p.R*.9/2.1)).toFixed(2)+" "+(TAU*p.R/(p.R*.9/2.1)*1.1).toFixed(2)},s);
+  c.setAttribute("stroke-dasharray",12+" "+11);
+  g("circle",{cx:CX,cy:CY,r:p.R-4,fill:"none",stroke:"#33464f","stroke-opacity":.6,"stroke-width":.7},s);
+  gears.push([p,s]);
+  arm(s,p);
+  const gl=g("g",{transform:"translate("+(CX+p.R)+","+CY+")"},s);
+  globe(gl,p);
+});
+/* true points of mesh — pinion rims in contact */
+gears.forEach((G,i)=>{
+  if(!i)return;
+  const pa=gears[i-1][0],pb=G[0];
+  const a1=(360-pa.a)*D,a2=(360-pb.a)*D;
+  if(Math.abs(((pa.a-pb.a)%360))>60)return;
+  const m=g("g",{class:"glint"},O);m.style.setProperty("--t",(3+i*.7)+"s");
+  const px=[CX+ (pb.R-14)*Math.cos(a2),CY+(pb.R-14)*Math.sin(a2)];
+  g("circle",{cx:px[0],cy:px[1],r:2.4,fill:"#ffe9b0","fill-opacity":.8},m);
+  for(let k=0;k<3;k++){const a=k*120*D;g("line",{x1:px[0]+3*Math.cos(a),y1:px[1]+3*Math.sin(a),
+    x2:px[0]+7*Math.cos(a),y2:px[1]+7*Math.sin(a),stroke:"#ffe9b0","stroke-opacity":.35,"stroke-width":.8},m);}
+});
+
+/* the Sun — a gilt sun-burst with its own differential rotation */
+(function(){
+ const sun=g("g",{},O);
+ const glow=g("g",{class:"bt"},sun);glow.style.setProperty("--t","11s");
+ g("circle",{cx:CX,cy:CY,r:78,fill:"url(#gSunGlow)"},glow);
+ const rays=g("g",{class:"spin"},sun);rays.style.setProperty("--o",CX+"px "+CY+"px");
+ rays.style.setProperty("--t",dur(60190)*2+"s");rays.style.setProperty("--a0","0deg");
+ for(let k=0;k<24;k++){const a=k*15*D,ln=k%2?9:15;
+   g("path",{d:"M"+(CX+(26)*Math.cos(a)).toFixed(1)+" "+(CY+(26)*Math.sin(a)).toFixed(1)+
+     "L"+(CX+(26+ln)*Math.cos(a)).toFixed(1)+" "+(CY+(26+ln)*Math.sin(a)).toFixed(1),
+     stroke:"#e2bd6c","stroke-opacity":.4,"stroke-width":1.3},rays);}
+ g("circle",{cx:CX,cy:CY,r:26,fill:"url(#gSun)"},sun);
+ g("circle",{cx:CX,cy:CY,r:26,fill:"none",stroke:"#f6dfa6","stroke-opacity":.6,"stroke-width":1},sun);
+ const bnd=g("g",{class:"spin"},sun);bnd.style.setProperty("--o",CX+"px "+CY+"px");bnd.style.setProperty("--t",dur(4332)+"s");
+ bnd.style.setProperty("--a0","-30deg");
+ [10,17,23].forEach((r,k)=>g("path",{d:"M"+(CX-r)+" "+CY+"A"+r+" "+(r*.34)+" 0 0 1 "+(CX+r)+" "+CY,
+   fill:"none",stroke:"#7a5416","stroke-opacity":.35,"stroke-width":1.4},bnd));
+ g("circle",{cx:CX-9,cy:CY-11,r:2.6,fill:"#6b4a12","fill-opacity":.5},bnd);
+ g("circle",{cx:CX+7,cy:CY+5,r:1.8,fill:"#6b4a12","fill-opacity":.4},bnd);
+ g("circle",{cx:CX,cy:CY,r:4,fill:"#12191d",stroke:"#f6dfa6","stroke-opacity":.5},sun);
+})();
+
+/* ── leader lines & index ─────────────────────────────────────────────── */
+(function(){
+ const lab=[[0,120],[1,150],[2,-132],[3,-158],[4,55],[5,20],[6,76],[7,-160]];
+ W.forEach((p,i)=>{
+   const a=lab[i][1]*D,r0=p.R-16,r1=p.R+42*(lab[i][1]>0?1:1),dir=lab[i][1]>0?1:-1;
+   const p0=[CX+(p.R+6)*Math.cos(p.a*D),CY+(p.R+6)*Math.sin(p.a*D)];
+   const p1=[CX+(p.R+34)*Math.cos(p.a*D),CY+(p.R+34)*Math.sin(p.a*D)];
+   const p2=[p1[0]+28*Math.cos(p.a*D),p1[1]+28*Math.sin(p.a*D)];
+   const grp=g("g",{class:"grp"},L);
+   g("path",{d:"M"+p0.map(v=>v.toFixed(1)).join(" ")+"L"+p1.map(v=>v.toFixed(1)).join(" ")+
+     "L"+p2.map(v=>v.toFixed(1)).join(" "),class:"lead"},grp);
+   g("circle",{cx:p0[0],cy:p0[1],r:1.8,fill:"#c99a42","fill-opacity":.5},grp);
+   const t=txt(grp,p.n,p2[0]+(dir>0?6:-6),p2[1]+3,{"text-anchor":dir>0?"start":"end",class:"lbl"});
+   const tspan=g("tspan",{dx:"6"},t);tspan.textContent=Math.round(p.P).toLocaleString()+" d";
+ });
+})();
+/* the Sun's own leader — the heart of the machine */
+(function(){
+ const grp=g("g",{class:"grp"},L);
+ const p0=[CX+34*Math.cos(-118*D),CY+34*Math.sin(-118*D)],p1=[CX+82*Math.cos(-118*D),CY+82*Math.sin(-118*D)];
+ g("path",{d:"M"+p0.map(v=>v.toFixed(1)).join(" ")+"L"+p1.map(v=>v.toFixed(1)).join(" ")+"L"+(p1[0]-44)+" "+p1[1],class:"lead"},grp);
+ txt(grp,"SOL — ARBOR MAGNA",p1[0]-48,p1[1]+3,{"text-anchor":"end",class:"lbl"});
+})();
+
+/* ── inscription cards ────────────────────────────────────────────────── */
+(function(){
+ txt(C,"HOROLOGIUM",66,86,{class:"h1"});
+ txt(C,"SOLARIS",66,110,{class:"kick"});
+ g("line",{x1:66,y1:124,x2:246,y2:124,stroke:"#c99a42","stroke-opacity":.35},C);
+ txt(C,"MERIDIAN WORKS · LONDON · No. 184",66,142,{class:"small"});
+ txt(C,"EVERY WHEEL CUT TO ITS WORLD'S TRUE YEAR",66,158,{class:"small",opacity:".62"});
+ /* scale of years */
+ txt(C,"SCALE OF YEARS",66,660,{class:"small"});
+ g("line",{x1:66,y1:678,x2:286,y2:678,stroke:"#c99a42","stroke-opacity":.4},C);
+ [0,1,2,3,4].forEach(k=>{const x=66+220*Math.pow(k/4,.55);
+   g("line",{x1:x,y1:674,x2:x,y2:682,stroke:"#c99a42","stroke-opacity":.4,"stroke-width":1},C);
+   txt(C,["0","1","5","50","60k"][k],x,696,{"text-anchor":"middle",class:"small",opacity:".6"});});
+ const mk=g("g",{class:"glint"},C);mk.style.setProperty("--t","4s");
+ g("path",{d:"M258 668l6 0l-3 8Z",fill:"#7fcbc2","fill-opacity":.8},mk);
+ /* syodic index */
+ txt(C,"SYODIC INDEX",858,614,{class:"h1","font-size":"16"});
+ g("line",{x1:858,y1:626,x2:1128,y2:626,stroke:"#c99a42","stroke-opacity":.3},C);
+ W.forEach((p,i)=>{const y=646+((i%4))*0;});
+ W.forEach((p,i)=>{
+   const col=i<4?0:1,x=858+col*142,y=646+(i%4)*13;
+   g("circle",{cx:x+4,cy:y-3.2,r:2.6,fill:p.col,"fill-opacity":.7},C);
+   const t=txt(C,p.n.slice(0,3)+" ",x+14,y,{"class":"small",opacity:".7"});
+   const s=g("tspan",{},t);s.textContent=Math.round(p.P).toLocaleString()+" d";
+ });
+ txt(C,"positions plotted 01 · III · MMXXVI",858,708,{"class":"small",opacity:".5"});
+ /* ornament: hanging scroll, swaying */
+ const or=g("g",{class:"sw"},ORN);or.style.setProperty("--o","600px 26px");
+ g("path",{d:"M470 44C520 24 560 40 600 24C640 40 680 24 730 44",fill:"none",stroke:"#c99a42","stroke-opacity":.3,"stroke-width":1.2},or);
+ g("circle",{cx:600,cy:24,r:3.4,fill:"none",stroke:"#f0d489","stroke-opacity":.4,"stroke-width":1},or);
+ g("path",{d:"M470 44a5 5 0 1 1 8-4M730 44a5 5 0 1 0 -8 -4",fill:"none",stroke:"#c99a42","stroke-opacity":.3,"stroke-width":1.2},or);
+})();
+
+/* ── ambient life: sweep, sparks, dust ────────────────────────────────── */
+(function(){
+ const s=g("g",{class:"spin2",opacity:".5"},F);
+ s.style.setProperty("--o",CX+"px "+CY+"px");s.style.setProperty("--d1","60s");
+ const a1=g("circle",{cx:CX,cy:CY,r:150,fill:"none",stroke:"#ffe9b0","stroke-opacity":.16,"stroke-width":10,
+   "stroke-dasharray":"40 890"},s);
+ const b=s.cloneNode(true);b.setAttribute("opacity",".35");b.style.setProperty("--d1","86s");
+ b.firstChild.setAttribute("r",214);b.firstChild.setAttribute("stroke-dasharray","30 1314");F.appendChild(b);
+ for(let k=0;k<11;k++){
+   const a=(k*37+13)*D,r=120+(k%4)*46;
+   const st=g("g",{class:"glint"},F);st.style.setProperty("--t",(2.4+(k%5)*.9)+"s");
+   const x=CX+r*Math.cos(a),y=CY+r*Math.sin(a)*.72-40;
+   g("path",{d:"M"+x+" "+(y-5)+"L"+(x+1.6)+" "+(y-1.6)+"L"+(x+5)+" "+y+"L"+(x+1.6)+" "+(y+1.6)+
+     "L"+x+" "+(y+5)+"L"+(x-1.6)+" "+(y+1.6)+"L"+(x-5)+" "+y+"L"+(x-1.6)+" "+(y-1.6)+"Z",
+     fill:"#ffeec2","fill-opacity":.55},st);
+ }
+ for(let k=0;k<18;k++){
+   const x=60+Math.random()*1090,y=520+Math.random()*220;
+   const d=g("g",{class:"dust"},F);d.style.setProperty("--t",(12+Math.random()*14)+"s");d.style.animationDelay=(-Math.random()*20)+"s";
+   g("circle",{cx:x,cy:y,r:.8+Math.random()*1.6,fill:"#ffe9b0","fill-opacity":.3+Math.random()*.3},d);
+ }
+})();
+})();
+/* ]]> */</script>
+</svg>

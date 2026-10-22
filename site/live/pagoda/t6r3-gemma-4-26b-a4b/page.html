@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voxel Japanese Pagoda</title>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #87CEEB; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+            }
+        }
+    </script>
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        // --- Configuration & Colors ---
+        const COLORS = {
+            WOOD: 0x4d2600,
+            ROOF: 0x222222,
+            STONE: 0x777777,
+            PINK: 0xffb7c5,
+            RED: 0xaa0000,
+            BLUE: 0x44aaff,
+            GOLD: 0xffd700,
+            SKY: 0x87CEEB,
+            GRASS: 0x558833
+        };
+
+        // --- Scene Setup ---
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(COLORS.SKY);
+        
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(30, 25, 30);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        document.body.appendChild(renderer.domElement);
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 0.5;
+
+        // --- Lighting ---
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+
+        const sunLight = new THREE.DirectionalLight(0xffffff, 1.2);
+        sunLight.position.set(20, 40, 10);
+        sunLight.castShadow = true;
+        sunLight.shadow.camera.left = -50;
+        sunLight.shadow.camera.right = 50;
+        sunLight.shadow.camera.top = 50;
+        sunLight.shadow.camera.bottom = -50;
+        sunLight.shadow.mapSize.width = 2048;
+        sunLight.shadow.mapSize.height = 2048;
+        scene.add(sunLight);
+
+        // --- Voxel Engine (InstancedMesh approach) ---
+        // Since we want everything from cubes, we group by color to use InstancedMesh for performance.
+        const voxelsByColor = {};
+        function addVoxel(x, y, z, color) {
+            if (!voxelsByColor[color]) voxelsByColor[color] = [];
+            voxelsByColor[color].push({ x, y, z });
+        }
+
+        // --- Building Helpers ---
+        function buildBox(x, y, z, w, h, d, color) {
+            for (let dx = 0; dx < w; dx++) {
+                for (let dy = 0; dy < h; dy++) {
+                    for (let dz = 0; dz < d; dz++) {
+                        addVoxel(Math.floor(x + dx), Math.floor(y + dy), Math.floor(z + dz), color);
+                    }
+                }
+            }
+        }
+
+        // --- Scene Construction ---
+        // 1. Stone Platform
+        buildBox(-15, -1, -15, 30, 1, 30, COLORS.STONE);
+        buildBox(-15, 0, -15, 30, 0.5, 30, COLORS.GRASS);
+
+        // 2. The Pond
+        // We use a blue area slightly lower than the stone
+        for(let x = -12; x < -5; x++) {
+            for(let z = 5; z < 12; z++) {
+                addVoxel(x, -0.1, z, 1, 1, 1, COLORS.BLUE);
+            }
+        }
+
+        // 3. Red Torii Gate
+        const tx = -10, ty = 0, tz = -10;
+        buildBox(tx, ty, tz, 1, 5, 1, COLORS.RED); // Left post
+        buildBox(tx + 4, ty, tz, 1, 5, 1, COLORS.RED); // Right post
+        buildBox(tx - 1, ty + 4, tz, 7, 1, 1, COLORS.RED); // Top beam 1
+        buildBox(tx - 1, ty + 4.5, tz, 7, 1, 2, COLORS.RED); // Top beam 2 (thicker)
+
+        // 4. Pagoda (5 Stories)
+        function buildPagoda() {
+            let startY = 0;
+            let currentW = 7; // Width of core
+            let currentEaves = 11; // Width of roof
+
+            for (let s = 0; s < 5; s++) {
+                // Core (Wood)
+                buildBox(-currentW/2, startY, -currentW/2, currentW, 3, currentW, COLORS.WOOD);
+                
+                // Roof (Upturned-ish voxel style)
+                // Bottom layer of roof (the overhang)
+                buildBox(-currentEaves/2, startY + 3, -currentEaves/2, currentEaves, 1, currentEaves, COLORS.ROOF);
+                // Slightly smaller layer to simulate slope
+                buildBox(-currentW/2, startY + 4, -currentW/2, currentW, 1, currentW, COLORS.ROOF);
+                
+                startY += 4;
+                currentW *= 0.75;
+                currentEaves *= 0.85;
+            }
+
+            // Spire
+            buildBox(-0.5, startY, -0.5, 1, 4, 1, COLORS.GOLD);
+        }
+        buildPagoda();
+
+        // 5. Cherry Blossom Trees
+        function buildTree(tx, tz) {
+            const th = 4;
+            buildBox(tx, 0, tz, 1, th, 1, COLORS.WOOD); // Trunk
+            // Canopy
+            for(let i = 0; i < 20; i++) {
+                let rx = (Math.random() - 0.5) * 4;
+                let ry = Math.random() * 4;
+                let rz = (Math.random() - 0.5) * 4;
+                addVoxel(tx + rx, ty(th) + ry, tz + rz, COLORS.PINK);
+            }
+        }
+        function ty(h) { return h; }
+
+        // Manual Tree placement (for better control)
+        function createTree(x, z) {
+            // Trunk
+            for(let y=0; y<4; y++) addVoxel(x, y, z, COLORS.WOOD);
+            // Leaves
+            const leafLevels = [3, 4, 5];
+            leafLevels.forEach(y => {
+                for(let i=0; i<15; i++) {
+                    let rx = Math.floor((Math.random()-0.5)*5);
+                    let rz = Math.floor((Math.random()-0.5)*5);
+                    addVoxel(x+rx, y, z+rz, COLORS.PINK);
+                }
+            });
+        }
+        createTree(10, 10);
+        createTree(-12, 12);
+        createTree(12, -8);
+
+        // --- Finalizing Meshes ---
+        const instancedMeshes = {};
+        const geometries = {};
+
+        Object.keys(voxelsByColor).forEach(color => {
+            const colorInt = parseInt(color, 16);
+            const positions = voxelsByColor[color];
+            const geometry = new THREE.BoxGeometry(1, 1, 1);
+            const material = new THREE.MeshStandardMaterial({ color: colorInt });
+            const im = new THREE.InstancedMesh(geometry, material, positions.length);
+            
+            const dummy = new THREE.Object3D();
+            positions.forEach((pos, i) => {
+                dummy.position.set(pos.x, pos.y, pos.z);
+                dummy.updateMatrix();
+                im.setMatrixAt(i, dummy.matrix);
+            });
+            
+            im.castShadow = true;
+            im.receiveShadow = true;
+            scene.add(im);
+        });
+
+        // --- Falling Petals (Particles) ---
+        const petalCount = 100;
+        const petalGeometry = new THREE.BoxGeometry(0.4, 0.1, 0.4);
+        const petalMaterial = new THREE.MeshBasicMaterial({ color: COLORS.PINK });
+        const petalMesh = new THREE.InstancedMesh(petalGeometry, petalMaterial, petalCount);
+        petalMesh.castShadow = true;
+        scene.add(petalMesh);
+
+        const petalData = [];
+        const dummy = new THREE.Object3D();
+        for (let i = 0; i < petalCount; i++) {
+            const pos = {
+                x: (Math.random() - 0.5) * 50,
+                y: Math.random() * 30,
+                z: (Math.random() - 0.5) * 50,
+                vy: -0.05 - Math.random() * 0.1,
+                vx: (Math.random() - 0.5) * 0.02,
+                vz: (Math.random() - 0.5) * 0.02
+            };
+            petalData.push(pos);
+            dummy.position.set(pos.x, pos.y, pos.z);
+            dummy.updateMatrix();
+            petalMesh.setMatrixAt(i, dummy.matrix);
+        }
+
+        // --- Animation Loop ---
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            const time = Date.now() * 0.001;
+
+            // Animate Petals
+            for (let i = 0; i < petalCount; i++) {
+                const p = petalData[i];
+                p.y += p.vy;
+                p.x += Math.sin(time + p.y) * 0.05 + p.vx;
+                p.z += Math.cos(time + p.x) * 0.05 + p.vz;
+
+                if (p.y < 0) {
+                    p.y = 30;
+                    p.x = (Math.random() - 0.5) * 50;
+                    p.z = (Math.random() - 0.5) * 50;
+                }
+
+                dummy.position.set(p.x, p.y, p.z);
+                // Add some rotation/sway
+                dummy.rotation.x = Math.sin(time + p.y) * 0.5;
+                dummy.rotation.z = Math.cos(time + p.x) * 0.5;
+                dummy.updateMatrix();
+                petalMesh.setMatrixAt(i, dummy.matrix);
+            }
+            petalMesh.instanceMatrix.needsUpdate = true;
+
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate();
+    </script>
+</body>
+</html>
+

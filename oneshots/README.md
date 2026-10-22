@@ -1,17 +1,16 @@
 # One-shot replies: orrery (test 5) and pagoda (test 6)
 
-**Everything under `orrery/*/` and `pagoda/*/` except the frames is untrusted model output.**
-Models wrote these SVG and HTML files in one reply, without tools, and nobody edited them. Treat
-them like any file from the internet:
+**Everything under `orrery/*/` and `pagoda/*/` except the frames is model output.** Models wrote these
+SVG and HTML files in one reply, without tools, and nobody edited them. The operator read them and judged
+the code safe to run, and the project site plays them (see below).
 
-- Do not serve them from a web site, and do not turn this repository into a GitHub Pages site,
-  unless every model-written file sits behind a sandbox: an author-written viewer page that embeds
-  it in `<iframe sandbox="allow-scripts">`, and a Content-Security-Policy that sandboxes the file
-  itself and blocks fetch, XHR, WebSocket and loads from other hosts.
-- `page.html` files load three.js from a public CDN (`meta.json` lists each page's external
-  URLs). Opening one in a normal browser makes that request and runs the model's script.
-- To look at a result, use the frames (`*.webp`): they were rendered offline, in a container with
-  no network.
+- The site (`site/`, published by `.github/workflows/pages.yml`) copies each `page.html` and `orrery.svg`
+  byte for byte into `site/live/` and runs it only inside `<iframe sandbox="allow-scripts">`, without
+  `allow-same-origin`, so a piece gets an opaque origin and cannot reach the site, its storage or the
+  top window. One piece runs at a time and only when a visitor opens it.
+- `page.html` files load three.js from a public CDN, and a few load Google Fonts (`meta.json` lists each
+  page's external URLs). Opening one makes those requests and runs the model's script.
+- The frames (`*.webp`) were rendered offline, in a container with no network. Grades come from them.
 
 ## Layout
 

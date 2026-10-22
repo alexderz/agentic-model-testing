@@ -1,0 +1,350 @@
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voxel Japanese Pagoda</title>
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #a9c6e2; }
+  canvas { display: block; }
+  #hud {
+    position: absolute; top: 12px; left: 14px;
+    color: #2a3b4d; font: 13px/1.4 system-ui, sans-serif;
+    text-shadow: 0 1px 2px rgba(255,255,255,.5); pointer-events: none;
+  }
+</style>
+</head>
+<body>
+<div id="hud">Voxel Japanese Pagoda · five-story · orbiting</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+
+/* ---------- renderer / scene / camera ---------- */
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+const SKY = new THREE.Color(0xa9c6e2);
+scene.background = SKY;
+scene.fog = new THREE.Fog(SKY, 60, 150);
+
+const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 500);
+camera.position.set(34, 22, 34);
+
+/* ---------- voxel builder (InstancedMesh per material) ---------- */
+const boxGeo = new THREE.BoxGeometry(1, 1, 1);
+const stacks = new Map(); // material -> [[x,y,z], ...]
+
+function mat(color, o = {}) {
+  return new THREE.MeshStandardMaterial({ color, roughness: 0.85, metalness: 0, ...o });
+}
+const M = {
+  dirt:      mat(0x6b4a2f),
+  grass:     mat(0x5f9e48),
+  grass2:    mat(0x4f8a3c),
+  stone:     mat(0x8d8d92),
+  stoneDark: mat(0x6f6f75),
+  path:      mat(0xbcb6a6),
+  wood:      mat(0x6f4527),
+  woodDark:  mat(0x4a2c17),
+  roof:      mat(0x30303b),
+  roofEdge:  mat(0x8c2c24),
+  gold:      mat(0xcaa23a, { roughness: 0.35, metalness: 0.9 }),
+  spire:     mat(0x3a3a42, { roughness: 0.5, metalness: 0.6 }),
+  torii:     mat(0xcf3224, { roughness: 0.55 }),
+  toriiDark: mat(0x24242a, { roughness: 0.8 }),
+  trunk:     mat(0x5a3a24),
+  blossom:   mat(0xf7a9c4),
+  blossom2:  mat(0xffd0e0),
+  blossom3:  mat(0xf28fb8),
+  water:     mat(0x3f86b0, { roughness: 0.15, metalness: 0.5 }),
+  lily:      mat(0x3c6e34),
+  petal:     mat(0xffb7d5, { roughness: 1, side: THREE.DoubleSide }),
+  lantern:   mat(0x9a9aa0),
+  lanternGlow: mat(0xffe9a8, { emissive: 0xffcf70, emissiveIntensity: 0.6 }),
+};
+
+function addBox(material, x, y, z) {
+  let s = stacks.get(material);
+  if (!s) { s = []; stacks.set(material, s); }
+  s.push([x, y, z]);
+}
+
+// filled cuboid centered at (cx,cy,cz), half-extents hx,hy,hz (inclusive)
+function fill(cx, cy, cz, hx, hy, hz, material) {
+  for (let x = -hx; x <= hx; x++)
+    for (let y = -hy; y <= hy; y++)
+      for (let z = -hz; z <= hz; z++)
+        addBox(material, cx + x, cy + y, cz + z);
+}
+
+// hollow square wall, footprint half w, height h, bottom center cy
+function walls(cx, cy, cz, w, h, material) {
+  for (let y = 0; y < h; y++) {
+    for (let x = -w; x <= w; x++) {
+      addBox(material, cx + x, cy + y, cz - w);
+      addBox(material, cx + x, cy + y, cz + w);
+    }
+    for (let z = -w + 1; z <= w - 1; z++) {
+      addBox(material, cx - w, cy + y, cz + z);
+      addBox(material, cx + w, cy + y, cz + z);
+    }
+  }
+}
+
+function flush(scene) {
+  stacks.forEach((items, material) => {
+    const mesh = new THREE.InstancedMesh(boxGeo, material, items.length);
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    const m = new THREE.Matrix4();
+    for (let i = 0; i < items.length; i++) {
+      const [x, y, z] = items[i];
+      m.makeTranslation(x, y, z);
+      mesh.setMatrixAt(i, m);
+    }
+    mesh.instanceMatrix.needsUpdate = true;
+    scene.add(mesh);
+  });
+}
+
+/* ---------- deterministic pseudo-random ---------- */
+let seed = 0x5bd1e995;
+function rand() {
+  seed = (seed * 1664525 + 1013904223) & 0x7fffffff;
+  return seed / 0x7fffffff;
+}
+
+/* ---------- ground ---------- */
+const G = 26;
+const POND = { x: 13, z: 5, rx: 5.5, rz: 4.2 };
+function inPond(x, z, rx, rz) {
+  const dx = (x - POND.x) / rx, dz = (z - POND.z) / rz;
+  return dx * dx + dz * dz < 1;
+}
+for (let x = -G; x <= G; x++) {
+  for (let z = -G; z <= G; z++) {
+    addBox(M.dirt, x, -1, z);
+    const pond = inPond(x, z, POND.rx, POND.rz);
+    if (pond) {
+      addBox(M.water, x, 0, z);
+    } else {
+      addBox(x % 2 === 0 && z % 2 === 0 ? M.grass2 : M.grass, x, 0, z);
+    }
+  }
+}
+// stone rim around the pond
+for (let x = POND.x - POND.rx - 1; x <= POND.x + POND.rx + 1; x++) {
+  for (let z = POND.z - POND.rz - 1; z <= POND.z + POND.rz + 1; z++) {
+    if (x < -G || x > G || z < -G || z > G) continue;
+    if (!inPond(x, z, POND.rx + 0.9, POND.rz + 0.9)) {
+      if (inPond(x, z, POND.rx + 0.35, POND.rz + 0.35) && rand() < 0.85)
+        addBox(M.stoneDark, x, 0, z);
+    }
+  }
+}
+// a few lily pads on the water
+for (let i = 0; i < 5; i++) {
+  const a = rand() * Math.PI * 2;
+  const r = 0.6 + rand() * 2.4;
+  const lx = Math.round(POND.x + Math.cos(a) * r);
+  const lz = Math.round(POND.z + Math.sin(a) * r);
+  if (inPond(lx, lz, POND.rx, POND.rz)) addBox(M.lily, lx, 0.02, lz);
+}
+
+/* ---------- stone platform ---------- */
+fill(0, 1, 0, 8, 0, 8, M.stone);   // 17 x 17
+fill(0, 2, 0, 6.5 >> 0 ? 6 : 6, 0, 6, M.stone);
+
+/* ---------- five-story pagoda ---------- */
+let top = 2.5; // top surface of platform
+const stories = [
+  { w: 5, ex: 6 },
+  { w: 4, ex: 5 },
+  { w: 3, ex: 4 },
+  { w: 2, ex: 3 },
+  { w: 1, ex: 2 },
+];
+for (const st of stories) {
+  const cy = top + 0.5;      // wall bottom center (integer)
+  const ec = cy + 2;         // eave center (integer)
+  walls(0, cy, 0, st.w, 2, M.wood);
+  // dark corner pillars
+  for (const px of [-st.w, st.w])
+    for (const pz of [-st.w, st.w]) {
+      addBox(M.woodDark, px, cy, pz);
+      addBox(M.woodDark, px, cy + 1, pz);
+    }
+  // roof eave slab
+  fill(0, ec, 0, st.ex, 0, st.ex, M.roof);
+  // upturned corner accents (raised cubes at each eave corner)
+  for (const px of [-st.ex, st.ex])
+    for (const pz of [-st.ex, st.ex])
+      addBox(M.roofEdge, px, ec + 1, pz);
+  top = ec + 1.5;
+}
+
+/* ---------- spire (sorin) ---------- */
+for (let y = Math.ceil(top); y <= Math.ceil(top) + 8; y++) addBox(M.spire, 0, y, 0);
+const spBase = Math.ceil(top);
+for (const y of [spBase + 1, spBase + 3, spBase + 5]) fill(0, y, 0, 1, 0, 1, M.gold);
+fill(0, spBase + 6, 0, 1, 0, 1, M.gold); // finial plate
+addBox(M.gold, 0, spBase + 7, 0);
+addBox(M.gold, 0, spBase + 8, 0);        // jewel tip
+
+/* ---------- red torii gate ---------- */
+function torii(cx, cz) {
+  const px = 3;
+  for (const p of [-px, px])
+    for (let y = 1; y <= 6; y++) addBox(M.torii, cx + p, y, cz);
+  // base stones
+  for (const p of [-px, px]) fill(p, 0, 0, 1, 0, 1, M.stoneDark);
+  // nuki (tie beam)
+  for (let x = -px; x <= px; x++) addBox(M.torii, cx + x, 5, cz);
+  // shimaki (upper beam, overhangs)
+  for (let x = -px - 1; x <= px + 1; x++) addBox(M.torii, cx + x, 6, cz);
+  // kasira (top beam, widest)
+  for (let x = -px - 2; x <= px + 2; x++) addBox(M.torii, cx + x, 7, cz);
+  // black caps
+  for (const p of [-px, px]) addBox(M.toriiDark, cx + p, 8, cz);
+  for (const p of [-px - 2, px + 2]) addBox(M.toriiDark, cx + p, 7, cz);
+}
+torii(0, 13);
+
+/* ---------- stepping-stone path ---------- */
+for (let z = 2; z <= 12; z++) {
+  const w = 1 + (Math.abs(z - 7) < 3 ? 0 : 0);
+  for (let x = -1; x <= 1; x++)
+    if (rand() < 0.85 || Math.abs(x) < 1) addBox(M.path, x, 0.02, z + (x % 2) * 0.0);
+}
+
+/* ---------- stone lantern ---------- */
+function lantern(cx, cz) {
+  fill(cx, 1, cz, 1, 0, 1, M.lantern);      // base
+  addBox(M.lantern, cx, 2, cz);              // pole
+  fill(cx, 3, cz, 1, 0, 1, M.lantern);       // firebox
+  addBox(M.lanternGlow, cx, 3, cz);          // glow
+  fill(cx, 4, cz, 1, 0, 1, M.lantern);       // roof
+  addBox(M.gold, cx, 5, cz);                 // finial
+}
+lantern(4, 9);
+lantern(-6, 10);
+
+/* ---------- cherry blossom trees ---------- */
+function cherryTree(cx, cz, h) {
+  let ox = 0, oz = 0;
+  for (let y = 1; y <= h; y++) {
+    addBox(M.trunk, cx + ox, y, cz + oz);
+    if (y === h - 1) { ox += 1; }
+    else if (y === h - 2) { oz += 1; }
+  }
+  const tx = cx + ox, tz = cz + oz, ty = h + 1;
+  const R = 3;
+  for (let x = -R; x <= R; x++)
+    for (let y = -R; y <= R; y++)
+      for (let z = -R; z <= R; z++) {
+        const d = Math.sqrt(x * x + y * y + z * z) / R;
+        if (d <= 1 && rand() > d * 0.42) {
+          const r = rand();
+          const m = r < 0.55 ? M.blossom : r < 0.8 ? M.blossom2 : M.blossom3;
+          addBox(m, tx + x, ty + y, tz + z);
+        }
+      }
+}
+cherryTree(-12, 8, 6);
+cherryTree(13, -9, 7);
+cherryTree(-15, -11, 6);
+
+/* ---------- assemble scene ---------- */
+flush(scene);
+
+/* ---------- lighting with shadows ---------- */
+const sun = new THREE.DirectionalLight(0xfff3d6, 2.4);
+sun.position.set(28, 46, 22);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.camera.near = 1;
+sun.shadow.camera.far = 160;
+sun.shadow.camera.left = -45;
+sun.shadow.camera.right = 45;
+sun.shadow.camera.top = 45;
+sun.shadow.camera.bottom = -45;
+sun.shadow.bias = -0.0004;
+sun.target.position.set(0, 8, 0);
+scene.add(sun, sun.target);
+
+const hemi = new THREE.HemisphereLight(0xbfe0ff, 0x4a6b3a, 0.55);
+scene.add(hemi);
+scene.add(new THREE.AmbientLight(0xffffff, 0.25));
+
+/* ---------- drifting blossom petals ---------- */
+const petalGeo = new THREE.BoxGeometry(0.22, 0.22, 0.22);
+const petals = [];
+for (let i = 0; i < 55; i++) {
+  const mesh = new THREE.Mesh(petalGeo, M.petal);
+  mesh.position.set((rand() - 0.5) * 46, 4 + rand() * 20, (rand() - 0.5) * 46);
+  mesh.userData = {
+    vy: 0.012 + rand() * 0.022,
+    phase: rand() * Math.PI * 2,
+    swayX: 0.01 + rand() * 0.03,
+    swayZ: 0.01 + rand() * 0.03,
+    spin: (rand() - 0.5) * 0.08,
+  };
+  scene.add(mesh);
+  petals.push(mesh);
+}
+
+/* ---------- orbit + animate ---------- */
+let angle = 0.6;
+const clock = new THREE.Clock();
+function animate() {
+  requestAnimationFrame(animate);
+  const dt = Math.min(clock.getDelta(), 0.05);
+  angle += dt * 0.18;
+
+  const radius = 40, height = 20;
+  camera.position.set(Math.cos(angle) * radius, height, Math.sin(angle) * radius);
+  camera.lookAt(0, 8.5, 0);
+
+  for (const p of petals) {
+    const u = p.userData;
+    p.position.y -= u.vy;
+    p.position.x += Math.sin(clock.elapsedTime * 1.7 + u.phase) * u.swayX;
+    p.position.z += Math.cos(clock.elapsedTime * 1.3 + u.phase) * u.swayZ;
+    p.rotation.x += u.spin;
+    p.rotation.y += u.spin * 0.7;
+    if (p.position.y < 0.1) {
+      p.position.y = 18 + rand() * 6;
+      p.position.x = (rand() - 0.5) * 46;
+      p.position.z = (rand() - 0.5) * 46;
+    }
+  }
+
+  renderer.render(scene, camera);
+}
+animate();
+
+/* ---------- resize ---------- */
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+</script>
+</body>
+</html>

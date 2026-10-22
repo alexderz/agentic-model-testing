@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voxel Japanese Pagoda</title>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #87CEEB; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js"
+            }
+        }
+    </script>
+    <script type="module">
+        import * as THREE from 'three';
+
+        // --- Configuration & Setup ---
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x87CEEB); // Sky blue
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        document.body.appendChild(renderer.domElement);
+
+        // Lights
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+
+        const sunLight = new THREE.DirectionalLight(0xffffff, 1.2);
+        sunLight.position.set(50, 100, 50);
+        sunLight.castShadow = true;
+        sunLight.shadow.mapSize.width = 2048;
+        sunLight.shadow.mapSize.height = 2048;
+        sunLight.shadow.camera.left = -50;
+        sunLight.shadow.camera.right = 50;
+        sunLight.shadow.camera.top = 50;
+        sunLight.shadow.camera.bottom = -50;
+        scene.add(sunLight);
+
+        // Materials (Re-used to save memory/performance)
+        const matStone = new THREE.MeshStandardMaterial({ color: 0x999999 });
+        const matWood = new THREE.MeshStandardMaterial({ color: 0x4d2600 });
+        const matRed = new THREE.MeshStandardMaterial({ color: 0xaa0000 });
+        const matBlack = new THREE.MeshStandardMaterial({ color: 0x222222 });
+        const matPink = new THREE.MeshStandardMaterial({ color: 0xffb7c5 });
+        const matGold = new THREE.MeshStandardMaterial({ color: 0xffd700, metalness: 0.7, roughness: 0.2 });
+        const matWater = new THREE.MeshStandardMaterial({ color: 0x00aaff, transparent: true, opacity: 0.6 });
+
+        const geometry = new THREE.BoxGeometry(1, 1, 1);
+
+        // Helper function to create a voxel
+        function createVoxel(x, y, z, color, material, w = 1, h = 1, d = 1) {
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.scale.set(w, h, d);
+            mesh.position.set(x, y, z);
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+            scene.add(mesh);
+            return mesh;
+        }
+
+        // --- Scene Elements ---
+
+        // 1. Stone Platform
+        function buildPlatform() {
+            const size = 30;
+            const plat = createVoxel(0, -0.5, 0, 0, matStone, size, 1, size);
+            plat.receiveShadow = true;
+        }
+
+        // 2. The Pagoda
+        function buildPagoda() {
+            const centerX = 0, startZ = -10;
+            let currentY = 0;
+            const colors = [matRed, matBlack, matRed, matBlack, matRed];
+            
+            for (let floor = 0; floor < 5; floor++) {
+                const levelWidth = 5 - floor * 0.8;
+                const levelHeight = 3;
+
+                // Base of the floor (Stone/Wood)
+                createVoxel(0, currentY + levelHeight/2, 0, 0, matWood, levelWidth, levelHeight, levelWidth);
+                
+                // Walls (Red/Black)
+                const wallColor = (floor % 2 === 0) ? matRed : matBlack;
+                // Center pillar part
+                createVoxel(0, currentY + levelHeight, 0, 0, levelHeight, 1, 1, wallColor);
+                // Corner pillars
+                const offset = (levelWidth/2 - 0.5);
+                createVoxel(offset, currentY + levelHeight, offset, 0, levelHeight, 1, 1, wallColor);
+                createVoxel(-offset, currentY + levelHeight, offset, 0, levelHeight, 1, 1, wallColor);
+                createVoxel(offset, currentY + levelHeight, -offset, 0, levelHeight, 1, 1, wallColor);
+                createVoxel(-offset, currentY + levelHeight, -offset, 0, levelHeight, 1, 1, wallColor);
+
+                // Roof (Upturned effect via width expansion)
+                const roofWidth = levelWidth + 1.5;
+                createVoxel(0, currentY + levelHeight + 0.5, 0, 0, 0.5, 0.5, roofWidth, matBlack);
+                // Corner extensions for "upturned" look
+                createVoxel(roofWidth/2, currentY + levelHeight + 0.5, 0, 0, 0.2, 0.2, 1, matBlack);
+                createVoxel(-roofWidth/2, currentY + levelHeight + 0.5, 0, 0, 0.2, 0.2, 1, matBlack);
+                createVoxel(0, currentY + levelHeight + 0.5, roofWidth/2, 0, 0.2, 0.2, 1, matBlack);
+                createVoxel(0, currentY + levelHeight + 0.5, -roofWidth/2, 0, 0.2, 0.2, 1, matBlack);
+
+                currentY += levelHeight + 0.5;
+            }
+
+            // Spire
+            createVoxel(0, currentY + 1, 0, 0, 3, 0.5, 0.5, matGold);
+            createVoxel(0, currentY + 2.5, 0, 0, 1, 0.5, 0.5, matGold);
+        }
+
+        // 3. Torii Gate
+        function buildTorii() {
+            const x = -8, z = -5;
+            const h = 5;
+            // Pillars
+            createVoxel(x-1, h/2, z, 0, matRed, 0.8, h, 0.8);
+            createVoxel(x+1, h/2, z, 0, matRed, 0.8, h, 0.8);
+            // Top crossbeams
+            createVoxel(x, h, z, 0, matRed, 5, 0.6, 1);
+            createVoxel(x, h+0.6, z, 0, matRed, 4.5, 0.4, 0.6);
+        }
+
+        // 4. Cherry Blossom Trees
+        function buildTree(x, z) {
+            const trunkH = 4;
+            createVoxel(x, trunkH/2, z, 0, matWood, 0.8, trunkH, 0.8);
+            
+            // Foliage blobs
+            const colors = [matPink, 0xffc0cb]; // Slightly vary pinks
+            const levels = [
+                {y: 4, s: 2.5},
+                {y: 5.5, s: 2},
+                {y: 4.5, s: 1.5}
+            ];
+            levels.forEach(lvl => {
+                createVoxel(x, lvl.y, z, 0, matPink, lvl.s, lvl.s, lvl.s);
+            });
+        }
+
+        // 5. Pond
+        function buildPond() {
+            const px = 8, pz = 8, pw = 8, pd = 6;
+            // Base of water
+            const waterBase = createVoxel(px, -0.4, pz, 0, matWater, pw, 0.2, pd);
+            waterBase.material.transparent = true;
+            waterBase.material.opacity = 0.8;
+        }
+
+        // --- Particles (Petals) ---
+        const petals = [];
+        function createPetals() {
+            for (let i = 0; i < 60; i++) {
+                const petal = new THREE.Mesh(
+                    new THREE.BoxGeometry(0.2, 0.2, 0.1),
+                    new THREE.MeshBasicMaterial({ color: 0xffb7c5 })
+                );
+                resetPetal(petal);
+                scene.add(petal);
+                petals.push(petal);
+            }
+        }
+
+        function resetPetal(p) {
+            p.position.set(
+                (Math.random() - 0.5) * 40,
+                10 + Math.random() * 10,
+                (Math.random() - 0.5) * 40
+            );
+            p.velocity = new THREE.Vector3(
+                (Math.random() - 0.5) * 0.02,
+                -0.02 - Math.random() * 0.03,
+                (Math.random() - 0.5) * 0.02
+            );
+            p.rotation.set(Math.random(), Math.random(), Math.random());
+        }
+
+        // --- Initialization ---
+        buildPlatform();
+        buildPagoda();
+        buildTorii();
+        buildTree(-10, 10);
+        buildTree(-12, -5);
+        buildTree(5, 12);
+        buildPond();
+        createPetals();
+
+        camera.position.set(25, 20, 25);
+        camera.lookAt(0, 5, 0);
+
+        // --- Animation Loop ---
+        let time = 0;
+        function animate() {
+            requestAnimationFrame(animate);
+            time += 0.005;
+
+            // Orbit Camera
+            camera.position.x = Math.cos(time * 0.3) * 35;
+            camera.position.z = Math.sin(time * 0.3) * 35;
+            camera.lookAt(0, 5, 0);
+
+            // Animate Petals
+            petals.forEach(p => {
+                p.position.add(p.velocity);
+                p.rotation.x += 0.01;
+                p.rotation.y += 0.01;
+                
+                // Drift sideways
+                p.velocity.x += Math.sin(time + p.position.y) * 0.001;
+
+                // Reset if fell
+                if (p.position.y < -1) {
+                    resetPetal(p);
+                }
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        // Resize handler
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate();
+    </script>
+</body>
+</html>

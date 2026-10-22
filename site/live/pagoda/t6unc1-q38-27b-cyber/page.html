@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>五重塔 — Voxel Pagoda</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+  html,body{margin:0;height:100%;overflow:hidden;background:#20304c}
+  canvas{display:block}
+  #vig{position:fixed;inset:0;pointer-events:none;
+    background:radial-gradient(ellipse at 50% 44%, transparent 52%, rgba(30,16,8,.38) 100%)}
+  .panel{position:fixed;left:18px;top:16px;display:flex;gap:12px;align-items:stretch;
+    background:rgba(18,14,11,.58);backdrop-filter:blur(3px);
+    border:1px solid rgba(255,240,220,.4);border-radius:8px;overflow:hidden}
+  .panel .h{padding:11px 12px 10px 15px}
+  .h .k{display:flex;align-items:center;gap:7px}
+  .h .hanko{width:15px;height:15px;background:#cf4433;color:#fff;border-radius:2px;
+    font:700 11px/15px "Zen Kaku Gothic New";display:grid;place-items:center;transform:rotate(-4deg)}
+  .h .j{font:700 11px "Zen Kaku Gothic New";letter-spacing:.34em;color:#e8cfb6}
+  .h .n{margin-top:5px;font:400 21px "Rozha One",serif;color:#fdf3e3;letter-spacing:.03em}
+  .h .s{margin-top:2px;font:400 9px "Zen Kaku Gothic New";letter-spacing:.3em;color:#c9a888}
+  .p{display:flex;flex-direction:column;justify-content:center;gap:5px;padding:10px 16px 10px 8px;
+    border-left:1px solid rgba(255,240,220,.18)}
+  .p .row{display:flex;justify-content:space-between;gap:18px;font:700 10px "Zen Kaku Gothic New"}
+  .p .row span{color:#c9a888;letter-spacing:.22em}
+  .p .row b{color:#ffe9c4;letter-spacing:.08em;font-variant-numeric:tabular-nums}
+  .btns{position:fixed;right:18px;bottom:16px;display:flex;gap:8px}
+  .btn{font:700 11px "Zen Kaku Gothic New";letter-spacing:.22em;color:#fdf3e3;cursor:pointer;
+    background:rgba(18,14,11,.58);border:1px solid rgba(255,240,220,.42);border-radius:6px;
+    padding:9px 15px;transition:.15s}
+  .btn:hover{background:rgba(207,68,51,.92);border-color:#e7695a;transform:translateY(-1px)}
+  .btn:active{transform:translateY(1px)}
+  #tip{position:fixed;left:20px;bottom:16px;font:400 10px "Zen Kaku Gothic New";
+    letter-spacing:.24em;color:rgba(253,243,227,.72);pointer-events:none}
+  #tip b{color:#ffd98c}
+</style>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+<div id="vig"></div>
+<div class="panel">
+  <div class="h">
+    <div class="k"><span class="hanko">塔</span><span class="j">五重塔</span></div>
+    <div class="n">gojū-no-tō</div>
+    <div class="s">voxel shrine · five-tier pagoda</div>
+  </div>
+  <div class="p">
+    <div class="row"><span>VOXELS</span><b id="vbox">—</b></div>
+    <div class="row"><span>PETALS</span><b id="vpet">90</b></div>
+    <div class="row"><span>CLOCK</span><b id="vclock">17:12:00</b></div>
+  </div>
+</div>
+<div class="btns">
+  <button class="btn" id="btime">TIME 昼</button>
+  <button class="btn" id="bpet">PETALS 桜</button>
+</div>
+<div id="tip"><b>DRAG</b> orbit &nbsp;·&nbsp; <b>WHEEL</b> zoom</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+/* ---------- deterministic rng ---------- */
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t^=t+Math.imul(t^t>>>7,61|t);return((t^t>>>8)>>>0)/4294967296}}
+const R=mulberry32(20260207);
+
+/* ---------- voxel builder (instanced boxes) ---------- */
+class VB{
+  constructor(){this.m=new Map()}
+  add(mat,x,y,z,o={}){
+    let a=this.m.get(mat);
+    if(!a){a=[];this.m.set(mat,a)}
+    a.push({x,y,z,s:o.s??1,rx:o.rx||0,ry:o.ry||0,rz:o.rz||0,
+      col:o.col||new THREE.Color(1,1,1),em:o.em||new THREE.Color(0,0,0),e:0});
+  }
+  box(mat,x,y,z,sx,sy,sz){for(let i=0;i<sx;i++)for(let j=0;j<sy;j++)for(let k=0;k<sz;k++)this.add(mat,x+i,y+j,z+k)}
+  ring(mat,x,y,z,s,fill=false){for(let i=0;i<s;i++)for(let j=0;j<s;j++)if(fill||i===0||j===0||i===s-1||j===s-1)this.add(mat,x+i,y,j,z)}
+}
+
+/* ---------- materials ---------- */
+const M={
+  wood:   new THREE.MeshLambertMaterial({color:0x6a4326}),
+  lacq:   new THREE.MeshLambertMaterial({color:0xb34a30}),
+  door:   new THREE.MeshLambertMaterial({color:0x2b1a10}),
+  roof:   new THREE.MeshLambertMaterial({color:0x40302a}),
+  gold:   new THREE.MeshLambertMaterial({color:0xd9a83b,emissive:0x5e3d10,emissiveIntensity:.5}),
+  stone:  new THREE.MeshLambertMaterial({color:0x8b867c}),
+  stoneD: new THREE.MeshLambertMaterial({color:0x57534b}),
+  trunk:  new THREE.MeshLambertMaterial({color:0x5b422e}),
+  k1:     new THREE.MeshLambertMaterial({color:0xf8cadd}),
+  k2:     new THREE.MeshLambertMaterial({color:0xea9fbb}),
+  water:  new THREE.MeshLambertMaterial({color:0x2e6d7e,emissive:0x143943,transparent:true,opacity:.88,depthWrite:false}),
+  koi:    new THREE.MeshLambertMaterial({color:0xd76b34,emissive:0x4a1d05,emissiveIntensity:.7}),
+  torii:  new THREE.MeshLambertMaterial({color:0xc53b25}),
+  kasu:   new THREE.MeshLambertMaterial({color:0x8e2f20}),
+  grass:  new THREE.MeshLambertMaterial({color:0x7ca257}),
+};
+
+/* ---------- textures ---------- */
+function petalTexture(){
+  const s=64,c=document.createElement('canvas');c.width=c.height=s;
+  const x=c.getContext('2d');x.translate(32,32);
+  x.fillStyle='#fbd6e2';
+  x.beginPath();x.moveTo(0,-31);
+  x.bezierCurveTo(26,-27,31,-9,26,4);x.bezierCurveTo(22,17,9,29,0,29);
+  x.bezierCurveTo(-9,29,-22,17,-26,4);x.bezierCurveTo(-31,-9,-26,-27,0,-31);
+  x.closePath();x.fill();
+  x.fillStyle='rgba(216,140,168,.5)';x.beginPath();
+  x.moveTo(0,-28);x.bezierCurveTo(17,-23,20,-7,17,5);x.bezierCurveTo(14,15,5,25,0,25);
+  x.bezierCurveTo(-5,25,-14,15,-17,5);x.bezierCurveTo(-20,-7,-17,-23,0,-28);
+  x.closePath();x.fill();
+  x.strokeStyle='rgba(207,102,136,.8)';x.lineWidth=3;x.beginPath();
+  x.moveTo(0,-29);x.lineTo(0,29);x.stroke();
+  x.lineWidth=2;x.beginPath();x.moveTo(0,-13);x.lineTo(-14,-24);x.moveTo(0,-13);x.lineTo(14,-24);x.stroke();
+  const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=4;return t;
+}
+
+/* ---------- pagoda : 5 tiers, upturned eaves, spire ---------- */
+function makePagoda(){
+  const g=new THREE.Group(),b=new VB();
+  const W=[13,11,10,9,7],H=[5,4,4,4,4],RL=[5,4,4,3,2];
+  const up=[1.8,1.6,1.4,1.2,1.0];
+  const D=new THREE.Color(0.92,0.92,0.92),P=new THREE.Color(1.07,1.07,1.07);
+  let y=0;
+  for(let i=0;i<5;i++){
+    const w=W[i];
+    for(let j=0;j<H[i];j++)for(let x=0;x<w;x++)for(let z=0;z<w;z++){
+      const edge=x===0||z===0||x===w-1||z===w-1;
+      let m=M.laq||(M.laq=M.lacq);
+      if(edge){
+        if(i===0&&z===w-1&&x>=w/2-3&&x<=w/2+3&&j>=1&&j<=4)m=M.door;
+        else{m=M.wood;
+          if(j===0){m=M.gold;
+            if(i===0&&x===Math.floor(w/2)-2){b.add(M.lacq,x,y+j,z,{s:1,em:new THREE.Color(0x7a3a12)}})
+            if(i===0&&x===Math.floor(w/2)+2){b.add(M.lacq,x,y+j,z,{s:1,em:new THREE.Color(0x7a3a12)}})
+          }}
+      }else m=M.lacq;
+      b.add(m,x,y+j,z,{col:R()<.06?D:P});
+    }
+    y+=H[i];
+    const rw=w+2*(3+(4-i)),L=RL[i];
+    for(let l=0;l<L;l++){
+      const s=rw-2*l;
+      const bx=x-w/2,bz=z-w/2;
+      const lift=(l===0)?Math.pow(Math.max(0,Math.max(Math.abs(bx),Math.abs(bz))-(w-2)/2)/2,1.4):0;
+      b.ring(M.roof,0,y+l,s,s,{col:R()<.05?D:P});
+      for(let x=0;x<s;x++)for(let z=0;z<s;z++){
+        const xx=x-w/2,zz=z-w/2;
+        if(x===0||z===0||x===s-1||z===s-1)
+          b.add(M.roof,xx,y+l+lift,zz,{col:R()<.05?D:P});
+      }
+    }
+    const upv=up[i],c=(rw-2)/2;
+    for(const[sx,sz]of[[1,1],[1,-1],[-1,1],[-1,-1]]){
+      b.add(M.roof,sx*c,y,sz*c,{s:1.28,ry:Math.atan2(sx,sz),col:P,
+        em:new THREE.Color(0x3a2a1c).multiplyScalar(R()<.5?.5:1)});
+    }
+    y+=L+1;
+  }
+  // spire : kudazuka + ginko + kane + tip
+  const S=[[3,0x3a2a22],[3,0x3a2a22],[1,0x3a2a22],[2,0xd9a83b],[1,0xd9a83b],[1,0xd9a83b]];
+  for(const[s,c]of S){b.ring(M[s==='2'||s==='1'? (c===0x3a2a22?'roof':'gold') : 'roof'],0,y,s,s,{col:new THREE.Color(c)});y++}
+  b.box(M.gold,0,y,0,1,2,1);
+  b.add(M.gold,0,y+2,0,{s:1.06,em:new THREE.Color(0x9a6c1d)});
+  g.add(b.build());
+  g.position.y=4;
+  return g;
+}
+
+/* ---------- pond : rim + water + koi ---------- */
+function makePond(){
+  const g=new THREE.Group();g.position.set(9,0,-9);
+  const b=new VB();
+  for(let x=-7;x<=7;x++)for(let z=-5;z<=5;z++){
+    const edge=Math.abs(x)===7||Math.abs(z)===5;
+    b.add(edge?M.stone:M.stoneD,x,0.4,z,{s:1});
+    if(Math.abs(x)<=3&&Math.abs(z)<=1)
+      b.add(M.koi,x,0.52,z,{s:1.15,em:new THREE.Color(0x5a2a08)});
+  }
+  const arr=[];
+  for(let x=-3;x<=3;x++)for(let z=-1;z<=1;z++){
+    const m=b.add(M.water,x,0.5,z,{s:1.12,em:new THREE.Color(0x1e4d58)});
+    arr.push(m);
+  }
+  g.add(b.build());
+  g.userData={arr};
+  return g;
+}
+
+/* ---------- cherry trees ---------- */
+function makeTree(sx,sz,flip){
+  const g=new THREE.Group();
+  g.position.set(sx,0,sz);g.rotation.y=flip?Math.PI:0;
+  const b=new VB();
+  for(let k=0;k<4;k++){
+    const d=Math.floor(2.8*R());
+    for(let x=-d;x<=d;x++)for(let z=-d;z<=d;z++)
+      if(Math.abs(x)+Math.abs(z)<=d)
+        b.add(M.stoneD,k*2-2,0,1,1,{col:R()<.3?new THREE.Color(.85,.85,.85):new THREE.Color(1.1,1.1,1.1)});
+  }
+  for(let t=0;t<14;t++){
+    const w=t<11?3:2;
+    b.ring(M.trunk,-(w-1)/2,t,-(w-1)/2,w,w,{s:1.04,col:R()<.09?new THREE.Color(.8,.8,.8):new THREE.Color(1.2,1.2,1.2)});
+    if(t===4){b.add(M.trunk,2+t*0.2,3,1,{s:1.6});b.add(M.trunk,3+t*0.2,4,1,{s:1.1})}
+    if(t===8){b.add(M.trunk,-2-t*0.2,7,-1,{s:1.5});b.add(M.trunk,-3-t*0.2,8,-1,{s:1})}
+  }
+  const cx=0,cz=0,cy=15.5;
+  const ox=new Float32Array(200);
+  for(let x=-6;x<=6;x++)for(let z=-6;z<=6;z++){
+    const d=Math.sqrt((x/(5.3))**2+(y2(0))**2);
+    function y2(){return 1}
+    void d;
+  }
+  for(let x=-6;x<=6;x++)for(let z=-6;z<=6;z++){
+    const d=Math.sqrt((x/5.3)**2+(11/4.7)**2+((x/5.3)**2+ (z/4.7)**2 -1)*0);
+    const ell=(x/5.3)**2+(z/4.7)**2;
+    const top=11+2.1*Math.sqrt(Math.max(0,1-Math.abs(z)/4.7));
+    const bot=11-4.4*Math.sqrt(Math.max(0,1-Math.abs(z)/4.7));
+    if(bot<=top&&bot<top&&x>=-Math.sqrt(Math.max(0,1-((bot-11)/2.1)**2))*5.3
+      && x<=Math.sqrt(Math.max(0,1-((bot-11)/2.1)**2))*5.3
+      && R()<(Math.abs(x)<.8&&Math.abs(z)<.8?.75:.55)){
+      let m=ox.length<120?M.k1:M.k2;
+      if(R()<.05)m=M.k2;
+      b.add(m,x,bot,z,{col:R()<.12?new THREE.Color(.92,.92,.92):new THREE.Color(1.06,1.06,1.06),
+        em:new THREE.Color(0x59243a).multiplyScalar(.35+R()*.35)});
+    }
+  }
+  for(let k=0;k<26;k++)
+    b.add(R()<.5?M.k1:MO.k2||M.k1,Math.floor(9*R())-4,13+Math.floor(4*R()),Math.floor(6*R())-3);
+  g.add(b.build());
+  return g;
+}
+
+/* ---------- torii ---------- */
+function makeTorr(){
+  const g=new THREE.Group();g.position.set(0,0,19);
+  const b=new VB();
+  for(const sx of[-5.5,5.5])b.box(M.torii,sx,0,-1.5,3,12,3,{col:new THREE.Color(sx>0?0x9a3322:0xcf4433)});
+  b.box(M.kasu,-7,12,-1.5,14,2,3);
+  for(const sx of[-7,7])
+    b.add(M.kasu,sx,12.75,-1.5,{s:1.08,rx:sx>0?-0.18:0.18,col:new THREE.Color(0x8e2f20)});
+  b.box(M.torii,-6.5,14,-1.5,13,1,2);
+  b.box(M.torii,-6.5,10.5,-1.5,13,1,1.5);
+  b.box(M.torii,-0.5,10.5,-1,1,2,2,{col:new THREE.Color(0x4a1d12)});
+  for(let x=-1;x<=1;x++)for(let z=-2;z<=0;z++)
+    for(const sx of[-1.8,1.8])
+      b.add(M.torii,sx+x,8.4,z,1,{col:R()<.2?new THREE.Color(.9,.9,.9):new THREE.Color(1.1,1.1,1.1)});
+  for(const sx of[-3.9,3.9])
+    for(let x=-1;x<=1;x++)for(let z=-1;z<=1;z++)
+      if(x===0||z===0)
+        b.add(M.stone,sx+x,0.5,z,1,{s:1.02});
+  g.add(b.build());
+  return g;
+}
+
+/* ---------- ground : grass, slab, path, lantern, basin, pebbles ---------- */
+function madd(g,mat,x,y,z,s=1,o={}){
+  const m=new THREE.Mesh(new THREE.BoxGeometry(s,s,s),mat);
+  m.position.set(x,y,z);Object.assign(m,o);
+  m.castShadow=m.receiveShadow=true;g.add(m);return m;
+}
+function makeGround(){
+  const g=new THREE.Group();
+  const big=new THREE.Mesh(new THREE.BoxGeometry(56,1,56),M.grass);
+  big.position.y=-0.5;big.receiveShadow=true;g.add(big);
+  const slab=new THREE.Mesh(new THREE.BoxGeometry(30,1,22),M.stone);
+  slab.position.set(0,0,16);slab.receiveShadow=true;slab.castShadow=true;g.add(slab);
+  for(let i=0;i<6;i++)madd(g,M.stoneD,1.75+i*1.9,0.55,13.8+i*1.4,1.9,{scale:{x:1.1,y:1,z:1.1}});
+  const l=new THREE.Group();l.position.set(4.2,0,14.8);
+  madd(l,M.stoneD,0,0.4,0,2);
+  for(let x=0;x<3;x++)for(let z=0;z<3;z++)if(x===0||z===0)madd(l,M.stone,x-1,1.3,z-1,1);
+  madd(l,M.kasu,0,2.4,0,3.2);
+  madd(l,M.gold,0,3.5,0,2);
+  for(const sx of[-1.5,1.5])for(const sz of[-1.5,1.5])madd(l,M.stoneD,sx,4.5,sz,1);
+  g.add(l);
+  const bs=new THREE.Group();bs.position.set(-4.6,0,14.4);
+  madd(bs,M.stoneD,0,0.4,0,1.4);
+  madd(bs,M.stone,0,1.4,0,4);
+  madd(bs,M.stoneD,0,1.9,0,3.6);
+  madd(bs,M.stone,0,2.1,0,4.2);
+  for(let k=0;k<24;k++)
+    madd(g,M.stoneD,mR()*50,mR(),mR()*50,1,{scale:{x:1.4,y:.5,z:1.4}});
+  function mR(){return Math.random()*2-1}
+  g.add(bs);
+  return g;
+}
+
+/* ---------- petal shower (instanced shader) ---------- */
+function makePetals(n=90){
+  const pg=new THREE.PlaneGeometry(1,1);
+  const geo=new THREE.InstancedBufferGeometry();
+  geo.index=pg.index;
+  geo.setAttribute('position',pg.attributes.position);
+  geo.setAttribute('uv',pg.attributes.uv);
+  geo.setAttribute('normal',pg.attributes.normal);
+  const o=new Float32Array(n*3),p=new Float32Array(n*3);
+  for(let i=0;i<n;i++){
+    o[i*3]=Math.random()*54-27;o[i*3+1]=Math.random()*56+14;o[i*3+2]=Math.random()*48-24;
+    p[i*3]=1.25+Math.random()*1.35;p[i*3+1]=0.48+Math.random()*0.4;p[i*3+2]=Math.random()*6.28;
+  }
+  geo.setAttribute('aO',new THREE.InstancedBufferAttribute(o,3));
+  geo.setAttribute('aP',new THREE.InstancedBufferAttribute(p,3));
+  const mat=new THREE.ShaderMaterial({
+    transparent:true,depthWrite:false,side:THREE.DoubleSide,
+    uniforms:{uT:{value:0},map:{value:petalTexture()}},
+    vertexShader:`
+      attribute vec3 aO,aP;uniform float uT;varying vec2 vUv;
+      void main(){
+        float s=aP.y;vec3 pos=position;
+        pos.x*=s;pos.y*=-s;
+        float ph=aP.z;float H=74.;
+        float y=mod(aO.y+uT*aP.x,H);
+        vec3 d=aO;
+        d.x+=sin(y*1.35+ph)*0.55;
+        d.z+=cos(y*0.83+ph*1.37)*0.55;
+        d.y=H-y;
+        vec4 mv=modelViewMatrix*vec4(d,1.);
+        mv.xyz+=position*0.36*sin(uT*2.6+ph*1.7)*vec3(1,1.35,0.7);
+        mv.xyz+=position*s;
+        vUv=uv;gl_Position=projectionMatrix*mv;}`,
+    fragmentShader:`
+      uniform sampler2D map;varying vec2 vUv;
+      void main(){
+        vec4 c=texture2D(map,vUv);
+        if(c.a<0.4)discard;
+        gl_FragColor=vec4(c.rgb,1.);}`
+  });
+  const mesh=new THREE.Mesh(geo,mat);
+  mesh.instanceCount=n;mesh.frustumCulled=false;
+  return mesh;
+}
+
+/* ---------- sky ---------- */
+function makeSky(){
+  const g=new THREE.Group();
+  const mk=(tex)=>{const m=new THREE.Mesh(new THREE.SphereGeometry(340,24,16),
+    new THREE.MeshBasicMaterial({map:tex,side:THREE.BackSide,fog:false,depthWrite:false}));
+    m.renderOrder=1;return m};
+  const canvas=(draw)=>{const c=document.createElement('canvas');c.width=c.height=128;draw(c.getContext('2d'));
+    const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return t};
+  const sun=canvas(x=>{const g2=x.createRadialGradient(64,64,4,64,64,64);
+    g2.addColorStop(0,'rgba(255,250,232,1)');g2.addColorStop(.25,'rgba(255,236,200,.9)');
+    g2.addColorStop(1,'rgba(255,236,200,0)');x.fillStyle=g2;x.fillRect(0,0,128,128)});
+  const moon=canvas(x=>{x.fillStyle='#f4efe0';x.beginPath();x.arc(64,64,46,0,7);x.fill();
+    x.fillStyle='rgba(150,150,140,.35)';x.beginPath();x.arc(50,54,8,0,7);x.fill();
+    x.beginPath();x.arc(76,72,5,0,7);x.fill();x.beginPath();x.arc(60,80,3.5,0,7);x.fill()});
+  const sunM=mk(sun),moonM=mk(moon);
+  sunM.position.set(40,58,22);moonM.position.set(-26,64,-30);
+  g.add(sunM,moonM);
+  const sm=new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,fog:false,
+    uniforms:{cT:{value:new THREE.Color(0x1f2a44)},cM:{value:new THREE.Color(0x2c3a5c)},cB:{value:new THREE.Color(0xffd9a4)},
+      sun:{value:new THREE.Vector3(0.5,0.68,0.42)},scol:{value:new THREE.Color(0xffe3b0)},samt:{value:1.0}},
+    vertexShader:`varying vec3 vP;void main(){vP=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+    fragmentShader:`varying vec3 vP;uniform vec3 cT,cM,cB,sun,scol;uniform float samt;
+      void main(){
+        vec3 d=normalize(vP);float h=d.y;
+        vec3 col=mix(cB,cM,smoothstep(-0.08,0.22,h));
+        col=mix(col,cT,smoothstep(0.18,0.75,h));
+        float sd=max(dot(d,normalize(sun)),0.);
+        col+=pow(sd,600.)*scol*samt*2.2;
+        col+=pow(sd,8.)*scol*samt*0.28;
+        gl_FragColor=vec4(col,1.);}`});
+  const sm2=new THREE.Mesh(new THREE.SphereGeometry(340,24,16),sm);
+  sm2.renderOrder=0;g.add(sm2);
+  g.userData={sunM,moonM,sm};
+  return g;
+}
+
+/* ---------- scene ---------- */
+const scene=new THREE.Scene();
+scene.fog=new THREE.Fog(0x2a3350,30,135);
+scene.add(makeSky());
+const world=new THREE.Group();scene.add(world);
+world.add(makeGround(),makeTorr(),makePond(),makePagoda(),
+  makeTree(-9,-11,false),makeTree(10,-1,true));
+
+const cam=new THREE.PerspectiveCamera(44,innerWidth/innerHeight,0.1,700);
+cam.position.set(26,17,30);
+
+const hemi=new THREE.HemisphereLight(0xbfd4ff,0x5a4a3a,1.0);
+const amb=new THREE.AmbientLight(0x8a6a50,0.5);
+const sun=new THREE.DirectionalLight(0xffd9a0,1.35);
+sun.position.set(34,44,26);
+sun.castShadow=true;
+sun.shadow.mapSize.set(2048,2048);
+Object.assign(sun.shadow.camera,{left:-34,right:34,top:34,bottom:-34,near:2,far:150});
+sun.shadow.bias=-0.0004;sun.shadow.normalBias=0.7;
+scene.add(hemi,amb,sun,sun.target);
+
+const waterMesh=world.children[3];
+const waterArr=waterMesh.userData.arr;
+const waterBase=waterArr.map(c=>c.y);
+
+const petals=makePetals(90);scene.add(petals);
+
+const controls=new OrbitControls(cam,scene.children[0]?rendererDom():null);
+
+/* ---------- renderer ---------- */
+const renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setSize(innerWidth,innerHeight);
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.08;
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.setClearColor(0x2a3350);
+document.body.appendChild(renderer.domElement);
+
+/* fix controls dom */
+controls.object=cam;
+controls.domElement=renderer.domElement;
+controls.target.set(0,9,0);
+controls.enableDamping=true;controls.dampingFactor=.06;
+controls.autoRotate=true;controls.autoRotateSpeed=0.7;
+controls.minDistance=10;controls.maxDistance=72;
+controls.maxPolarAngle=1.42;controls.minPolarAngle=0.12;
+
+/* ---------- time of day ---------- */
+const T={
+  D:{bg:0x20304c,fog:0x2a3350,sun:0xffd9a0,si:1.35,hi:1.0,amb:0x8a6a50,ai:0.5,cam:[26,17,30]},
+  N:{bg:0xc98f63,fog:0xd09a70,sun:0xffbe66,si:1.28,hi:0.95,amb:0xffd9b0,ai:0.38,cam:[-24,14,-28]}
+};
+let tMode='D',tF=0,tT=0;
+const L=(a,b,f)=>new THREE.Color(a).lerp(new THREE.Color(b),f);
+const S=(a,b,f)=>a+(b-a)*f;
+function applyT(f){
+  const A=T[tMode==='D'?'D':'N'],B=T[tMode==='D'?'N':'D'];
+  scene.background=L(A.bg,B.bg,f);
+  scene.fog.color=L(A.fog,B.fog,f);
+  sun.color=L(A.sun,B.sun,f);sun.intensity=S(A.si,B.si,f);
+  hemi.intensity=S(A.hi,B.hi,f);
+  amb.color=L(A.amb,B.amb,f);amb.intensity=S(A.ai,B.ai,f);
+  cam.position.lerpVectors(new THREE.Vector3(...A.cam),new THREE.Vector3(...B.cam),f);
+  sun.position.lerpVectors(new THREE.Vector3(34,44,26),new THREE.Vector3(-30,38,-24),f);
+}
+applyT(0);
+
+/* ---------- voxel count ---------- */
+let vc=0;scene.traverse(o=>{if(o.isInstancedMesh)vc+=o.count});
+document.getElementById('vbox').textContent=vc.toLocaleString();
+
+/* ---------- events ---------- */
+addEventListener('resize',()=>{
+  cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight);
+});
+let paused=false;
+renderer.domElement.addEventListener('pointerdown',()=>{paused=true});
+addEventListener('pointerup',()=>{paused=false});
+addEventListener('keydown',e=>{
+  if(e.key==='t'||e.key==='T'){tMode=tMode==='D'?'N':'D';tT=0;tT=0}
+  if(e.key==='p'||e.key==='P'){petals.visible=!petals.visible}
+});
+const btime=document.getElementById('btime'),bpet=document.getElementById('bpet');
+btime.onclick=()=>{tMode=tMode==='D'?'N':'D';tT=0};
+bpet.onclick=()=>{petals.visible=!petals.visible};
+renderer.domElement.addEventListener('contextmenu',e=>e.preventDefault());
+
+/* ---------- loop ---------- */
+const clock=new THREE.Clock();
+const elClock=document.getElementById('vclock');
+function tick(){
+  requestAnimationFrame(tick);
+  const dt=Math.min(clock.getDelta(),0.05),Tt=clock.elapsedTime;
+  if(tT<1){tT+=dt/0.85;tF=tT<.5?tT*2:1-(tT-.5)*2;
+    const e=tF*tF*(3-2*tF);applyT(e);
+    btime.textContent='TIME '+(tMode==='D'?'昼':'夜')}else tF=tT<1.02?(tT-1)*50:0;
+  for(let i=0;i<waterArr.length;i++){
+    const m=waterArr[i];
+    waterMesh.setMatrixAt(i,new THREE.Matrix4().makeTranslation(m.x,
+      m.y+Math.sin(Tt*1.6+(m.x*1.7+m.z*2.3))*0.12,m.z));
+  }
+  waterMesh.instanceMatrix.needsUpdate=true;
+  for(const o of waterMesh.children){
+    o.position.x=Math.sin(Tt*0.45)*0.9;
+    o.position.z=Math.cos(Tt*0.32)*0.7;
+    o.rotation.y=Tt*1.9;
+  }
+  if(petals.visible){
+    const a=potals.geometry.attributes;
+    for(let i=0;i<90;i++){
+      a.aO.setXYZ(i,
+        a.aO.getX(i)+Math.sin(Tt*0.7+i)*dt*0.35,
+        a.aO.getY(i),a.aO.getZ(i));
+    }
+    a.aO.needsUpdate=true;
+    petals.material.uniforms.uT.value=Tt;
+  }
+  if(!paused)controls.autoRotate=true;
+  controls.update();
+  renderer.render(scene,cam);
+  const s=(17*3600+72*60+Tt)%86400;
+  elClock.textContent=
+    String(Math.floor(s/3600)).padStart(2,'0')+':'+
+    String(Math.floor(s/60)%60).padStart(2,'0')+':'+
+    String(Math.floor(s%60)).padStart(2,'0');
+}
+tick();
+</script>
+<script>
+  // dom bootstrap for controls (renderer appended after in module scope is fine;
+  // module script runs after body parse)
+  window.addEventListener('error',e=>{
+    const d=document.createElement('div');
+    d.style.cssText='position:fixed;left:12px;bottom:12px;background:#b3261e;color:#fff;padding:6px 10px;font:12px monospace;z-index:9;max-width:80vw;white-space:pre-wrap';
+    d.textContent='✗ '+e.message;document.body.appendChild(d);
+  });
+</script>
+</body>
+</html>

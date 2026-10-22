@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>五重塔 — voxel pagoda</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23e04a2c'/></svg>">
+<style>
+  :root { --ink:#241a17; --paper:#f7efe0; --verm:#e04a2c; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; }
+  body { overflow:hidden; background:#3e2a33; touch-action:none; }
+
+  #stage canvas { display:block; }
+
+  #hud { position:fixed; inset:0; z-index:5; pointer-events:none;
+    font-family:"Hiragino Mincho ProN","Hiragino Mincho Pro","Yu Mincho","Noto Serif JP",serif;
+    color:var(--paper); }
+  #hud .mono { font-family:ui-monospace,"SF Mono","Iosevka","Cascadia Mono",Menlo,Consolas,monospace; }
+
+  #tl { position:absolute; top:clamp(14px,2.6vh,26px); left:clamp(14px,2.4vw,30px);
+    transform:translateY(-8px); opacity:0; transition:all .7s ease .15s; }
+  #tl .en { font-size:12px; letter-spacing:.22em; margin-top:9px;
+    text-shadow:0 1px 8px rgba(40,18,10,.65); }
+  #tl h1 { font-size:clamp(42px,7vh,64px); font-weight:700; line-height:1;
+    display:flex; align-items:flex-start; gap:13px;
+    text-shadow:0 2px 16px rgba(40,20,10,.55); }
+  #tl h1 .badge { font-size:.42em; background:var(--verm); color:#fff6ea;
+    padding:5px 7px 6px 8px; margin-top:5px; letter-spacing:.14em;
+    box-shadow:0 3px 0 rgba(70,20,8,.45), 0 0 14px rgba(224,74,44,.55); }
+  #tl .meta { margin-top:9px; font-size:11px; letter-spacing:.07em;
+    opacity:.85; display:flex; align-items:center; gap:7px; }
+  #tl .meta .cube { width:9px; height:9px; background:var(--paper);
+    box-shadow:1px 1px 0 rgba(30,16,10,.7); }
+
+  #legend { position:absolute; left:clamp(14px,2.4vw,30px); bottom:clamp(14px,2.6vh,26px);
+    transform:translateY(10px); opacity:0; transition:all .7s ease .45s; }
+  #legend .row { display:flex; align-items:center; gap:9px; font-size:12.5px;
+    padding:3.5px 0; text-shadow:0 1px 8px rgba(40,18,10,.7); }
+  #legend .row i { width:11px; height:11px; display:inline-block;
+    box-shadow:0 0 0 1px rgba(35,20,14,.45), 0 2px 3px rgba(35,20,14,.3); }
+
+  #hint { position:absolute; right:clamp(14px,2.4vw,30px); bottom:clamp(14px,2.6vh,26px);
+    font-size:11.5px; letter-spacing:.14em; text-align:right; line-height:2;
+    opacity:0; transform:translateY(10px); transition:all .7s ease .6s;
+    text-shadow:0 1px 8px rgba(40,18,10,.7); }
+  #hint .k { border:1px solid rgba(247,239,224,.75); padding:1px 6px 2px; margin-left:6px; }
+
+  #hud.ready #tl { transform:none; opacity:1; }
+  #hud.ready #legend, #hud.ready #hint { transform:none; opacity:1; }
+
+  #vig  { position:fixed; inset:0; z-index:3; pointer-events:none;
+    background:linear-gradient(180deg, rgba(255,208,150,.12), transparent 18%, transparent 80%, rgba(30,20,14,.28)); }
+  #veil { position:fixed; inset:0; z-index:4; pointer-events:none;
+    background:radial-gradient(130% 95% at 50% 42%, transparent 52%, rgba(34,19,15,.42)); }
+
+  #load { position:fixed; inset:0; z-index:9; background:#3e2a33;
+    display:flex; flex-direction:column; gap:17px; align-items:center; justify-content:center;
+    color:var(--paper); transition:opacity .6s ease; }
+  #load.off { opacity:0; pointer-events:none; }
+  #load .jp { font-size:clamp(20px,3.2vh,27px); letter-spacing:.42em; padding-left:.42em; }
+  #load .spin { width:22px; height:22px; border-radius:3px; background:var(--verm);
+    animation:sp 1.05s cubic-bezier(.6,.05,.3,.95) infinite;
+    box-shadow:0 0 18px rgba(224,74,44,.8); }
+  #load .sub { font-size:11px; letter-spacing:.34em; opacity:.68; }
+  @keyframes sp { to { transform:rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div id="stage"></div>
+
+<div id="hud">
+  <header id="tl">
+    <div class="en mono">THREE.JS · ONE FILE · ALL CUBES</div>
+    <h1>五重塔<span class="badge">木</span></h1>
+    <div class="meta mono"><span class="cube"></span>goshūno-tō — 5×5 voxel</div>
+  </header>
+
+  <div id="legend">
+    <div class="row"><i style="background:#e04a2c"></i><span>朱 vermillion</span></div>
+    <div class="row"><i style="background:#f2a2c0"></i><span>桜 sakura</span></div>
+    <div class="row"><i style="background:#8e9096"></i><span>石 stone base</span></div>
+  </div>
+
+  <div id="hint" class="mono">
+    drag — くるくる<br>
+    scroll — 前後<br>
+    P<span class="k">pause</span>
+  </div>
+</div>
+
+<div id="vig"></div>
+<div id="veil"></div>
+
+<div id="load">
+  <div class="jp">桜を待て</div>
+  <div class="spin"></div>
+  <div class="sub mono">building ~12k cubes…</div>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+/* ---------------- palette & voxel builder ---------------- */
+
+const PAL = {
+  stone:0x8e9096, stoneD:0x71747a,
+  body:0xd8c49c, door:0x7c4a28, rail:0xb9a284,
+  tile:0x8a3b2c, tileD:0x6f2c20, gold:0xe6ac37,
+  verm:0xe04a2c, cap:0x2b2422, socu:0xd9d2c6,
+  bark:0x6f4d33, leaf:0xf5a9c6, leafD:0xe28bad,
+  water:0x43a3c9, koi:0xe5a53c, koiD:0xd98f2b,
+};
+
+const mulberry32 = a => () => {
+  a |= 0; a = a + 0x6D2B79F5 | 0;
+  let t = Math.imul(a ^ a >>> 15, 1 | a);
+  t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+  return ((t ^ t >>> 14) >>> 0) / 4294967296;
+};
+let _c = new THREE.Color();
+
+function V(mat, o = {}) {
+  const list = [];
+  function b(x, y, z, w = 1, h = 1, d = 1) { list.push([x, y, z, w, h, d]); }
+  function mesh() {
+    const pos = [], nor = [], uv = [], idx = [];
+    for (const B of list) {
+      const [x, y, z, w, h, d] = B, i0 = pos.length / 3;
+      const x0 = x, y0 = y, z0 = z, x1 = x + w, y1 = y + h, z1 = z + d;
+      const F = [
+        [[x1,y0,z0],[x1,y1,z1],[x1,y0,z1],[x1,y1,z0],[ 1,0,0]],
+        [[x0,y0,z1],[x0,y1,z0],[x0,y0,z0],[x0,y1,z1],[-1,0,0]],
+        [[x0,y1,z0],[x1,y1,z1],[x1,y1,z0],[x0,y1,z1],[0, 1,0]],
+        [[x0,y0,z0],[x0,y0,z1],[x1,y0,z1],[x1,y0,z0],[0,-1,0]],
+        [[x0,y0,z1],[x0,y1,z1],[x1,y1,z1],[x1,y0,z1],[0,0, 1]],
+        [[x1,y0,z0],[x1,y1,z0],[x0,y1,z0],[x0,y0,z0],[0,0,-1]],
+      ];
+      for (const f of F) {
+        for (let k = 0; k < 4; k++) {
+          pos.push(f[k][0], f[k][1], f[k][2]);
+          nor.push(...f[4]);
+          uv.push(k === 0 || k === 3 ? 0 : 1, k & 1 ? 1 : 0);
+        }
+        idx.push(i0, i0+1, i0+2, i0, i0+2, i0+3);
+      }
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    g.setAttribute('normal',  new THREE.Float32BufferAttribute(nor, 3));
+    g.setAttribute('uv',        new THREE.Float32BufferAttribute(uv, 2));
+    g.setIndex(idx);
+    const m = new THREE.Mesh(g, mat);
+    m.castShadow = m.receiveShadow = o.shadow !== false;
+    return m;
+  }
+  return { list, b, mesh };
+}
+
+function addBox(v, x, y, z, w, h, d, c) {
+  const [x0, y0, z0] = v.b(x, y, z, w, h, d);
+  if (v.boxCB) {
+    _c.copy(c).multiplyScalar(0.94 + Math.random() * 0.12);
+    v.boxCB(x0, v.mesh, [x, y, z, w, h, d]);
+  }
+}
+
+/* ---------------- builders ---------------- */
+
+function makeRoof(s) {
+  const v = V(new THREE.MeshLambertMaterial({ color:PAL.tile }), { shadow:true });
+  const B = (w,h,d,x,y,z) => addBox(v, x, y, z, w, h, d, (k&1) ? PAL.tileD : PAL.tile);
+  const c = (s-1)/2;
+  for (let k = 0; k < 4; k++) {
+    const sq = s - 2*k;
+    B(sq, 1, sq, -sq/2, k, -sq/2);
+    for (const sx of [-1,1]) for (const sz of [-1,1])
+      B(1.3, 1+0.55*k, 1.3, sx*c, k, sz*c);
+    for (const s2 of [-1,1]) {
+      B(1.3, 1+0.4*k, 1.3, sx*c, k, 0);
+      B(1.3, 1+0.4*k, 1.3, 0, k, s2*c);
+    }
+  }
+  B(2.2, 0.9, 2.2, -1.1, 4, -1.1);           // little dormer at the apex
+  const m = v.mesh(); m.position.set(-s/2, 0, -s/2); return m;
+}
+
+function makeSpire() {
+  const g = new THREE.Group();
+  const pad = V(new THREE.MeshLambertMaterial({ color:PAL.stone }));
+  const gold = new THREE.MeshLambertMaterial({ color:PAL.gold, emissive:0x3a2306 });
+  const B = (w,h,d,x,y,z,mat) => addBox(pad, x, y, z, w, h, d, mat);
+  B(3,1,3, -1.5,0,-1.5, gold);
+  B(1.5,6,1.5, -0.75,1,-0.75, gold);          // sōryū
+  B(5,1,5, -2.5,2,-2.5, gold);                 // hō 3-5
+  B(4,1,4, -2,3,-2, gold);
+  B(3,1,3, -1.5,4,-1.5, gold);
+  B(2,1,2, -1,5,-1, gold);
+  B(1.1,1.6,1.1, -.55,6,-.55, gold);           // hi no tokoshi
+  B(1,2,1, -.5,7.6,-.5, gold);                 // kōchi
+  g.add(pad.mesh()); return g;
+}
+
+function makePagoda() {
+  const g = new THREE.Group();
+  const BW = [8.6, 7.1, 5.7, 4.5, 3.4];
+  const BH = [2.5, 2.4, 2.3, 2.2, 2.1];
+  const RS = [10.8, 9.2, 7.7, 6.4, 5.2];
+
+  const stone = new THREE.MeshLambertMaterial({ color:PAL.stone });
+  const body  = new THREE.MeshLambertMaterial({ color:PAL.body  });
+  const door  = new THREE.MeshLambertMaterial({ color:PAL.door  });
+
+  const S = V(stone), B = V(body), D = V(door);
+  addBox(S, -5.5, 0, -5.5, 11, 1.2, 11, PAL.stone);
+  for (const sx of [-1,1]) for (const sz of [-1,1])
+    addBox(S, sx*5.5, 1.2, sz*5.5, 1, .28, 1, PAL.stoneD);
+  for (const sx of [-1,1]) {                  // corner posts
+    addBox(S, sx*3.7, 1.2, 5.5, .55, 1.9, .55, PAL.gold);
+    addBox(S, sx*2.7, 1.2, 5.5, .55, 1.9, .55, PAL.gold);
+  }
+  addBox(S, -1.7, 1.2, 5.5, 3.4, .55, 2, PAL.rail);
+
+  for (const sx of [-1,1]) {                   // steps
+    addBox(S, sx*1.7, .8, 6.7, 3.4, .4, 1.4, PAL.stone);
+    addBox(S, sx*1.7, .4, 8.1, 3.4, .4, 1.4, PAL.stoneD);
+  }
+  addBox(S, -1.7, 0, 9.5, 3.4, .4, 1.4, PAL.stoneD);
+
+  let y = 1.2;
+  const roofs = [], floors = [];
+  for (let i = 0; i < 5; i++) {
+    const r = makeRoof(RS[i]);
+    r.position.y = y - 0.35; g.add(r); roofs.push(r);
+    addBox(B, -BW[i]/2, y, -BW[i]/2, BW[i], BH[i], BW[i], PAL.body);
+    for (const sx of [-1,1]) {                 // corner posts per floor
+      const p = BW[i]/2 - 0.35;
+      addBox(B, sx*p, y, BW[i]/2 - 0.15, .7, BH[i], .7, i&1 ? PAL.stoneD : PAL.stone);
+    }
+    addBox(D, -0.9, y + 0.15, BW[i]/2 - 0.25, 1.8, 1.7, 0.5, PAL.door);
+    floors.push({ m:B, y, s:BW[i] });
+    y += BH[i] + 0.55;
+  }
+  const spire = makeSpire();
+  spire.position.y = y + 0.1; g.add(spire);
+
+  g.add(S.mesh(), B.mesh(), D.mesh());
+  g.userData = { roofs, floors };
+  return g;
+}
+
+function makeTorii() {
+  const g = new THREE.Group();
+  const ver = new THREE.MeshLambertMaterial({ color:PAL.verm });
+  const cap = new THREE.MeshLambertMaterial({ color:PAL.cap  });
+  const soc = new THREE.MeshLambertMaterial({ color:PAL.socu });
+  const R = V(ver), K = V(cap), S = V(soc);
+  const A = (x,y,z,w,h,d, v) => addBox(v, x,y,z,w,h,d, v===R?PAL.verm : v===K?PAL.cap : PAL.socu);
+  for (const sx of [-1,1]) {
+    A(sx*2.4, .55, -0.75, 2.3, .7, 2.3, S);
+    A(sx*2.4, 1.25, -0.85, 1.7, 9, 1.7, R);
+  }
+  A(-3.6, 6.6, -0.75, 7.2, 1.2, 1.5, R);      // nuki
+  A(-0.55, 6.8, -0.25, 1.1, 1, .5, R);         // gaku-zuka
+  A(-3.7, 8.3, -0.45, 7.4, .5, .9, K);         // kuri-dogi
+  A(-3.8, 8.8, -0.85, 7.6, .55, 1.7, K);       // kasagi
+  A(-4.15,9.35,-0.85, 8.3, .55, 1.7, K);
+  A(-4.5,9.9, -0.85, 9, .65, 1.7, K);
+  g.add(R.mesh(), K.mesh(), S.mesh());
+  g.position.set(0, 0, 8);
+  return g;
+}
+
+function makeTree(px, pz) {
+  const T = new THREE.Group(); T.position.set(px, 0, pz);
+  const trunk = new THREE.MeshLambertMaterial({ color:PAL.bark  });
+  const leaf  = new THREE.MeshLambertMaterial({ color:PAL.leaf  });
+  const Tq = V(trunk), L = V(leaf);
+  const TB = (x,y,z,w,h,d) => addBox(Tq, x,y,z,w,h,d, Math.random()<.5?PAL.bark:0x5d4029);
+  const LB = (x,y,z) => addBox(L, x,y,z,1,1,1, Math.random()<.5?PAL.leaf:PAL.leafD);
+  TB(-1,0,-1,2,1,2);
+  let ty = 1;
+  const S = 7;
+  for (let i = 0; i < S; i++) {
+    const bw = 2 - i*1/S, bh = 1 + (i>3 ? (i-S)*.35 : 0);
+    TB((Math.random()-.5), ty, (Math.random()-.5), bw, bh, bw);
+    ty += bh;
+  }
+  for (let i = 0; i < 5; i++)                 // stub branches
+    TB(Math.sign(Math.random()-.5)*1.1, 3 + i*.7, (Math.random()-.5)*1.6, 1.3, 1, 1.3);
+  const blobs = [[0,5.2,0,2.3],[1.4,6.3,-.8,2.1],[-1.2,6.6,.7,2.0],[.3,7.6,1,1.7]];
+  for (const [bx,by,bz,br] of blobs) {
+    for (let n = 0; n < 120; n++) {
+      const x = (Math.random()*2-1)*(br+.6);
+      const y = (Math.random()*2-1)*(br+.6);
+      const z = (Math.random()*2-1)*(br+.6);
+      if (x*x+y*y+z*z <= br*br + 0.6 && y >= -br*.55) LB(bx+x, by+y, bz+z);
+    }
+  }
+  T.add(trunk ? Tq.mesh() : null, L.mesh());
+  return T;
+}
+
+function makePond() {
+  const g = new THREE.Group();
+  const stone = new THREE.MeshLambertMaterial({ color:PAL.stone });
+  const S = 9;
+  const R = V(stone);
+  for (let x = -S/2; x < S/2; x++) for (let z = -S/2; z < S/2; z++) {
+    if (Math.abs(x) < 3.6 && Math.abs(z) < 3.6) continue;
+    addBox(R, x, 0, z, 1, .55, 1, (x+z) & 1 ? PAL.stoneD : PAL.stone);
+  }
+  const water = new THREE.Mesh(
+    new THREE.BoxGeometry(7, .8, 7),
+    new THREE.MeshLambertMaterial({ color:PAL.water, transparent:true, opacity:.78 })
+  );
+  water.position.y = .02; water.toneMapped = false;
+  const lot = new THREE.MeshLambertMaterial({ color:0x5e8f4f, side:THREE.DoubleSide });
+  const lotus = [[1.4,.42,.6],[ -.7,.42,1.7],[ .3,.42,-1.5]].map(p => {
+    const m = new THREE.Mesh(new THREE.BoxGeometry(2,.28,2), lot);
+    m.position.set(p[0], p[1], p[2]); return m;
+  });
+  const bud = new THREE.Mesh(new THREE.BoxGeometry(.9,.8,.9),
+    new THREE.MeshLambertMaterial({ color:0xef9dbd }));
+  bud.position.set(.3, .95, -1.5);
+  const koi = [0,1].map(j => {
+    const m = new THREE.Mesh(new THREE.BoxGeometry(1.5,.5,.8),
+      new THREE.MeshLambertMaterial({ color: j ? PAL.koiD : PAL.koi }));
+    m.userData = { r:.9 + j*.9, a:j*2.4, sp:.62 + j*.1, dir:j ? 1 : -1 };
+    return m;
+  });
+  g.add(R.mesh(), water, ...lotus, bud, ...koi);
+  g.position.set(-7, 0, 7);
+  return g;
+}
+
+function makeGround() {
+  const g = new THREE.Group();
+  const M = new THREE.MeshLambertMaterial({ color:PAL.grass });
+  const G = 44, N = G/2;
+  const P = V(M);
+  for (let x = -N; x < N; x++) for (let z = -N; z < N; z++) {
+    const isP = Math.abs(x) < 2.1 && z > 10.3 && z < 21.5;
+    const c = isP ? PAL.path : (Math.random() < .12 ? 0x7e9a66 : PAL.grass);
+    addBox(P, x, 0, z, 1, .5, 1, c);
+    if (!isP && Math.random() < .09) addBox(P, x, .5, z, 1, .35, 1, 0x7fa35f);
+  }
+  g.add(P.mesh()); return g;
+}
+
+/* ---------------- scene ---------------- */
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xa8d3ea);
+scene.fog = new THREE.Fog(0xa8d3ea, 34, 95);
+
+const camera = new THREE.PerspectiveCamera(42, innerWidth/innerHeight, .5, 220);
+camera.position.set(22, 15, 24);
+
+const renderer = new THREE.WebGLRenderer({ antialias:true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.07;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+document.getElementById('stage').appendChild(renderer.domElement);
+
+const hemi = new THREE.HemisphereLight(0xbfdcff, 0x7c8b5e, .9);
+const sun = new THREE.DirectionalLight(0xffe6b8, 2.6);
+sun.position.set(11, 17, 8);
+sun.castShadow = true;
+Object.assign(sun.shadow.camera, { left:-15, right:15, top:15, bottom:-15, near:2, far:55 });
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.bias = -0.0008;
+sun.shadow.normalBias = .6;
+scene.add(hemi, sun);
+
+/* red sun disc */
+const sunBall = new THREE.Mesh(
+  new THREE.SphereGeometry(3.6, 20, 14),
+  new THREE.MeshBasicMaterial({ color:0xff5a3c, fog:false })
+);
+sunBall.position.set(-15, 15, -23);
+scene.add(sunBall);
+
+/* assemble */
+const ground   = makeGround();
+const pagoda   = makePagoda();
+const torii    = makeTorri = makeTorii();
+const pond     = makePond();
+scene.add(ground, pagoda, torii, pond);
+
+const trees = [[8,-5],[-8.5,-4.5],[-6,7],[9.5,3],[-9.5,-9],[5,-10]]
+  .map(p => makeTree(p[0], p[1]));
+scene.add(...trees);
+
+/* drifting petals */
+const PETALS = 54;
+const petMesh = new THREE.InstancedMesh(
+  new THREE.BoxGeometry(1, .26, .7),
+  new THREE.MeshLambertMaterial({ color:0xf79fc1, side:THREE.DoubleSide }), PETALS);
+petMesh.castShadow = true;
+const P = Array.from({ length: PETALS }, () => ({
+  bx:(Math.random()*2-1)*16, bz:(Math.random()*2-1)*16,
+  y:14 + Math.random()*6, s:.55 + Math.random()*.5,
+  sp:1.1 + Math.random()*.8,
+  rx:Math.random()*6.3, ry:Math.random()*6.3,
+  sw:.7 + Math.random()*.9, ph:Math.random()*6.3,
+  t:Math.random()*40,
+}));
+scene.add(petMesh);
+
+/* controls */
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.set(0, 4.6, 0);
+controls.enableDamping = true; controls.dampingFactor = .08;
+controls.autoRotate = true; controls.autoRotateSpeed = -0.9;
+controls.minDistance = 12; controls.maxDistance = 60;
+controls.minPolarAngle = .2; controls.maxPolarAngle = 1.52;
+controls.enablePan = false;
+
+/* loop */
+const M4 = new THREE.Matrix4(), Q = new THREE.Quaternion(),
+      VEC = new THREE.Vector3(), SCL = new THREE.Vector3();
+let t = 0, last = 0, booted = false;
+
+function animate(tt) {
+  const dt = Math.min((tt - last)/1000, .05); last = tt; t += dt;
+
+  controls.update();
+  pagoda.position.y = Math.sin(t * .5) * .06;
+  for (const koi of pond.children.filter(m => m.userData.r)) {
+    const u = koi.userData;
+    u.a += u.sp * dt;
+    const r = u.r * 2, y = .42 + Math.sin(t*2.2 + u.a*3)*.05;
+    if (Math.cos(u.a) > 0) u.dir *= -1;
+    const x = u.dir * Math.cos(u.a) * r, z = Math.sin(u.a) * r;
+    koi.position.set(x, y, z);
+    if (Math.abs(Math.sin(u.a)) < .15) {
+      koi.position.y = y + .3;
+      koi.scale.setScalar(1.15);
+    } else if (Math.abs(Math.sin(u.a)) > .9) {
+      koi.position.y = y - .25;
+      koi.scale.setScalar(.65);
+    } else {
+      koi.position.y = y + (Math.sin(u.a)*u.r - .45)/u.r * .3;
+      koi.scale.setScalar(1 + .18*Math.sin(t*6 + u.a));
+    }
+    const d = -Math.sin(u.a)*u.dir;
+    const s2 = Math.cos(u.a)*u.dir;
+    const ax = Math.atan2(-d, s2);
+    const ay = Math.asin(THREE.MathUtils.clamp(d*0.55 + s2*0.05, -1, 1));
+    Q.setFromEuler(new THREE.Euler(ay, ax, 0, 'YXZ'));
+    quaternion multiply for (yaw, pitch)
+    if (koi.rotation.order !== 'YXZ') { Q.premultiply(koi.rotation); }
+    koi.rotation.copy(Q);
+  }
+  const w = pond.children.find(m => m.type === 'Mesh' && m.geometry.type === 'BoxGeometry');
+  w.scale.y = 1 + Math.sin(t*2.1)*.09;
+  w.material.opacity = .74 + Math.sin(t*1.7)*.06;
+
+  for (let i = 0; i < P.length; i++) {
+    const f = P[i];
+    f.t += dt; f.y -= f.sp*dt;
+    if (f.y < .55) { f.y = 18 + Math.random()*3; f.bx = (Math.random()*2-1)*16; f.bz = (Math.random()*2-1)*16; }
+    const x = f.bx + Math.sin(f.t*f.sw + f.ph)*1.5;
+    const z = f.bz + Math.cos(f.t*.7 + f.ph)*.7;
+    f.rx += dt*(.8 + (i&1)); f.ry += dt*2.3;
+    M4.compose(
+      VEC.set(x, f.y, z).add(petMesh.position),
+      Q.setFromEuler(new THREE.Euler(f.rx, f.ry, 0)),
+      SCL.set(f.s, 1, f.s));
+    petMesh.setMatrixAt(i, M4);
+  }
+  petMesh.instanceMatrix.needsUpdate = true;
+
+  renderer.render(scene, camera);
+  if (booted) { document.getElementById('load').classList.add('off'); booted = false; }
+}
+renderer.setAnimationLoop(animate);
+
+addEventListener('resize', () => {
+  camera.aspect = innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+addEventListener('keydown', e => {
+  if (e.code === 'KeyP') controls.autoRotate = !controls.autoRotate;
+});
+
+requestAnimationFrame(() => {
+  document.getElementById('hud').classList.add('ready');
+  setTimeout(() => { booted = true; }, 350);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voxel Pagoda Scene</title>
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #000; }
+  #app { width: 100vw; height: 100vh; }
+  #hint {
+    position: fixed; left: 12px; bottom: 10px; color: #fff;
+    font: 12px/1.4 system-ui, sans-serif; opacity: .55; pointer-events: none;
+    text-shadow: 0 1px 2px rgba(0,0,0,.6);
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="hint">voxel pagoda &middot; auto orbiting camera</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const app = document.getElementById('app');
+
+// ---------- renderer / scene / camera ----------
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+app.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xa9d6ef);
+scene.fog = new THREE.Fog(0xa9d6ef, 60, 160);
+
+const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 500);
+camera.position.set(22, 16, 26);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.set(0, 5, 0);
+controls.autoRotate = true;
+controls.autoRotateSpeed = 0.6;
+controls.enableDamping = true;
+controls.dampingFactor = 0.06;
+controls.minDistance = 12;
+controls.maxDistance = 120;
+controls.maxPolarAngle = Math.PI / 2.05; // stay above ground
+
+// ---------- materials ----------
+const M = (color, opts = {}) => new THREE.MeshStandardMaterial({ color, roughness: 0.85, metalness: 0, ...opts });
+const M_WOOD   = M(0x5c3a21);
+const M_WOOD_D = M(0x3f2812);
+const M_ROOF   = M(0x2c2c34, { roughness: 0.7 });
+const M_ROOF_T = M(0x9e2b1e);          // trim band
+const M_STONE  = M(0x8f8f8f);
+const M_STONE_D= M(0x6f6f6f);
+const M_TORII  = M(0xd0382c, { roughness: 0.55 });
+const M_TRUNK  = M(0x5b3a24);
+const M_BLOSSOM= M(0xff9ec4, { roughness: 0.95 });
+const M_WATER  = M(0x3a7ec4, { roughness: 0.15, metalness: 0.25, transparent: true, opacity: 0.85 });
+
+// ---------- helper: axis-aligned cube ----------
+function box(w, h, d, mat, x, y, z) {
+  const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+  m.position.set(x, y, z);
+  m.castShadow = true;
+  m.receiveShadow = true;
+  return m;
+}
+
+// ---------- pagoda ----------
+function cornerFlap(halfW, halfD, thick, sx, sz, baseY) {
+  const fw = halfW * 0.72;
+  const fd = halfD * 0.72;
+  const flap = new THREE.Mesh(new THREE.BoxGeometry(fw, thick, fd), M_ROOF);
+  flap.position.set(
+    sx * (halfW - fw / 2),
+    baseY + thick / 2,
+    sz * (halfD - fd / 2)
+  );
+  // rotate about the horizontal axis perpendicular to the diagonal so the tip lifts up
+  const axis = new THREE.Vector3(-sz, 0, sx).normalize();
+  flap.quaternion.setFromAxisAngle(axis, THREE.MathUtils.degToRad(34));
+  flap.castShadow = true;
+  flap.receiveShadow = true;
+  return flap;
+}
+
+function makePagoda() {
+  const root = new THREE.Group();
+
+  // stone platform
+  root.add(box(16, 0.6, 16, M_STONE, 0, 0.3, 0));
+  root.add(box(13.5, 0.15, 13.5, M_STONE_D, 0, 0.675, 0));
+
+  const stories = [
+    { w: 4.6, h: 2.4, ov: 1.15 },
+    { w: 3.8, h: 2.2, ov: 1.05 },
+    { w: 3.1, h: 2.05, ov: 0.95 },
+    { w: 2.55, h: 1.9, ov: 0.85 },
+    { w: 2.05, h: 1.75, ov: 0.75 }
+  ];
+  const roofTh = 0.16;
+  let top = 0.6; // platform top
+
+  for (const s of stories) {
+    const half = s.w / 2;
+    const wallTop = top + s.h;
+
+    // walls with a darker base and a vermillion trim band
+    root.add(box(s.w + 0.1, 0.12, s.w + 0.1, M_ROOF_T, 0, wallTop + 0.06, 0));
+    root.add(box(s.w, s.h, s.w, M_WOOD, 0, top + s.h / 2, 0));
+    root.add(box(s.w * 0.55, s.h * 0.55, s.w * 0.55, M_WOOD_D, 0, top + s.h * 0.32, 0)); // door-face detail
+
+    // roof eave (flat slab + four upturned corners)
+    const rw = s.w + s.ov * 2;
+    const halfW = rw / 2;
+    const roofBottom = wallTop;
+    root.add(box(rw, roofTh, rw, M_ROOF, 0, roofBottom + roofTh / 2, 0));
+    for (const sx of [-1, 1]) {
+      for (const sz of [-1, 1]) {
+        root.add(cornerFlap(halfW, halfW, roofTh, sx, sz, roofBottom));
+      }
+    }
+
+    top = roofBottom + roofTh;
+  }
+
+  // spire (sharitsuki + multiple rings + jewel)
+  const iron = M(0x242428, { metalness: 0.5, roughness: 0.4 });
+  const jewel = M(0xffc72c, { metalness: 0.5, roughness: 0.3 });
+  root.add(box(0.16, 3.0, 0.16, iron, 0, top + 1.5, 0));
+  let ry = top;
+  for (const r of [0.95, 0.72, 0.52, 0.36]) {
+    ry += 0.12;
+    root.add(box(r, 0.12, r, iron, 0, ry, 0));
+    ry += 0.12;
+  }
+  root.add(box(0.34, 0.55, 0.34, jewel, 0, ry + 0.25, 0));
+  root.add(box(0.14, 0.5, 0.14, jewel, 0, ry + 0.65, 0));
+
+  return root;
+}
+scene.add(makePagoda());
+
+// ---------- cherry blossom tree ----------
+function makeTree(x, z, scale = 1) {
+  const g = new THREE.Group();
+  const h = 2.4 * scale;
+  g.add(box(0.4 * scale, h, 0.4 * scale, M_TRUNK, 0, h / 2, 0));
+  // a couple of offset branch blocks
+  g.add(box(0.9 * scale, 0.25 * scale, 0.25 * scale, M_TRUNK, 0.35 * scale, h * 0.75, 0));
+  g.add(box(0.25 * scale, 0.25 * scale, 0.8 * scale, M_TRUNK, -0.3 * scale, h * 0.85, 0.2 * scale));
+
+  const cloud = [
+    [0, h + 0.2, 0, 1.5],
+    [0.55 * scale, h + 0.6 * scale, 0.2 * scale, 1.1],
+    [-0.5 * scale, h + 0.5 * scale, 0.3 * scale, 1.1],
+    [0.1 * scale, h + 1.0 * scale, -0.35 * scale, 1.0],
+    [-0.35 * scale, h + 0.05 * scale, -0.4 * scale, 0.95]
+  ];
+  for (const [dx, dy, dz, size] of cloud) {
+    g.add(box(size * scale, size * 0.8 * scale, size * scale, M_BLOSSOM, dx, dy, dz));
+  }
+  g.position.set(x, 0, z);
+  return g;
+}
+scene.add(makeTree(-9, -7, 1.25));
+scene.add(makeTree(8, -9, 1.0));
+scene.add(makeTree(-8, 8, 1.15));
+
+// ---------- pond ----------
+function makePond() {
+  const g = new THREE.Group();
+  g.add(box(7, 0.12, 5.2, M_WATER, 0, -0.02, 0));         // water surface
+  g.add(box(7.4, 0.3, 5.6, M_STONE_D, 0, -0.18, 0));       // rim
+  // lily-pad-ish stones
+  g.add(box(0.7, 0.08, 0.7, M(0x3f7a3a, { roughness: 0.9 }), 1.6, 0.02, 0.8));
+  g.add(box(0.5, 0.06, 0.5, M(0x3f7a3a, { roughness: 0.9 }), -1.4, 0.02, -1.0));
+  g.add(box(0.55, 0.7, 0.55, M_STONE, 2.6, 0.35, -1.6));   // rock accent
+  return g;
+}
+scene.add(makePond().position.set(11, 0, 0) && (() => { const p = makePond(); p.position.set(11, 0, 0); return p; })());
+
+// ---------- torii gate ----------
+function makeTorii(x, z, rot = 0) {
+  const g = new THREE.Group();
+  const colH = 3.3, colS = 0.5, half = 2.0;
+  const topY = colH + 0.5;
+  for (const sx of [-1, 1]) {
+    g.add(box(colS, colH, colS, M_TORII, sx * half, colH / 2, 0));
+  }
+  g.add(box(half * 2 + 0.9, 0.5, 0.7, M_TORII, 0, topY, 0));          // head beam
+  g.add(box(half * 2 + 0.4, 0.35, 0.55, M_TORII, 0, colH + 0.05, 0)); // second beam (nuki)
+  g.add(box(0.5, 0.75, 0.16, M_WOOD_D, 0, colH - 0.1, 0.32));         // plaque
+  g.position.set(x, 0, z);
+  g.rotation.y = rot;
+  return g;
+}
+scene.add(makeTorii(0, 11, 0));
+
+// ---------- ground ----------
+const ground = box(160, 0.4, 160, M(0x5a8a45, { roughness: 1 }), 0, -0.2, 0);
+ground.castShadow = false;
+ground.receiveShadow = true;
+scene.add(ground);
+// stone path to the torii
+for (let i = 0; i < 9; i++) {
+  scene.add(box(2.4, 0.08, 1.1, M_STONE_D, (Math.random() - 0.5) * 0.3, 0.02, 12 + i * 2.2));
+}
+
+// ---------- lighting ----------
+const hemi = new THREE.HemisphereLight(0xffffff, 0x4a5a3a, 0.7);
+scene.add(hemi);
+scene.add(new THREE.AmbientLight(0xffffff, 0.25));
+
+const sun = new THREE.DirectionalLight(0xfff2d8, 1.5);
+sun.position.set(26, 40, 20);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.camera.left = -40;
+sun.shadow.camera.right = 40;
+sun.shadow.camera.top = 40;
+sun.shadow.camera.bottom = -40;
+sun.shadow.camera.near = 1;
+sun.shadow.camera.far = 130;
+sun.shadow.bias = -0.0004;
+scene.add(sun);
+scene.add(sun.target);
+
+// ---------- drifting petals ----------
+const PETAL_COUNT = 70;
+const petalGeo = new THREE.BoxGeometry(0.16, 0.02, 0.16);
+const petalMat = M(0xffb7c5, { roughness: 0.9, side: THREE.DoubleSide });
+const petals = [];
+for (let i = 0; i < PETAL_COUNT; i++) {
+  const mesh = new THREE.Mesh(petalGeo, petalMat);
+  const p = {
+    mesh,
+    speed: 0.6 + Math.random() * 0.9,
+    sway: Math.random() * Math.PI * 2,
+    swaySpeed: 1.2 + Math.random() * 1.6,
+    swayAmp: 0.5 + Math.random() * 0.8,
+    spin: 1.5 + Math.random() * 2.5
+  };
+  mesh.position.set(
+    (Math.random() - 0.5) * 40,
+    3 + Math.random() * 6,
+    (Math.random() - 0.5) * 40
+  );
+  mesh.castShadow = false;
+  petals.push(p);
+  scene.add(mesh);
+}
+
+const clock = new THREE.Clock();
+
+function animate() {
+  requestAnimationFrame(animate);
+  const dt = Math.min(clock.getDelta(), 0.05);
+  const t = clock.elapsedTime;
+  for (const p of petals) {
+    p.mesh.position.y -= p.speed * dt;
+    p.mesh.position.x += Math.sin(p.sway + t * p.swaySpeed) * p.swayAmp * dt;
+    p.mesh.rotation.x += p.spin * dt;
+    p.mesh.rotation.z += p.spin * dt * 0.7;
+    if (p.mesh.position.y < 0.05) {
+      p.mesh.position.y = 3 + Math.random() * 6;
+      p.mesh.position.x = (Math.random() - 0.5) * 40;
+      p.mesh.position.z = (Math.random() - 0.5) * 40;
+    }
+  }
+  controls.update();
+  renderer.render(scene, camera);
+}
+animate();
+
+// ---------- resize ----------
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+</script>
+</body>
+</html>
