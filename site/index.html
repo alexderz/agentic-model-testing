@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-src 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="A living report of a long-running local-LLM bake-off: which open-weight models do real agent work on one consumer GPU, how fast, and with what settings.">
+<title>The Bake-off · local models on one GPU</title>
+<link rel="stylesheet" href="assets/style.css">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<script type="module" src="assets/app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="hero" id="top">
+  <nav class="topnav" aria-label="Sections">
+    <a href="#tests">Tests</a>
+    <a href="#picks">Picks</a>
+    <a href="#runs">Runs</a>
+    <a href="#struggle">Struggle</a>
+    <a href="#test3">Test 3</a>
+    <a href="#ab">Engines</a>
+    <a href="#oneshots">Gallery</a>
+    <a href="#findings">Findings</a>
+    <a href="#timeline">Timeline</a>
+    <a href="#caveats">Caveats</a>
+  </nav>
+  <div class="hero-grid">
+    <div class="hero-copy">
+      <p class="kicker" id="kicker">A living report</p>
+      <h1 id="title">The Bake-off</h1>
+      <p class="tagline" id="tagline"></p>
+      <dl class="hero-stats" id="hero-stats" aria-label="Headline counts"></dl>
+      <p class="generated" id="generated"></p>
+      <p class="hero-note">The orrery is drawn from the data: the GPU is the sun, every model is a planet in its family's band, orbit speed is the best tokens per second that model ever reached, size is how often it ran, and a halo means it passed test 2, the MCP server. Dashed rings mark uncensored models.</p>
+    </div>
+    <figure class="hero-art">
+      <div id="orrery" class="orrery-mount"></div>
+      <figcaption id="hero-caption" class="hero-caption" aria-live="polite"></figcaption>
+      <ul id="hero-legend" class="hero-legend" aria-label="Model families; press to spotlight one"></ul>
+    </figure>
+  </div>
+  <p id="load-error" class="load-error" hidden></p>
+</header>
+
+<main id="main">
+
+<section id="machine" class="chapter" aria-labelledby="h-machine">
+  <div class="chapter-head"><span class="num">01</span><h2 id="h-machine">One machine</h2>
+  <p class="lede">Everything here ran on a single home workstation, one model at a time. That is the whole point: not what a cluster can do, but what fits in one consumer graphics card and how fast it goes.</p></div>
+  <dl class="spec-plate" id="hardware"></dl>
+</section>
+
+<section id="tests" class="chapter" aria-labelledby="h-tests">
+  <div class="chapter-head"><span class="num">02</span><h2 id="h-tests">The tests</h2>
+  <p class="lede">Every test gives the agent one task and no guidance, inside a locked-down container that can reach only the model server and a replay of a real Home Assistant installation. The result is graded by running it, never by reading it.</p></div>
+  <div class="test-cards" id="test-cards"></div>
+</section>
+
+<section id="picks" class="chapter" aria-labelledby="h-picks">
+  <div class="chapter-head"><span class="num">03</span><h2 id="h-picks">Who wins, today</h2>
+  <p class="lede">"Competent" means the model built an MCP server a real client could connect to and call. "Smartest" weighs how much working server and how many passing tests it produced. These picks move as results come in; the trade-off line is as important as the verdict.</p></div>
+  <div class="pick-grid">
+    <div><h3 class="sub">Overall</h3><div class="pick-cards" id="pick-overall"></div></div>
+    <div><h3 class="sub">Uncensored</h3><div class="pick-cards" id="pick-uncensored"></div></div>
+  </div>
+  <h3 class="sub">By family</h3>
+  <div class="family-table" id="pick-families"></div>
+</section>
+
+<section id="runs" class="chapter" aria-labelledby="h-runs">
+  <div class="chapter-head"><span class="num">04</span><h2 id="h-runs">The speed ladder</h2>
+  <p class="lede">Every agent run, on a log scale of tokens per second averaged over the whole run (output and reasoning tokens over wall time, including tool calls and compaction). Colour and glyph are the verdict: a filled circle passed, a half circle is partial, an empty circle failed. One row is one run, and one run is one sample.</p></div>
+  <form class="filters" id="run-filters" aria-label="Filter runs">
+    <label>Test <select name="test" id="f-test"></select></label>
+    <label>Family <select name="family" id="f-family"></select></label>
+    <label>Verdict <select name="verdict" id="f-verdict"></select></label>
+    <label>Uncensored <select name="uncensored" id="f-unc"><option value="all">all</option><option value="yes">only</option><option value="no">exclude</option></select></label>
+    <label>Sort <select name="sort" id="f-sort">
+      <option value="tps">fastest first</option><option value="verdict">best verdict first</option><option value="tests">most tests</option>
+      <option value="minutes">shortest run</option><option value="clean">cleanest compiler</option><option value="finished">newest</option></select></label>
+    <label class="grow">Search <input type="search" name="q" id="f-q" placeholder="model, engine or case"></label>
+    <output id="f-count" class="count" aria-live="polite"></output>
+  </form>
+  <div id="ladder"></div>
+  <button type="button" class="more" id="ladder-more" hidden></button>
+  <details class="table-wrap">
+    <summary>Every matching run as a table</summary>
+    <div id="run-table"></div>
+  </details>
+</section>
+
+<section id="struggle" class="chapter" aria-labelledby="h-struggle">
+  <div class="chapter-head"><span class="num">05</span><h2 id="h-struggle">Fighting the compiler</h2>
+  <p class="lede">The Rust MCP server task leaves a trail of builds in the transcript. Counting the compiler's own error tallies per thousand lines of final code separates models that write clean code from models that brute-force their way past rustc. A model can pass while fighting hard, so this is a second axis, not a grade.</p></div>
+  <div id="struggle-chart" class="chart"></div>
+  <div id="struggle-summary" class="stat-row"></div>
+</section>
+
+<section id="test3" class="chapter" aria-labelledby="h-test3">
+  <div class="chapter-head"><span class="num">06</span><h2 id="h-test3">Using a server, and fixing one</h2>
+  <p class="lede">Building a tool and using one are different skills. Here the agent must extract facts about the recorded house through a subagent whose only tools are an MCP server's, check them against the REST API, and decide whether to trust the server. The G flavour uses a known-good server; the O flavour uses the model's own. Facts are shown as pips, the rubric as a bar.</p></div>
+  <div id="test3-groups" class="t3-list"></div>
+  <button type="button" class="more" id="test3-more" hidden></button>
+</section>
+
+<section id="ab" class="chapter" aria-labelledby="h-ab">
+  <div class="chapter-head"><span class="num">07</span><h2 id="h-ab">Same weights, different engine</h2>
+  <p class="lede">A/B speed probes of the same model on different engine builds and speculative-decoding variants, decode tokens per second. The engine often matters as much as the model, and some combinations simply fail to load.</p></div>
+  <ul class="ab-legend" id="ab-legend" aria-label="Engines"></ul>
+  <div id="ab-groups" class="ab-list"></div>
+</section>
+
+<section id="oneshots" class="chapter" aria-labelledby="h-oneshots">
+  <div class="chapter-head"><span class="num">08</span><h2 id="h-oneshots">The gallery</h2>
+  <p class="lede">One reply, no tools, one creative-coding prompt. The replies were rendered offline in a container with no network and graded on five points of 0 to 2. The frames below are those offline renders at increasing times; the models' own files are never loaded here. A blank card means the reply spent its whole token budget thinking and never produced a file.</p></div>
+  <div class="set-row" id="oneshot-sets"></div>
+  <form class="filters" id="oneshot-filters" aria-label="Filter one-shots">
+    <label>Test <select name="test" id="o-test"></select></label>
+    <label>Sort <select name="sort" id="o-sort"><option value="score">best score</option><option value="speed">fastest</option><option value="model">by model</option><option value="newest">newest case</option></select></label>
+    <label class="grow">Search <input type="search" name="q" id="o-q" placeholder="model or note"></label>
+    <output id="o-count" class="count" aria-live="polite"></output>
+  </form>
+  <div id="oneshot-grid" class="gallery"></div>
+</section>
+
+<section id="findings" class="chapter" aria-labelledby="h-findings">
+  <div class="chapter-head"><span class="num">09</span><h2 id="h-findings">Findings</h2>
+  <p class="lede">Headline discoveries, newest first, with the before and after numbers that back them.</p></div>
+  <div id="findings-list" class="findings"></div>
+</section>
+
+<section id="timeline" class="chapter" aria-labelledby="h-timeline">
+  <div class="chapter-head"><span class="num">10</span><h2 id="h-timeline">How the work evolved</h2>
+  <p class="lede">The harness, prompts, grading and engines changed as we learned. Each step says what changed and why, which is also why rows from different eras are not directly comparable.</p></div>
+  <ol id="timeline-list" class="river"></ol>
+</section>
+
+<section id="log" class="chapter" aria-labelledby="h-log">
+  <div class="chapter-head"><span class="num">11</span><h2 id="h-log">Lab notebook</h2>
+  <p class="lede">The most recent entries from the running log: queues, grading, harness fixes and small findings, in the operator's own words.</p></div>
+  <ul class="kind-row" id="event-kinds" aria-label="Filter log entries by kind"></ul>
+  <div id="events-list" class="events"></div>
+</section>
+
+<section id="caveats" class="chapter" aria-labelledby="h-caveats">
+  <div class="chapter-head"><span class="num">12</span><h2 id="h-caveats">Read this before quoting a number</h2>
+  <p class="lede">Honest limits of the method. They apply to every chart above.</p></div>
+  <ol id="caveat-list" class="caveats"></ol>
+</section>
+
+</main>
+
+<footer class="foot">
+  <p>Built from <code>data/bakeoff.json</code>. The page is only a renderer: new runs, models and findings appear here when that file changes.</p>
+  <ul id="links" class="links"></ul>
+  <p class="small">Model-written files are never embedded here; only offline-rendered frames are shown. No scripts, fonts or images are loaded from anywhere but this site.</p>
+</footer>
+</body>
+</html>
