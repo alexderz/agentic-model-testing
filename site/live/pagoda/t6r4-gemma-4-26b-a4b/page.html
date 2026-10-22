@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voxel Pagoda Scene</title>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #87CEEB; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+            }
+        }
+    </script>
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        // --- Configuration & Setup ---
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x87CEEB); // Sky blue
+        scene.fog = new THREE.Fog(0x87CEEB, 20, 100);
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(30, 25, 30);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        document.body.appendChild(renderer.domElement);
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+
+        // --- Lighting ---
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+
+        const sunLight = new THREE.DirectionalLight(0xffffff, 1.2);
+        sunLight.position.set(20, 40, 10);
+        sunLight.castShadow = true;
+        sunLight.shadow.camera.left = -50;
+        sunLight.shadow.camera.right = 50;
+        sunLight.shadow.camera.top = 50;
+        sunLight.shadow.camera.bottom = -50;
+        sunLight.shadow.mapSize.width = 2048;
+        sunLight.shadow.mapSize.height = 2048;
+        scene.add(sunLight);
+
+        // --- Voxel Helper ---
+        const sceneGroup = new THREE.Group();
+        scene.add(sceneGroup);
+
+        function createCube(w, h, d, x, y, z, color, cast = true, receive = true) {
+            const geometry = new THREE.BoxGeometry(w, h, d);
+            const material = new THREE.MeshStandardMaterial({ color });
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.position.set(x, y, z);
+            mesh.castShadow = cast;
+            mesh.receiveShadow = receive;
+            sceneGroup.add(mesh);
+            return mesh;
+        }
+
+        // --- Environment Building ---
+
+        // Grass/Ground
+        createCube(100, 0.5, 100, 0, -0.25, 0, 0x348C31, false, true);
+
+        // Stone Platform
+        createCube(25, 1, 25, 0, 0.25, 0, 0x808080, true, true);
+
+        // Pond (a shallow dip made of blue cubes)
+        for(let x = -6; x <= -2; x++) {
+            for(let z = -6; z <= -2; z++) {
+                for(let y = 0; y <= 1; y++) {
+                    createCube(1, 0.5, 1, x, 0.5 - (y*0.5), z, 0x0077be, false, true);
+                }
+            }
+        }
+
+        // --- Red Torii Gate ---
+        function buildTorii(x, z) {
+            const group = new THREE.Group();
+            const red = 0xaa2222;
+            const stone = 0x555555;
+            
+            // Pillars
+            createCube(1, 6, 1, x - 3, 3.5, z, red);
+            createCube(1, 6, 1, x + 3, 3.5, z, red);
+            // Top beam 1 (lower)
+            createCube(8, 1, 1, x, 6, z, red);
+            // Top beam 2 (upper - slightly wider/curved look)
+            createCube(10, 0.8, 1, x, 6.8, z, red);
+            // Crossbar end bits
+            createCube(1, 1, 1, x-5, 6.4, z, red);
+            createCube(1, 1, 1, x+5, 6.4, z, red);
+        }
+        buildTorii(-8, -8);
+
+        // --- Cherry Blossom Tree ---
+        function buildTree(x, z) {
+            const trunkColor = 0x4B3621;
+            const petalColor = 0xFFB7C5;
+            
+            // Trunk
+            for(let i = 0; i < 4; i++) {
+                createCube(1, 1, 1, x, 0.5 + i, z, trunkColor);
+            }
+            // Leaves (Cluster of cubes)
+            const leafCount = 12;
+            for(let i = 0; i < leafCount; i++) {
+                const ox = (Math.random() - 0.5) * 3;
+                const oy = 3 + Math.random() * 2;
+                const oz = (Math.random() - 0.5) * 3;
+                const size = 1 + Math.random();
+                createCube(size, size, size, x + ox, oy, z + oz, petalColor);
+            }
+        }
+        buildTree(8, 8);
+        buildTree(10, 5);
+        buildTree(-6, 10);
+
+        // --- Pagoda ---
+        function buildPagoda(x, z) {
+            const colorWall = 0x8B0000; // Dark Red
+            const colorTrim = 0x222222; // Dark Grey/Black
+            const colorGold = 0xFFD700; // Gold
+
+            let currentY = 0.5;
+            let currentScale = 1.0;
+
+            for (let floor = 0; floor < 5; floor++) {
+                const width = 5 * currentScale;
+                const height = 3;
+
+                // Walls
+                createCube(width, height, width, x, currentY + height/2, z, colorWall);
+                
+                // Roof (the upturned eave effect)
+                // We simulate a "cross" of thick slabs
+                const roofSize = width * 1.4;
+                const roofY = currentY + height;
+                
+                // Main roof slab
+                createCube(roofSize, 0.5, roofSize, x, roofY, z, colorTrim);
+                
+                // Eave extensions (the "corners")
+                const cornerOffset = (roofSize - width) / 2;
+                // Top-Left
+                createCube(2, 0.4, 2, x - cornerOffset - 1, roofY, z - cornerOffset - 1, colorTrim);
+                // Top-Right
+                createCube(2, 0.4, 2, x + cornerOffset + 1, roofY, z - cornerOffset - 1, colorTrim);
+                // Bottom-Left
+                createCube(2, 0.4, 2, x - cornerOffset - 1, roofY, z + cornerOffset + 1, colorTrim);
+                // Bottom-Right
+                createCube(2, 0.4, 2, x + cornerOffset + 1, roofY, z + cornerOffset + 1, colorTrim);
+
+                currentY += height;
+                currentScale *= 0.85; // Shrink as we go up
+            }
+
+            // Spire (Finial)
+            createCube(0.4, 4, 0.4, x, currentY + 2, z, colorGold);
+            createCube(0.8, 0.5, 0.8, x, currentY + 4, z, colorGold);
+        }
+        buildPagoda(0, 0);
+
+        // --- Petals (Falling Particles) ---
+        const petalCount = 50;
+        const petals = [];
+        const petalGeometry = new THREE.BoxGeometry(0.3, 0.3, 0.3);
+        const petalMaterial = new THREE.MeshBasicMaterial({ color: 0xFFB7C5 });
+
+        for (let i = 0; i < petalCount; i++) {
+            const petal = new THREE.Mesh(petalGeometry, petalMaterial);
+            resetPetal(petal);
+            // Random start height
+            petal.position.y = Math.random() * 30;
+            scene.add(petal);
+            petals.push(petal);
+        }
+
+        function resetPetal(petal) {
+            petal.position.x = (Math.random() - 0.5) * 40;
+            petal.position.y = 30;
+            petal.position.z = (Math.random() - 0.5) * 40;
+            petal.userData.speedX = (Math.random() - 0.5) * 0.05;
+            petal.userData.speedZ = (Math.random() - 0.5) * 0.05;
+            petal.userData.swing = Math.random() * 0.05;
+            petal.userData.timer = Math.random() * Math.PI * 2;
+        }
+
+        function animatePetal(petal) {
+            petal.position.y -= 0.05; // Fall
+            petal.position.x += Math.sin(petal.userData.timer) * petal.userData.swing;
+            petal.position.z += Math.cos(petal.userData.timer) * petal.userData.swing;
+            petal.userData.timer += 0.05;
+
+            if (petal.position.y < 0) {
+                resetPetal(petal);
+            }
+        }
+
+        // --- Animation Loop ---
+        function animate(time) {
+            requestAnimationFrame(animate);
+
+            // Slowly orbit the camera by rotating the whole scene group slightly
+            // (Or just rotate the camera manually, but rotating the group is easier for voxel aesthetic)
+            // Actually, the user asked to "slowly orbit the camera", 
+            // we can do that by changing camera position in a circle.
+            const radius = 40;
+            const speed = time * 0.0002;
+            camera.position.x = Math.cos(speed) * radius;
+            camera.position.z = Math.sin(speed) * radius;
+            camera.lookAt(0, 5, 0);
+
+            // Animate petals
+            petals.forEach(animatePetal);
+
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        // --- Handle Resize ---
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate(0);
+    </script>
+</body>
+</html>

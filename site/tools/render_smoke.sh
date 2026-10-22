@@ -66,7 +66,9 @@ for json in "$work"/mut/*.json; do
   if [ "$name" = real ]; then
     loaded=$(grep -o 'data-loaded="1"' "$dom" | wc -l)
     [ "$loaded" -ge 1 ] || problems+=("no gallery frame reported loaded")
-    grep -q 'class="shot featured"' "$dom" || problems+=("no full-marks card in the gallery wall")
+    grep -q 'class="shot featured' "$dom" || problems+=("no full-marks card in the gallery wall")
+    grep -q 'class="play"' "$dom" || problems+=("no Play live control in the gallery")
+    grep -q '<iframe' "$dom" && problems+=("an iframe exists before the viewer was opened")
   fi
   if [ "${#problems[@]}" -eq 0 ]; then
     echo "  ok   $name: rendered, no section errors ($(grep -o 'class="chapter-head"' "$dom" | wc -l) chapters)"

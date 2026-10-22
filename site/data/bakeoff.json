@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
  "generated": "2026-10-15 14:36 CDT",
- "built": "2026-10-22 17:25 CDT",
+ "built": "2026-10-22 18:31 CDT",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -7635,7 +7635,8 @@
      "frames/orrery/t5r4-lcpp6-tiel-coder-35b-t06/frame-100.webp",
      "frames/orrery/t5r4-lcpp6-tiel-coder-35b-t06/frame-2000.webp",
      "frames/orrery/t5r4-lcpp6-tiel-coder-35b-t06/frame-6000.webp"
-    ]
+    ],
+    "live": "live/orrery/t5r4-lcpp6-tiel-coder-35b-t06/orrery.svg"
    },
    {
     "case": "t5-lcpp6-tiel-coder-35b-q4kxl",
@@ -7658,7 +7659,8 @@
      "frames/orrery/t5-lcpp6-tiel-coder-35b-q4kxl/frame-100.webp",
      "frames/orrery/t5-lcpp6-tiel-coder-35b-q4kxl/frame-2000.webp",
      "frames/orrery/t5-lcpp6-tiel-coder-35b-q4kxl/frame-6000.webp"
-    ]
+    ],
+    "live": "live/orrery/t5-lcpp6-tiel-coder-35b-q4kxl/orrery.svg"
    },
    {
     "case": "t5hq1-qwen3.8-27b-vllm-031",
@@ -7677,7 +7679,8 @@
     },
     "total": 9.0,
     "note": "HyperQwen 0.31, 140k cap. 8 planets at exact ratios (Earth 18 s); each planet's pinion rolls in a static internally toothed annulus with matching module (relative spin k+1, opposite to the orbit), the best gearing of the round; but the night half-disc sits in the spinning group, so it turns with the surface",
-    "frames": []
+    "frames": [],
+    "live": null
    },
    {
     "case": "t5-lcpp6-tiel-coder-35b-t06",
@@ -7700,7 +7703,8 @@
      "frames/orrery/t5-lcpp6-tiel-coder-35b-t06/frame-100.webp",
      "frames/orrery/t5-lcpp6-tiel-coder-35b-t06/frame-2000.webp",
      "frames/orrery/t5-lcpp6-tiel-coder-35b-t06/frame-6000.webp"
-    ]
+    ],
+    "live": "live/orrery/t5-lcpp6-tiel-coder-35b-t06/orrery.svg"
    },
    {
     "case": "t5-gemma-4-31b",
@@ -7723,7 +7727,8 @@
      "frames/orrery/t5-gemma-4-31b/frame-100.webp",
      "frames/orrery/t5-gemma-4-31b/frame-2000.webp",
      "frames/orrery/t5-gemma-4-31b/frame-6000.webp"
-    ]
+    ],
+    "live": "live/orrery/t5-gemma-4-31b/orrery.svg"
    },
    {
     "case": "t5-orcasaq2-cyber-27b",
@@ -7742,7 +7747,8 @@
     },
     "total": 7.0,
     "note": "6 planets (no Uranus, Neptune); Venus to Saturn exact (Earth 60 s) but Mercury runs twice too fast (7.45 s, should be 14.4); 'gears' are rings with a crossbar, no teeth; night side fixed away from the sun, continents spin; Moon too",
-    "frames": []
+    "frames": [],
+    "live": null
    },
    {
     "case": "t5-qwen3.6-27b",
@@ -7765,7 +7771,8 @@
      "frames/orrery/t5-qwen3.6-27b/frame-100.webp",
      "frames/orrery/t5-qwen3.6-27b/frame-2000.webp",
      "frames/orrery/t5-qwen3.6-27b/frame-6000.webp"
-    ]
+    ],
+    "live": "live/orrery/t5-qwen3.6-27b/orrery.svg"
    },
    {
     "case": "t5r2-lcpp6-tiel-coder-35b-t06",
@@ -7788,7 +7795,8 @@
      "frames/orrery/t5r2-lcpp6-tiel-coder-35b-t06/frame-100.webp",
      "frames/orrery/t5r2-lcpp6-tiel-coder-35b-t06/frame-2000.webp",
      "frames/orrery/t5r2-lcpp6-tiel-coder-35b-t06/frame-6000.webp"
-    ]
+    ],
+    "live": "live/orrery/t5r2-lcpp6-tiel-coder-35b-t06/orrery.svg"
    },
    {
     "case": "t5-lcpp6-flashnext-heretic2",
@@ -7811,7 +7819,8 @@
      "frames/orrery/t5-lcpp6-flashnext-heretic2/frame-100.webp",
      "frames/orrery/t5-lcpp6-flashnext-heretic2/frame-2000.webp",
      "frames/orrery/t5-lcpp6-flashnext-heretic2/frame-6000.webp"
-    ]
+    ],
+    "live": "live/orrery/t5-lcpp6-flashnext-heretic2/orrery.svg"
    },
    {
     "case": "t5r5-gemma-4-26b-a4b",
@@ -7834,7 +7843,8 @@
      "frames/orrery/t5r5-gemma-4-26b-a4b/frame-100.webp",
      "frames/orrery/t5r5-gemma-4-26b-a4b/frame-2000.webp",
      "frames/orrery/t5r5-gemma-4-26b-a4b/frame-6000.webp"
-    ]
+    ],
+    "live": "live/orrery/t5r5-gemma-4-26b-a4b/orrery.svg"
    },
    {
     "case": "t5r5-lcpp6-tiel-coder-35b-t06",
@@ -7857,7 +7867,8 @@
      "frames/orrery/t5r5-lcpp6-tiel-coder-35b-t06/frame-100.webp",
      "frames/orrery/t5r5-lcpp6-tiel-coder-35b-t06/frame-2000.webp",
      "frames/orrery/t5r5-lcpp6-tiel-coder-35b-t06/frame-6000.webp"
-    ]
+    ],
+    "live": "live/orrery/t5r5-lcpp6-tiel-coder-35b-t06/orrery.svg"
    },
    {
     "case": "t5-kolibri-1",
@@ -7880,7 +7891,8 @@
      "frames/orrery/t5-kolibri-1/frame-100.webp",
      "frames/orrery/t5-kolibri-1/frame-2000.webp",
      "frames/orrery/t5-kolibri-1/frame-6000.webp"
-    ]
+    ],
+    "live": "live/orrery/t5-kolibri-1/orrery.svg"
    },
    {
     "case": "t5r4-gemma-4-26b-a4b",
@@ -7903,7 +7915,8 @@
      "frames/orrery/t5r4-gemma-4-26b-a4b/frame-100.webp",
      "frames/orrery/t5r4-gemma-4-26b-a4b/frame-2000.webp",
      "frames/orrery/t5r4-gemma-4-26b-a4b/frame-6000.webp"
-    ]
+    ],
+    "live": "live/orrery/t5r4-gemma-4-26b-a4b/orrery.svg"
    },
    {
     "case": "t5-gemma-4-26b-a4b-vllm",
@@ -7926,7 +7939,8 @@
      "frames/orrery/t5-gemma-4-26b-a4b-vllm/frame-100.webp",
      "frames/orrery/t5-gemma-4-26b-a4b-vllm/frame-2000.webp",
      "frames/orrery/t5-gemma-4-26b-a4b-vllm/frame-6000.webp"
-    ]
+    ],
+    "live": "live/orrery/t5-gemma-4-26b-a4b-vllm/orrery.svg"
    },
    {
     "case": "t5-maya-glm-5.3-flash",
@@ -7949,7 +7963,8 @@
      "frames/orrery/t5-maya-glm-5.3-flash/frame-100.webp",
      "frames/orrery/t5-maya-glm-5.3-flash/frame-2000.webp",
      "frames/orrery/t5-maya-glm-5.3-flash/frame-6000.webp"
-    ]
+    ],
+    "live": "live/orrery/t5-maya-glm-5.3-flash/orrery.svg"
    },
    {
     "case": "t5r2-gemma-4-26b-a4b",
@@ -7972,7 +7987,8 @@
      "frames/orrery/t5r2-gemma-4-26b-a4b/frame-100.webp",
      "frames/orrery/t5r2-gemma-4-26b-a4b/frame-2000.webp",
      "frames/orrery/t5r2-gemma-4-26b-a4b/frame-6000.webp"
-    ]
+    ],
+    "live": "live/orrery/t5r2-gemma-4-26b-a4b/orrery.svg"
    },
    {
     "case": "t5r3-gemma-4-26b-a4b",
@@ -7995,7 +8011,8 @@
      "frames/orrery/t5r3-gemma-4-26b-a4b/frame-100.webp",
      "frames/orrery/t5r3-gemma-4-26b-a4b/frame-2000.webp",
      "frames/orrery/t5r3-gemma-4-26b-a4b/frame-6000.webp"
-    ]
+    ],
+    "live": "live/orrery/t5r3-gemma-4-26b-a4b/orrery.svg"
    },
    {
     "case": "t5-gemma-4-26b-a4b",
@@ -8018,7 +8035,8 @@
      "frames/orrery/t5-gemma-4-26b-a4b/frame-100.webp",
      "frames/orrery/t5-gemma-4-26b-a4b/frame-2000.webp",
      "frames/orrery/t5-gemma-4-26b-a4b/frame-6000.webp"
-    ]
+    ],
+    "live": "live/orrery/t5-gemma-4-26b-a4b/orrery.svg"
    },
    {
     "case": "t5r3-lcpp6-tiel-coder-35b-t06",
@@ -8041,7 +8059,8 @@
      "frames/orrery/t5r3-lcpp6-tiel-coder-35b-t06/frame-100.webp",
      "frames/orrery/t5r3-lcpp6-tiel-coder-35b-t06/frame-2000.webp",
      "frames/orrery/t5r3-lcpp6-tiel-coder-35b-t06/frame-6000.webp"
-    ]
+    ],
+    "live": "live/orrery/t5r3-lcpp6-tiel-coder-35b-t06/orrery.svg"
    },
    {
     "case": "t5-cyber-tiel-coder-35b",
@@ -8060,7 +8079,8 @@
     },
     "total": 0.0,
     "note": "no SVG: length stop at 32,000 tokens; 19k chars of prose, no SVG",
-    "frames": []
+    "frames": [],
+    "live": null
    },
    {
     "case": "t5-flashnext",
@@ -8079,7 +8099,8 @@
     },
     "total": 0.0,
     "note": "no SVG: length stop at the 32,000-token cap before any SVG",
-    "frames": []
+    "frames": [],
+    "live": null
    },
    {
     "case": "t5-lcpp6-orcarouter-fn-uncensored",
@@ -8098,7 +8119,8 @@
     },
     "total": 0.0,
     "note": "no SVG: stopped by itself after 24,386 tokens without writing an SVG",
-    "frames": []
+    "frames": [],
+    "live": null
    },
    {
     "case": "t5-qwen3.8-27b-uncensored-vllm",
@@ -8117,7 +8139,8 @@
     },
     "total": 0.0,
     "note": "no SVG: length stop at the 32,000-token cap before any SVG",
-    "frames": []
+    "frames": [],
+    "live": null
    },
    {
     "case": "t5-qwen3.8-27b-vllm",
@@ -8136,7 +8159,8 @@
     },
     "total": 0.0,
     "note": "no SVG: length stop at the 32,000-token cap before any SVG",
-    "frames": []
+    "frames": [],
+    "live": null
    },
    {
     "case": "t5-strata-swift15",
@@ -8155,7 +8179,8 @@
     },
     "total": 0.0,
     "note": "no SVG: length stop at the 32,000-token cap before any SVG",
-    "frames": []
+    "frames": [],
+    "live": null
    },
    {
     "case": "t5-tiel-coder-35b",
@@ -8174,7 +8199,8 @@
     },
     "total": 0.0,
     "note": "no SVG: length stop at the 32,000-token cap before any SVG",
-    "frames": []
+    "frames": [],
+    "live": null
    },
    {
     "case": "t5b1-qwen3.8-27b-vllm",
@@ -8193,7 +8219,8 @@
     },
     "total": 0.0,
     "note": "no SVG: length stop at 32,000 tokens, all thinking (five identical replies)",
-    "frames": []
+    "frames": [],
+    "live": null
    },
    {
     "case": "t5b2-qwen3.8-27b-vllm",
@@ -8212,7 +8239,8 @@
     },
     "total": 0.0,
     "note": "no SVG: length stop at 32,000 tokens, all thinking (five identical replies)",
-    "frames": []
+    "frames": [],
+    "live": null
    },
    {
     "case": "t5b3-qwen3.8-27b-vllm",
@@ -8231,7 +8259,8 @@
     },
     "total": 0.0,
     "note": "no SVG: length stop at 32,000 tokens, all thinking (five identical replies)",
-    "frames": []
+    "frames": [],
+    "live": null
    },
    {
     "case": "t5b4-qwen3.8-27b-vllm",
@@ -8250,7 +8279,8 @@
     },
     "total": 0.0,
     "note": "no SVG: length stop at 32,000 tokens, all thinking (five identical replies)",
-    "frames": []
+    "frames": [],
+    "live": null
    },
    {
     "case": "t5b5-qwen3.8-27b-vllm",
@@ -8269,7 +8299,8 @@
     },
     "total": 0.0,
     "note": "no SVG: length stop at 32,000 tokens, all thinking (five identical replies)",
-    "frames": []
+    "frames": [],
+    "live": null
    }
   ],
   "pagoda": [
@@ -8290,7 +8321,8 @@
     },
     "total": 0.0,
     "note": "no page: all 32,000 tokens went to thinking (31,991 reasoning tokens), still planning the pond when cut off",
-    "frames": []
+    "frames": [],
+    "live": null
    },
    {
     "case": "t6x64k-qwen3.8-27b-vllm",
@@ -8309,7 +8341,8 @@
     },
     "total": 0.0,
     "note": "no complete page: 53,302 reasoning tokens, then cut off 24.6 KB into a long, ambitious page (page-truncated.html)",
-    "frames": []
+    "frames": [],
+    "live": null
    },
    {
     "case": "t6-lcpp6-tiel-coder-35b-t06",
@@ -8332,7 +8365,8 @@
      "frames/pagoda/t6-lcpp6-tiel-coder-35b-t06/frame-1500.webp",
      "frames/pagoda/t6-lcpp6-tiel-coder-35b-t06/frame-5000.webp",
      "frames/pagoda/t6-lcpp6-tiel-coder-35b-t06/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6-lcpp6-tiel-coder-35b-t06/page.html"
    },
    {
     "case": "t6r2-lcpp6-tiel-coder-35b-t06",
@@ -8355,7 +8389,8 @@
      "frames/pagoda/t6r2-lcpp6-tiel-coder-35b-t06/frame-1500.webp",
      "frames/pagoda/t6r2-lcpp6-tiel-coder-35b-t06/frame-5000.webp",
      "frames/pagoda/t6r2-lcpp6-tiel-coder-35b-t06/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6r2-lcpp6-tiel-coder-35b-t06/page.html"
    },
    {
     "case": "t6r3-lcpp6-tiel-coder-35b-t06",
@@ -8378,7 +8413,8 @@
      "frames/pagoda/t6r3-lcpp6-tiel-coder-35b-t06/frame-1500.webp",
      "frames/pagoda/t6r3-lcpp6-tiel-coder-35b-t06/frame-5000.webp",
      "frames/pagoda/t6r3-lcpp6-tiel-coder-35b-t06/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6r3-lcpp6-tiel-coder-35b-t06/page.html"
    },
    {
     "case": "t6-tiel-coder-35b",
@@ -8397,7 +8433,8 @@
     },
     "total": 0.0,
     "note": "no page: thinking ran out the cap just as it said it would write the file",
-    "frames": []
+    "frames": [],
+    "live": null
    },
    {
     "case": "t6x64k-tiel-coder-35b",
@@ -8420,7 +8457,8 @@
      "frames/pagoda/t6x64k-tiel-coder-35b/frame-1500.webp",
      "frames/pagoda/t6x64k-tiel-coder-35b/frame-5000.webp",
      "frames/pagoda/t6x64k-tiel-coder-35b/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6x64k-tiel-coder-35b/page.html"
    },
    {
     "case": "t6-lcpp6-tiel-coder-35b-q4kxl-mtp",
@@ -8443,7 +8481,8 @@
      "frames/pagoda/t6-lcpp6-tiel-coder-35b-q4kxl-mtp/frame-1500.webp",
      "frames/pagoda/t6-lcpp6-tiel-coder-35b-q4kxl-mtp/frame-5000.webp",
      "frames/pagoda/t6-lcpp6-tiel-coder-35b-q4kxl-mtp/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6-lcpp6-tiel-coder-35b-q4kxl-mtp/page.html"
    },
    {
     "case": "t6r2-lcpp6-tiel-coder-35b-q4kxl-mtp",
@@ -8462,7 +8501,8 @@
     },
     "total": 0.0,
     "note": "no page: the reply is the same stray <tool_call> fragment of a voxel() helper repeated, no HTML",
-    "frames": []
+    "frames": [],
+    "live": null
    },
    {
     "case": "t6r3-lcpp6-tiel-coder-35b-q4kxl-mtp",
@@ -8485,7 +8525,8 @@
      "frames/pagoda/t6r3-lcpp6-tiel-coder-35b-q4kxl-mtp/frame-1500.webp",
      "frames/pagoda/t6r3-lcpp6-tiel-coder-35b-q4kxl-mtp/frame-5000.webp",
      "frames/pagoda/t6r3-lcpp6-tiel-coder-35b-q4kxl-mtp/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6r3-lcpp6-tiel-coder-35b-q4kxl-mtp/page.html"
    },
    {
     "case": "t6-gemma-4-26b-a4b",
@@ -8508,7 +8549,8 @@
      "frames/pagoda/t6-gemma-4-26b-a4b/frame-1500.webp",
      "frames/pagoda/t6-gemma-4-26b-a4b/frame-5000.webp",
      "frames/pagoda/t6-gemma-4-26b-a4b/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6-gemma-4-26b-a4b/page.html"
    },
    {
     "case": "t6r2-gemma-4-26b-a4b",
@@ -8531,7 +8573,8 @@
      "frames/pagoda/t6r2-gemma-4-26b-a4b/frame-1500.webp",
      "frames/pagoda/t6r2-gemma-4-26b-a4b/frame-5000.webp",
      "frames/pagoda/t6r2-gemma-4-26b-a4b/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6r2-gemma-4-26b-a4b/page.html"
    },
    {
     "case": "t6r3-gemma-4-26b-a4b",
@@ -8554,7 +8597,8 @@
      "frames/pagoda/t6r3-gemma-4-26b-a4b/frame-1500.webp",
      "frames/pagoda/t6r3-gemma-4-26b-a4b/frame-5000.webp",
      "frames/pagoda/t6r3-gemma-4-26b-a4b/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6r3-gemma-4-26b-a4b/page.html"
    },
    {
     "case": "t6nt1-qwen3.8-27b-vllm",
@@ -8577,7 +8621,8 @@
      "frames/pagoda/t6nt1-qwen3.8-27b-vllm/frame-1500.webp",
      "frames/pagoda/t6nt1-qwen3.8-27b-vllm/frame-5000.webp",
      "frames/pagoda/t6nt1-qwen3.8-27b-vllm/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6nt1-qwen3.8-27b-vllm/page.html"
    },
    {
     "case": "t6nt2-qwen3.8-27b-vllm",
@@ -8600,7 +8645,8 @@
      "frames/pagoda/t6nt2-qwen3.8-27b-vllm/frame-1500.webp",
      "frames/pagoda/t6nt2-qwen3.8-27b-vllm/frame-5000.webp",
      "frames/pagoda/t6nt2-qwen3.8-27b-vllm/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6nt2-qwen3.8-27b-vllm/page.html"
    },
    {
     "case": "t6nt3-qwen3.8-27b-vllm",
@@ -8623,7 +8669,8 @@
      "frames/pagoda/t6nt3-qwen3.8-27b-vllm/frame-1500.webp",
      "frames/pagoda/t6nt3-qwen3.8-27b-vllm/frame-5000.webp",
      "frames/pagoda/t6nt3-qwen3.8-27b-vllm/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6nt3-qwen3.8-27b-vllm/page.html"
    },
    {
     "case": "t6x1-exl3-qwen3.8-27b-mtp",
@@ -8642,7 +8689,8 @@
     },
     "total": 0.0,
     "note": "no page: cut off at 32,000 tokens (thinking budget 24,000 left too little for the page); partial page kept",
-    "frames": []
+    "frames": [],
+    "live": null
    },
    {
     "case": "t6x2-exl3-qwen3.8-27b-mtp",
@@ -8661,7 +8709,8 @@
     },
     "total": 0.0,
     "note": "no page: cut off at 32,000 tokens (thinking budget 24,000 left too little for the page); partial page kept",
-    "frames": []
+    "frames": [],
+    "live": null
    },
    {
     "case": "t6x3-exl3-qwen3.8-27b-mtp",
@@ -8684,7 +8733,8 @@
      "frames/pagoda/t6x3-exl3-qwen3.8-27b-mtp/frame-1500.webp",
      "frames/pagoda/t6x3-exl3-qwen3.8-27b-mtp/frame-5000.webp",
      "frames/pagoda/t6x3-exl3-qwen3.8-27b-mtp/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6x3-exl3-qwen3.8-27b-mtp/page.html"
    },
    {
     "case": "t6x1-exl3-qwen3.8-27b-dflash2",
@@ -8707,7 +8757,8 @@
      "frames/pagoda/t6x1-exl3-qwen3.8-27b-dflash2/frame-1500.webp",
      "frames/pagoda/t6x1-exl3-qwen3.8-27b-dflash2/frame-5000.webp",
      "frames/pagoda/t6x1-exl3-qwen3.8-27b-dflash2/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6x1-exl3-qwen3.8-27b-dflash2/page.html"
    },
    {
     "case": "t6x2-exl3-qwen3.8-27b-dflash2",
@@ -8730,7 +8781,8 @@
      "frames/pagoda/t6x2-exl3-qwen3.8-27b-dflash2/frame-1500.webp",
      "frames/pagoda/t6x2-exl3-qwen3.8-27b-dflash2/frame-5000.webp",
      "frames/pagoda/t6x2-exl3-qwen3.8-27b-dflash2/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6x2-exl3-qwen3.8-27b-dflash2/page.html"
    },
    {
     "case": "t6x3-exl3-qwen3.8-27b-dflash2",
@@ -8753,7 +8805,8 @@
      "frames/pagoda/t6x3-exl3-qwen3.8-27b-dflash2/frame-1500.webp",
      "frames/pagoda/t6x3-exl3-qwen3.8-27b-dflash2/frame-5000.webp",
      "frames/pagoda/t6x3-exl3-qwen3.8-27b-dflash2/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6x3-exl3-qwen3.8-27b-dflash2/page.html"
    },
    {
     "case": "t6b1-qwen3.8-27b-vllm",
@@ -8772,7 +8825,8 @@
     },
     "total": 0.0,
     "note": "no complete page: 23,992 reasoning tokens, then cut off inside the page (page-truncated.html, not rendered). The five r1-r5 replies are byte-identical",
-    "frames": []
+    "frames": [],
+    "live": null
    },
    {
     "case": "t6b2-qwen3.8-27b-vllm",
@@ -8791,7 +8845,8 @@
     },
     "total": 0.0,
     "note": "no complete page: same byte-identical reply as r1, cut off after 23,992 reasoning tokens",
-    "frames": []
+    "frames": [],
+    "live": null
    },
    {
     "case": "t6b3-qwen3.8-27b-vllm",
@@ -8810,7 +8865,8 @@
     },
     "total": 0.0,
     "note": "no complete page: same byte-identical reply as r1, cut off after 23,992 reasoning tokens",
-    "frames": []
+    "frames": [],
+    "live": null
    },
    {
     "case": "t6b4-qwen3.8-27b-vllm",
@@ -8829,7 +8885,8 @@
     },
     "total": 0.0,
     "note": "no complete page: same byte-identical reply as r1, cut off after 23,992 reasoning tokens",
-    "frames": []
+    "frames": [],
+    "live": null
    },
    {
     "case": "t6b5-qwen3.8-27b-vllm",
@@ -8848,7 +8905,8 @@
     },
     "total": 0.0,
     "note": "no complete page: same byte-identical reply as r1, cut off after 23,992 reasoning tokens",
-    "frames": []
+    "frames": [],
+    "live": null
    },
    {
     "case": "t6r4-gemma-4-26b-a4b",
@@ -8871,7 +8929,8 @@
      "frames/pagoda/t6r4-gemma-4-26b-a4b/frame-1500.webp",
      "frames/pagoda/t6r4-gemma-4-26b-a4b/frame-5000.webp",
      "frames/pagoda/t6r4-gemma-4-26b-a4b/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6r4-gemma-4-26b-a4b/page.html"
    },
    {
     "case": "t6r4-lcpp6-tiel-coder-35b-t06",
@@ -8894,7 +8953,8 @@
      "frames/pagoda/t6r4-lcpp6-tiel-coder-35b-t06/frame-1500.webp",
      "frames/pagoda/t6r4-lcpp6-tiel-coder-35b-t06/frame-5000.webp",
      "frames/pagoda/t6r4-lcpp6-tiel-coder-35b-t06/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6r4-lcpp6-tiel-coder-35b-t06/page.html"
    },
    {
     "case": "t6r5-gemma-4-26b-a4b",
@@ -8917,7 +8977,8 @@
      "frames/pagoda/t6r5-gemma-4-26b-a4b/frame-1500.webp",
      "frames/pagoda/t6r5-gemma-4-26b-a4b/frame-5000.webp",
      "frames/pagoda/t6r5-gemma-4-26b-a4b/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6r5-gemma-4-26b-a4b/page.html"
    },
    {
     "case": "t6r5-lcpp6-tiel-coder-35b-t06",
@@ -8940,7 +9001,8 @@
      "frames/pagoda/t6r5-lcpp6-tiel-coder-35b-t06/frame-1500.webp",
      "frames/pagoda/t6r5-lcpp6-tiel-coder-35b-t06/frame-5000.webp",
      "frames/pagoda/t6r5-lcpp6-tiel-coder-35b-t06/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6r5-lcpp6-tiel-coder-35b-t06/page.html"
    },
    {
     "case": "t6xn1-exl3-qwen3.8-27b-dflash2",
@@ -8963,7 +9025,8 @@
      "frames/pagoda/t6xn1-exl3-qwen3.8-27b-dflash2/frame-1500.webp",
      "frames/pagoda/t6xn1-exl3-qwen3.8-27b-dflash2/frame-5000.webp",
      "frames/pagoda/t6xn1-exl3-qwen3.8-27b-dflash2/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6xn1-exl3-qwen3.8-27b-dflash2/page.html"
    },
    {
     "case": "t6xn1-exl3-qwen3.8-27b-mtp",
@@ -8986,7 +9049,8 @@
      "frames/pagoda/t6xn1-exl3-qwen3.8-27b-mtp/frame-1500.webp",
      "frames/pagoda/t6xn1-exl3-qwen3.8-27b-mtp/frame-5000.webp",
      "frames/pagoda/t6xn1-exl3-qwen3.8-27b-mtp/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6xn1-exl3-qwen3.8-27b-mtp/page.html"
    },
    {
     "case": "t6xn2-exl3-qwen3.8-27b-dflash2",
@@ -9009,7 +9073,8 @@
      "frames/pagoda/t6xn2-exl3-qwen3.8-27b-dflash2/frame-1500.webp",
      "frames/pagoda/t6xn2-exl3-qwen3.8-27b-dflash2/frame-5000.webp",
      "frames/pagoda/t6xn2-exl3-qwen3.8-27b-dflash2/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6xn2-exl3-qwen3.8-27b-dflash2/page.html"
    },
    {
     "case": "t6xn2-exl3-qwen3.8-27b-mtp",
@@ -9032,7 +9097,8 @@
      "frames/pagoda/t6xn2-exl3-qwen3.8-27b-mtp/frame-1500.webp",
      "frames/pagoda/t6xn2-exl3-qwen3.8-27b-mtp/frame-5000.webp",
      "frames/pagoda/t6xn2-exl3-qwen3.8-27b-mtp/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6xn2-exl3-qwen3.8-27b-mtp/page.html"
    },
    {
     "case": "t6xn3-exl3-qwen3.8-27b-dflash2",
@@ -9055,7 +9121,8 @@
      "frames/pagoda/t6xn3-exl3-qwen3.8-27b-dflash2/frame-1500.webp",
      "frames/pagoda/t6xn3-exl3-qwen3.8-27b-dflash2/frame-5000.webp",
      "frames/pagoda/t6xn3-exl3-qwen3.8-27b-dflash2/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6xn3-exl3-qwen3.8-27b-dflash2/page.html"
    },
    {
     "case": "t6xn3-exl3-qwen3.8-27b-mtp",
@@ -9078,7 +9145,8 @@
      "frames/pagoda/t6xn3-exl3-qwen3.8-27b-mtp/frame-1500.webp",
      "frames/pagoda/t6xn3-exl3-qwen3.8-27b-mtp/frame-5000.webp",
      "frames/pagoda/t6xn3-exl3-qwen3.8-27b-mtp/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6xn3-exl3-qwen3.8-27b-mtp/page.html"
    },
    {
     "case": "t6hq1-qwen3.8-27b-vllm-031",
@@ -9101,7 +9169,8 @@
      "frames/pagoda/t6hq1-qwen3.8-27b-vllm-031/frame-1500.webp",
      "frames/pagoda/t6hq1-qwen3.8-27b-vllm-031/frame-5000.webp",
      "frames/pagoda/t6hq1-qwen3.8-27b-vllm-031/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6hq1-qwen3.8-27b-vllm-031/page.html"
    },
    {
     "case": "t6unc1-cyber-tiel-coder-35b",
@@ -9124,7 +9193,8 @@
      "frames/pagoda/t6unc1-cyber-tiel-coder-35b/frame-1500.webp",
      "frames/pagoda/t6unc1-cyber-tiel-coder-35b/frame-5000.webp",
      "frames/pagoda/t6unc1-cyber-tiel-coder-35b/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6unc1-cyber-tiel-coder-35b/page.html"
    },
    {
     "case": "t6unc1-lcpp6-flashnext-abliterated-s15",
@@ -9147,7 +9217,8 @@
      "frames/pagoda/t6unc1-lcpp6-flashnext-abliterated-s15/frame-1500.webp",
      "frames/pagoda/t6unc1-lcpp6-flashnext-abliterated-s15/frame-5000.webp",
      "frames/pagoda/t6unc1-lcpp6-flashnext-abliterated-s15/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6unc1-lcpp6-flashnext-abliterated-s15/page.html"
    },
    {
     "case": "t6unc1-lcpp6-flashnext-heretic2",
@@ -9170,7 +9241,8 @@
      "frames/pagoda/t6unc1-lcpp6-flashnext-heretic2/frame-1500.webp",
      "frames/pagoda/t6unc1-lcpp6-flashnext-heretic2/frame-5000.webp",
      "frames/pagoda/t6unc1-lcpp6-flashnext-heretic2/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6unc1-lcpp6-flashnext-heretic2/page.html"
    },
    {
     "case": "t6unc1-lcpp6-orcarouter-fn-uncensored",
@@ -9193,7 +9265,8 @@
      "frames/pagoda/t6unc1-lcpp6-orcarouter-fn-uncensored/frame-1500.webp",
      "frames/pagoda/t6unc1-lcpp6-orcarouter-fn-uncensored/frame-5000.webp",
      "frames/pagoda/t6unc1-lcpp6-orcarouter-fn-uncensored/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6unc1-lcpp6-orcarouter-fn-uncensored/page.html"
    },
    {
     "case": "t6unc1-lcpp6-orcasaq2-cyber-27b",
@@ -9216,7 +9289,8 @@
      "frames/pagoda/t6unc1-lcpp6-orcasaq2-cyber-27b/frame-1500.webp",
      "frames/pagoda/t6unc1-lcpp6-orcasaq2-cyber-27b/frame-5000.webp",
      "frames/pagoda/t6unc1-lcpp6-orcasaq2-cyber-27b/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6unc1-lcpp6-orcasaq2-cyber-27b/page.html"
    },
    {
     "case": "t6unc1-lcpp6-q38-27b-cyber-q5",
@@ -9239,7 +9313,8 @@
      "frames/pagoda/t6unc1-lcpp6-q38-27b-cyber-q5/frame-1500.webp",
      "frames/pagoda/t6unc1-lcpp6-q38-27b-cyber-q5/frame-5000.webp",
      "frames/pagoda/t6unc1-lcpp6-q38-27b-cyber-q5/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6unc1-lcpp6-q38-27b-cyber-q5/page.html"
    },
    {
     "case": "t6unc1-lcpp6-q38-coder390",
@@ -9262,7 +9337,8 @@
      "frames/pagoda/t6unc1-lcpp6-q38-coder390/frame-1500.webp",
      "frames/pagoda/t6unc1-lcpp6-q38-coder390/frame-5000.webp",
      "frames/pagoda/t6unc1-lcpp6-q38-coder390/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6unc1-lcpp6-q38-coder390/page.html"
    },
    {
     "case": "t6unc1-lcpp6-thinkingcap-27b-heretic",
@@ -9285,7 +9361,8 @@
      "frames/pagoda/t6unc1-lcpp6-thinkingcap-27b-heretic/frame-1500.webp",
      "frames/pagoda/t6unc1-lcpp6-thinkingcap-27b-heretic/frame-5000.webp",
      "frames/pagoda/t6unc1-lcpp6-thinkingcap-27b-heretic/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6unc1-lcpp6-thinkingcap-27b-heretic/page.html"
    },
    {
     "case": "t6unc1-q38-27b-cyber",
@@ -9308,7 +9385,8 @@
      "frames/pagoda/t6unc1-q38-27b-cyber/frame-1500.webp",
      "frames/pagoda/t6unc1-q38-27b-cyber/frame-5000.webp",
      "frames/pagoda/t6unc1-q38-27b-cyber/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6unc1-q38-27b-cyber/page.html"
    },
    {
     "case": "t6unc1-qwen3.8-27b-uncensored-vllm",
@@ -9331,7 +9409,8 @@
      "frames/pagoda/t6unc1-qwen3.8-27b-uncensored-vllm/frame-1500.webp",
      "frames/pagoda/t6unc1-qwen3.8-27b-uncensored-vllm/frame-5000.webp",
      "frames/pagoda/t6unc1-qwen3.8-27b-uncensored-vllm/frame-10000.webp"
-    ]
+    ],
+    "live": "live/pagoda/t6unc1-qwen3.8-27b-uncensored-vllm/page.html"
    }
   ]
  },
@@ -9341,6 +9420,7 @@
   "test3": 49,
   "oneshots": 79,
   "frames": 162,
-  "pass": 122
+  "pass": 122,
+  "live": 54
  }
 }

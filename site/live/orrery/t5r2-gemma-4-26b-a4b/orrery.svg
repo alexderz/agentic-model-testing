@@ -1,0 +1,159 @@
+<svg viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg" style="background: #050505; border-radius: 8px;">
+  <defs>
+    <!-- Brass Material Gradient -->
+    <linearGradient id="brass" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D4AF37" />
+      <stop offset="50%" stop-color="#F9E076" />
+      <stop offset="100%" stop-color="#8B4513" />
+    </linearGradient>
+    
+    <!-- Glow Effects -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceOver"/>
+      </feMerge>
+    </filter>
+
+    <!-- Planet Gradients (Day/Night Shadow) -->
+    <radialGradient id="earthGrad">
+      <stop offset="40%" stop-color="#2b82c9" />
+      <stop offset="70%" stop-color="#001a33" />
+    </radialGradient>
+    <radialGradient id="marsGrad">
+      <stop offset="40%" stop-color="#e27b58" />
+      <stop offset="70%" stop-color="#3d1a11" />
+    </radialGradient>
+    <radialGradient id="jupiterGrad">
+      <stop offset="40%" stop-color="#d39c58" />
+      <stop offset="70%" stop-color="#2e1a05" />
+    </radialGradient>
+
+    <!-- Gear Teeth Pattern -->
+    <pattern id="gearTeeth" width="20" height="20" patternUnits="userSpaceOnUse">
+      <circle cx="10" cy="10" r="8" fill="none" stroke="#D4AF37" stroke-width="2" stroke-dasharray="4 2" />
+    </pattern>
+  </defs>
+
+  <!-- Background Stars -->
+  <g fill="white" opacity="0.3">
+    <circle cx="100" cy="100" r="1" />
+    <circle cx="700" cy="150" r="1.5" />
+    <circle cx="400" cy="50" r="1" />
+    <circle cx="150" cy="600" r="1" />
+    <circle cx="650" cy="700" r="1.2" />
+    <circle cx="200" cy="300" r="0.5" />
+  </g>
+
+  <!-- The Sun (Central Drive) -->
+  <g filter="url(#glow)">
+    <circle cx="400" cy="400" r="50" fill="url(#brass)" />
+    <circle cx="400" cy="400" r="35" fill="#FFD700" opacity="0.6">
+      <animate attributeName="r" values="35;40;35" dur="3s" repeatCount="indefinite" />
+    </circle>
+    <circle cx="400" cy="400" r="55" fill="none" stroke="#FFD700" stroke-width="2" stroke-dasharray="5,5" opacity="0.5">
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="20s" repeatCount="indefinite" />
+    </circle>
+  </g>
+
+  <!-- Central Gear (The Sun Gear) -->
+  <g id="central-gear" transform="translate(400, 400)">
+    <circle r="70" fill="none" stroke="url(#brass)" stroke-width="8" stroke-dasharray="2,4" />
+    <circle r="60" fill="none" stroke="#8B4513" stroke-width="2" opacity="0.5" />
+    <style>
+      #central-gear { animation: rotateGear 20s linear infinite; }
+      @keyframes rotateGear { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    </style>
+  </g>
+
+  <!-- Orbital System Container -->
+  <g transform="translate(400, 400)">
+    
+    <!-- Orbit 1: Mercury -->
+    <g class="orbit" id="mercury-orbit">
+      <circle r="80" fill="none" stroke="#444" stroke-width="1" />
+      <circle r="5" fill="#A5A5A5" />
+      <!-- Planet Shadow -->
+      <circle r="5" fill="url(#earthGrad)" opacity="0.8">
+         <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="4s" repeatCount="indefinite" />
+      </circle>
+    </g>
+
+    <!-- Orbit 2: Venus -->
+    <g class="orbit" id="venus-orbit">
+      <circle r="120" fill="none" stroke="#444" stroke-width="1" />
+      <circle r="8" fill="#E3BB76" />
+      <circle r="8" fill="url(#earthGrad)" opacity="0.8">
+         <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="10s" repeatCount="indefinite" />
+      </circle>
+    </g>
+
+    <!-- Orbit 3: Earth -->
+    <g class="orbit" id="earth-orbit">
+      <circle r="160" fill="none" stroke="#444" stroke-width="1" />
+      <circle r="10" fill="#2b82c9" />
+      <!-- Shadow simulating day/night -->
+      <circle r="10" fill="url(#earthGrad)" opacity="0.9">
+         <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="18s" repeatCount="indefinite" />
+      </circle>
+    </g>
+
+    <!-- Orbit 4: Mars -->
+    <g class="orbit" id="mars-orbit">
+      <circle r="210" fill="none" stroke="#444" stroke-width="1" />
+      <circle r="8" fill="#e27b58" />
+      <circle r="8" fill="url(#marsGrad)" opacity="0.9">
+         <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="30s" repeatCount="indefinite" />
+      </circle>
+    </g>
+
+    <!-- Orbit 5: Jupiter (The Giant Gear) -->
+    <g class="orbit" id="jupiter-orbit">
+      <circle r="280" fill="none" stroke="#444" stroke-width="1" />
+      <!-- The "Gear" for Jupiter -->
+      <circle r="25" fill="none" stroke="url(#brass)" stroke-width="6" stroke-dasharray="5,3" />
+      <circle r="18" fill="url(#jupiterGrad)" />
+      <circle r="18" fill="url(#earthGrad)" opacity="0.7">
+         <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="60s" repeatCount="indefinite" />
+      </circle>
+    </g>
+
+    <!-- Orbit 6: Saturn -->
+    <g class="orbit" id="saturn-orbit">
+      <circle r="350" fill="none" stroke="#444" stroke-width="1" />
+      <ellipse cx="0" cy="0" rx="25" ry="8" fill="none" stroke="#C5AB6E" stroke-width="4" transform="rotate(-15)" />
+      <circle r="14" fill="#E2D1B0" />
+      <circle r="14" fill="url(#earthGrad)" opacity="0.7">
+         <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="100s" repeatCount="indefinite" />
+      </circle>
+    </g>
+
+  </g>
+
+  <!-- Styling and Animation Logic -->
+  <style>
+    .orbit {
+      transform-origin: center;
+    }
+    
+    /* The movement of planets is handled by animating the rotation 
+       of the group containing the planet, creating a circular path. */
+    #mercury-orbit { animation: orbitRotate 4s linear infinite; }
+    #venus-orbit { animation: orbitRotate 10s linear infinite; }
+    #earth-orbit { animation: orbitRotate 18s linear infinite; }
+    #mars-orbit { animation: orbitRotate 30s linear infinite; }
+    #jupiter-orbit { animation: orbitRotate 60s linear infinite; }
+    #saturn-orbit { animation: orbitRotate 100s linear infinite; }
+
+    @keyframes orbitRotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Visual Polish for the brass texture */
+    circle, ellipse {
+      transition: all 0.3s ease;
+    }
+  </style>
+</svg>

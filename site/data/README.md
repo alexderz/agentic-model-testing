@@ -5,7 +5,7 @@ number, list, chart, chip and count on the page is derived from this file at loa
 finding, a test or a one-shot result needs **no HTML, CSS or JS change**. Rebuild the file, publish, done.
 
 ```
-python3 -I site/tools/build_data.py        # rebuilds bakeoff.json and copies frames into site/frames/
+python3 -I site/tools/build_data.py        # rebuilds bakeoff.json, copies frames into site/frames/ and the live pieces into site/live/
 node site/tools/check_site.mjs             # proves the page's derivations run on the new file (CI runs this too)
 bash site/tools/render_smoke.sh            # local only: renders the real file and every mutated copy in headless Chromium
 ```
@@ -16,7 +16,7 @@ bash site/tools/render_smoke.sh            # local only: renders the real file a
 | --- | --- |
 | `reports/dashboard/data.json` | `generated`, `hardware`, `caveats`, `picks` (from `recs`), `timeline`, `events` (results only, latest 80), `models`, `runs`, `test3`, `ab` |
 | the build itself | `built`, the time `build_data.py` ran; shown next to `generated` so readers can see the run table is older than the findings |
-| `oneshots/{orrery,pagoda}/grades.tsv` + `*/frames/*.webp` | `oneshots.orrery`, `oneshots.pagoda` (frames are copied, never the model-written files) |
+| `oneshots/{orrery,pagoda}/grades.tsv` + `*/frames/*.webp` + the model's own file | `oneshots.orrery`, `oneshots.pagoda`: frames are copied to `site/frames/`, and the model's own file, byte for byte, to `site/live/<set>/<case>/page.html` or `orrery.svg` (`live` field) |
 | `site/data/curated.json` (hand-written) | `title`, `tagline`, `tests`, `findings`, `links` |
 
 Everything that is prose on the page and *not* in this file is a section intro that stays true whatever the data says.
@@ -43,6 +43,20 @@ as gear teeth, pagoda scores as petals, …); it is decorative and hidden from a
   `.webp` are shown; `..`, dot-files and empty segments are rejected. Anything else is dropped silently. The number in
   the file name (`frame-2000.webp`) is read as milliseconds for the flipbook label and alt text. The flipbook starts
   on the last (richest) frame and only ever steps onto frames that have really loaded; if none loads the card is blank.
+- Live pieces: `oneshots.*[].live` is shown as a "Play live" control only when it matches
+  `^live/(pagoda|orrery)/[A-Za-z0-9._-]+/(page\.html|orrery\.svg)$` and contains no `..`; anything else (an absolute
+  URL, `javascript:`, another extension, another set, a deeper path, `null`) gets no control. The viewer rules:
+  the piece runs in an `<iframe sandbox="allow-scripts" referrerpolicy="no-referrer" loading="lazy">` created when the
+  viewer opens (never `allow-same-origin`, `allow-top-navigation`, `allow-popups`, `allow-forms` or `allow-modals`,
+  so the piece has an opaque origin and cannot touch this page, navigate it, open windows or submit forms); the
+  `src` is set only on open and set to `about:blank` and the element removed on close or when stepping to the next
+  piece, so at most one WebGL page runs at a time; `index.html`'s CSP allows `frame-src 'self'` and nothing else.
+  The live files are served as-is and are not covered by `index.html`'s CSP; the pagoda pages load three.js from
+  cdn.jsdelivr.net and some load Google Fonts, inside the sandbox. `dom.js` only lets a live path onto an `<iframe>`. The files are also reachable by
+  their own URL, where they run without the sandbox (Pages cannot send a CSP header); the site never links them that way.
+  An orrery SVG is sized from its root tag (fixed `width`/`height` is laid out at that size and scaled to fit, a
+  `viewBox` alone keeps its aspect, neither fills the stage); that needs the file's text, which is fetched
+  same-origin and only matched with a regular expression, never parsed into the page.
 - Links: only `https://github.com/alexderz/agentic-model-testing` itself, or that followed by `/`, `#` or `?`, becomes
   a link (never with `..`); links open in a new tab with `rel="noopener noreferrer"`.
 - Free text (`note`, `verdict`, `text`, …) is always inserted as text, never as markup.
@@ -74,7 +88,7 @@ Fields marked *opt* may be missing or `null`. Types are what the page expects; i
 | `test3` | list | Test 3 rows. |
 | `ab` | list | Engine A/B speed probes. |
 | `oneshots` | object of lists | One list per one-shot set (`orrery`, `pagoda`, …). New sets appear automatically. |
-| `counts` | object, opt | `models`, `runs`, `test3`, `oneshots`, `frames`, `pass`. Informational; the page recounts from the lists and the checker compares the two. |
+| `counts` | object, opt | `models`, `runs`, `test3`, `oneshots`, `frames`, `pass`, `live`. Informational; the page recounts from the lists and the checker compares the two. |
 
 ### `tests[]`
 
@@ -169,6 +183,7 @@ engines give the ×gain shown next to the model.
 | `total` | float, opt | Sum of points; recomputed when missing. |
 | `note` | str | Grader's note. |
 | `frames` | list of str | `frames/<set>/<case>/frame-<ms>.webp`, ascending time. Empty list = blank card. |
+| `live` | str or null | `live/<set>/<case>/page.html` (pagoda) or `live/<set>/<case>/orrery.svg` (orrery): the model's own file, copied byte for byte. `null` when the reply produced no file. Shown as "Play live" only when it passes the allow-list above; the hero count, the gallery header line, the set cards and the filter count all count these. |
 
 ## Recipes
 
@@ -185,7 +200,9 @@ its family colour and label.
 
 **Add a one-shot set.** Put a `grades.tsv` and frames under `oneshots/<set>/`, register the set in `build_data.py`'s
 `oneshots` call, and describe its test in `curated.json`. The gallery, the set summary cards and the test filter pick
-it up without page changes.
+it up without page changes. Its pieces will *not* be playable until the live allow-list in `data.js` (`LIVE_RE`) and
+the checker's cases know the new set name and file name: that is deliberate, a new kind of file should be looked at
+before the site serves it.
 
 ## Wished fields
 

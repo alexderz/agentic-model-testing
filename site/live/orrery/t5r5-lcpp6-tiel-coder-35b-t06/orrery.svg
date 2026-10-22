@@ -1,0 +1,184 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="1000" height="1000" font-family="Georgia, serif">
+<defs>
+  <radialGradient id="bg" cx="50%" cy="42%" r="72%">
+    <stop offset="0" stop-color="#262013"/><stop offset="0.6" stop-color="#14100a"/><stop offset="1" stop-color="#080604"/>
+  </radialGradient>
+  <linearGradient id="brass" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#f9e6a6"/><stop offset="0.35" stop-color="#d2a134"/>
+    <stop offset="0.7" stop-color="#8a5c17"/><stop offset="1" stop-color="#50340a"/>
+  </linearGradient>
+  <linearGradient id="brassH" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#fff3c4"/><stop offset="0.5" stop-color="#c6902a"/><stop offset="1" stop-color="#6b4710"/>
+  </linearGradient>
+  <radialGradient id="sunG" cx="50%" cy="50%" r="50%">
+    <stop offset="0" stop-color="#fffdf0"/><stop offset="0.35" stop-color="#ffe478"/>
+    <stop offset="0.75" stop-color="#e79f22"/><stop offset="1" stop-color="#8a510e"/>
+  </radialGradient>
+  <radialGradient id="vign" cx="50%" cy="50%" r="70%">
+    <stop offset="0.6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.7"/>
+  </radialGradient>
+  <radialGradient id="night" cx="30%" cy="45%" r="85%">
+    <stop offset="0" stop-color="#000" stop-opacity="0"/><stop offset="0.5" stop-color="#000" stop-opacity="0.15"/>
+    <stop offset="1" stop-color="#000" stop-opacity="0.88"/>
+  </radialGradient>
+  <filter id="glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="7"/></filter>
+
+  <!-- reusable teeth, one per tooth count -->
+  <g id="t12"><rect x="44" y="-6" width="12" height="16" rx="2.5"/></g>
+  <g id="t8"><rect x="44" y="-6" width="12" height="15" rx="2.5"/></g>
+  <g id="t6"><rect x="44" y="-6" width="12" height="14" rx="2"/></g>
+
+  <!-- cog12 : outer 46, pitch 43, body 40, hub 14 -->
+  <symbol id="cog12" viewBox="-60 -60 120 120" overflow="visible">
+    <g fill="url(#brass)" stroke="#3d2807" stroke-width="1.4">
+      <circle cx="0" cy="0" r="40"/>
+      <use href="#t12"/>
+      <use href="#t12" transform="rotate(30)"/><use href="#t12" transform="rotate(60)"/>
+      <use href="#t12" transform="rotate(90)"/><use href="#t12" transform="rotate(120)"/>
+      <use href="#t12" transform="rotate(150)"/><use href="#t12" transform="rotate(180)"/>
+      <use href="#t12" transform="rotate(210)"/><use href="#t12" transform="rotate(240)"/>
+      <use href="#t12" transform="rotate(270)"/><use href="#t12" transform="rotate(300)"/>
+      <use href="#t12" transform="rotate(330)"/>
+    </g>
+    <circle cx="0" cy="0" r="15" fill="#2c1d06"/><circle cx="0" cy="0" r="9" fill="url(#brassH)" stroke="#3d2807" stroke-width="1"/>
+  </symbol>
+  <!-- cog8 : outer 31 -->
+  <symbol id="cog8" viewBox="-45 -45 90 90" overflow="visible">
+    <g fill="url(#brass)" stroke="#3d2807" stroke-width="1.4">
+      <circle cx="0" cy="0" r="25"/>
+      <use href="#t8"/>
+      <use href="#t8" transform="rotate(45)"/><use href="#t8" transform="rotate(90)"/>
+      <use href="#t8" transform="rotate(135)"/><use href="#t8" transform="rotate(180)"/>
+      <use href="#t8" transform="rotate(225)"/><use href="#t8" transform="rotate(270)"/>
+      <use href="#t8" transform="rotate(315)"/>
+    </g>
+    <circle cx="0" cy="0" r="11" fill="#2c1d06"/><circle cx="0" cy="0" r="6.5" fill="url(#brassH)" stroke="#3d2807" stroke-width="1"/>
+  </symbol>
+  <!-- cog6 : outer 23 -->
+  <symbol id="cog6" viewBox="-38 -38 76 76" overflow="visible">
+    <g fill="url(#brass)" stroke="#3d2807" stroke-width="1.4">
+      <circle cx="0" cy="0" r="18"/>
+      <use href="#t6"/>
+      <use href="#t6" transform="rotate(60)"/><use href="#t6" transform="rotate(120)"/>
+      <use href="#t6" transform="rotate(180)"/><use href="#t6" transform="rotate(240)"/>
+      <use href="#t6" transform="rotate(300)"/>
+    </g>
+    <circle cx="0" cy="0" r="8" fill="#2c1d06"/><circle cx="0" cy="0" r="5" fill="url(#brassH)" stroke="#3d2807" stroke-width="0.8"/>
+  </symbol>
+</defs>
+
+<!-- backdrop -->
+<rect width="1000" height="1000" fill="url(#bg)"/>
+<circle cx="500" cy="470" r="470" fill="none" stroke="url(#brass)" stroke-width="26" opacity="0.85"/>
+<circle cx="500" cy="470" r="470" fill="none" stroke="#2c1d06" stroke-width="1.5" opacity="0.6"/>
+<g opacity="0.5" stroke="#e9c76a" stroke-width="2" stroke-dasharray="1 9" fill="none">
+  <circle cx="500" cy="470" r="60"/><circle cx="500" cy="470" r="105"/><circle cx="500" cy="470" r="150"/>
+  <circle cx="500" cy="470" r="195"/><circle cx="500" cy="470" r="255"/><circle cx="500" cy="470" r="315"/>
+  <circle cx="500" cy="470" r="375"/><circle cx="500" cy="470" r="435"/>
+</g>
+
+<!-- ================= MESHING ENGINE GEAR TRAIN ================= -->
+<!-- sun wheel drives everything; pinions mesh & counter-rotate at tooth-ratio speeds -->
+<g transform="translate(500 470)">
+  <!-- sun wheel (drives orbits) : CW, slow -->
+  <g transform="scale(1.15)">
+    <use href="#cog12" filter="url(#glow)" opacity="0.35"/>
+    <g><use href="#cog12"/>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="24s" repeatCount="indefinite"/>
+    </g>
+  </g>
+  <!-- pinion A meshes with sun wheel bottom : CCW, 12/8 faster -->
+  <g transform="translate(0 88) scale(1.1)">
+    <g transform="rotate(15)"><use href="#cog8"/>
+      <animateTransform attributeName="transform" type="rotate" from="15" to="-345" dur="16s" repeatCount="indefinite"/>
+    </g>
+  </g>
+  <!-- pinion B meshes with sun wheel lower-right : CCW -->
+  <g transform="translate(74 62) scale(1.05)">
+    <g transform="rotate(200)"><use href="#cog8"/>
+      <animateTransform attributeName="transform" type="rotate" from="200" to="-160" dur="16s" repeatCount="indefinite"/>
+    </g>
+  </g>
+  <!-- idler C meshes with pinion A : CW, 8/8 -->
+  <g transform="translate(-58 118) scale(0.9)">
+    <g transform="rotate(40)"><use href="#cog6"/>
+      <animateTransform attributeName="transform" type="rotate" from="40" to="400" dur="12s" repeatCount="indefinite"/>
+    </g>
+  </g>
+</g>
+
+<!-- ================= PLANETS (real relative orbital speeds) ================= -->
+<!-- orbit radii are compressed; DURATIONS ∝ true period (Mercury=88d base) -->
+<g transform="translate(500 470)">
+
+  <!-- Mercury 88d -->
+  <g><animateTransform attributeName="transform" type="rotate" from="25 0 0" to="385 0 0" dur="8s" repeatCount="indefinite"/>
+    <g transform="translate(60 0)"><circle r="8" fill="url(#brassH)"/><g clip-path="url(#cp8)">
+      <rect x="-9" y="-9" width="18" height="18" fill="#9a8f82" opacity="0.001"/>
+      <g fill="#6f665a"><circle cx="2" cy="-2" r="2.1"/><circle cx="-3" cy="2" r="1.5"/><circle cx="3" cy="2.5" r="1"/></g>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="2.2s" repeatCount="indefinite"/></g>
+    </g><circle r="8" fill="url(#planetM)"/><circle r="8" fill="url(#night)"/></g>
+
+  <!-- Venus 225d -->
+  <g><animateTransform attributeName="transform" type="rotate" from="300 0 0" to="660 0 0" dur="20.4s" repeatCount="indefinite"/>
+    <g transform="translate(105 0)"><g fill="#c69a5a" opacity="0.001"><rect x="-8" y="-8" width="16" height="16"/></g>
+      <g clip-path="url(#cp11)"><ellipse cx="0" cy="-2" rx="7" ry="3" fill="#b0843f"/><ellipse cx="1" cy="2" rx="6" ry="2.4" fill="#b0843f"/>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="9s" repeatCount="indefinite"/></g>
+    </g><circle r="11" fill="url(#planetV)"/><circle r="11" fill="url(#night)"/></g>
+
+  <!-- Earth 365d -->
+  <g><animateTransform attributeName="transform" type="rotate" from="40 0 0" to="400 0 0" dur="33s" repeatCount="indefinite"/>
+    <g transform="translate(150 0)"><g clip-path="url(#cp12)">
+      <g fill="#4c8f4a"><ellipse cx="-2" cy="-3" rx="4" ry="2.6"/><ellipse cx="3" cy="2" rx="3.4" ry="2"/><ellipse cx="-3" cy="3" rx="2.4" ry="1.5"/></g>
+      <g fill="#2f5fa0"><circle cx="2" cy="-2" r="3.4"/><circle cx="-2" cy="2.5" r="2.6"/></g>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="2s" repeatCount="indefinite"/></g>
+    </g><circle r="12" fill="url(#planetE)"/><circle r="12" fill="url(#night)"/></g>
+
+  <!-- Mars 687d -->
+  <g><animateTransform attributeName="transform" type="rotate" from="120 0 0" to="480 0 0" dur="50.9s" repeatCount="indefinite"/>
+    <g transform="translate(195 0)"><g clip-path="url(#cp13)">
+      <g fill="#a14"><circle cx="0" cy="0" r="8"/><circle cx="-2.5" cy="-1.5" r="1.8" fill="#832816"/><circle cx="2.5" cy="1.5" r="1.3" fill="#832816"/></g>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="2.1s" repeatCount="indefinite"/></g>
+    </g><circle r="13" fill="url(#planetMa)"/><circle r="13" fill="url(#night)"/></g>
+
+  <!-- Jupiter 4333d -->
+  <g><animateTransform attributeName="transform" type="rotate" from="200 0 0" to="560 0 0" dur="196s" repeatCount="indefinite"/>
+    <g transform="translate(255 0)"><g clip-path="url(#cp20)">
+      <g fill="#c9a06a"><rect x="-10" y="-8" width="20" height="2.4"/><rect x="-10" y="-2.5" width="20" height="3.2"/><rect x="-10" y="3" width="20" height="2.6"/><rect x="-10" y="7.4" width="20" height="2"/></g>
+      <ellipse cx="2" cy="3" rx="3" ry="2.2" fill="#b05a3a"/>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="0.9s" repeatCount="indefinite"/></g>
+    </g><circle r="20" fill="url(#planetJ)"/><circle r="20" fill="url(#night)"/></g>
+
+  <!-- Saturn 10759d -->
+  <g><animateTransform attributeName="transform" type="rotate" from="90 0 0" to="450 0 0" dur="488s" repeatCount="indefinite"/>
+    <g transform="translate(315 0)">
+      <g transform="rotate(-20)"><ellipse cx="0" cy="0" rx="30" ry="8" fill="none" stroke="url(#brassH)" stroke-width="4" opacity="0.85"/><ellipse cx="0" cy="0" rx="24" ry="6" fill="none" stroke="#8a5c17" stroke-width="1.2" opacity="0.7"/></g>
+      <circle r="15" fill="url(#planetSa)"/>
+      <g clip-path="url(#cp15)"><g fill="#b58a3a"><rect x="-16" y="-4" width="32" height="2.4"/><rect x="-16" y="2" width="32" height="3"/><rect x="-16" y="-9" width="32" height="1.8"/></g>
+        <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="1s" repeatCount="indefinite"/></g>
+    </g><circle r="15" fill="url(#planetSa)"/><circle r="15" fill="url(#night)"/></g>
+
+  <!-- Uranus 30687d -->
+  <g><animateTransform attributeName="transform" type="rotate" from="330 0 0" to="690 0 0" dur="1394s" repeatCount="indefinite"/>
+    <g transform="translate(375 0)"><g clip-path="url(#cp10)">
+      <g fill="#7fd6d6"><rect x="-11" y="-5" width="22" height="1.6"/><rect x="-11" y="0" width="22" height="2"/><rect x="-11" y="5" width="22" height="1.4"/></g>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="1.2s" repeatCount="indefinite"/></g>
+    </g><circle r="10" fill="url(#planetUr)"/><circle r="10" fill="url(#night)"/></g>
+
+  <!-- Neptune 60190d -->
+  <g><animateTransform attributeName="transform" type="rotate" from="15 0 0" to="375 0 0" dur="4176s" repeatCount="indefinite"/>
+    <g transform="translate(435 0)"><g clip-path="url(#cp10)">
+      <g fill="#3a5fd0"><rect x="-11" y="-4" width="22" height="1.8"/><rect x="-11" y="1" width="22" height="2.4"/><ellipse cx="0" cy="-1" rx="3" ry="2.4" fill="#243c8f"/></g>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="1.1s" repeatCount="indefinite"/></g>
+    </g><circle r="10" fill="url(#planetNe)"/><circle r="10" fill="url(#night)"/></g>
+
+</g>
+
+<!-- ================= SUN ================= -->
+<circle cx="500" cy="470" r="70" fill="url(#sunG)" filter="url(#glow)" opacity="0.9"/>
+<circle cx="500" cy="470" r="44" fill="url(#sunG)"/>
+<circle cx="500" cy="470" r="44" fill="none" stroke="#fff3c4" stroke-width="1.5" opacity="0.8"/>
+<circle cx="500" cy="470" r="30" fill="#fff8dc" opacity="0.5"/>
+
+<rect width="1000" height="1000" fill="url(#vign)"/>
+</svg>

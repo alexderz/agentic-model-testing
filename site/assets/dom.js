@@ -1,6 +1,6 @@
 // Tiny DOM builder. Everything is createElement + textContent; attributes go through setAttribute
 // after validation. No HTML-string insertion anywhere.
-import { isFrameUrl, isRepoUrl, OTHER_COLOR } from './data.js';
+import { isFrameUrl, isLiveUrl, isRepoUrl, OTHER_COLOR } from './data.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 const URL_ATTRS = new Set(['href', 'src', 'xlink:href', 'action', 'formaction', 'poster']);
@@ -23,7 +23,8 @@ function setAttrs(node, attrs) {
     if (k.startsWith('on') || k === 'style') continue; // no inline handlers or style strings
     if (URL_ATTRS.has(k)) {
       const s = String(v);
-      if (k === 'src' && !isFrameUrl(s)) continue;
+      // src: frames for anything, a live piece only on an <iframe> (viewer.js adds the sandbox before the src)
+      if (k === 'src' && !(node.tagName === 'IFRAME' ? isLiveUrl(s) : isFrameUrl(s))) continue;
       if (k === 'href' && !(isRepoUrl(s) || /^#[A-Za-z0-9_-]+$/.test(s))) continue;
       if (k !== 'src' && k !== 'href') continue;
     }

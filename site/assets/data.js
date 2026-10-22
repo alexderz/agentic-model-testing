@@ -5,6 +5,9 @@
 // Frame paths: relative, under frames/, every segment starts with a letter/digit/_/- (so "." and ".." segments and
 // dot-files are impossible), no "//", and the lookahead rejects ".." anywhere at all.
 export const FRAME_RE = /^(?!.*\.\.)frames\/(?:[A-Za-z0-9_-][A-Za-z0-9._-]*\/)*[A-Za-z0-9_-][A-Za-z0-9._-]*\.webp$/;
+// Live pieces (the model's own one-shot file, run only inside a sandboxed iframe): exactly live/<set>/<case>/<file>
+// with the two known sets and file names, one case segment of safe characters, and never ".." anywhere.
+export const LIVE_RE = /^live\/(pagoda|orrery)\/[A-Za-z0-9._-]+\/(page\.html|orrery\.svg)$/;
 export const REPO_PREFIX = 'https://github.com/alexderz/agentic-model-testing';
 export const OTHER_FAMILIES = new Set(['other', 'unknown', '']);
 export const OTHER_COLOR = '#8a94a8'; // neutral silver for Other/Unknown; never handed to a real family
@@ -21,6 +24,7 @@ export function num(x) {
   return null;
 }
 export const isFrameUrl = (s) => typeof s === 'string' && FRAME_RE.test(s);
+export const isLiveUrl = (s) => typeof s === 'string' && !s.includes('..') && LIVE_RE.test(s);
 // Exactly the repository, or the repository followed by "/", "#" or "?". Nothing with "..", whitespace or quotes.
 export function isRepoUrl(s) {
   if (typeof s !== 'string' || !s.startsWith(REPO_PREFIX)) return false;
@@ -135,6 +139,7 @@ export function normalize(raw) {
         case: str(r.case), entry: str(r.entry), test: testKey(r.test), finish: str(r.finish), tokens: num(r.tokens),
         wall_s: num(r.wall_s), tok_s: num(r.tok_s), points, total,
         note: str(r.note), frames: arr(r.frames).filter(isFrameUrl).map((f) => ({ url: f, ms: frameMs(f) })),
+        live: isLiveUrl(r.live) ? r.live : null, // anything that fails the allow-list gets no Play control
       };
     });
   }
@@ -251,6 +256,7 @@ export function summary(data) {
   const models = Object.keys(obj(data.models));
   const oneshotRows = Object.values(obj(data.oneshots)).flat();
   const frames = oneshotRows.reduce((s, r) => s + r.frames.length, 0);
+  const playable = oneshotRows.filter((r) => r.live).length;
   const passes = runs.filter((r) => r.verdict === 'pass').length;
   const tps = runs.map((r) => r.tps).filter((v) => v != null);
   const dates = [...runs.map((r) => r.finished), ...arr(data.test3).map((r) => r.finished)].filter(Boolean).sort();
@@ -259,7 +265,7 @@ export function summary(data) {
   const minutes = runs.reduce((s, r) => s + (r.minutes || 0), 0) + arr(data.test3).reduce((s, r) => s + (r.minutes || 0), 0);
   return {
     models: models.length, families: families.length, runs: runs.length, passes, test3: arr(data.test3).length,
-    oneshots: oneshotRows.length, frames, uncensored: models.filter((m) => data.models[m].uncensored).length,
+    oneshots: oneshotRows.length, frames, playable, uncensored: models.filter((m) => data.models[m].uncensored).length,
     fastest: tps.length ? Math.max(...tps) : null, slowest: tps.length ? Math.min(...tps) : null,
     first: dates[0] || '', last: dates[dates.length - 1] || '', newestFinding: findingDates[findingDates.length - 1] || '', agentHours: minutes / 60,
     tests: new Set([...runs.map(effectiveTest), ...arr(data.test3).length ? ['3'] : [], ...oneshotRows.map((r) => r.test)]).size,
@@ -459,7 +465,7 @@ export function oneshotSets(data) {
     const t = rows.length ? testOf(data, rows[0].test) : null;
     const pm = rows.length ? pointMax(data, rows[0].test) : 1;
     const graded = rows.filter((r) => r.total != null);
-    return { set, test: rows.length ? rows[0].test : '?', name: t ? t.name : set, n: rows.length, withFrames: rows.filter((r) => r.frames.length).length,
+    return { set, test: rows.length ? rows[0].test : '?', name: t ? t.name : set, n: rows.length, withFrames: rows.filter((r) => r.frames.length).length, live: rows.filter((r) => r.live).length,
       pointMax: pm, full: graded.filter((r) => r.points.length && r.total >= r.points.length * pm).length, zero: graded.filter((r) => r.total === 0).length,
       cut: rows.filter((r) => r.finish === 'length').length, mean: graded.length ? graded.reduce((s, r) => s + r.total, 0) / graded.length : null };
   });

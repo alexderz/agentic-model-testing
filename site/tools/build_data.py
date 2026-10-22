@@ -7,7 +7,8 @@
 
   python3 -I site/tools/build_data.py [--dashboard PATH]
 
-Only rendered frames (webp images) are copied, never a model-written file (oneshots/README.md). The output then goes
+Rendered frames (webp) and the models' own pages (page.html, orrery.svg; byte for byte, opened only in a sandboxed
+iframe) are copied into site/frames/ and site/live/. The output then goes
 through a publication check: it fails on anything that looks like a private address, host path or account name.
 Stdlib only; deterministic for the same inputs.
 """
@@ -57,11 +58,19 @@ def oneshots(test, key):
             os.makedirs(os.path.dirname(os.path.join(SITE, rel)), exist_ok=True)
             shutil.copyfile(p, os.path.join(SITE, rel))
             frames.append(rel)
+        # The model's own page (Alex 2026-10-22: "We want to serve the pagodas and orrery on the site. The code is safe").
+        # Copied byte for byte, never edited; the page opens it only in <iframe sandbox="allow-scripts">.
+        live = None
+        own = os.path.join(ROOT, "oneshots", key, case, "page.html" if key == "pagoda" else "orrery.svg")
+        if os.path.isfile(own):
+            live = os.path.join("live", key, case, os.path.basename(own))
+            os.makedirs(os.path.dirname(os.path.join(SITE, live)), exist_ok=True)
+            shutil.copyfile(own, os.path.join(SITE, live))
         num = lambda x: float(x) if x not in ("", None) and re.fullmatch(r"-?[0-9.]+", x) else None
         rows.append({"case": case, "entry": r["entry"], "test": test, "finish": r.get("finish"),
                      "tokens": num(r.get("tokens")), "wall_s": num(r.get("wall_s")), "tok_s": num(r.get("tok_s")),
                      "points": {k: num(r.get(k)) for k in "ABCDE"}, "total": num(r.get("total")),
-                     "note": r.get("note") or "", "frames": frames})
+                     "note": r.get("note") or "", "frames": frames, "live": live})
     return rows
 
 
@@ -75,6 +84,7 @@ HOSTY = re.compile(r"lan\.example|vpn\.example|\btitan\b|\bIris\b")  # entries a
 events = [e for e in D.get("events", []) if e.get("kind") in EVENT_KINDS and not HOSTY.search(e.get("text") or "")][:80]
 
 shutil.rmtree(os.path.join(SITE, "frames"), ignore_errors=True)
+shutil.rmtree(os.path.join(SITE, "live"), ignore_errors=True)
 hw = dict(D.get("hardware", {}))
 hw["weights"] = "read over the network from a NAS, ~180-280 MB/s first load"
 out = {
@@ -92,7 +102,8 @@ out = {
 c = out["counts"] = {"models": len(models), "runs": len(runs), "test3": len(test3),
                      "oneshots": sum(len(v) for v in out["oneshots"].values()),
                      "frames": sum(len(r["frames"]) for v in out["oneshots"].values() for r in v),
-                     "pass": sum(r["verdict"] == "pass" for r in runs)}
+                     "pass": sum(r["verdict"] == "pass" for r in runs),
+                     "live": sum(1 for v in out["oneshots"].values() for r in v if r["live"])}
 body = json.dumps(out, indent=1, ensure_ascii=False, sort_keys=False)
 
 # Publication check: nothing private may leave.

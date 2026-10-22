@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Voxel Japanese Pagoda</title>
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #f8d9d9; }
+  #app { width: 100vw; height: 100vh; display: block; }
+  #hint { position: fixed; left: 12px; bottom: 10px; font: 12px/1.4 system-ui, sans-serif;
+          color: #555; background: rgba(255,255,255,.6); padding: 4px 8px; border-radius: 6px; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="hint">Drag to orbit · scroll to zoom</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+// ---------- Renderer ----------
+const app = document.getElementById('app');
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+app.appendChild(renderer.domElement);
+
+// ---------- Scene & gradient sky ----------
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0xf8d9d9, 0.006);
+
+function gradientTexture() {
+  const c = document.createElement('canvas');
+  c.width = 1; c.height = 256;
+  const ctx = c.getContext('2d');
+  const g = ctx.createLinearGradient(0, 0, 0, 256);
+  g.addColorStop(0.00, '#bcd6e6');
+  g.addColorStop(0.45, '#f6d6d6');
+  g.addColorStop(0.75, '#ffe6cf');
+  g.addColorStop(1.00, '#ffeecf');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, 1, 256);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+scene.background = gradientTexture();
+
+// ---------- Camera & orbit ----------
+const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 600);
+camera.position.set(30, 24, 34);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.set(0, 9, 0);
+controls.autoRotate = true;
+controls.autoRotateSpeed = 0.5;
+controls.enableDamping = true;
+controls.dampingFactor = 0.06;
+controls.maxPolarAngle = Math.PI / 2.05;
+controls.minDistance = 16;
+controls.maxDistance = 95;
+controls.update();
+
+// ---------- Lights ----------
+scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+scene.add(new THREE.HemisphereLight(0xbfd4ff, 0x7a6a52, 0.5));
+
+const sun = new THREE.DirectionalLight(0xfff3d0, 1.7);
+sun.position.set(24, 40, 20);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.camera.near = 1;
+sun.shadow.camera.far = 140;
+const s = 45;
+sun.shadow.camera.left = -s; sun.shadow.camera.right = s;
+sun.shadow.camera.top = s;  sun.shadow.camera.bottom = -s;
+sun.shadow.bias = -0.0004;
+scene.add(sun);
+scene.add(sun.target);
+
+// ---------- Helpers ----------
+function box(w, h, d, color, x = 0, y = 0, z = 0, opts = {}) {
+  const m = new THREE.MeshStandardMaterial({
+    color, roughness: opts.roughness ?? 0.8, metalness: opts.metalness ?? 0,
+    transparent: opts.transparent ?? false, opacity: opts.opacity ?? 1, side: opts.side ?? THREE.FrontSide
+  });
+  const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m);
+  mesh.position.set(x, y, z);
+  mesh.castShadow = opts.castShadow ?? true;
+  mesh.receiveShadow = opts.receiveShadow ?? true;
+  return mesh;
+}
+
+// ---------- Pagoda ----------
+const pagoda = new THREE.Group();
+scene.add(pagoda);
+
+const ROOF = 0x2b2b30, WOOD = 0x7a4527, DARK_WOOD = 0x553016;
+
+// Stone platform (two steps)
+pagoda.add(box(24, 1.6, 24, 0x8f8f8f, 0, 0.8, 0, { roughness: 1 }));
+pagoda.add(box(20, 0.5, 20, 0x9d9d9d, 0, 1.65, 0, { roughness: 1 }));
+
+let y = 2.15; // top of platform
+const stories = [
+  { w: 11.5, d: 11.5, h: 3.3, door: true },
+  { w: 9.6,  d: 9.6,  h: 3.0, door: false },
+  { w: 8.0,  d: 8.0,  h: 2.7, door: false },
+  { w: 6.6,  d: 6.6,  h: 2.5, door: false },
+  { w: 5.2,  d: 5.2,  h: 2.3, door: false },
+];
+
+for (const st of stories) {
+  // body
+  pagoda.add(box(st.w, st.h, st.d, WOOD, 0, y + st.h / 2, 0, { roughness: 0.85 }));
+  // dark base plinth
+  pagoda.add(box(st.w + 0.25, 0.45, st.d + 0.25, DARK_WOOD, 0, y + 0.25, 0, { roughness: 0.9 }));
+
+  // door / windows (dark recessed openings)
+  const winH = st.h * 0.42;
+  if (st.door) {
+    pagoda.add(box(2.4, 2.4, 0.35, 0x170f09, 0, y + 1.35, st.d / 2 + 0.05, { roughness: 1, castShadow: false }));
+  }
+  pagoda.add(box(st.w * 0.22, winH, 0.3, 0x17120c, 0, y + st.h * 0.6, st.d / 2 + 0.05,
+    { roughness: 1, castShadow: false }));
+  pagoda.add(box(st.w * 0.22, winH, 0.3, 0x17120c, 0, y + st.h * 0.6, -st.d / 2 - 0.05,
+    { roughness: 1, castShadow: false }));
+
+  // eaves (roof slab) with overhang
+  const ov = 2.1;
+  const roofY = y + st.h;
+  pagoda.add(box(st.w + ov, 0.45, st.d + ov, ROOF, 0, roofY + 0.22, 0, { roughness: 0.7 }));
+  // inner ridge slab
+  pagoda.add(box(st.w * 0.72, 0.28, st.d * 0.72, DARK_WOOD, 0, roofY + 0.46, 0, { roughness: 0.85 }));
+  // upturned corners
+  const up = 1.0;
+  const cx = (st.w + ov) / 2 - 0.5;
+  const cz = (st.d + ov) / 2 - 0.5;
+  for (const sx of [-1, 1]) for (const sz of [-1, 1]) {
+    pagoda.add(box(0.9, up, 0.9, ROOF, sx * cx, roofY + 0.45 + up / 2, sz * cz, { roughness: 0.7 }));
+  }
+
+  y = roofY + 0.45; // next story sits on the eaves slab
+}
+
+// Spire (sorin)
+const baseY = y;
+pagoda.add(box(2.2, 0.7, 2.2, DARK_WOOD, 0, baseY + 0.35, 0, { roughness: 0.8 }));
+let ry = baseY + 0.7;
+for (let i = 0; i < 5; i++) {
+  const r = 0.95 - i * 0.13;
+  pagoda.add(box(r * 1.5, 0.26, r * 1.5, 0x3a3a3a, 0, ry + 0.13, 0, { roughness: 0.5, metalness: 0.2 }));
+  ry += 0.32;
+}
+pagoda.add(box(0.4, 4.2, 0.4, 0x262626, 0, ry + 2.1, 0, { roughness: 0.4, metalness: 0.3 }));
+pagoda.add(box(0.85, 1.0, 0.85, 0xd4af37, 0, ry + 4.5, 0, { roughness: 0.3, metalness: 0.7 }));
+pagoda.add(box(0.5, 0.7, 0.5, 0xffe873, 0, ry + 5.3, 0, { roughness: 0.3, metalness: 0.7 }));
+
+// ---------- Ground ----------
+scene.add(box(160, 0.5, 160, 0x6c8f4a, 0, -0.25, 0, { roughness: 1 }));
+
+// ---------- Cherry blossom trees ----------
+function makeTree(x, z, scale = 1) {
+  const t = new THREE.Group();
+  const trunk = 0x5a3a22;
+  const blooms = [0xf7a8c4, 0xffc0db, 0xf9a7c1, 0xffd0dc];
+  const th = 5.2 * scale;
+  t.add(box(0.75 * scale, th, 0.75 * scale, trunk, x, th / 2, z, { roughness: 1 }));
+  t.add(box(0.55 * scale, 2.2 * scale, 0.55 * scale, trunk, x + 0.9 * scale, th - 0.4, z + 0.4 * scale, { roughness: 1 }));
+  t.add(box(0.55 * scale, 2.4 * scale, 0.55 * scale, trunk, x - 0.7 * scale, th - 0.6, z - 0.5 * scale, { roughness: 1 }));
+  const clusters = [
+    [x, th + 1.1, z, 2.9],
+    [x + 1.5 * scale, th + 0.2, z + 0.9 * scale, 1.9],
+    [x - 1.4 * scale, th - 0.1, z - 0.7 * scale, 1.8],
+    [x + 0.4 * scale, th + 1.9, z + 0.6 * scale, 1.7],
+    [x - 0.6 * scale, th + 1.6, z - 0.5 * scale, 1.6],
+    [x + 0.9 * scale, th + 0.6, z - 0.8 * scale, 1.5],
+  ];
+  clusters.forEach((c, i) => {
+    t.add(box(c[3], c[3], c[3], blooms[i % blooms.length], c[0], c[1], c[2], { roughness: 0.8 }));
+  });
+  return t;
+}
+scene.add(makeTree(-13, 5, 1.25));
+scene.add(makeTree(14, -6, 1.05));
+scene.add(makeTree(-11, -11, 0.95));
+scene.add(makeTree(9, 12, 0.85));
+
+// ---------- Torii gate ----------
+function makeTorii(x, z, rotY = 0) {
+  const g = new THREE.Group();
+  const red = 0xc0392b, dark = 0x8b2a1e;
+  const H = 6.6, gap = 5, r = 0.55;
+  for (const sx of [-1, 1]) {
+    const px = x + sx * (gap / 2);
+    g.add(box(r * 2, H, r * 2, red, px, H / 2, z, { roughness: 0.55 }));
+    g.add(box(r * 2 + 0.4, 0.5, r * 2 + 0.4, dark, px, 0.25, z, { roughness: 0.75 }));
+  }
+  g.add(box(gap + r * 2, 0.55, 0.85, red, x, H - 1.1, z, { roughness: 0.55 }));
+  g.add(box(1.1, 1.35, 0.35, 0xf5deb3, x, H - 1.75, z, { roughness: 0.7 }));
+  g.add(box(gap + r * 3.2, 0.72, 1.1, dark, x, H - 0.15, z, { roughness: 0.55 }));
+  g.add(box(gap + r * 3.6, 0.45, 0.85, dark, x, H + 0.45, z, { roughness: 0.55 }));
+  g.rotation.y = rotY;
+  return g;
+}
+scene.add(makeTorii(0, 13.5, 0));
+
+// ---------- Pond ----------
+const POND_Y = 0.18;
+function makePond(cx, cz, a, b) {
+  const g = new THREE.Group();
+  const step = 1.0;
+  for (let x = -a; x <= a; x += step) {
+    for (let z = -b; z <= b; z += step) {
+      if (x * x / (a * a) + z * z / (b * b) <= 1) {
+        const deep = x * x / (a * a) + z * z / (b * b);
+        const shade = deep < 0.55 ? 0x6bb4d8 : 0x3f84a8;
+        g.add(box(step * 0.96, 0.32 + (1 - deep) * 0.1, step * 0.96, shade,
+          cx + x, POND_Y, cz + z, { roughness: 0.15, metalness: 0.15 }));
+      }
+    }
+  }
+  // rim stones
+  for (let x = -a; x <= a; x += step * 1.3) {
+    for (let z = -b; z <= b; z += step * 1.3) {
+      if (Math.abs(x * x / (a * a) + z * z / (b * b) - 1) < 0.16) {
+        const sh = 0x8f8f8f;
+        g.add(box(0.9, 0.6, 0.9, sh, cx + x, 0.3, cz + z, { roughness: 1 }));
+      }
+    }
+  }
+  return g;
+}
+scene.add(makePond(8, 8.5, 6.2, 4.3));
+scene.add(makePond(-9, 10.5, 3.6, 2.6));
+
+// ---------- Stone lantern near pond ----------
+function makeLantern(x, z) {
+  const g = new THREE.Group();
+  const stone = 0x9d9d9d;
+  g.add(box(1.3, 0.45, 1.3, stone, x, 0.22, z, { roughness: 1 }));
+  g.add(box(0.5, 2.5, 0.5, stone, x, 1.45, z, { roughness: 1 }));
+  g.add(box(0.55, 0.5, 0.55, stone, x, 2.95, z, { roughness: 1 }));
+  g.add(box(1.0, 0.35, 1.0, stone, x, 3.35, z, { roughness: 1 }));
+  const glow = new THREE.PointLight(0xffcc66, 0.7, 7);
+  glow.position.set(x, 2.9, z);
+  g.add(glow);
+  g.add(box(0.35, 0.5, 0.35, 0xfff0c0, x, 2.9, z, { roughness: 0.4 }));
+  return g;
+}
+scene.add(makeLantern(4.2, 5.5));
+
+// ---------- Drifting blossoms ----------
+const petalGeo = new THREE.BoxGeometry(0.3, 0.05, 0.22);
+const petalColors = [0xffb7c5, 0xffc9d1, 0xf7a8c4, 0xffe0ea];
+const petals = [];
+const petalGroup = new THREE.Group();
+scene.add(petalGroup);
+for (let i = 0; i < 140; i++) {
+  const mat = new THREE.MeshStandardMaterial({
+    color: petalColors[i % petalColors.length], roughness: 0.6, side: THREE.DoubleSide
+  });
+  const m = new THREE.Mesh(petalGeo, mat);
+  const px = (Math.random() - 0.5) * 54, pz = (Math.random() - 0.5) * 54;
+  m.position.set(px, Math.random() * 30 + 3, pz);
+  m.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+  m.userData = {
+    vy: 0.02 + Math.random() * 0.035,
+    phase: Math.random() * Math.PI * 2,
+    swaySpeed: 0.6 + Math.random() * 0.9,
+    startX: px, startZ: pz,
+    spin: (Math.random() - 0.5) * 0.06,
+  };
+  m.castShadow = false;
+  petals.push(m);
+  petalGroup.add(m);
+}
+
+// ---------- Animate ----------
+let t = 0;
+function animate() {
+  requestAnimationFrame(animate);
+  t += 0.016;
+  controls.update();
+
+  petals.forEach(p => {
+    p.position.y -= p.userData.vy;
+    p.userData.phase += 0.02;
+    const s = p.userData.swaySpeed;
+    p.position.x = p.userData.startX + Math.sin(p.userData.phase * s) * 1.6;
+    p.position.z = p.userData.startZ + Math.cos(p.userData.phase * s * 0.8) * 1.6;
+    p.rotation.x += p.userData.spin;
+    p.rotation.y += p.userData.spin * 0.8;
+    if (p.position.y < 0) {
+      p.position.y = 28 + Math.random() * 8;
+      p.userData.startX = (Math.random() - 0.5) * 54;
+      p.userData.startZ = (Math.random() - 0.5) * 54;
+      p.position.x = p.userData.startX;
+      p.position.z = p.userData.startZ;
+    }
+  });
+
+  renderer.render(scene, camera);
+}
+animate();
+
+// ---------- Resize ----------
+addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+</script>
+</body>
+</html>

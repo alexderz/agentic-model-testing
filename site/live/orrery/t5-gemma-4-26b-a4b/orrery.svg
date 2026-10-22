@@ -1,0 +1,123 @@
+<svg viewBox="0 0 -800 600" xmlns="http://www.w3.org/2000/svg" style="background: #1a120b; border-radius: 8px;">
+  <defs>
+    <!-- Gear Shape -->
+    <path id="gear-shape" d="M20,0 a20,20 0 1,1 0,40 a20,20 0 1,1 0,-40 M20,10 a10,10 0 1,0 0,20 A10,10 0 1,0 20,10" />
+    
+    <!-- Gradients -->
+    <radialGradient id="sunGradient">
+      <stop offset="0%" stop-color="#fff700" />
+      <stop offset="70%" stop-color="#ff8c00" />
+      <stop offset="100%" stop-color="#ff4500" />
+    </radialGradient>
+    
+    <radialGradient id="planetShadow">
+      <stop offset="30%" stop-color="rgba(0,0,0,0)" />
+      <stop offset="70%" stop-color="rgba(0,0,0,0.8)" />
+    </radialGradient>
+
+    <!-- Brass/Metallic Texture -->
+    <linearGradient id="brass" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d4af37" />
+      <stop offset="50%" stop-color="#f9e076" />
+      <stop offset="100%" stop-color="#b8860b" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background Glow -->
+  <circle cx="0" cy="0" r="250" fill="url(#sunGradient)" opacity="0.15" />
+
+  <!-- Orbit Paths (The "Brass" Rings) -->
+  <g stroke="#5d4037" stroke-width="1" fill="none" stroke-dasharray="4 2">
+    <circle cx="0" cy="0" r="80" />
+    <circle cx="0" cy="0" r="130" />
+    <circle cx="0" cy="0" r="180" />
+    <circle cx="0" cy="0" r="240" />
+    <circle cx="0" cy="0" r="310" />
+    <circle cx="0" cy="0" r="380" />
+  </g>
+
+  <!-- Central Sun -->
+  <circle cx="0" cy="0" r="40" fill="url(#sunGradient)">
+    <animate attributeName="r" values="40;42;40" dur="4s" repeatCount="indefinite" />
+  </circle>
+
+  <!-- Main Clockwork Mechanism (Central Gears) -->
+  <g opacity="0.6">
+    <use href="#gear-shape" x="0" y="0" transform="scale(5) rotate(0deg)" fill="#8b4513" />
+    <use href="#gear-shape" x="0" y="0" transform="scale(3.5) rotate(45deg)" fill="#d4af37">
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="10s" repeatCount="indefinite" />
+    </use>
+    <use href="#gear-shape" x="0" y="0" transform="scale(1.5) rotate(-45deg)" fill="#cd7f32">
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="3s" repeatCount="indefinite" />
+    </use>
+  </g>
+
+  <!-- Planet Template Logic:
+       1. Orbiting Group (Rotates around center)
+       2. Planet Body (Stays at edge, rotates to show day/night)
+       3. Shadow Overlay (A gradient that stays on the dark side)
+  -->
+
+  <!-- Mercury -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="5s" repeatCount="indefinite" />
+    <g transform="translate(80, 0)">
+      <circle r="5" fill="#9e9e9e" />
+      <circle r="5" fill="url(#planetShadow)" />
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="5s" repeatCount="indefinite" />
+    </g>
+  </g>
+
+  <!-- Venus -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="12s" repeatCount="indefinite" />
+    <g transform="translate(130, 0)">
+      <circle r="8" fill="#e6e6fa" />
+      <circle r="8" fill="url(#planetShadow)" />
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="12s" repeatCount="indefinite" />
+    </g>
+  </g>
+
+  <!-- Earth -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="20s" repeatCount="indefinite" />
+    <g transform="translate(180, 0)">
+      <circle r="9" fill="#2196f3" />
+      <circle r="9" fill="url(#planetShadow)" />
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="20s" repeatCount="indefinite" />
+    </g>
+  </g>
+
+  <!-- Mars -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="35s" repeatCount="indefinite" />
+    <g transform="translate(240, 0)">
+      <circle r="7" fill="#ff5722" />
+      <circle r="7" fill="url(#planetShadow)" />
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="35s" repeatCount="indefinite" />
+    </g>
+  </g>
+
+  <!-- Jupiter -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="60s" repeatCount="indefinite" />
+    <g transform="translate(310, 0)">
+      <circle r="15" fill="#d2b48c" />
+      <circle r="15" fill="url(#planetShadow)" />
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="60s" repeatCount="indefinite" />
+    </g>
+  </g>
+
+  <!-- Saturn -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="90s" repeatCount="indefinite" />
+    <g transform="translate(380, 0)">
+      <circle r="13" fill="#f4a460" />
+      <!-- Saturn's Rings -->
+      <ellipse cx="0" cy="0" rx="22" ry="6" fill="none" stroke="#d4af37" stroke-width="3" opacity="0.7" />
+      <circle r="13" fill="url(#planetShadow)" />
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="90s" repeatCount="indefinite" />
+    </g>
+  </g>
+
+</svg>

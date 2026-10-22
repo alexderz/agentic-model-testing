@@ -1,6 +1,6 @@
-# Publishes the site/ directory to GitHub Pages, minus its build tools. The one-shot model output under oneshots/ is
-# never part of the Pages artifact; the site shows only the offline-rendered frames that site/tools/build_data.py
-# copies into site/frames/. Pull requests run the data check only.
+# Publishes the site/ directory to GitHub Pages, minus its build tools. site/tools/build_data.py copies the offline-rendered
+# frames into site/frames/ and the models' one-shot files, byte for byte, into site/live/; the page runs a live piece only
+# inside <iframe sandbox="allow-scripts">. Pull requests run the data check only.
 name: pages
 on:
   push:

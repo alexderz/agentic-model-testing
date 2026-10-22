@@ -1,0 +1,711 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800">
+  <defs>
+    <!-- Brass gradient -->
+    <linearGradient id="brass" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f0c040"/>
+      <stop offset="30%" stop-color="#c8962e"/>
+      <stop offset="50%" stop-color="#e8b830"/>
+      <stop offset="70%" stop-color="#a07820"/>
+      <stop offset="100%" stop-color="#d4a428"/>
+    </linearGradient>
+
+    <!-- Dark brass -->
+    <linearGradient id="darkBrass" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8a6820"/>
+      <stop offset="50%" stop-color="#6a5018"/>
+      <stop offset="100%" stop-color="#5a4010"/>
+    </linearGradient>
+
+    <!-- Sun glow -->
+    <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fff8e0"/>
+      <stop offset="20%" stop-color="#ffd700"/>
+      <stop offset="50%" stop-color="#ff8c00"/>
+      <stop offset="80%" stop-color="#cc5500"/>
+      <stop offset="100%" stop-color="#88330000"/>
+    </radialGradient>
+
+    <!-- Sun core -->
+    <radialGradient id="sunCore" cx="40%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="#fffde8"/>
+      <stop offset="40%" stop-color="#ffe066"/>
+      <stop offset="100%" stop-color="#ff9900"/>
+    </radialGradient>
+
+    <!-- Mercury -->
+    <radialGradient id="mercuryGrad" cx="35%" cy="35%" r="50%">
+      <stop offset="0%" stop-color="#c2b280"/>
+      <stop offset="60%" stop-color="#8a7a5a"/>
+      <stop offset="100%" stop-color="#5a4a30"/>
+    </radialGradient>
+
+    <!-- Venus -->
+    <radialGradient id="venusGrad" cx="35%" cy="35%" r="50%">
+      <stop offset="0%" stop-color="#f5deb3"/>
+      <stop offset="50%" stop-color="#daa520"/>
+      <stop offset="100%" stop-color="#8b7355"/>
+    </radialGradient>
+
+    <!-- Earth -->
+    <radialGradient id="earthGrad" cx="35%" cy="35%" r="50%">
+      <stop offset="0%" stop-color="#87ceeb"/>
+      <stop offset="40%" stop-color="#4a90d9"/>
+      <stop offset="70%" stop-color="#228b22"/>
+      <stop offset="100%" stop-color="#1a5c1a"/>
+    </radialGradient>
+
+    <!-- Mars -->
+    <radialGradient id="marsGrad" cx="35%" cy="35%" r="50%">
+      <stop offset="0%" stop-color="#e8a87c"/>
+      <stop offset="50%" stop-color="#c0402a"/>
+      <stop offset="100%" stop-color="#6b2010"/>
+    </radialGradient>
+
+    <!-- Day/night shadow overlay -->
+    <radialGradient id="nightShadow" cx="30%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="white" stop-opacity="0"/>
+      <stop offset="50%" stop-color="black" stop-opacity="0"/>
+      <stop offset="100%" stop-color="black" stop-opacity="0.75"/>
+    </radialGradient>
+
+    <!-- Glow filter -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Gear tooth template for Mercury gear (36 teeth) -->
+    <g id="mercuryGear">
+      <circle r="85" fill="url(#brass)" stroke="#8a6820" stroke-width="1"/>
+      <circle r="78" fill="url(#darkBrass)" stroke="#6a5018" stroke-width="0.5"/>
+      <!-- Teeth -->
+      <g fill="url(#brass)" stroke="#7a5a15" stroke-width="0.5">
+        <rect x="-3" y="-92" width="6" height="14" rx="1"/>
+        <rect x="-3" y="-92" width="6" height="14" rx="1" transform="rotate(10)"/>
+        <rect x="-3" y="-92" width="6" height="14" rx="1" transform="rotate(20)"/>
+        <rect x="-3" y="-92" width="6" height="14" rx="1" transform="rotate(30)"/>
+        <rect x="-3" y="-92" width="6" height="14" rx="1" transform="rotate(40)"/>
+        <rect x="-3" y="-92" width="6" height="14" rx="1" transform="rotate(50)"/>
+        <rect x="-3" y="-92" width="6" height="14" rx="1" transform="rotate(60)"/>
+        <rect x="-3" y="-92" width="6" height="14" rx="1" transform="rotate(70)"/>
+        <rect x="-3" y="-92" width="6" height="14" rx="1" transform="rotate(80)"/>
+        <rect x="-3" y="-92" width="6" height="14" rx="1" transform="rotate(90)"/>
+        <rect x="-3" y="-92" width="6" height="14" rx="1" transform="rotate(100)"/>
+        <rect x="-3" y="-92" width="6" height="14" rx="1" transform="rotate(110)"/>
+        <rect x="-3" y="-92" width="6" height="14" rx="1" transform="rotate(120)"/>
+        <rect x="-3" y="-92" width="6" height="14" rx="1" transform="rotate(130)"/>
+        <rect x="-3" y="-92" width="6" height="14" rx="1" transform="rotate(140)"/>
+        <rect x="-3" y="-92" width="6" height="14" rx="1" transform="rotate(150)"/>
+        <rect x="-3" y="-92" width="6" height="14" rx="1" transform="rotate(160)"/>
+        <rect x="-3" y="-92" width="6" height="14" rx="1" transform="rotate(170)"/>
+        <rect x="-3" y="-92" width="6" height="14" rx="1" transform="rotate(180)"/>
+        <rect x="-3" y="-92" width="6" height="14" rx="1" transform="rotate(190)"/>
+        <rect x="-3" y="-92" width="6" height="14" rx="1" transform="rotate(200)"/>
+        <rect x="-3" y="-92" width="6" height="14" rx="1" transform="rotate(210)"/>
+        <rect x="-3" y="-92" width="6" height="14" rx="1" transform="rotate(220)"/>
+        <rect x="-3" y="-92" width="6" height="14" rx="1" transform="rotate(230)"/>
+        <rect x="-3" y="-92" width="6" height="14" rx="1" transform="rotate(240)"/>
+        <rect x="-3" y="-92" width="6" height="14" rx="1" transform="rotate(250)"/>
+        <rect x="-3" y="-92" width="6" height="14" rx="1" transform="rotate(260)"/>
+        <rect x="-3" y="-92" width="6" height="14" rx="1" transform="rotate(270)"/>
+        <rect x="-3" y="-92" width="6" height="14" rx="1" transform="rotate(280)"/>
+        <rect x="-3" y="-92" width="6" height="14" rx="1" transform="rotate(290)"/>
+        <rect x="-3" y="-92" width="6" height="14" rx="1" transform="rotate(300)"/>
+        <rect x="-3" y="-92" width="6" height="14" rx="1" transform="rotate(310)"/>
+        <rect x="-3" y="-92" width="6" height="14" rx="1" transform="rotate(320)"/>
+        <rect x="-3" y="-92" width="6" height="14" rx="1" transform="rotate(330)"/>
+        <rect x="-3" y="-92" width="6" height="14" rx="1" transform="rotate(340)"/>
+        <rect x="-3" y="-92" width="6" height="14" rx="1" transform="rotate(350)"/>
+      </g>
+      <!-- Spokes -->
+      <g stroke="url(#darkBrass)" stroke-width="3">
+        <line x1="0" y1="-78" x2="0" y2="-25"/>
+        <line x1="0" y1="-78" x2="0" y2="-25" transform="rotate(60)"/>
+        <line x1="0" y1="-78" x2="0" y2="-25" transform="rotate(120)"/>
+        <line x1="0" y1="-78" x2="0" y2="-25" transform="rotate(180)"/>
+        <line x1="0" y1="-78" x2="0" y2="-25" transform="rotate(240)"/>
+        <line x1="0" y1="-78" x2="0" y2="-25" transform="rotate(300)"/>
+      </g>
+      <circle r="25" fill="url(#brass)" stroke="#8a6820" stroke-width="1.5"/>
+      <circle r="12" fill="url(#darkBrass)" stroke="#5a4010" stroke-width="1"/>
+      <circle r="5" fill="#3a2808"/>
+      <!-- Decorative cutouts -->
+      <circle r="18" fill="none" stroke="#5a4010" stroke-width="0.5"/>
+    </g>
+
+    <!-- Venus gear (28 teeth) -->
+    <g id="venusGear">
+      <circle r="110" fill="url(#brass)" stroke="#8a6820" stroke-width="1"/>
+      <circle r="103" fill="url(#darkBrass)" stroke="#6a5018" stroke-width="0.5"/>
+      <g fill="url(#brass)" stroke="#7a5a15" stroke-width="0.5">
+        <rect x="-3" y="-117" width="6" height="14" rx="1"/>
+        <rect x="-3" y="-117" width="6" height="14" rx="1" transform="rotate(12.857)"/>
+        <rect x="-3" y="-117" width="6" height="14" rx="1" transform="rotate(25.714)"/>
+        <rect x="-3" y="-117" width="6" height="14" rx="1" transform="rotate(38.571)"/>
+        <rect x="-3" y="-117" width="6" height="14" rx="1" transform="rotate(51.428)"/>
+        <rect x="-3" y="-117" width="6" height="14" rx="1" transform="rotate(64.285)"/>
+        <rect x="-3" y="-117" width="6" height="14" rx="1" transform="rotate(77.142)"/>
+        <rect x="-3" y="-117" width="6" height="14" rx="1" transform="rotate(90)"/>
+        <rect x="-3" y="-117" width="6" height="14" rx="1" transform="rotate(102.857)"/>
+        <rect x="-3" y="-117" width="6" height="14" rx="1" transform="rotate(115.714)"/>
+        <rect x="-3" y="-117" width="6" height="14" rx="1" transform="rotate(128.571)"/>
+        <rect x="-3" y="-117" width="6" height="14" rx="1" transform="rotate(141.428)"/>
+        <rect x="-3" y="-117" width="6" height="14" rx="1" transform="rotate(154.285)"/>
+        <rect x="-3" y="-117" width="6" height="14" rx="1" transform="rotate(167.142)"/>
+        <rect x="-3" y="-117" width="6" height="14" rx="1" transform="rotate(180)"/>
+        <rect x="-3" y="-117" width="6" height="14" rx="1" transform="rotate(192.857)"/>
+        <rect x="-3" y="-117" width="6" height="14" rx="1" transform="rotate(205.714)"/>
+        <rect x="-3" y="-117" width="6" height="14" rx="1" transform="rotate(218.571)"/>
+        <rect x="-3" y="-117" width="6" height="14" rx="1" transform="rotate(231.428)"/>
+        <rect x="-3" y="-117" width="6" height="14" rx="1" transform="rotate(244.285)"/>
+        <rect x="-3" y="-117" width="6" height="14" rx="1" transform="rotate(257.142)"/>
+        <rect x="-3" y="-117" width="6" height="14" rx="1" transform="rotate(270)"/>
+        <rect x="-3" y="-117" width="6" height="14" rx="1" transform="rotate(282.857)"/>
+        <rect x="-3" y="-117" width="6" height="14" rx="1" transform="rotate(295.714)"/>
+        <rect x="-3" y="-117" width="6" height="14" rx="1" transform="rotate(308.571)"/>
+        <rect x="-3" y="-117" width="6" height="14" rx="1" transform="rotate(321.428)"/>
+        <rect x="-3" y="-117" width="6" height="14" rx="1" transform="rotate(334.285)"/>
+        <rect x="-3" y="-117" width="6" height="14" rx="1" transform="rotate(347.142)"/>
+      </g>
+      <g stroke="url(#darkBrass)" stroke-width="2.5">
+        <line x1="0" y1="-103" x2="0" y2="-30"/>
+        <line x1="0" y1="-103" x2="0" y2="-30" transform="rotate(72)"/>
+        <line x1="0" y1="-103" x2="0" y2="-30" transform="rotate(144)"/>
+        <line x1="0" y1="-103" x2="0" y2="-30" transform="rotate(216)"/>
+        <line x1="0" y1="-103" x2="0" y2="-30" transform="rotate(288)"/>
+      </g>
+      <circle r="30" fill="url(#brass)" stroke="#8a6820" stroke-width="1.5"/>
+      <circle r="14" fill="url(#darkBrass)" stroke="#5a4010" stroke-width="1"/>
+      <circle r="6" fill="#3a2808"/>
+    </g>
+
+    <!-- Earth gear (20 teeth) -->
+    <g id="earthGear">
+      <circle r="135" fill="url(#brass)" stroke="#8a6820" stroke-width="1"/>
+      <circle r="128" fill="url(#darkBrass)" stroke="#6a5018" stroke-width="0.5"/>
+      <g fill="url(#brass)" stroke="#7a5a15" stroke-width="0.5">
+        <rect x="-3.5" y="-142" width="7" height="14" rx="1"/>
+        <rect x="-3.5" y="-142" width="7" height="14" rx="1" transform="rotate(18)"/>
+        <rect x="-3.5" y="-142" width="7" height="14" rx="1" transform="rotate(36)"/>
+        <rect x="-3.5" y="-142" width="7" height="14" rx="1" transform="rotate(54)"/>
+        <rect x="-3.5" y="-142" width="7" height="14" rx="1" transform="rotate(72)"/>
+        <rect x="-3.5" y="-142" width="7" height="14" rx="1" transform="rotate(90)"/>
+        <rect x="-3.5" y="-142" width="7" height="14" rx="1" transform="rotate(108)"/>
+        <rect x="-3.5" y="-142" width="7" height="14" rx="1" transform="rotate(126)"/>
+        <rect x="-3.5" y="-142" width="7" height="14" rx="1" transform="rotate(144)"/>
+        <rect x="-3.5" y="-142" width="7" height="14" rx="1" transform="rotate(162)"/>
+        <rect x="-3.5" y="-142" width="7" height="14" rx="1" transform="rotate(180)"/>
+        <rect x="-3.5" y="-142" width="7" height="14" rx="1" transform="rotate(198)"/>
+        <rect x="-3.5" y="-142" width="7" height="14" rx="1" transform="rotate(216)"/>
+        <rect x="-3.5" y="-142" width="7" height="14" rx="1" transform="rotate(234)"/>
+        <rect x="-3.5" y="-142" width="7" height="14" rx="1" transform="rotate(252)"/>
+        <rect x="-3.5" y="-142" width="7" height="14" rx="1" transform="rotate(270)"/>
+        <rect x="-3.5" y="-142" width="7" height="14" rx="1" transform="rotate(288)"/>
+        <rect x="-3.5" y="-142" width="7" height="14" rx="1" transform="rotate(306)"/>
+        <rect x="-3.5" y="-142" width="7" height="14" rx="1" transform="rotate(324)"/>
+        <rect x="-3.5" y="-142" width="7" height="14" rx="1" transform="rotate(342)"/>
+      </g>
+      <g stroke="url(#darkBrass)" stroke-width="2.5">
+        <line x1="0" y1="-128" x2="0" y2="-35"/>
+        <line x1="0" y1="-128" x2="0" y2="-35" transform="rotate(60)"/>
+        <line x1="0" y1="-128" x2="0" y2="-35" transform="rotate(120)"/>
+        <line x1="0" y1="-128" x2="0" y2="-35" transform="rotate(180)"/>
+        <line x1="0" y1="-128" x2="0" y2="-35" transform="rotate(240)"/>
+        <line x1="0" y1="-128" x2="0" y2="-35" transform="rotate(300)"/>
+      </g>
+      <circle r="35" fill="url(#brass)" stroke="#8a6820" stroke-width="1.5"/>
+      <circle r="16" fill="url(#darkBrass)" stroke="#5a4010" stroke-width="1"/>
+      <circle r="7" fill="#3a2808"/>
+    </g>
+
+    <!-- Mars gear (16 teeth) -->
+    <g id="marsGear">
+      <circle r="160" fill="url(#brass)" stroke="#8a6820" stroke-width="1"/>
+      <circle r="153" fill="url(#darkBrass)" stroke="#6a5018" stroke-width="0.5"/>
+      <g fill="url(#brass)" stroke="#7a5a15" stroke-width="0.5">
+        <rect x="-4" y="-167" width="8" height="14" rx="1"/>
+        <rect x="-4" y="-167" width="8" height="14" rx="1" transform="rotate(22.5)"/>
+        <rect x="-4" y="-167" width="8" height="14" rx="1" transform="rotate(45)"/>
+        <rect x="-4" y="-167" width="8" height="14" rx="1" transform="rotate(67.5)"/>
+        <rect x="-4" y="-167" width="8" height="14" rx="1" transform="rotate(90)"/>
+        <rect x="-4" y="-167" width="8" height="14" rx="1" transform="rotate(112.5)"/>
+        <rect x="-4" y="-167" width="8" height="14" rx="1" transform="rotate(135)"/>
+        <rect x="-4" y="-167" width="8" height="14" rx="1" transform="rotate(157.5)"/>
+        <rect x="-4" y="-167" width="8" height="14" rx="1" transform="rotate(180)"/>
+        <rect x="-4" y="-167" width="8" height="14" rx="1" transform="rotate(202.5)"/>
+        <rect x="-4" y="-167" width="8" height="14" rx="1" transform="rotate(225)"/>
+        <rect x="-4" y="-167" width="8" height="14" rx="1" transform="rotate(247.5)"/>
+        <rect x="-4" y="-167" width="8" height="14" rx="1" transform="rotate(270)"/>
+        <rect x="-4" y="-167" width="8" height="14" rx="1" transform="rotate(292.5)"/>
+        <rect x="-4" y="-167" width="8" height="14" rx="1" transform="rotate(315)"/>
+        <rect x="-4" y="-167" width="8" height="14" rx="1" transform="rotate(337.5)"/>
+      </g>
+      <g stroke="url(#darkBrass)" stroke-width="2.5">
+        <line x1="0" y1="-153" x2="0" y2="-40"/>
+        <line x1="0" y1="-153" x2="0" y2="-40" transform="rotate(72)"/>
+        <line x1="0" y1="-153" x2="0" y2="-40" transform="rotate(144)"/>
+        <line x1="0" y1="-153" x2="0" y2="-40" transform="rotate(216)"/>
+        <line x1="0" y1="-153" x2="0" y2="-40" transform="rotate(288)"/>
+      </g>
+      <circle r="40" fill="url(#brass)" stroke="#8a6820" stroke-width="1.5"/>
+      <circle r="18" fill="url(#darkBrass)" stroke="#5a4010" stroke-width="1"/>
+      <circle r="8" fill="#3a2808"/>
+    </g>
+
+    <!-- Outer drive gear (large central gear) -->
+    <g id="driveGear">
+      <circle r="50" fill="url(#brass)" stroke="#8a6820" stroke-width="1.5"/>
+      <circle r="43" fill="url(#darkBrass)"/>
+      <g fill="url(#brass)" stroke="#7a5a15" stroke-width="0.5">
+        <rect x="-3" y="-57" width="6" height="14" rx="1"/>
+        <rect x="-3" y="-57" width="6" height="14" rx="1" transform="rotate(15)"/>
+        <rect x="-3" y="-57" width="6" height="14" rx="1" transform="rotate(30)"/>
+        <rect x="-3" y="-57" width="6" height="14" rx="1" transform="rotate(45)"/>
+        <rect x="-3" y="-57" width="6" height="14" rx="1" transform="rotate(60)"/>
+        <rect x="-3" y="-57" width="6" height="14" rx="1" transform="rotate(75)"/>
+        <rect x="-3" y="-57" width="6" height="14" rx="1" transform="rotate(90)"/>
+        <rect x="-3" y="-57" width="6" height="14" rx="1" transform="rotate(105)"/>
+        <rect x="-3" y="-57" width="6" height="14" rx="1" transform="rotate(120)"/>
+        <rect x="-3" y="-57" width="6" height="14" rx="1" transform="rotate(135)"/>
+        <rect x="-3" y="-57" width="6" height="14" rx="1" transform="rotate(150)"/>
+        <rect x="-3" y="-57" width="6" height="14" rx="1" transform="rotate(165)"/>
+        <rect x="-3" y="-57" width="6" height="14" rx="1" transform="rotate(180)"/>
+        <rect x="-3" y="-57" width="6" height="14" rx="1" transform="rotate(195)"/>
+        <rect x="-3" y="-57" width="6" height="14" rx="1" transform="rotate(210)"/>
+        <rect x="-3" y="-57" width="6" height="14" rx="1" transform="rotate(225)"/>
+        <rect x="-3" y="-57" width="6" height="14" rx="1" transform="rotate(240)"/>
+        <rect x="-3" y="-57" width="6" height="14" rx="1" transform="rotate(255)"/>
+        <rect x="-3" y="-57" width="6" height="14" rx="1" transform="rotate(270)"/>
+        <rect x="-3" y="-57" width="6" height="14" rx="1" transform="rotate(285)"/>
+        <rect x="-3" y="-57" width="6" height="14" rx="1" transform="rotate(300)"/>
+        <rect x="-3" y="-57" width="6" height="14" rx="1" transform="rotate(315)"/>
+        <rect x="-3" y="-57" width="6" height="14" rx="1" transform="rotate(330)"/>
+        <rect x="-3" y="-57" width="6" height="14" rx="1" transform="rotate(345)"/>
+      </g>
+      <g stroke="url(#darkBrass)" stroke-width="2">
+        <line x1="0" y1="-43" x2="0" y2="-15"/>
+        <line x1="0" y1="-43" x2="0" y2="-15" transform="rotate(45)"/>
+        <line x1="0" y1="-43" x2="0" y2="-15" transform="rotate(90)"/>
+        <line x1="0" y1="-43" x2="0" y2="-15" transform="rotate(135)"/>
+        <line x1="0" y1="-43" x2="0" y2="-15" transform="rotate(180)"/>
+        <line x1="0" y1="-43" x2="0" y2="-15" transform="rotate(225)"/>
+        <line x1="0" y1="-43" x2="0" y2="-15" transform="rotate(270)"/>
+        <line x1="0" y1="-43" x2="0" y2="-15" transform="rotate(315)"/>
+      </g>
+      <circle r="15" fill="url(#brass)" stroke="#8a6820" stroke-width="1"/>
+      <circle r="6" fill="#3a2808"/>
+    </g>
+
+    <!-- Orbit path -->
+    <g id="orbitPath">
+      <circle r="100" fill="none" stroke="#c8962e44" stroke-width="0.5" stroke-dasharray="3,4"/>
+    </g>
+
+    <!-- Background pattern -->
+    <pattern id="bgPattern" width="40" height="40" patternUnits="userSpaceOnUse">
+      <rect width="40" height="40" fill="#1a1410"/>
+      <rect width="40" height="40" fill="none" stroke="#2a2018" stroke-width="0.3"/>
+    </pattern>
+
+    <!-- Planet day/night mask -->
+    <mask id="mercuryMask">
+      <rect x="-10" y="-10" width="20" height="20" fill="white"/>
+      <circle r="10" fill="black">
+        <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="1.5s" repeatCount="indefinite"/>
+      </circle>
+    </mask>
+
+    <!-- Decorative screw -->
+    <g id="screw">
+      <circle r="3" fill="url(#darkBrass)" stroke="#5a4010" stroke-width="0.5"/>
+      <line x1="-1.5" y1="0" x2="1.5" y2="0" stroke="#3a2808" stroke-width="0.5"/>
+    </g>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="800" fill="url(#bgPattern)"/>
+
+  <!-- Decorative border -->
+  <rect x="10" y="10" width="780" height="780" rx="15" fill="none" stroke="url(#brass)" stroke-width="3"/>
+  <rect x="18" y="18" width="764" height="764" rx="10" fill="none" stroke="url(#brass)" stroke-width="1"/>
+
+  <!-- Corner ornaments -->
+  <g transform="translate(35,35)">
+    <circle r="8" fill="url(#brass)" stroke="#8a6820" stroke-width="1"/>
+    <circle r="3" fill="#3a2808"/>
+    <line x1="8" y1="8" x2="25" y2="25" stroke="url(#brass)" stroke-width="1.5"/>
+  </g>
+  <g transform="translate(765,35)">
+    <circle r="8" fill="url(#brass)" stroke="#8a6820" stroke-width="1"/>
+    <circle r="3" fill="#3a2808"/>
+    <line x1="-8" y1="8" x2="-25" y2="25" stroke="url(#brass)" stroke-width="1.5"/>
+  </g>
+  <g transform="translate(35,765)">
+    <circle r="8" fill="url(#brass)" stroke="#8a6820" stroke-width="1"/>
+    <circle r="3" fill="#3a2808"/>
+    <line x1="8" y1="-8" x2="25" y2="-25" stroke="url(#brass)" stroke-width="1.5"/>
+  </g>
+  <g transform="translate(765,765)">
+    <circle r="8" fill="url(#brass)" stroke="#8a6820" stroke-width="1"/>
+    <circle r="3" fill="#3a2808"/>
+    <line x1="-8" y1="-8" x2="-25" y2="-25" stroke="url(#brass)" stroke-width="1.5"/>
+  </g>
+
+  <!-- Main Orrery centered at 400,400 -->
+  <g transform="translate(400,400)">
+
+    <!-- Orbit paths -->
+    <circle r="90" fill="none" stroke="#c8962e33" stroke-width="0.8" stroke-dasharray="4,6"/>
+    <circle r="135" fill="none" stroke="#c8962e33" stroke-width="0.8" stroke-dasharray="4,6"/>
+    <circle r="190" fill="none" stroke="#c8962e33" stroke-width="0.8" stroke-dasharray="4,6"/>
+    <circle r="250" fill="none" stroke="#c8962e33" stroke-width="0.8" stroke-dasharray="4,6"/>
+
+    <!-- ============ GEAR TRAIN ============ -->
+    <!-- Gears are positioned along the orbit radii and rotate to drive planets -->
+
+    <!-- Drive gear at center (behind sun) - rotates slowly -->
+    <g>
+      <use href="#driveGear"/>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="30s" repeatCount="indefinite"/>
+    </g>
+
+    <!-- Mercury gear - meshes with drive gear, positioned at orbit radius -->
+    <!-- Mercury orbit: 90px radius, gear at top of orbit -->
+    <g transform="translate(0, -90)">
+      <use href="#mercuryGear"/>
+      <!-- Counter-rotates relative to drive: gear ratio 36:24 = 3:2, opposite direction -->
+      <animateTransform attributeName="transform" type="rotate" from="0" to="-360" dur="7.2s" repeatCount="indefinite"/>
+    </g>
+
+    <!-- Mercury arm/guide -->
+    <g>
+      <line x1="0" y1="0" x2="0" y2="-90" stroke="url(#brass)" stroke-width="2" opacity="0.3"/>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="7.2s" repeatCount="indefinite"/>
+    </g>
+
+    <!-- Mercury planet -->
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="7.2s" repeatCount="indefinite"/>
+      <g transform="translate(0, -90)">
+        <!-- Planet body -->
+        <circle r="7" fill="url(#mercuryGrad)" stroke="#5a4a30" stroke-width="0.5"/>
+        <!-- Day/night shadow (rotating) -->
+        <circle r="7" fill="url(#nightShadow)">
+          <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="1.2s" repeatCount="indefinite"/>
+        </circle>
+        <!-- Label -->
+        <text y="-11" text-anchor="middle" fill="#c8962e" font-size="8" font-family="serif">Mercury</text>
+      </g>
+    </g>
+
+    <!-- Venus gear -->
+    <g transform="translate(135, 0)">
+      <use href="#venusGear"/>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="18.6s" repeatCount="indefinite"/>
+    </g>
+
+    <!-- Venus orbit arm -->
+    <g>
+      <line x1="0" y1="0" x2="135" y2="0" stroke="url(#brass)" stroke-width="2" opacity="0.3"/>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="18.6s" repeatCount="indefinite"/>
+    </g>
+
+    <!-- Venus planet -->
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="18.6s" repeatCount="indefinite"/>
+      <g transform="translate(135, 0)">
+        <circle r="10" fill="url(#venusGrad)" stroke="#8b7355" stroke-width="0.5"/>
+        <circle r="10" fill="url(#nightShadow)">
+          <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="2.8s" repeatCount="indefinite"/>
+        </circle>
+        <text y="-14" text-anchor="middle" fill="#c8962e" font-size="8" font-family="serif">Venus</text>
+      </g>
+    </g>
+
+    <!-- Earth gear -->
+    <g transform="translate(0, 190)">
+      <use href="#earthGear"/>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="-360" dur="30s" repeatCount="indefinite"/>
+    </g>
+
+    <!-- Earth orbit arm -->
+    <g>
+      <line x1="0" y1="0" x2="0" y2="190" stroke="url(#brass)" stroke-width="2" opacity="0.3"/>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="30s" repeatCount="indefinite"/>
+    </g>
+
+    <!-- Earth planet with Moon -->
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="30s" repeatCount="indefinite"/>
+      <g transform="translate(0, 190)">
+        <!-- Earth -->
+        <circle r="11" fill="url(#earthGrad)" stroke="#1a5c1a" stroke-width="0.5"/>
+        <circle r="11" fill="url(#nightShadow)">
+          <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="2s" repeatCount="indefinite"/>
+        </circle>
+        <!-- Moon -->
+        <g>
+          <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="3.2s" repeatCount="indefinite"/>
+          <circle cx="18" cy="0" r="3" fill="#aaa" stroke="#666" stroke-width="0.3"/>
+          <circle cx="18" cy="0" r="3" fill="url(#nightShadow)">
+            <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="0.8s" repeatCount="indefinite"/>
+          </circle>
+        </g>
+        <text y="-16" text-anchor="middle" fill="#c8962e" font-size="8" font-family="serif">Earth</text>
+      </g>
+    </g>
+
+    <!-- Mars gear -->
+    <g transform="translate(-250, 0)">
+      <use href="#marsGear"/>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="56.4s" repeatCount="indefinite"/>
+    </g>
+
+    <!-- Mars orbit arm -->
+    <g>
+      <line x1="0" y1="0" x2="-250" y2="0" stroke="url(#brass)" stroke-width="2" opacity="0.3"/>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="56.4s" repeatCount="indefinite"/>
+    </g>
+
+    <!-- Mars planet -->
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="56.4s" repeatCount="indefinite"/>
+      <g transform="translate(-250, 0)">
+        <circle r="9" fill="url(#marsGrad)" stroke="#6b2010" stroke-width="0.5"/>
+        <circle r="9" fill="url(#nightShadow)">
+          <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="2.1s" repeatCount="indefinite"/>
+        </circle>
+        <text y="-13" text-anchor="middle" fill="#c8962e" font-size="8" font-family="serif">Mars</text>
+      </g>
+    </g>
+
+    <!-- ============ INTERMEDIATE GEAR CONNECTIONS ============ -->
+    <!-- Small idler gears between main gears to show meshing -->
+
+    <!-- Idler between Mercury and Venus gears -->
+    <g transform="translate(67, -67)">
+      <circle r="18" fill="url(#brass)" stroke="#8a6820" stroke-width="0.8"/>
+      <circle r="14" fill="url(#darkBrass)"/>
+      <g fill="url(#brass)" stroke="#7a5a15" stroke-width="0.3">
+        <rect x="-2" y="-21" width="4" height="10" rx="0.5" transform="rotate(0)"/>
+        <rect x="-2" y="-21" width="4" height="10" rx="0.5" transform="rotate(30)"/>
+        <rect x="-2" y="-21" width="4" height="10" rx="0.5" transform="rotate(60)"/>
+        <rect x="-2" y="-21" width="4" height="10" rx="0.5" transform="rotate(90)"/>
+        <rect x="-2" y="-21" width="4" height="10" rx="0.5" transform="rotate(120)"/>
+        <rect x="-2" y="-21" width="4" height="10" rx="0.5" transform="rotate(150)"/>
+        <rect x="-2" y="-21" width="4" height="10" rx="0.5" transform="rotate(180)"/>
+        <rect x="-2" y="-21" width="4" height="10" rx="0.5" transform="rotate(210)"/>
+        <rect x="-2" y="-21" width="4" height="10" rx="0.5" transform="rotate(240)"/>
+        <rect x="-2" y="-21" width="4" height="10" rx="0.5" transform="rotate(270)"/>
+        <rect x="-2" y="-21" width="4" height="10" rx="0.5" transform="rotate(300)"/>
+        <rect x="-2" y="-21" width="4" height="10" rx="0.5" transform="rotate(330)"/>
+      </g>
+      <circle r="5" fill="url(#brass)" stroke="#8a6820" stroke-width="0.5"/>
+      <circle r="2" fill="#3a2808"/>
+      <!-- Rotates to mesh with both Mercury and Venus gears -->
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="9.4s" repeatCount="indefinite"/>
+    </g>
+
+    <!-- Idler between Venus and Earth gears -->
+    <g transform="translate(67, 95)">
+      <circle r="20" fill="url(#brass)" stroke="#8a6820" stroke-width="0.8"/>
+      <circle r="16" fill="url(#darkBrass)"/>
+      <g fill="url(#brass)" stroke="#7a5a15" stroke-width="0.3">
+        <rect x="-2" y="-23" width="4" height="10" rx="0.5" transform="rotate(0)"/>
+        <rect x="-2" y="-23" width="4" height="10" rx="0.5" transform="rotate(30)"/>
+        <rect x="-2" y="-23" width="4" height="10" rx="0.5" transform="rotate(60)"/>
+        <rect x="-2" y="-23" width="4" height="10" rx="0.5" transform="rotate(90)"/>
+        <rect x="-2" y="-23" width="4" height="10" rx="0.5" transform="rotate(120)"/>
+        <rect x="-2" y="-23" width="4" height="10" rx="0.5" transform="rotate(150)"/>
+        <rect x="-2" y="-23" width="4" height="10" rx="0.5" transform="rotate(180)"/>
+        <rect x="-2" y="-23" width="4" height="10" rx="0.5" transform="rotate(210)"/>
+        <rect x="-2" y="-23" width="4" height="10" rx="0.5" transform="rotate(240)"/>
+        <rect x="-2" y="-23" width="4" height="10" rx="0.5" transform="rotate(270)"/>
+        <rect x="-2" y="-23" width="4" height="10" rx="0.5" transform="rotate(300)"/>
+        <rect x="-2" y="-23" width="4" height="10" rx="0.5" transform="rotate(330)"/>
+      </g>
+      <circle r="5" fill="url(#brass)" stroke="#8a6820" stroke-width="0.5"/>
+      <circle r="2" fill="#3a2808"/>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="-360" dur="14.3s" repeatCount="indefinite"/>
+    </g>
+
+    <!-- Idler between Earth and Mars gears -->
+    <g transform="translate(-125, 95)">
+      <circle r="22" fill="url(#brass)" stroke="#8a6820" stroke-width="0.8"/>
+      <circle r="17" fill="url(#darkBrass)"/>
+      <g fill="url(#brass)" stroke="#7a5a15" stroke-width="0.3">
+        <rect x="-2" y="-25" width="4" height="10" rx="0.5" transform="rotate(0)"/>
+        <rect x="-2" y="-25" width="4" height="10" rx="0.5" transform="rotate(30)"/>
+        <rect x="-2" y="-25" width="4" height="10" rx="0.5" transform="rotate(60)"/>
+        <rect x="-2" y="-25" width="4" height="10" rx="0.5" transform="rotate(90)"/>
+        <rect x="-2" y="-25" width="4" height="10" rx="0.5" transform="rotate(120)"/>
+        <rect x="-2" y="-25" width="4" height="10" rx="0.5" transform="rotate(150)"/>
+        <rect x="-2" y="-25" width="4" height="10" rx="0.5" transform="rotate(180)"/>
+        <rect x="-2" y="-25" width="4" height="10" rx="0.5" transform="rotate(210)"/>
+        <rect x="-2" y="-25" width="4" height="10" rx="0.5" transform="rotate(240)"/>
+        <rect x="-2" y="-25" width="4" height="10" rx="0.5" transform="rotate(270)"/>
+        <rect x="-2" y="-25" width="4" height="10" rx="0.5" transform="rotate(300)"/>
+        <rect x="-2" y="-25" width="4" height="10" rx="0.5" transform="rotate(330)"/>
+      </g>
+      <circle r="6" fill="url(#brass)" stroke="#8a6820" stroke-width="0.5"/>
+      <circle r="2.5" fill="#3a2808"/>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="43.2s" repeatCount="indefinite"/>
+    </g>
+
+    <!-- ============ DECORATIVE FRAME RINGS ============ -->
+    <!-- Outer decorative ring with gear teeth -->
+    <circle r="290" fill="none" stroke="url(#brass)" stroke-width="4"/>
+    <circle r="293" fill="none" stroke="url(#brass)" stroke-width="1"/>
+    <circle r="287" fill="none" stroke="url(#brass)" stroke-width="1"/>
+
+    <!-- Outer ring gear teeth -->
+    <g fill="url(#brass)" stroke="#8a6820" stroke-width="0.5">
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(0)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(5)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(10)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(15)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(20)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(25)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(30)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(35)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(40)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(45)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(50)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(55)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(60)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(65)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(70)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(75)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(80)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(85)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(90)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(95)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(100)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(105)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(110)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(115)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(120)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(125)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(130)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(135)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(140)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(145)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(150)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(155)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(160)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(165)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(170)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(175)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(180)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(185)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(190)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(195)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(200)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(205)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(210)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(215)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(220)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(225)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(230)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(235)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(240)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(245)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(250)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(255)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(260)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(265)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(270)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(275)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(280)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(285)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(290)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(295)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(300)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(305)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(310)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(315)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(320)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(325)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(330)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(335)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(340)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(345)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(350)"/>
+      <rect x="-2" y="-296" width="4" height="8" rx="0.5" transform="rotate(355)"/>
+    </g>
+
+    <!-- Degree markings on outer ring -->
+    <g fill="#c8962e" font-size="6" font-family="serif" opacity="0.6">
+      <text x="0" y="-278" text-anchor="middle">0°</text>
+      <text x="278" y="4" text-anchor="middle">90°</text>
+      <text x="0" y="286" text-anchor="middle">180°</text>
+      <text x="-278" y="4" text-anchor="middle">270°</text>
+    </g>
+
+    <!-- ============ CENTRAL SUN ============ -->
+    <!-- Sun glow layers -->
+    <circle r="45" fill="url(#sunGlow)" opacity="0.4">
+      <animate attributeName="r" values="42;48;42" dur="3s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.3;0.5;0.3" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="35" fill="url(#sunGlow)" opacity="0.6">
+      <animate attributeName="r" values="33;37;33" dur="2.5s" repeatCount="indefinite"/>
+    </circle>
+
+    <!-- Sun body -->
+    <circle r="28" fill="url(#sunCore)" filter="url(#softGlow)"/>
+
+    <!-- Sun surface detail -->
+    <circle r="28" fill="none" stroke="#cc6600" stroke-width="0.5" opacity="0.5"/>
+    <ellipse cx="-8" cy="-5" rx="10" ry="6" fill="#ffcc00" opacity="0.3"/>
+    <ellipse cx="10" cy="8" rx="7" ry="4" fill="#ff9900" opacity="0.2"/>
+    <ellipse cx="-3" cy="12" rx="5" ry="3" fill="#ffcc00" opacity="0.25"/>
+
+    <!-- Sun rotation animation (slow) -->
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="60s" repeatCount="indefinite"/>
+      <circle cx="15" cy="-10" r="4" fill="#ffdd44" opacity="0.4"/>
+      <circle cx="-12" cy="14" r="3" fill="#ffaa00" opacity="0.3"/>
+      <circle cx="8" cy="16" r="5" fill="#ffcc33" opacity="0.2"/>
+    </g>
+
+    <!-- ============ DECORATIVE SCREWS ============ -->
+    <use href="#screw" x="-285" y="-285"/>
+    <use href="#screw" x="285" y="-285"/>
+    <use href="#screw" x="-285" y="285"/>
+    <use href="#screw" x="285" y="285"/>
+    <use href="#screw" x="0" y="-295"/>
+    <use href="#screw" x="0" y="295"/>
+    <use href="#screw" x="-295" y="0"/>
+    <use href="#screw" x="295" y="0"/>
+
+    <!-- ============ LABELS ============ -->
+    <text x="0" y="315" text-anchor="middle" fill="#c8962e" font-size="11" font-family="serif" font-style="italic" opacity="0.8">
+      The Clockwork Orrery
+    </text>
+    <text x="0" y="330" text-anchor="middle" fill="#c8962e" font-size="8" font-family="serif" opacity="0.5">
+      Anno Domini MCMXXV
+    </text>
+
+  </g>
+
+  <!-- Title plate -->
+  <g transform="translate(400, 40)">
+    <rect x="-100" y="-15" width="200" height="30" rx="5" fill="url(#darkBrass)" stroke="url(#brass)" stroke-width="1.5"/>
+    <text x="0" y="5" text-anchor="middle" fill="#f0d060" font-size="12" font-family="serif" font-weight="bold" letter-spacing="2">
+      CELESTIAL MECHANISM
+    </text>
+  </g>
+
+</svg>

@@ -15,8 +15,9 @@ pointer, and new work lands here.
 | Path | What |
 | --- | --- |
 | [`reports/`](reports/) | Written reports and method documents: test results, candidate and exclusion lists, and the bake-off dashboard (`reports/dashboard/`: a static HTML page and its `data.json`). |
-| [`oneshots/`](oneshots/README.md) | Test 5 (brass orrery, SVG) and test 6 (voxel pagoda, three.js) one-shot replies: the model-written source, rendered frames and grades. **Untrusted model output**: read the README before opening any of it. |
+| [`oneshots/`](oneshots/README.md) | Test 5 (brass orrery, SVG) and test 6 (voxel pagoda, three.js) one-shot replies: the model-written source, rendered frames and grades. Unedited model output; the site plays it in a sandboxed frame (see the README). |
 | [`harness/`](harness/) | The harness: case runners (`run-case*.sh`, `run-matrix.sh`), graders and rubric (`grade-*.py`, `rubric.py`, `score-*.py`), the Home Assistant replay server and read-only proxy (`ha-replay.py`, `ha-readonly-proxy.py`, `ha-record.py`), the sandboxed eval box (`sandbox/`), test suites and prompts (`suites/`), entry and spec tooling (`tools/`, `engines/ENTRY-SPEC.md`, `engines/entry-specs/`), engine build and setup notes (`engines/`), and the harness's own tests (`tests/`). |
+| [`site/`](site/data/README.md) | The project site: a data-driven page that renders `site/data/bakeoff.json` (built by `site/tools/build_data.py`) and plays the one-shots in a sandboxed frame. Published to GitHub Pages from `main`. |
 | [`docs/model-research/`](docs/model-research/README.md) | Method, conclusions, per-model cards and the story test. Moved here from `agentic-toolbox`, which keeps only a pointer. |
 
 ## The tests in one paragraph each

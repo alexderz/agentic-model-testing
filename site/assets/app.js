@@ -6,6 +6,7 @@ import { el, svg, clear, $, familyChip, verdictChip, kindChip, revealList, repoL
 import { speedLadder, struggleStrip, abDumbbell, petalScore, pips, beforeAfter, bigNumeral, runLine, ofMax } from './charts.js';
 import { renderHero } from './hero.js';
 import { chapterMotif } from './motifs.js';
+import { openViewer } from './viewer.js';
 
 const { fmt, fmtMinutes, fmtDate } = D;
 
@@ -62,6 +63,7 @@ function renderTop(data) {
   const s = D.summary(data);
   const stats = $('hero-stats'); clear(stats);
   stats.append(stat('models', s.models), stat('families', s.families), stat('agent runs', s.runs), stat('passes', s.passes), stat('one-shots', s.oneshots), stat('frames', s.frames));
+  if (s.playable > 0) stats.append(stat('live pieces', s.playable));
   if (s.fastest != null) stats.append(stat('fastest run', s.fastest, 'tok/s'));
   if (s.agentHours > 0) stats.append(stat('agent hours', Math.round(s.agentHours)));
   // freshness: the run table is a snapshot; findings are written as they happen and are usually newer
@@ -249,24 +251,40 @@ function renderOneshots(data) {
   for (const s of sets) {
     setRow.appendChild(el('div', { class: 'set-card' }, el('b', {}, `Test ${s.test} · ${s.name}`),
       el('span', {}, `${s.n} replies · ${s.withFrames} rendered · ${s.full} full marks · ${s.zero} scored zero`),
-      el('span', {}, `${s.cut} cut off by the token cap${s.mean != null ? ` · mean ${fmt(s.mean, 1)}` : ''}`)));
+      el('span', {}, `${s.cut} cut off by the token cap${s.mean != null ? ` · mean ${fmt(s.mean, 1)}` : ''}`),
+      s.live > 0 ? el('span', { class: 'live-n' }, el('i', { 'aria-hidden': 'true' }, '▶'), ` ${s.live} can be played live`) : null));
+  }
+  // header line: how many pieces can be played, from the data
+  const liveLine = $('oneshot-live');
+  const playable = sets.reduce((n, s) => n + (s.live || 0), 0), total = sets.reduce((n, s) => n + s.n, 0);
+  if (liveLine) {
+    clear(liveLine);
+    liveLine.hidden = playable <= 0;
+    if (playable > 0) liveLine.append(el('i', { 'aria-hidden': 'true' }, '▶'), ` ${fmt(playable, 0)} of the ${fmt(total, 0)} replies produced a file you can run here, exactly as the model wrote it: `,
+      sets.filter((s) => s.live > 0).map((s) => `${fmt(s.live, 0)} ${plural(s.set, s.live)}`).join(' and '),
+      '. Press “Play live” on a card; each piece runs alone, in a sandboxed frame.');
   }
   const tsel = $('o-test'); clear(tsel); tsel.appendChild(el('option', { value: 'all' }, 'all'));
   for (const s of sets) tsel.appendChild(el('option', { value: s.test }, `${s.test} · ${s.name}`));
   const form = $('oneshot-filters');
   const grid = $('oneshot-grid');
+  let current = [];
   const draw = () => {
     const cards = D.oneshotCards(data, { test: tsel.value, sort: $('o-sort').value, q: $('o-q').value.trim() });
-    $('o-count').textContent = `${cards.length} replies`;
-    revealList(grid, cards, shotCard, { step: 12, label: 'Show more replies' });
+    current = cards;
+    const live = cards.filter((c) => c.live).length;
+    $('o-count').textContent = `${cards.length} replies${live ? ` · ${live} playable` : ''}`;
+    revealList(grid, cards, (c, i) => shotCard(c, () => openViewerAt(current, i)), { step: 12, label: 'Show more replies' });
   };
+  const openViewerAt = (cards, i) => { const btn = grid.querySelector(`.shot[data-case="${CSS.escape(cards[i].case)}"] .play`); openViewer(cards, i, btn); };
   form.addEventListener('input', draw);
   form.addEventListener('submit', (e) => e.preventDefault());
   draw();
   startFlipbooks(grid);
 }
+const plural = (w, n) => (n === 1 ? w : /y$/.test(w) ? `${w.slice(0, -1)}ies` : `${w}s`);
 const blankCard = (c) => el('div', { class: 'blank' }, el('span', {}, el('i', { 'aria-hidden': 'true' }, '∅'), c.finish === 'length' ? 'Cut off by the token cap, nothing to render' : c.frames.length ? 'The renders could not be loaded' : 'No render available'));
-function shotCard(c) {
+function shotCard(c, onPlay) {
   const pic = el('div', { class: 'pic' });
   const frames = c.frames;
   if (frames.length) {
@@ -293,6 +311,13 @@ function shotCard(c) {
   } else {
     pic.appendChild(blankCard(c));
   }
+  // the live control: only for rows whose `live` path passed the allow-list in data.js (anything else is null)
+  if (c.live && onPlay) {
+    const play = el('button', { type: 'button', class: 'play', 'aria-label': `Play live: ${c.alt}` }, el('i', { 'aria-hidden': 'true' }, '▶'), ' Play live');
+    play.addEventListener('click', onPlay);
+    pic.appendChild(play);
+    if (c.full) pic.appendChild(el('span', { class: 'ribbon', 'aria-hidden': 'true' }, 'live'));
+  }
   const [note, noteBtn] = noteBlock(c.note, 160);
   const body = el('div', { class: 'body' },
     el('div', {}, el('b', {}, c.short), el('div', { class: 'meta' }, familyChip(c.family, c.color), c.uncensored ? kindChip('uncensored') : null,
@@ -301,7 +326,7 @@ function shotCard(c) {
   const pmax = c.pointMax > 0 ? c.pointMax : 1;
   if (c.points.length) body.appendChild(el('div', { class: 'pts' }, ...c.points.map((p) => { const v = p.value || 0; return el('span', { class: v <= 0 ? 'l0' : v >= pmax ? 'l2' : 'l1' }, `${p.name} ${fmt(p.value)}`); })));
   if (noteBtn) body.appendChild(noteBtn);
-  return el('article', { class: `shot${c.full && frames.length ? ' featured' : ''}`, title: c.case, style: { '--c': c.color } }, pic, body);
+  return el('article', { class: `shot${c.full && frames.length ? ' featured' : ''}${c.live ? ' playable' : ''}`, title: c.case, 'data-case': c.case, style: { '--c': c.color } }, pic, body);
 }
 // A clamped note plus a "full note" toggle when it is long. Returns [p, button|null].
 function noteBlock(text, threshold) {
