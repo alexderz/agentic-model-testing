@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Voxel Pagoda — Japanese Garden</title>
+<style>
+  html, body { margin:0; padding:0; height:100%; overflow:hidden; background:#c8e6f5; }
+  canvas { display:block; }
+</style>
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js" } }
+</script>
+</head>
+<body>
+<script type="module">
+import * as THREE from 'three';
+
+const renderer = new THREE.WebGLRenderer({ antialias:true, preserveDrawingBuffer:true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xcfe7f6);
+scene.fog = new THREE.Fog(0xcfe7f6, 70, 150);
+
+const hemi = new THREE.HemisphereLight(0xd8f0ff, 0x77a05a, 0.85);
+scene.add(hemi);
+
+const sun = new THREE.DirectionalLight(0xfff2d8, 3.1);
+sun.position.set(34, 48, 22);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.camera.left = -48; sun.shadow.camera.right = 48;
+sun.shadow.camera.top = 48; sun.shadow.camera.bottom = -48;
+sun.shadow.camera.near = 1; sun.shadow.camera.far = 160;
+sun.shadow.bias = -0.0002;
+sun.shadow.normalBias = 0.8;
+try { sun.shadowIntensity = 0.75; } catch (e) {}
+scene.add(sun);
+
+const M = {
+  grass:  new THREE.MeshLambertMaterial({ color:0x6fae5f }),
+  grass2: new THREE.MeshLambertMaterial({ color:0x5f9e51 }),
+  stone:  new THREE.MeshLambertMaterial({ color:0x9aa0a6 }),
+  stone2: new THREE.MeshLambertMaterial({ color:0x84898f }),
+  wood:   new THREE.MeshLambertMaterial({ color:0x7a4a2b }),
+  woodD:  new THREE.MeshLambertMaterial({ color:0x5b3420 }),
+  wall:   new THREE.MeshLambertMaterial({ color:0xe8d3a4 }),
+  roof:   new THREE.MeshLambertMaterial({ color:0x3c4f6e }),
+  roofD:  new THREE.MeshLambertMaterial({ color:0x2c3a52 }),
+  gold:   new THREE.MeshLambertMaterial({ color:0xe8b53a, emissive:0x402e05 }),
+  red:    new THREE.MeshLambertMaterial({ color:0xc0392b }),
+  redD:   new THREE.MeshLambertMaterial({ color:0x96271b }),
+  pink:   new THREE.MeshLambertMaterial({ color:0xf2a2c3 }),
+  pinkL:  new THREE.MeshLambertMaterial({ color:0xfce0ec }),
+  water:  new THREE.MeshLambertMaterial({ color:0x4aa3d8 }),
+  lantern:new THREE.MeshLambertMaterial({ color:0xffd97a, emissive:0x8a6a1a })
+};
+
+const vox = new Map();
+function V(mat, x, y, z, sy = 1) {
+  let a = vox.get(mat);
+  if (!a) { a = []; vox.set(mat, a); }
+  a.push([x, y, z, sy]);
+}
+function box(mat, x0, x1, z0, z1, y, sy = 1) {
+  for (let x = x0; x <= x1; x++) for (let z = z0; z <= z1; z++) V(mat, x, y, z, sy);
+}
+function ring(mat, size, y, cx, cz, sy = 1) {
+  const h = (size - 1) / 2;
+  for (let x = -h; x <= h; x++) for (let z = -h; z <= h; z++) {
+    if (Math.abs(x) === h || Math.abs(z) === h) V(mat, cx + x, y, cz + z, sy);
+  }
+}
+
+for (let x = -26; x <= 26; x++) for (let z = -26; z <= 26; z++) {
+  V(((x + z) & 1) ? M.grass : M.grass2, x, 0.25, z, 0.5);
+}
+
+box(M.stone, -7, 7, -7, 7, 0.55, 1.1);
+box(M.stone2, -6, 6, -6, 6, 1.65, 1.1);
+box(M.stone, -5, 5, -5, 5, 2.75, 1.1);
+box(M.stone2, -3, 3, 6, 8, 0.55, 1.1);
+box(M.stone, -2, 2, 5.6, 5.6, 1.1, 1.1);
+box(M.stone2, -1, 1, 4.5, 4.5, 1.65, 1.1);
+
+const storyW = [9, 8, 7, 6, 5];
+let y = 3.3;
+for (let k = 0; k < 5; k++) {
+  const w = storyW[k];
+  box(M.wall, -(w-1)/2, (w-1)/2, -(w-1)/2, (w-1)/2, y + 0.6, 1.2);
+  box(M.wall, -(w-1)/2, (w-1)/2, -(w-1)/2, (w-1)/2, y + 1.8, 1.2);
+  if (k === 0) { V(M.woodD, 0, y + 0.6, 4.15, 1.2); V(M.woodD, 0, y + 1.8, 4.15, 1.2); }
+  ring(M.wood, w, y + 0.6, 0, 0, 2.4);
+  for (let t = 0; t < 3; t++) {
+    const s = w + 4 - t * 2;
+    ring(t % 2 ? M.roofD : M.roof, s, y + 2.4 + t * 0.7, 0, 0, 0.7);
+  }
+  const c = (w + 4) / 2 - 0.5;
+  for (const [dx, dz] of [[c,c],[-c,c],[c,-c],[-c,-c]]) V(M.roofD, dx, y + 3.4, dz, 0.7);
+  y += 4.4;
+}
+for (let i = 0; i < 5; i++) V(M.gold, 0, y + 0.5 + i, 0);
+for (const [dx, dz] of [[0.5,0.5],[-0.5,0.5],[0.5,-0.5],[-0.5,-0.5]]) V(M.gold, dx, y + 2, dz);
+V(M.gold, 0, y + 1.5, 0.5); V(M.gold, 0, y + 1.5, -0.5);
+V(M.gold, 0.5, y + 1.5, 0); V(M.gold, -0.5, y + 1.5, 0);
+V(M.gold, 0, y + 5.8, 0);
+
+function tree(cx, cz, h) {
+  for (let i = 0; i < h; i++) V(M.wood, cx, 0.8 + i, cz);
+  V(M.woodD, cx + 1, h - 1, cz, 0.6); V(M.woodD, cx - 1, h - 2, cz, 0.6);
+  const cy = h + 1;
+  const blob = [[0,0,0],[1,0,0],[-1,0,0],[0,0,1],[0,0,-1],[2,0,0],[-2,0,0],[0,0,2],[0,0,-2],
+    [0,1,0],[1,1,0],[-1,1,0],[0,1,1],[0,1,-1],[1,1,1],[-1,1,-1],[0,2,0],[1,2,0],[-1,2,0],[0,2,1],[0,2,-1],[0,3,0],[0,3,1],[1,3,0]];
+  for (const [dx,dy,dz] of blob) V((dx+dy+dz) % 2 ? M.pink : M.pinkL, cx+dx, cy+dy, cz+dz);
+}
+tree(11, 6, 6);
+tree(-12, -4, 7);
+tree(12, -10, 5);
+tree(-10, 11, 6);
+
+function pond(cx, cz, rx, rz) {
+  for (let x = -rx; x <= rx; x++) for (let z = -rz; z <= rz; z++) {
+    if (Math.max(Math.abs(x)/rx, Math.abs(z)/rz) <= 1.05) {
+      const shore = Math.max(Math.abs(x)/rx, Math.abs(z)/rz) > 0.82;
+      V(shore ? M.stone2 : M.water, cx + x, 0.25, cz + z, 0.5);
+    }
+  }
+}
+pond(-13, 6, 4, 3);
+
+function lantern(cx, cz) {
+  V(M.stone, cx, 0.7, cz, 0.8); V(M.stone, cx, 1.4, cz, 0.6);
+  V(M.lantern, cx, 2.0, cz, 0.6); V(M.stone2, cx, 2.5, cz, 0.4);
+}
+lantern(4, 7); lantern(-4, 7);
+
+const post = (x0, z) => { for (let i = 0; i < 6; i++) { V(M.red, x0, 0.7 + i, z); V(M.red, x0, 0.7 + i, z + 1); } };
+post(9, 11); post(13, 11);
+for (let x = 8; x <= 14; x++) for (let z = 11; z <= 12; z++) { V(M.redD, x, 6.6, z); V(M.redD, x, 5.4, z); }
+V(M.redD, 7.5, 6.75, 11); V(M.redD, 14.5, 6.75, 11);
+V(M.red, 11, 6.0, 11); V(M.red, 11, 4.8, 11);
+for (let z = 6; z <= 14; z++) { V(M.stone2, 11, 0.28, z, 0.5); }
+for (let z = 8; z <= 14; z++) { V(M.stone2, 10, 0.28, z, 0.5); V(M.stone2, 12, 0.28, z, 0.5); }
+
+const petals = [];
+const petalGeo = new THREE.BoxGeometry(0.45, 0.12, 0.3);
+const petalMesh = new THREE.InstancedMesh(petalGeo, new THREE.MeshLambertMaterial({ emissive:0x5a1f30 }), 48);
+petalMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+const petalColor = new THREE.Color();
+for (let i = 0; i < 48; i++) {
+  petals.push({
+    x: (Math.random() - 0.5) * 34,
+    y: 6 + Math.random() * 22,
+    z: (Math.random() - 0.5) * 34,
+    vy: 1.1 + Math.random() * 1.4,
+    ph: Math.random() * Math.PI * 2,
+    sp: Math.random() * Math.PI * 2,
+    sw: 0.6 + Math.random() * 1.2
+  });
+  petalMesh.setColorAt(i, petalColor.setHSL(0.93 + Math.random() * 0.05, 0.75, 0.6 + Math.random() * 0.2));
+}
+scene.add(petalMesh);
+
+for (const [mat, list] of vox) {
+  const m = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), mat, list.length);
+  m.receiveShadow = true; m.castShadow = (mat !== M.grass && mat !== M.grass2);
+  const mtx = new THREE.Matrix4();
+  list.forEach(([x, y, z, sy], i) => {
+    mtx.makeScale(1, sy, 1).setPosition(x, y, z);
+    m.setMatrixAt(i, mtx);
+  });
+  m.instanceMatrix.needsUpdate = true;
+  scene.add(m);
+}
+
+const camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.1, 400);
+camera.position.set(20, 12, 34);
+
+addEventListener('resize', () => {
+  renderer.setSize(innerWidth, innerHeight);
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+});
+
+const clock = new THREE.Clock();
+const dummy = new THREE.Object3D();
+const look = new THREE.Vector3(0, 10, 0);
+let orbit = -0.55;
+
+function frame() {
+  const dt = Math.min(clock.getDelta(), 0.1);
+  orbit += dt * 0.11;
+  const t = clock.elapsedTime;
+  camera.position.set(Math.sin(orbit) * 36, 11, Math.cos(orbit) * 36);
+  camera.lookAt(look);
+  for (let i = 0; i < petals.length; i++) {
+    const p = petals[i];
+    p.y -= p.vy * dt;
+    if (p.y < 0.4) { p.y = 18 + Math.random() * 10; p.ph = Math.random() * 6.28; }
+    const px = p.x + Math.sin(t * p.sw + p.ph) * 1.2;
+    const pz = p.z + Math.cos(t * p.sw * 0.8 + p.ph) * 1.2;
+    dummy.position.set(px, p.y, pz);
+    dummy.rotation.set(p.ph + t * 1.5, p.sp + t, p.sp);
+    dummy.updateMatrix();
+    petalMesh.setMatrixAt(i, dummy.matrix);
+  }
+  petalMesh.instanceMatrix.needsUpdate = true;
+  renderer.render(scene, camera);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

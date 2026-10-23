@@ -4,6 +4,9 @@
   reports/dashboard/data.json      models, runs (tests 1 and 2), test 3, engine A/B speeds, timeline, events, picks
   oneshots/{orrery,pagoda}/grades.tsv and */frames/*.webp     one-shot grades; frames are copied to site/frames/
   site/data/curated.json           hand-written: title, test catalogue, headline findings, links
+  site/data/history.json           mined from the private bake-off after the public dashboard (2026-10-07 on): timeline,
+                                   findings, tests, runs, test 3, A/B rows, models, pick updates; merged over the above
+  oneshots/agent-{pagoda,orrery}/  test 8 (the same two tasks done by an agent with a browser), same layout as one-shots
 
   python3 -I site/tools/build_data.py [--dashboard PATH]
 
@@ -19,6 +22,13 @@ SITE = os.path.join(ROOT, "site")
 dash = sys.argv[sys.argv.index("--dashboard") + 1] if "--dashboard" in sys.argv else os.path.join(ROOT, "reports/dashboard/data.json")
 D = json.load(open(dash))
 C = json.load(open(os.path.join(SITE, "data/curated.json")))
+H = json.load(open(os.path.join(SITE, "data/history.json")))
+for k, m in H.get("models_new", {}).items():
+    D["models"].setdefault(k, m)
+D["runs"] = D["runs"] + H.get("runs_new", [])
+D["test3"] = D.get("test3", []) + H.get("test3_new", [])
+D["ab"] = D.get("ab", []) + H.get("ab_new", [])
+D["timeline"] = D.get("timeline", []) + H.get("timeline", [])
 
 # Keep what describes a model; drop storage records and file names of vision heads.
 models = {}
@@ -26,6 +36,7 @@ for k, m in D["models"].items():
     v = m.get("vision") or {}
     models[k] = {f: m.get(f) for f in ("id", "family", "label", "base", "arch", "engine", "quant", "kind", "uncensored", "note")}
     models[k]["vision"] = {"label": v.get("label"), "status": v.get("status")} if v else None
+    models[k]["quant"] = re.sub(r";\s*the HF cache keeps.*$", "", models[k]["quant"] or "") or None
 
 RUN_KEEP = ("case", "model", "test", "agent", "checks", "tests_pass", "tests_fail", "subcmds", "tps", "minutes",
             "compactions", "ctx", "kv", "verdict", "finished")
@@ -61,7 +72,7 @@ def oneshots(test, key):
         # The model's own page (Alex 2026-10-22: "We want to serve the pagodas and orrery on the site. The code is safe").
         # Copied byte for byte, never edited; the page opens it only in <iframe sandbox="allow-scripts">.
         live = None
-        own = os.path.join(ROOT, "oneshots", key, case, "page.html" if key == "pagoda" else "orrery.svg")
+        own = os.path.join(ROOT, "oneshots", key, case, "page.html" if key.endswith("pagoda") else "orrery.svg")
         if os.path.isfile(own):
             live = os.path.join("live", key, case, os.path.basename(own))
             os.makedirs(os.path.dirname(os.path.join(SITE, live)), exist_ok=True)
@@ -78,10 +89,28 @@ picks = json.loads(json.dumps(D.get("recs", {})))
 for grp in ("overall", "uncensored"):
     for p in picks.get(grp, []):
         p["cases"] = [ren(c) for c in p.get("cases", [])]
+        for u in H.get("picks", {}).get(grp, []):
+            if u.get("role") == p.get("role") and u.get("model") == p.get("model") and u.get("change") != "none":
+                p["tradeoff"] = u["tradeoff"]
+
+# Tests: the curated t7 "Ticket fixes in Rust" is really harness test 4; history.json brings t4, t7 and t8.
+tests = {t["id"]: t for t in C["tests"]}
+for t in H.get("tests", []):
+    tests[t["id"]] = t
+tests = sorted(tests.values(), key=lambda t: (int(re.sub(r"\D", "", t["number"]) or 0), t["id"]))
+# Findings: curated plus mined, newest first; amendments add metrics and a caveat to an existing one.
+findings = json.loads(json.dumps(C["findings"])) + H.get("findings", [])
+for a in H.get("amend", []):
+    for f in findings:
+        if f["date"] == a["date"] and f["title"] == a["title"]:
+            f["metrics"] = f.get("metrics", []) + a.get("extra_metrics", [])
+            f["caveat"] = " ".join(x for x in (f.get("caveat"), a.get("note"), a.get("caveat_add")) if x)
+findings.sort(key=lambda f: f["date"], reverse=True)
 # The lab notebook shows results, not queue and harness housekeeping.
 EVENT_KINDS = {"finding", "grading", "grades", "engine", "model", "tests", "test", "settings"}
 HOSTY = re.compile(r"lan\.example|vpn\.example|\btitan\b|\bIris\b")  # entries about our own hosts and services
-events = [e for e in D.get("events", []) if e.get("kind") in EVENT_KINDS and not HOSTY.search(e.get("text") or "")][:80]
+# The page no longer shows the notebook (it stops at 2026-10-15 and carried host and queue chatter); the timeline tells it.
+events = []
 
 shutil.rmtree(os.path.join(SITE, "frames"), ignore_errors=True)
 shutil.rmtree(os.path.join(SITE, "live"), ignore_errors=True)
@@ -93,11 +122,12 @@ out = {
     "built": __import__("datetime").datetime.now().astimezone().strftime("%Y-%m-%d %H:%M %Z"),
     "title": C["title"], "tagline": C["tagline"], "links": C["links"],
     "hardware": hw, "caveats": D.get("caveats", []),
-    "tests": C["tests"], "findings": C["findings"],
+    "tests": tests, "findings": findings,
     "picks": picks, "timeline": D.get("timeline", []),
     "events": events,
     "models": models, "runs": runs, "test3": test3, "ab": ab,
-    "oneshots": {"orrery": oneshots(5, "orrery"), "pagoda": oneshots(6, "pagoda")},
+    "oneshots": {"orrery": oneshots(5, "orrery"), "pagoda": oneshots(6, "pagoda"),
+                 "agent-orrery": oneshots(8, "agent-orrery"), "agent-pagoda": oneshots(8, "agent-pagoda")},
 }
 c = out["counts"] = {"models": len(models), "runs": len(runs), "test3": len(test3),
                      "oneshots": sum(len(v) for v in out["oneshots"].values()),

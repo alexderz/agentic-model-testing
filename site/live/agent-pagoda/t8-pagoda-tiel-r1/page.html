@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voxel Japanese Pagoda</title>
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #9ec8e8; }
+  #app { position: fixed; inset: 0; }
+</style>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js"
+  }
+}
+</script>
+</head>
+<body>
+<div id="app"></div>
+<script type="module">
+import * as THREE from 'three';
+
+// ---------- renderer ----------
+const app = document.getElementById('app');
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+app.appendChild(renderer.domElement);
+
+// ---------- scene ----------
+const scene = new THREE.Scene();
+const SKY = 0x9ec8e8;
+scene.background = new THREE.Color(SKY);
+scene.fog = new THREE.Fog(SKY, 34, 78);
+
+const camera = new THREE.PerspectiveCamera(72, window.innerWidth / window.innerHeight, 0.1, 300);
+camera.position.set(17, 9, 17);
+camera.lookAt(0, 4.5, 0);
+
+// ---------- lights ----------
+scene.add(new THREE.HemisphereLight(0xcfe3ff, 0x41502f, 0.6));
+scene.add(new THREE.AmbientLight(0xffffff, 0.25));
+
+const sun = new THREE.DirectionalLight(0xfff2d6, 1.6);
+sun.position.set(14, 20, 10);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.camera.near = 0.5;
+sun.shadow.camera.far = 90;
+const S = 18;
+sun.shadow.camera.left = -S;
+sun.shadow.camera.right = S;
+sun.shadow.camera.top = S;
+sun.shadow.camera.bottom = -S;
+sun.shadow.bias = -0.0004;
+sun.shadow.normalBias = 0.02;
+scene.add(sun);
+const sunTarget = new THREE.Object3D();
+scene.add(sunTarget);
+sun.target = sunTarget;
+
+// ---------- helpers ----------
+function mat(color, opts = {}) {
+  return new THREE.MeshStandardMaterial({
+    color,
+    roughness: opts.rough !== undefined ? opts.rough : 0.85,
+    metalness: opts.metal !== undefined ? opts.metal : 0.0,
+    flatShading: opts.flat !== undefined ? opts.flat : false,
+  });
+}
+
+// unit-cube accumulator -> InstancedMesh per material
+const stacks = [];
+function pushCube(m, x, y, z, sx = 1, sy = 1, sz = 1, rx = 0, ry = 0, rz = 0) {
+  let s = stacks.find(e => e.m === m);
+  if (!s) { s = { m, data: [] }; stacks.push(s); }
+  s.data.push({ x, y, z, sx, sy, sz, rx, ry, rz });
+}
+
+function centers(n) {
+  const a = [];
+  for (let i = 0; i < n; i++) a.push(i - (n - 1) / 2);
+  return a;
+}
+
+function buildStacks() {
+  const geo = new THREE.BoxGeometry(1, 1, 1);
+  const m = new THREE.Matrix4();
+  const q = new THREE.Quaternion();
+  const p = new THREE.Vector3();
+  const sc = new THREE.Vector3();
+  for (const s of stacks) {
+    const mesh = new THREE.InstancedMesh(geo, s.m, s.data.length);
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    s.data.forEach((d, i) => {
+      p.set(d.x, d.y, d.z);
+      sc.set(d.sx, d.sy, d.sz);
+      q.setFromEuler(new THREE.Euler(d.rx, d.ry, d.rz));
+      m.compose(p, q, sc);
+      mesh.setMatrixAt(i, m);
+    });
+    mesh.instanceMatrix.needsUpdate = true;
+    scene.add(mesh);
+  }
+}
+
+// ---------- pagoda ----------
+function buildPagoda() {
+  const wallMat = mat(0x6f4a2f, { rough: 0.85 });
+  const roofMat = mat(0x2c3b44, { rough: 0.72 });
+  const accMat = mat(0x1c282e, { rough: 0.7 });
+
+  const counts = [6, 5, 4, 3, 2];
+  const heights = [2.0, 1.8, 1.6, 1.4, 1.2];
+  let y = 0.8; // top of platform
+
+  for (let i = 0; i < 5; i++) {
+    const wc = counts[i];
+    const xs = centers(wc), zs = centers(wc);
+    const half = (wc - 1) / 2;
+    const wh = heights[i];
+
+    // hollow square wall shell (one cube thick)
+    for (const x of xs) {
+      for (const z of zs) {
+        if (Math.abs(x) > half - 0.6 || Math.abs(z) > half - 0.6) {
+          pushCube(wallMat, x, y + wh / 2, z, 1, wh, 1);
+        }
+      }
+    }
+
+    // eave slab on top of the walls
+    const ec = wc + 2;
+    const exs = centers(ec), ezs = centers(ec);
+    const ehalf = (ec - 1) / 2;
+    const eTop = y + wh;
+    for (const x of exs) {
+      for (const z of ezs) {
+        pushCube(roofMat, x, eTop + 0.15, z, 1, 0.3, 1);
+      }
+    }
+
+    // upturned corners (raised voxel brackets)
+    const corners = [
+      [ehalf, ehalf], [ehalf, -ehalf], [-ehalf, ehalf], [-ehalf, -ehalf]
+    ];
+    for (const [cx, cz] of corners) {
+      pushCube(accMat, cx, eTop + 0.55, cz, 0.75, 0.5, 0.75);
+      pushCube(accMat, cx * 0.55, eTop + 0.82, cz * 0.55, 0.45, 0.34, 0.45);
+    }
+
+    y = eTop + 0.3;
+  }
+
+  // spire (chuizan)
+  const ironMat = mat(0x26282c, { rough: 0.5, metal: 0.2 });
+  const goldMat = mat(0xcaa23a, { rough: 0.4, metal: 0.5 });
+  // rod
+  pushCube(ironMat, 0, y + 1.5, 0, 0.22, 3.0, 0.22);
+  // rings
+  const rings = [0.72, 0.6, 0.5, 0.42, 0.35, 0.29];
+  let ry = y + 0.35;
+  for (const s of rings) {
+    pushCube(ironMat, 0, ry, 0, s, 0.12, s);
+    ry += 0.34;
+  }
+  // finial orb + spike
+  pushCube(goldMat, 0, ry + 0.28, 0, 0.3, 0.3, 0.3);
+  pushCube(goldMat, 0, ry + 0.7, 0, 0.12, 0.7, 0.12);
+}
+
+// ---------- stone platform ----------
+function buildPlatform() {
+  const stone = mat(0x8f8f8f, { rough: 1 });
+  const dark = mat(0x717171, { rough: 1 });
+  const slabs = [
+    { n: 9, y: 0.15, h: 0.3 },
+    { n: 7, y: 0.45, h: 0.3 },
+    { n: 7, y: 0.75, h: 0.2 },
+  ];
+  for (const s of slabs) {
+    const xs = centers(s.n), zs = centers(s.n);
+    for (const x of xs) for (const z of zs) {
+      pushCube(s.h > 0.3 ? dark : stone, x, s.y, z, 1, s.h, 1);
+    }
+  }
+}
+
+// ---------- cherry blossom tree ----------
+function buildTree(x, z, sc = 1) {
+  const trunkMat = mat(0x5b3d28, { rough: 1 });
+  const blossom = mat(0xff9db3, { rough: 1 });
+  const blossom2 = mat(0xffc2cf, { rough: 1 });
+  const h = 3.2 * sc;
+  // trunk (slightly leaning, built in segments)
+  let ty = 0.5;
+  let tx = 0;
+  for (let i = 0; i < Math.ceil(h); i++) {
+    pushCube(trunkMat, tx, ty + 0.45, z, 0.55, 0.9, 0.55);
+    ty += 0.85;
+    tx += (i % 2 === 0 ? 0.12 : -0.12);
+  }
+  // branches
+  pushCube(trunkMat, tx + 0.7 * sc, ty * 0.95, z + 0.2, 0.8 * sc, 0.4, 0.4 * sc);
+  pushCube(trunkMat, tx - 0.6 * sc, ty * 0.9, z + 0.4 * sc, 0.4 * sc, 0.4, 0.8 * sc);
+
+  // blossom canopy
+  const cy = 0.5 + h + 0.2;
+  const blobs = [
+    [0, 0, 0, 1.35], [0.9 * sc, 0, 0.5 * sc, 0.9], [-0.8 * sc, 0, 0.6 * sc, 0.9],
+    [0.4 * sc, 0.5 * sc, -0.5 * sc, 0.8], [-0.5 * sc, 0.4 * sc, -0.4 * sc, 0.75],
+    [0.1 * sc, 0.7 * sc, 0.1 * sc, 0.7],
+  ];
+  blobs.forEach((b, i) => {
+    pushCube(i % 2 ? blossom : blossom2, x + b[0], cy + b[2] * 0.7, z + b[1], b[3], b[3], b[3]);
+  });
+}
+
+// ---------- pond ----------
+function buildPond(cx, cz) {
+  const waterMat = mat(0x3f7cc7, { rough: 0.15, metal: 0.05 });
+  const stoneMat = mat(0x7d7d7d, { rough: 1 });
+  const rx = 2.7, rz = 2.1, step = 0.7;
+  for (let x = -4; x <= 4; x += step) {
+    for (let z = -4; z <= 4; z += step) {
+      const lx = x - cx, lz = z - cz;
+      const d = Math.sqrt((lx / rx) ** 2 + (lz / rz) ** 2);
+      if (d <= 1.0) {
+        pushCube(waterMat, x, 0.1, z, step * 0.95, 0.12, step * 0.95);
+      } else if (d <= 1.35) {
+        const hh = 0.45 + (Math.sin(x * 2.3) * 0.5 + 0.5) * 0.25;
+        pushCube(stoneMat, x, 0.5 * hh, z, step * 0.9, hh, step * 0.9);
+      }
+    }
+  }
+  // stepping stone
+  pushCube(stoneMat, cx + rx - 0.4, 0.35, cz, 0.7, 0.3, 0.7);
+}
+
+// ---------- red torii gate ----------
+function buildTorii(x, z) {
+  const red = mat(0xc0392b, { rough: 0.55 });
+  const red2 = mat(0xa1281c, { rough: 0.6 });
+  const dark = mat(0x2a2a2a, { rough: 0.8 });
+  const pw = 0.5, pillarH = 3.4, baseY = 0.55;
+  const halfW = 2.3;
+
+  // base stones
+  for (const sx of [-halfW, halfW]) pushCube(dark, x + sx, 0.35, z, 1.1, 0.5, 1.1);
+  // pillars
+  for (const sx of [-halfW, halfW]) pushCube(red, x + sx, baseY + pillarH / 2, z, pw, pillarH, pw);
+  // top beam (with slight overhang)
+  pushCube(red, x, baseY + pillarH - 0.2, z, halfW * 2 + 1.4, 0.5, 0.75);
+  // second beam
+  pushCube(red2, x, baseY + pillarH - 1.25, z, halfW * 2 + 0.1, 0.42, 0.55);
+  // central plaque
+  pushCube(dark, x, baseY + pillarH - 0.15, z, 0.6, 0.55, 0.4);
+}
+
+// ---------- ground ----------
+const ground = new THREE.Mesh(
+  new THREE.PlaneGeometry(120, 120),
+  new THREE.MeshStandardMaterial({ color: 0x5f7f38, roughness: 1 })
+);
+ground.rotation.x = -Math.PI / 2;
+ground.position.y = 0;
+ground.receiveShadow = true;
+scene.add(ground);
+
+// ---------- build everything ----------
+buildPlatform();
+buildPagoda();
+buildTree(-6.5, 2.5, 1.15);
+buildTree(6.5, -5.5, 1.0);
+buildTree(-5.0, -6.5, 0.85);
+buildPond(6.2, 4.2);
+buildTorii(0, 6.8);
+buildStacks();
+
+// ---------- drifting petals ----------
+const petalGeo = new THREE.BoxGeometry(0.22, 0.22, 0.05);
+const petalMat = new THREE.MeshStandardMaterial({ color: 0xff8fae, roughness: 0.6, side: THREE.DoubleSide });
+const petals = [];
+for (let i = 0; i < 46; i++) {
+  const g = new THREE.Group();
+  const mesh = new THREE.Mesh(petalGeo, petalMat);
+  mesh.castShadow = false;
+  g.add(mesh);
+  g.position.set((Math.random() - 0.5) * 26, 3 + Math.random() * 13, (Math.random() - 0.5) * 26);
+  g.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+  g.userData = {
+    fall: 0.5 + Math.random() * 0.6,
+    sway: 1.0 + Math.random() * 1.8,
+    phase: Math.random() * Math.PI * 2,
+    spinX: (Math.random() - 0.5) * 2.4,
+    spinZ: (Math.random() - 0.5) * 2.4,
+    baseX: g.position.x,
+    baseZ: g.position.z,
+  };
+  scene.add(g);
+  petals.push(g);
+}
+
+// ---------- orbit + animate ----------
+const clock = new THREE.Clock();
+const R = 17, H = 9;
+
+function animate() {
+  const dt = Math.min(clock.getDelta(), 0.05);
+  const t = clock.elapsedTime;
+
+  const ang = t * 0.13;
+  camera.position.set(Math.sin(ang) * R, H, Math.cos(ang) * R);
+  camera.lookAt(0, 4.5, 0);
+  sun.target.position.set(0, 3.5, 0);
+
+  for (const p of petals) {
+    p.position.y -= p.userData.fall * dt;
+    p.position.x = p.baseX + Math.sin(t * p.userData.sway + p.userData.phase) * 1.1;
+    p.position.z = p.baseZ + Math.cos(t * p.userData.sway * 0.8 + p.userData.phase) * 1.1;
+    p.rotation.x += p.userData.spinX * dt;
+    p.rotation.z += p.userData.spinZ * dt;
+    if (p.position.y < -0.3) {
+      p.position.y = 12 + Math.random() * 4;
+      p.baseX = (Math.random() - 0.5) * 26;
+      p.baseZ = (Math.random() - 0.5) * 26;
+      p.position.x = p.baseX;
+      p.position.z = p.baseZ;
+    }
+  }
+
+  renderer.render(scene, camera);
+  requestAnimationFrame(animate);
+}
+animate();
+
+// ---------- resize ----------
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+</script>
+</body>
+</html>

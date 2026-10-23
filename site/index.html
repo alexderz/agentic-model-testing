@@ -23,6 +23,7 @@
     <a href="#test3">Test 3</a>
     <a href="#ab">Engines</a>
     <a href="#oneshots">Gallery</a>
+    <a href="#agent">Agent</a>
     <a href="#findings">Findings</a>
     <a href="#timeline">Timeline</a>
     <a href="#caveats">Caveats</a>
@@ -34,7 +35,7 @@
       <p class="tagline" id="tagline"></p>
       <dl class="hero-stats" id="hero-stats" aria-label="Headline counts"></dl>
       <p class="generated" id="generated"></p>
-      <p class="hero-note">The orrery is drawn from the data: the GPU is the sun, every model is a planet in its family's band, orbit speed is the best tokens per second that model ever reached, size is how often it ran, and a halo means it passed test 2, the MCP server. Dashed rings mark uncensored models.</p>
+      <ul class="hero-key" id="hero-key" aria-label="How to read the orrery"></ul>
     </div>
     <figure class="hero-art">
       <div id="orrery" class="orrery-mount"></div>
@@ -48,20 +49,17 @@
 <main id="main">
 
 <section id="machine" class="chapter" aria-labelledby="h-machine">
-  <div class="chapter-head"><span class="num">01</span><h2 id="h-machine">One machine</h2>
-  <p class="lede">Everything here ran on a single home workstation, one model at a time. That is the whole point: not what a cluster can do, but what fits in one consumer graphics card and how fast it goes.</p></div>
+  <div class="chapter-head"><span class="num">01</span><h2 id="h-machine">One machine</h2></div>
   <dl class="spec-plate" id="hardware"></dl>
 </section>
 
 <section id="tests" class="chapter" aria-labelledby="h-tests">
-  <div class="chapter-head"><span class="num">02</span><h2 id="h-tests">The tests</h2>
-  <p class="lede">Every test gives the agent one task and no guidance, inside a locked-down container that can reach only the model server and a replay of a real Home Assistant installation. The result is graded by running it, never by reading it.</p></div>
+  <div class="chapter-head"><span class="num">02</span><h2 id="h-tests">The tests</h2></div>
   <div class="test-cards" id="test-cards"></div>
 </section>
 
 <section id="picks" class="chapter" aria-labelledby="h-picks">
-  <div class="chapter-head"><span class="num">03</span><h2 id="h-picks">Who wins, today</h2>
-  <p class="lede">"Competent" means the model built an MCP server a real client could connect to and call. "Smartest" weighs how much working server and how many passing tests it produced. These picks move as results come in; the trade-off line is as important as the verdict.</p></div>
+  <div class="chapter-head"><span class="num">03</span><h2 id="h-picks">Who wins, today</h2></div>
   <div class="pick-grid">
     <div><h3 class="sub">Overall</h3><div class="pick-cards" id="pick-overall"></div></div>
     <div><h3 class="sub">Uncensored</h3><div class="pick-cards" id="pick-uncensored"></div></div>
@@ -72,7 +70,7 @@
 
 <section id="runs" class="chapter" aria-labelledby="h-runs">
   <div class="chapter-head"><span class="num">04</span><h2 id="h-runs">The speed ladder</h2>
-  <p class="lede">Every agent run, on a log scale of tokens per second averaged over the whole run (output and reasoning tokens over wall time, including tool calls and compaction). Colour and glyph are the verdict: a filled circle passed, a half circle is partial, an empty circle failed. One row is one run, and one run is one sample.</p></div>
+  <p class="lede">Tokens per second over the whole run, log scale.</p></div>
   <form class="filters" id="run-filters" aria-label="Filter runs">
     <label>Test <select name="test" id="f-test"></select></label>
     <label>Family <select name="family" id="f-family"></select></label>
@@ -94,32 +92,35 @@
 
 <section id="struggle" class="chapter" aria-labelledby="h-struggle">
   <div class="chapter-head"><span class="num">05</span><h2 id="h-struggle">Fighting the compiler</h2>
-  <p class="lede">The Rust MCP server task leaves a trail of builds in the transcript. Counting the compiler's own error tallies per thousand lines of final code separates models that write clean code from models that brute-force their way past rustc. A model can pass while fighting hard, so this is a second axis, not a grade.</p></div>
+  <p class="lede">Test 2, Rust: compiler errors per thousand lines shipped.</p></div>
   <div id="struggle-chart" class="chart"></div>
   <div id="struggle-summary" class="stat-row"></div>
 </section>
 
 <section id="test3" class="chapter" aria-labelledby="h-test3">
   <div class="chapter-head"><span class="num">06</span><h2 id="h-test3">Using a server, and fixing one</h2>
-  <p class="lede">Building a tool and using one are different skills. Here the agent must extract facts about the recorded house through a subagent whose only tools are an MCP server's, check them against the REST API, and decide whether to trust the server. The G flavour uses a known-good server; the O flavour uses the model's own. Facts are shown as pips, the rubric as a bar.</p></div>
+  <p class="lede" id="test3-lede"></p></div>
   <div id="test3-groups" class="t3-list"></div>
-  <button type="button" class="more" id="test3-more" hidden></button>
 </section>
 
 <section id="ab" class="chapter" aria-labelledby="h-ab">
   <div class="chapter-head"><span class="num">07</span><h2 id="h-ab">Same weights, different engine</h2>
-  <p class="lede">A/B speed probes of the same model on different engine builds and speculative-decoding variants, decode tokens per second. The engine often matters as much as the model, and some combinations simply fail to load.</p></div>
+  <p class="lede">Decode tokens per second; ×n is the gain between engines.</p></div>
   <ul class="ab-legend" id="ab-legend" aria-label="Engines"></ul>
   <div id="ab-groups" class="ab-list"></div>
 </section>
 
 <section id="oneshots" class="chapter" aria-labelledby="h-oneshots">
   <div class="chapter-head"><span class="num">08</span><h2 id="h-oneshots">The gallery</h2>
-  <p class="lede">One reply, no tools, one creative-coding prompt. The replies were rendered offline in a container with no network and graded on five points of 0 to 2. The frames on the cards are those offline renders at increasing times. Where the reply produced a file, "Play live" runs the model's own file, unedited, inside a sandboxed frame. A blank card means the reply spent its whole token budget thinking and never produced a file.</p>
-  <p class="live-line" id="oneshot-live" hidden></p></div>
+  <p class="lede">Offline renders; Play live runs the model's own file.</p></div>
   <div class="set-row" id="oneshot-sets"></div>
-  <form class="filters" id="oneshot-filters" aria-label="Filter one-shots">
-    <label>Test <select name="test" id="o-test"></select></label>
+  <div id="agent" class="pairs-block" aria-labelledby="h-agent">
+    <h3 class="sub" id="h-agent">One shot → agent</h3>
+    <p class="lede" id="pairs-lede"></p>
+    <div class="pairs-grid" id="pairs"></div>
+  </div>
+  <form class="filters" id="oneshot-filters" aria-label="Filter the gallery">
+    <label>Set <select name="set" id="o-test"></select></label>
     <label>Sort <select name="sort" id="o-sort"><option value="score">best score</option><option value="speed">fastest</option><option value="model">by model</option><option value="newest">newest case</option></select></label>
     <label class="grow">Search <input type="search" name="q" id="o-q" placeholder="model or note"></label>
     <output id="o-count" class="count" aria-live="polite"></output>
@@ -128,36 +129,22 @@
 </section>
 
 <section id="findings" class="chapter" aria-labelledby="h-findings">
-  <div class="chapter-head"><span class="num">09</span><h2 id="h-findings">Findings</h2>
-  <p class="lede">Headline discoveries, newest first, with the before and after numbers that back them.</p></div>
+  <div class="chapter-head"><span class="num">09</span><h2 id="h-findings">Findings</h2></div>
   <div id="findings-list" class="findings"></div>
 </section>
 
 <section id="timeline" class="chapter" aria-labelledby="h-timeline">
-  <div class="chapter-head"><span class="num">10</span><h2 id="h-timeline">How the work evolved</h2>
-  <p class="lede">The harness, prompts, grading and engines changed as we learned. Each step says what changed and why, which is also why rows from different eras are not directly comparable.</p></div>
+  <div class="chapter-head"><span class="num">10</span><h2 id="h-timeline">How the work evolved</h2></div>
   <ol id="timeline-list" class="river"></ol>
-</section>
-
-<section id="log" class="chapter" aria-labelledby="h-log">
-  <div class="chapter-head"><span class="num">11</span><h2 id="h-log">Lab notebook</h2>
-  <p class="lede">The most recent entries from the running log: queues, grading, harness fixes and small findings, in the operator's own words.</p></div>
-  <ul class="kind-row" id="event-kinds" aria-label="Filter log entries by kind"></ul>
-  <div id="events-list" class="events"></div>
-</section>
-
-<section id="caveats" class="chapter" aria-labelledby="h-caveats">
-  <div class="chapter-head"><span class="num">12</span><h2 id="h-caveats">Read this before quoting a number</h2>
-  <p class="lede">Honest limits of the method. They apply to every chart above.</p></div>
-  <ol id="caveat-list" class="caveats"></ol>
 </section>
 
 </main>
 
 <footer class="foot">
-  <p>Built from <code>data/bakeoff.json</code>. The page is only a renderer: new runs, models and findings appear here when that file changes.</p>
+  <p class="method">Method: one task per test, no guidance, a sealed container that reaches only the model server and a recorded Home Assistant; graded by running the result, never by reading it.</p>
+  <details id="caveats" class="caveats-wrap"><summary id="caveats-summary">Caveats</summary><ol id="caveat-list" class="caveats"></ol></details>
   <ul id="links" class="links"></ul>
-  <p class="small">The page itself loads no script, font or image from anywhere but this site. Model-written files are never embedded in the page: a one-shot piece runs only when you press "Play live", alone, inside an iframe sandboxed to scripts only (no same-origin access, no navigation, no pop-ups, no forms), served from this site byte for byte, and it is unloaded when the viewer closes. The pagoda pages fetch three.js from cdn.jsdelivr.net and a few of them fetch Google Fonts; that happens inside the sandbox, not on this page.</p>
+  <p class="small">Rendered from <code>data/bakeoff.json</code>; the page loads no script, font or image from anywhere but this site. A model-written piece runs only after you press “Play live”, alone, in an iframe sandboxed to scripts (no same-origin access, navigation, pop-ups or forms), served byte for byte and unloaded when the viewer closes. Pagoda pages fetch three.js from cdn.jsdelivr.net and some fetch Google Fonts, inside that sandbox only.</p>
 </footer>
 </body>
 </html>

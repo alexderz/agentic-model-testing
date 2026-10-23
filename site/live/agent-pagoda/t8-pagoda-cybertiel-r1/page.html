@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voxel Pagoda</title>
+<style>
+  html, body { margin:0; padding:0; overflow:hidden; background:#000; }
+  #c { display:block; width:100vw; height:100vh; }
+</style>
+</head>
+<body>
+<div id="c"></div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+
+const container = document.getElementById('c');
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFShadowMap;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+container.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+const SKY = new THREE.Color(0xbfd8f0);
+scene.background = SKY;
+scene.fog = new THREE.Fog(SKY, 90, 260);
+
+const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 900);
+camera.position.set(62, 26, 62);
+
+// ---------- Sky dome ----------
+const skyGeo = new THREE.SphereGeometry(420, 32, 16);
+const skyMat = new THREE.ShaderMaterial({
+  side: THREE.BackSide,
+  depthWrite: false,
+  uniforms: {
+    top:    { value: new THREE.Color(0x2f63c8) },
+    mid:    { value: new THREE.Color(0x9fc8f2) },
+    horizon: { value: new THREE.Color(0xeaf2fb) }
+  },
+  vertexShader:
+    'varying vec3 vP;\nvoid main(){ vP = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }\n',
+  fragmentShader:
+    'varying vec3 vP;\nuniform vec3 top;\nuniform vec3 mid;\nuniform vec3 horizon;\nvoid main(){\n  float h = normalize(vP).y;\n  vec3 c = h > 0.0 ? mix(mid, top, pow(h, 0.55)) : mix(mid, horizon, pow(-h, 0.45));\n  gl_FragColor = vec4(c, 1.0);\n}\n'
+});
+scene.add(new THREE.Mesh(skyGeo, skyMat));
+
+// ---------- Lighting ----------
+const sun = new THREE.DirectionalLight(0xfff3e0, 2.1);
+sun.position.set(48, 74, 40);
+sun.castShadow = true;
+sun.shadow.mapSize.set(1024, 1024);
+sun.shadow.camera.near = 10;
+sun.shadow.camera.far = 240;
+sun.shadow.camera.left = -70;
+sun.shadow.camera.right = 70;
+sun.shadow.camera.top = 70;
+sun.shadow.camera.bottom = -70;
+sun.shadow.bias = -0.0006;
+sun.shadow.normalBias = 0.02;
+scene.add(sun);
+scene.add(sun.target);
+
+scene.add(new THREE.HemisphereLight(0xcfe4ff, 0x5a5040, 1.05));
+scene.add(new THREE.AmbientLight(0xfff2e0, 0.5));
+
+// ---------- Voxel pool (instanced cubes) ----------
+class VoxelPool {
+  constructor(material, capacity) {
+    this.material = material;
+    this.geometry = new THREE.BoxGeometry(1, 1, 1);
+    this.mesh = new THREE.InstancedMesh(this.geometry, material, capacity);
+    this.mesh.castShadow = true;
+    this.mesh.receiveShadow = true;
+    this.count = 0;
+    this.dummy = new THREE.Object3D();
+    this.colors = new Float32Array(capacity * 3);
+    this.mesh.instanceColor = new THREE.InstancedBufferAttribute(this.colors, 3);
+    this.mesh.instanceColor.setUsage(THREE.DynamicDrawUsage);
+    this.mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  }
+  add(x, y, z, sx, sy, sz, r, g, b) {
+    const i = this.count++;
+    this.dummy.position.set(x, y, z);
+    this.dummy.rotation.set(0, 0, 0);
+    this.dummy.scale.set(sx, sy, sz);
+    this.dummy.updateMatrix();
+    this.mesh.setMatrixAt(i, this.dummy.matrix);
+    this.colors[i * 3] = r;
+    this.colors[i * 3 + 1] = g;
+    this.colors[i * 3 + 2] = b;
+    this.mesh.instanceColor.needsUpdate = true;
+  }
+}
+
+const pools = [];
+function pool(material, capacity) {
+  const p = new VoxelPool(material, capacity);
+  pools.push(p);
+  return p;
+}
+function rgb(hex) { const c = new THREE.Color(hex); return [c.r, c.g, c.b]; }
+
+const MAT_GROUND = new THREE.MeshStandardMaterial({ color: 0x4f7a3a, roughness: 1.0 });
+const MAT_STONE = new THREE.MeshStandardMaterial({ color: 0x928d82, roughness: 0.95 });
+const MAT_STONE2 = new THREE.MeshStandardMaterial({ color: 0x7d786d, roughness: 0.95 });
+const MAT_WOOD = new THREE.MeshStandardMaterial({ color: 0x6e2a1c, roughness: 0.85 });
+const MAT_WOOD_DARK = new THREE.MeshStandardMaterial({ color: 0x6e2a1c, roughness: 0.85 });
+const MAT_ROOF = new THREE.MeshStandardMaterial({ color: 0x2b2b36, roughness: 0.8 });
+const MAT_ROOF_DARK = new THREE.MeshStandardMaterial({ color: 0x1c1c26, roughness: 0.8 });
+const MAT_GOLD = new THREE.MeshStandardMaterial({ color: 0xcaa63a, roughness: 0.4, metalness: 0.6 });
+const MAT_METAL = new THREE.MeshStandardMaterial({ color: 0x3a3a42, roughness: 0.5, metalness: 0.7 });
+const MAT_TRUNK = new THREE.MeshStandardMaterial({ color: 0x5a3c24, roughness: 0.95 });
+const MAT_TORII = new THREE.MeshStandardMaterial({ color: 0xc0272d, roughness: 0.6 });
+const MAT_TORII_DARK = new THREE.MeshStandardMaterial({ color: 0x241013, roughness: 0.7 });
+const MAT_WATER = new THREE.MeshStandardMaterial({
+  color: 0x2f7fb0, roughness: 0.12, metalness: 0.45,
+  transparent: true, opacity: 0.9
+});
+
+// ---------- Ground ----------
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(300, 300), MAT_GROUND);
+ground.rotation.x = -Math.PI / 2;
+ground.position.y = 0;
+ground.receiveShadow = true;
+scene.add(ground);
+
+// ---------- Stone platform ----------
+const TOP = 2;
+const stone = pool(MAT_STONE, 8000);
+const stone2 = pool(MAT_STONE2, 2000);
+for (let layer = 0; layer < 2; layer++) {
+  const y = layer;
+  const half = 13 - layer;
+  for (let x = -half; x <= half; x++) {
+    for (let z = -half; z <= half; z++) {
+      const c = (x + z + layer) % 5 === 0 ? stone2 : stone;
+      c.add(x, y, z, 1, 1, 1, ...rgb(0x928d82), ...rgb(0x7d786d));
+    }
+  }
+}
+// stepped edge highlight
+for (let x = -13; x <= 13; x++) {
+  for (const z of [-13, 13]) { stone.add(x, 0, z, 1, 1, 1, ...rgb(0x857f74)); }
+}
+for (let z = -13; z <= 13; z++) {
+  for (const x of [-13, 13]) { stone.add(x, 0, z, 1, 1, 1, ...rgb(0x857f74)); }
+}
+
+// ---------- Pagoda ----------
+const wood = pool(MAT_WOOD, 3000);
+const woodDark = pool(MAT_WOOD_DARK, 1000);
+const roof = pool(MAT_ROOF, 3000);
+const roofDark = pool(MAT_ROOF_DARK, 2000);
+const accent = pool(MAT_GOLD, 500);
+const accentMetal = pool(MAT_METAL, 300);
+
+const platformTop = 2;
+const wallH = 3;
+const roofH = 1.9;
+const storyBase0 = platformTop;
+const storyStep = wallH + roofH;
+const wallHalf0 = 4.0;
+const eaveHalf0 = 6.0;
+const wallStep = 0.55;
+const eaveStep = 0.85;
+
+function buildRoof(half, topY, cx, cz) {
+  // flat overhanging eave slab
+  roof.add(cx, topY + 0.35, cz, 2 * half + 0.4, 0.7, 2 * half + 0.4, ...rgb(0x35353f));
+  // shallow pyramidal slope
+  const layers = 3;
+  for (let l = 0; l < layers; l++) {
+    const f = l / layers;
+    const s = half * (1 - 0.62 * f);
+    const h = (roofH - 0.7) / layers;
+    const y = topY + 0.7 + (l + 0.5) * h;
+    roofDark.add(cx, y, cz, 2 * s, h, 2 * s, ...rgb(0x1c1c26));
+  }
+  // upturned eave tips (stepped, curling up at each corner)
+  const tipBaseY = topY + 0.7;
+  for (const sx of [-1, 1]) {
+    for (const sz of [-1, 1]) {
+      const ox = sx * (half - 0.45), oz = sz * (half - 0.45);
+      roofDark.add(cx + ox, tipBaseY + 0.45, cz + oz, 0.6, 0.5, 0.6, ...rgb(0x2b2b36));
+      roofDark.add(cx + ox, tipBaseY + 0.95, cz + oz, 0.48, 0.5, 0.48, ...rgb(0x3d3d4a));
+      const ox2 = sx * (half - 1.35), oz2 = sz * (half - 1.35);
+      roofDark.add(cx + ox2, tipBaseY + 0.55, cz + oz2, 0.5, 0.45, 0.5, ...rgb(0x2b2b36));
+      roofDark.add(cx + ox2, tipBaseY + 1.0, cz + oz2, 0.4, 0.4, 0.4, ...rgb(0x3a3a45));
+    }
+  }
+}
+
+function buildStory(i) {
+  const cx = 0, cz = 0;
+  const wallHalf = wallHalf0 - i * wallStep;
+  const eaveHalf = eaveHalf0 - i * eaveStep;
+  const baseY = storyBase0 + i * storyStep;
+  // body
+  wood.add(cx, baseY + wallH / 2, cz, 2 * wallHalf, wallH, 2 * wallHalf, ...rgb(0x863826));
+  // base plinth
+  woodDark.add(cx, baseY + 0.25, cz, 2 * wallHalf + 0.4, 0.5, 2 * wallHalf + 0.4, ...rgb(0x6e2a1c));
+  // corner + mid pillars
+  const poffs = wallHalf + 0.12;
+  const corners = [[-poffs, -poffs], [poffs, -poffs], [-poffs, poffs], [poffs, poffs],
+                   [-poffs, 0], [poffs, 0], [0, -poffs], [0, poffs]];
+  for (const [px, pz] of corners) {
+    wood.add(cx + px, baseY + wallH / 2 + 0.15, cz + pz, 0.6, wallH * 0.95, 0.6, ...rgb(0x5a2416));
+  }
+  // railing band (upper opening)
+  woodDark.add(cx, baseY + wallH - 0.35, cz, 2 * wallHalf * 0.98, 0.4, 0.35, ...rgb(0x6e2a1c));
+  woodDark.add(cx, baseY + wallH - 0.35, cz, 0.35, 0.4, 2 * wallHalf * 0.98, ...rgb(0x6e2a1c));
+  // floor / veranda slab
+  roof.add(cx, baseY + 0.3, cz, 2 * wallHalf + 0.3, 0.4, 2 * wallHalf + 0.3, ...rgb(0x33333f));
+  // roof
+  buildRoof(eaveHalf, baseY + wallH, cx, cz);
+}
+
+for (let i = 0; i < 5; i++) buildStory(i);
+
+// ---------- Spire (sorin) ----------
+const spireBase = storyBase0 + 5 * storyStep;
+accentMetal.add(0, spireBase + 6, 0, 0.4, 12, 0.4, ...rgb(0x3a3a42));
+const rings = [[spireBase + 2.6, 1.7], [spireBase + 4.8, 1.4], [spireBase + 7.0, 1.1], [spireBase + 9.0, 0.8]];
+for (const [ry, rs] of rings) {
+  accent.add(0, ry, 0, rs, 0.4, rs, ...rgb(0xcaa63a));
+}
+accent.add(0, spireBase + 11.2, 0, 0.7, 0.7, 0.7, ...rgb(0xd8b43f));
+accent.add(0, spireBase + 12.4, 0, 0.35, 0.9, 0.35, ...rgb(0xd8b43f));
+
+// ---------- Cherry blossom trees ----------
+const trunk = pool(MAT_TRUNK, 600);
+const blossom = pool(new THREE.MeshStandardMaterial({ color: 0xf6a8bd, roughness: 0.9 }), 1200);
+
+function randPtSphere(R) {
+  for (let k = 0; k < 6; k++) {
+    const x = R * (2 * Math.random() - 1);
+    const y = R * (2 * Math.random() - 1);
+    const z = R * (2 * Math.random() - 1);
+    if (x * x + y * y + z * z <= R * R) return [x, y, z];
+  }
+  return [0, 0, 0];
+}
+
+function buildTree(x, z, s) {
+  const h = Math.floor(5 + Math.random() * 2);
+  let ox = 0, oz = 0;
+  for (let i = 0; i < h; i++) {
+    const taper = i < 2 ? 0.55 : (i < h - 1 ? 0.4 : 0.3);
+    trunk.add(x + ox, i + 0.5, z + oz, taper, 1, taper, ...rgb(0x5a3c24));
+    if (i >= h * 0.45) { ox += (Math.random() - 0.5) * 0.5; oz += (Math.random() - 0.5) * 0.5; }
+  }
+  const cy = h + 0.2;
+  const R = (2.4 + s * 0.6);
+  for (let k = 0; k < 150; k++) {
+    const [px, py, pz] = randPtSphere(R);
+    const edge = 1 - Math.min(1, (Math.hypot(px, py, pz) / R) * 0.35);
+    const rr = 0.95 + 0.05 * edge;
+    const gg = 0.60 + 0.12 * edge;
+    const bb = 0.68 + 0.10 * edge;
+    blossom.add(x + px * s, cy + py * s, z + pz * s, 0.75 * edge + 0.15, 0.75 * edge + 0.15, 0.75 * edge + 0.15,
+      rr, gg, bb);
+  }
+  // a few branch tips
+  for (const [bx, bz] of [[0.8, -0.6], [-0.7, 0.7], [0.4, 0.9]]) {
+    const [bxp, byp, bzp] = randPtSphere(1.0);
+    blossom.add(x + bx * s + bxp, cy + 0.6 + byp, z + bz * s + bzp, 0.5, 0.5, 0.5, ...rgb(0xf29cc0));
+  }
+}
+
+buildTree(-17, -10, 1.0);
+buildTree(19, 8, 1.15);
+buildTree(-13, 17, 0.9);
+
+// ---------- Pond ----------
+const pondX = 16, pondZ = 6;
+const water = new THREE.Mesh(new THREE.PlaneGeometry(16, 13), MAT_WATER);
+water.rotation.x = -Math.PI / 2;
+water.position.set(pondX, 0.2, pondZ);
+water.receiveShadow = true;
+scene.add(water);
+// lily pads
+const lily = pool(MAT_GROUND, 200);
+for (let k = 0; k < 6; k++) {
+  const lx = pondX + (Math.random() - 0.5) * 11;
+  const lz = pondZ + (Math.random() - 0.5) * 9;
+  lily.add(lx, 0.32, lz, 0.9, 0.1, 0.9, ...rgb(0x3f6b30));
+}
+// stone border
+const border = pool(MAT_STONE, 800);
+function pondEdge() {
+  const rx = 8.2, rz = 6.7;
+  for (let a = 0; a < Math.PI * 2; a += 0.28) {
+    const bx = pondX + Math.cos(a) * rx;
+    const bz = pondZ + Math.sin(a) * rz;
+    const h = 0.6 + Math.random() * 0.7;
+    const fill = ((Math.sin(a * 3) * 0.5 + 0.5) > 0.5) ? border : stone2;
+    fill.add(bx, h / 2, bz, 1.1, h, 1.1, ...rgb(0x8b857a));
+  }
+}
+pondEdge();
+// small rock waterfall into pond
+for (let i = 0; i < 5; i++) {
+  stone.add(pondX - 7, 0.4 + i * 0.4, pondZ - 3 - i * 0.3, 1, 0.8, 1, ...rgb(0x7d786d));
+}
+
+// ---------- Torii gate ----------
+const torii = pool(MAT_TORII, 400);
+const toriiDark = pool(MAT_TORII_DARK, 200);
+function buildTorii(x, z) {
+  const halfW = 4.2;
+  const pH = 10;
+  for (const sx of [-1, 1]) {
+    for (let i = 0; i < pH; i++) {
+      torii.add(x + sx * halfW, i + 0.75, z, 1.3, 1.5, 1.3, ...rgb(0xc0272d));
+    }
+  }
+  // nuki (tie beam)
+  torii.add(x, 7.8, z, halfW * 2 + 1.6, 1.0, 1.5, ...rgb(0xc0272d));
+  // kasaira (top beam) with slight upward curve
+  torii.add(x, 10.4, z, halfW * 2 + 2.8, 1.1, 1.7, ...rgb(0xc0272d));
+  torii.add(x, 11.05, z, halfW * 2 + 2.2, 0.5, 1.5, ...rgb(0xd63b41));
+  // shimaki / gusoku top block
+  toriiDark.add(x, 11.7, z, 2.6, 0.9, 1.3, ...rgb(0x241013));
+  // small plaque
+  torii.add(x, 10.9, z, 1.3, 1.3, 0.6, ...rgb(0x241013));
+  // cap on pillars
+  for (const sx of [-1, 1]) {
+    toriiDark.add(x + sx * halfW, pH + 0.4, z, 1.5, 0.6, 1.5, ...rgb(0x241013));
+  }
+}
+buildTorii(0, 14);
+
+// ---------- Stone path from torii to platform ----------
+const path = pool(MAT_STONE2, 400);
+for (let z = 13; z <= 18; z++) {
+  path.add(0, 0.08, z, 1.6, 0.2, 1.0, ...rgb(0x857f74));
+  path.add(-1.3, 0.08, z, 1.0, 0.18, 0.9, ...rgb(0x7d786d));
+  path.add(1.3, 0.08, z, 1.0, 0.18, 0.9, ...rgb(0x7d786d));
+}
+
+// ---------- Drifting petals ----------
+const petalMat = new THREE.MeshStandardMaterial({ color: 0xffb7c5, roughness: 0.7, side: THREE.DoubleSide });
+const PETAL_N = 44;
+const petalMesh = new THREE.InstancedMesh(new THREE.BoxGeometry(0.28, 0.06, 0.22), petalMat, PETAL_N);
+petalMesh.castShadow = false;
+petalMesh.receiveShadow = false;
+scene.add(petalMesh);
+const petalDummy = new THREE.Object3D();
+const petalState = [];
+for (let i = 0; i < PETAL_N; i++) {
+  petalState.push({
+    x: (Math.random() - 0.5) * 55,
+    z: (Math.random() - 0.5) * 55,
+    y: 4 + Math.random() * 26,
+    speed: 1.2 + Math.random() * 1.6,
+    phase: Math.random() * Math.PI * 2,
+    drift: 0.6 + Math.random() * 1.2,
+    spin: (Math.random() - 0.5) * 3,
+    rs: Math.random() * Math.PI
+  });
+}
+
+// ---------- Finalize pools ----------
+for (const p of pools) {
+  p.mesh.count = p.count;
+  scene.add(p.mesh);
+}
+
+// ---------- Orbit ----------
+let angle = Math.PI / 5;
+const radius = 60;
+const camHeight = 42;
+let lastT = performance.now();
+
+function onResize() {
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h);
+}
+window.addEventListener('resize', onResize);
+onResize();
+
+function animate() {
+  requestAnimationFrame(animate);
+  const dt = Math.min((performance.now() - lastT) / 1000, 0.05);
+  lastT = performance.now();
+  if (renderer.domElement.width !== window.innerWidth || renderer.domElement.height !== window.innerHeight) onResize();
+  angle += dt * 0.11;
+  camera.position.set(Math.cos(angle) * radius, camHeight, Math.sin(angle) * radius);
+  camera.lookAt(0, 10, 0);
+
+  for (let i = 0; i < PETAL_N; i++) {
+    const p = petalState[i];
+    p.y -= dt * p.speed;
+    p.phase += dt * 1.4;
+    const nx = p.x + Math.sin(p.phase) * 1.5 * p.drift;
+    const nz = p.z + Math.cos(p.phase * 0.8) * 1.2 * p.drift;
+    petalDummy.rotation.set(p.phase * p.spin, p.phase * 0.7, 0);
+    petalDummy.position.set(nx, p.y, nz);
+    petalDummy.scale.set(1, 1, 1);
+    petalDummy.updateMatrix();
+    petalMesh.setMatrixAt(i, petalDummy.matrix);
+    if (p.y < 0.1) {
+      p.y = 12 + Math.random() * 16;
+      p.x = (Math.random() - 0.5) * 55;
+      p.z = (Math.random() - 0.5) * 55;
+      p.phase = Math.random() * Math.PI * 2;
+    }
+  }
+  petalMesh.instanceMatrix.needsUpdate = true;
+
+  renderer.render(scene, camera);
+}
+animate();
+</script>
+</body>
+</html>

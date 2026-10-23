@@ -19,7 +19,9 @@ bash site/tools/render_smoke.sh            # local only: renders the real file a
 | `oneshots/{orrery,pagoda}/grades.tsv` + `*/frames/*.webp` + the model's own file | `oneshots.orrery`, `oneshots.pagoda`: frames are copied to `site/frames/`, and the model's own file, byte for byte, to `site/live/<set>/<case>/page.html` or `orrery.svg` (`live` field) |
 | `site/data/curated.json` (hand-written) | `title`, `tagline`, `tests`, `findings`, `links` |
 
-Everything that is prose on the page and *not* in this file is a section intro that stays true whatever the data says.
+Everything that is prose on the page and *not* in this file is a one-line chapter lede, the method note or the security
+note in the footer; they stay true whatever the data says. Long text from the file (grader notes, trade-offs, finding
+details, caveats) sits behind small disclosures so the charts carry the page.
 The ornament in each chapter head is also drawn from the data of that chapter (runs as a constellation, orrery scores
 as gear teeth, pagoda scores as petals, …); it is decorative and hidden from assistive technology.
 
@@ -36,7 +38,10 @@ as gear teeth, pagoda scores as petals, …); it is decorative and hidden from a
   Engine colours in the A/B chart work the same way, one per distinct `ab[].engine` value.
 - Scales: "n of m" numbers come from the data. Checks are shown against the largest `checks` seen for that test,
   one-shot points against the largest point value seen for that test, the test-3 rubric against the largest rubric
-  seen; `tests[].max_checks`, `tests[].max_point` and `tests[].max_rubric` override those when present.
+  seen; `tests[].max_checks`, `tests[].max_point` and `tests[].max_rubric` override those when present. When a test's
+  passing runs reach different `checks` totals (test 4: 4, 11 or 13 hidden checks per ticket) there is no single
+  scale and the count is shown alone. Rubric point names come from `tests[].points`, else from the parenthesised list
+  in `tests[].graded` when it has one name per point, else from the base set's test for an `agent-<base>` set.
 - Counting: a run is counted on exactly one test card, under its `flavor` when it has one (2T) and under its `test`
   otherwise. In the run filter, picking a test also shows its flavors; picking a flavor shows only those.
 - Frames: only relative paths under `frames/` whose every segment starts with a letter, digit, `_` or `-` and ends in
@@ -44,8 +49,10 @@ as gear teeth, pagoda scores as petals, …); it is decorative and hidden from a
   the file name (`frame-2000.webp`) is read as milliseconds for the flipbook label and alt text. The flipbook starts
   on the last (richest) frame and only ever steps onto frames that have really loaded; if none loads the card is blank.
 - Live pieces: `oneshots.*[].live` is shown as a "Play live" control only when it matches
-  `^live/(pagoda|orrery)/[A-Za-z0-9._-]+/(page\.html|orrery\.svg)$` and contains no `..`; anything else (an absolute
-  URL, `javascript:`, another extension, another set, a deeper path, `null`) gets no control. The viewer rules:
+  `^live/(?:(?:pagoda|agent-pagoda)/<case>/page\.html|(?:orrery|agent-orrery)/<case>/orrery\.svg)$` (`<case>` being one
+  segment of `[A-Za-z0-9._-]+`) and contains no `..`; the four set names are spelled out, a pagoda set only serves
+  `page.html` and an orrery set only `orrery.svg`. Anything else (an absolute URL, `javascript:`, another extension,
+  another or a similar-looking set name, a deeper path, `null`) gets no control. The viewer rules:
   the piece runs in an `<iframe sandbox="allow-scripts" referrerpolicy="no-referrer" loading="lazy">` created when the
   viewer opens (never `allow-same-origin`, `allow-top-navigation`, `allow-popups`, `allow-forms` or `allow-modals`,
   so the piece has an opaque origin and cannot touch this page, navigate it, open windows or submit forms); the
@@ -82,12 +89,12 @@ Fields marked *opt* may be missing or `null`. Types are what the page expects; i
 | `findings` | list | Headline findings, newest first, see below. |
 | `picks` | object | `overall`, `uncensored` (lists of picks) and `families` (one row per family). |
 | `timeline` | list | Eras of the work; sorted by `date` on the page. |
-| `events` | list | Lab-notebook entries; sorted newest first on the page. |
+| `events` | list | Lab-notebook entries. Read and normalized but no longer rendered: the log stopped a week before the timeline, and the timeline carries the story. |
 | `models` | object | Model cards keyed by model id. |
 | `runs` | list | Agent runs for tests 1, 2 and 2T. |
 | `test3` | list | Test 3 rows. |
 | `ab` | list | Engine A/B speed probes. |
-| `oneshots` | object of lists | One list per one-shot set (`orrery`, `pagoda`, …). New sets appear automatically. |
+| `oneshots` | object of lists | One list per set (`orrery`, `pagoda`, `agent-orrery`, `agent-pagoda`, …). New sets appear automatically. A set named `agent-<base>` whose `<base>` set exists is drawn as a paired "one shot → agent" chart: each agent row against the best graded `<base>` reply by the same model (`entry`), with the mean of both columns. |
 | `counts` | object, opt | `models`, `runs`, `test3`, `oneshots`, `frames`, `pass`, `live`. Informational; the page recounts from the lists and the checker compares the two. |
 
 ### `tests[]`
@@ -112,7 +119,7 @@ Fields marked *opt* may be missing or `null`. Types are what the page expects; i
 | `kind` | str, opt | `tuning`, `engine`, … any value becomes a chip. |
 | `summary` | str | The finding in a paragraph. |
 | `settings` | str, opt | Flags, shown in monospace. |
-| `metrics[]` | list, opt | `{label, before, after, unit}`; `before` may be `null` (shown as "new"). The first metric with an `after` is set as big before → after numerals; the rest are before/after bars with the gain ratio. Fractional values keep one decimal. |
+| `metrics[]` | list, opt | `{label, before, after, unit}`; `before` may be `null` (shown as "new"). The first metric with an `after` is set as big before → after numerals; the rest are before/after bars with the gain ratio. Fractional values keep one decimal. The card shows the summary's first sentence; the full summary, `settings`, `quality` and `caveat` sit in a closed "details" disclosure. Findings reveal eight at a time. |
 | `quality` | str, opt | How quality was checked. |
 | `caveat` | str, opt | Shown with a red rule. |
 
@@ -124,7 +131,10 @@ Fields marked *opt* may be missing or `null`. Types are what the page expects; i
 `families[]`: `{family, smartest, fastest, unc_smartest, unc_fastest, note}`; the four picks are model ids or `null`
 ("none yet").
 
-### `timeline[]`: `{date, era, title, what, why}`. `events[]`: `{when, kind, text}`.
+### `timeline[]`: `{date, era, title, what, why}`. `events[]`: `{when, kind, text}` (not rendered).
+
+The timeline shows the date, `era`, `title` and `what`, with a month mark where the month turns; `why` appears on hover,
+focus or the "why" toggle. `caveats` are listed in a closed disclosure in the footer (the "Caveats" link opens it).
 
 ### `models{id}`
 
@@ -177,7 +187,7 @@ engines give the ×gain shown next to the model.
 | `case` | str | Case name. |
 | `entry` | str | Model id (llama-swap entry). |
 | `test` | int or str | Test number, matched to `tests[].number`. |
-| `finish` | str | `stop` or `length` (cut off by the cap; shown as "hit the cap"). |
+| `finish` | str | `stop`, `length` (cut off by the token cap; shown as "hit the cap"), or for agent sets `agent done` / `time cap` (any value containing "cap" is shown as a cut). |
 | `tokens`, `wall_s`, `tok_s` | float, opt | Reply size and speed. |
 | `points` | object | Rubric points keyed `A`…`E`. Any number of keys works; the petal chart grows with it, and each petal is scaled to the largest point value seen for the test (or `tests[].max_point`). |
 | `total` | float, opt | Sum of points; recomputed when missing. |

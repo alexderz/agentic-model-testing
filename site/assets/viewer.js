@@ -43,7 +43,7 @@ function build() {
   const stage = el('div', { class: 'stage', 'data-state': 'idle' }, el('div', { class: 'stage-box' }));
   const side = el('aside', { class: 'vside' });
   dlg.append(
-    el('header', { class: 'vhead' }, el('span', { class: 'kicker' }, 'Live one-shot'), el('h2', { id: 'viewer-title' }), el('span', { class: 'vpos', 'aria-live': 'polite' }), closeBtn),
+    el('header', { class: 'vhead' }, el('span', { class: 'kicker' }, 'Live piece'), el('h2', { id: 'viewer-title' }), el('span', { class: 'vpos', 'aria-live': 'polite' }), closeBtn),
     el('div', { class: 'vmain' }, stage, side),
     el('footer', { class: 'vfoot' }, prev, el('span', { class: 'vhint' }, 'arrow keys step, Esc closes'), next),
   );
@@ -82,14 +82,14 @@ function show() {
   teardownFrame();
   const stage = dlg.querySelector('.stage'), box = stage.querySelector('.stage-box');
   clear(box);
-  dlg.querySelector('#viewer-title').textContent = `${c.testName || `Test ${c.test}`} by ${c.short}`;
-  dlg.querySelector('.vpos').textContent = `${state.index + 1} of ${state.cards.length} playable`;
+  dlg.querySelector('#viewer-title').textContent = `${c.short} · ${c.setLabel || set0(c.live)}`;
+  dlg.querySelector('.vpos').textContent = `${state.index + 1} of ${state.cards.length}`;
   fillSide(dlg.querySelector('.vside'), c);
   dlg.querySelectorAll('.vnav').forEach((b) => { b.disabled = state.cards.length < 2; });
   stage.dataset.state = 'loading';
   stage.dataset.kind = /\.svg$/.test(c.live) ? 'svg' : 'page';
   // the iframe: sandbox and referrer policy first, src last (dom.js only lets a live path through on an iframe)
-  const f = el('iframe', { sandbox: 'allow-scripts', referrerpolicy: 'no-referrer', loading: 'lazy', title: `${c.testName || `Test ${c.test}`} by ${c.short}: the model's one-shot output, running`, tabindex: '-1' });
+  const f = el('iframe', { sandbox: 'allow-scripts', referrerpolicy: 'no-referrer', loading: 'lazy', title: `${c.setLabel || set0(c.live)} by ${c.short}: the model's own output, running`, tabindex: '-1' });
   f.addEventListener('load', () => { if (frame === f) stage.dataset.state = 'running'; });
   frame = f;
   f.fit = { mode: 'fill' };
@@ -100,12 +100,12 @@ function show() {
   if (!dlg.contains(document.activeElement) || document.activeElement === dlg) dlg.querySelector('.vclose').focus();
 }
 
+const set0 = (live) => String(live).split('/')[1] || '';
 function fillSide(side, c) {
   clear(side);
   const pmax = c.pointMax > 0 ? c.pointMax : 1;
-  const [set] = String(c.live).split('/').slice(1, 2);
   side.append(
-    el('div', { class: 'vmeta' }, familyChip(c.family, c.color), c.uncensored ? kindChip('uncensored') : null, kindChip(`test ${c.test} · ${c.testName || set}`), el('span', { class: 'mono case' }, c.case)),
+    el('div', { class: 'vmeta' }, familyChip(c.family, c.color), kindChip(`test ${c.test}`, c.kind === 'agentic' ? 'agentic' : ''), c.uncensored ? kindChip('uncensored') : null, el('span', { class: 'mono case' }, c.case)),
     el('div', { class: 'vscore' }, petalScore(c), el('div', { class: 'pts' },
       ...(c.points.length ? c.points.map((p) => { const v = p.value || 0; return el('span', { class: v <= 0 ? 'l0' : v >= pmax ? 'l2' : 'l1' }, el('b', {}, p.name), ` ${fmt(p.value)}`); }) : [el('span', { class: 'l0' }, 'not graded')]),
       el('span', { class: 'total' }, `${fmt(c.total)} of ${fmt(c.max)}`))),
@@ -113,11 +113,11 @@ function fillSide(side, c) {
       el('div', {}, el('dt', {}, 'speed'), el('dd', {}, fmt(c.tok_s, 1), el('small', {}, ' tok/s'))),
       el('div', {}, el('dt', {}, 'reply'), el('dd', {}, fmt(c.tokens, 0), el('small', {}, ' tokens'))),
       c.wall_s != null ? el('div', {}, el('dt', {}, 'wall'), el('dd', {}, fmt(c.wall_s, 0), el('small', {}, ' s'))) : null,
-      c.finish === 'length' ? el('div', { class: 'cut' }, el('dt', {}, 'finish'), el('dd', {}, 'hit the cap')) : null),
+      /length|cap/i.test(c.finish) ? el('div', { class: 'cut' }, el('dt', {}, 'finish'), el('dd', {}, c.finish === 'length' ? 'hit the cap' : c.finish)) : null),
     c.note ? el('p', { class: 'vnote' }, el('span', { class: 'k' }, 'grader'), c.note) : el('p', { class: 'vnote empty' }, 'No grader note.'),
     c.frames.length ? el('div', { class: 'vstrip', role: 'group', 'aria-label': 'Offline render frames' },
       ...c.frames.map((fr) => el('figure', {}, el('img', { src: fr.url, alt: `${c.alt}, offline frame at ${fr.ms == null ? '?' : fmt(fr.ms, 0)} ms`, loading: 'lazy', decoding: 'async' }), el('figcaption', {}, fr.ms == null ? 'frame' : fr.ms >= 1000 ? `${(fr.ms / 1000).toFixed(fr.ms % 1000 ? 1 : 0)} s` : `${fr.ms} ms`)))) : null,
-    el('p', { class: 'vunedited', id: 'viewer-unedited' }, 'The piece on the stage is the model’s unedited one-shot output, served byte for byte and run inside a sandboxed frame. Slow, blank or broken is part of the result.'),
+    el('p', { class: 'vunedited', id: 'viewer-unedited' }, 'Unedited model output, byte for byte, in a sandboxed frame.'),
   );
 }
 

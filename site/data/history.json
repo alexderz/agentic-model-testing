@@ -1,0 +1,1334 @@
+{
+ "runs_new": [
+  {
+   "case": "wa-saluki-27b-iq2",
+   "model": "lcpp6-saluki-27b-iq2",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 72,
+   "tests_fail": 0,
+   "subcmds": 9,
+   "tps": 25.3,
+   "minutes": 63,
+   "compactions": 0,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-15 17:47",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 1643,
+    "errors_per_kloc": 0.0
+   }
+  },
+  {
+   "case": "wb-lfm25-24b-ud-q5kxl",
+   "model": "lcpp6-lfm25-24b-ud-q5kxl",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 3,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 137.3,
+   "minutes": 7,
+   "compactions": 1,
+   "ctx": 131072,
+   "kv": "f16",
+   "verdict": "fail",
+   "finished": "2026-10-15 15:25",
+   "struggle": {
+    "compiles": 30,
+    "failed_compiles": 16,
+    "rust_errors": 116,
+    "loc": 442,
+    "errors_per_kloc": 262.4
+   }
+  },
+  {
+   "case": "wb-lfm25-24b-ud-q6kxl",
+   "model": "lcpp6-lfm25-24b-ud-q6kxl",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 0,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 140.3,
+   "minutes": 23,
+   "compactions": 5,
+   "ctx": 122880,
+   "kv": "f16",
+   "verdict": "fail",
+   "finished": "2026-10-15 15:48",
+   "struggle": {
+    "compiles": 102,
+    "failed_compiles": 37,
+    "rust_errors": 201,
+    "loc": 329,
+    "errors_per_kloc": 610.9
+   }
+  },
+  {
+   "case": "wb-lfm25-24b-ud-q4kxl-rerun",
+   "model": "lcpp6-lfm25-24b-ud-q4kxl",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 2,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 144.4,
+   "minutes": 5,
+   "compactions": 1,
+   "ctx": 131072,
+   "kv": "f16",
+   "verdict": "fail",
+   "finished": "2026-10-15 15:53",
+   "struggle": {
+    "compiles": 12,
+    "failed_compiles": 8,
+    "rust_errors": 79,
+    "loc": 382,
+    "errors_per_kloc": 206.8
+   }
+  },
+  {
+   "case": "wb-saluki-27b-iq2",
+   "model": "lcpp6-saluki-27b-iq2",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 47,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 22.0,
+   "minutes": 166,
+   "compactions": 1,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "partial",
+   "finished": "2026-10-15 21:06",
+   "struggle": {
+    "compiles": 18,
+    "failed_compiles": 17,
+    "rust_errors": 95,
+    "loc": 1944,
+    "errors_per_kloc": 48.9
+   }
+  },
+  {
+   "case": "t2-gyro-s-mtp-r1",
+   "model": "strata020-gyro-s-mtp-test",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 108,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 89.8,
+   "minutes": 24,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "int8",
+   "verdict": "pass",
+   "finished": "2026-10-20 11:10",
+   "struggle": {
+    "compiles": 41,
+    "failed_compiles": 26,
+    "rust_errors": 103,
+    "loc": 4781,
+    "errors_per_kloc": 21.8
+   }
+  },
+  {
+   "case": "t4-bugfix-targets-tiel-q4kxl-r1",
+   "model": "lcpp6-tiel-coder-35b-q4kxl",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 4,
+   "tests_pass": 161,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 18.2,
+   "minutes": 42,
+   "compactions": 2,
+   "ctx": 131072,
+   "kv": "f16",
+   "verdict": "pass",
+   "finished": "2026-10-11 21:36",
+   "struggle": {
+    "compiles": 5,
+    "failed_compiles": 2,
+    "rust_errors": 3,
+    "loc": 9491,
+    "errors_per_kloc": 0.4
+   }
+  },
+  {
+   "case": "t4-config-timeouts-tiel-q4kxl-r1",
+   "model": "lcpp6-tiel-coder-35b-q4kxl",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 13,
+   "tests_pass": 168,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 61.5,
+   "minutes": 19,
+   "compactions": 8,
+   "ctx": 131072,
+   "kv": "f16",
+   "verdict": "pass",
+   "finished": "2026-10-11 21:56",
+   "struggle": {
+    "compiles": 10,
+    "failed_compiles": 2,
+    "rust_errors": 8,
+    "loc": 9844,
+    "errors_per_kloc": 0.8
+   }
+  },
+  {
+   "case": "t4-feature-filter-tiel-q4kxl-r1",
+   "model": "lcpp6-tiel-coder-35b-q4kxl",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 11,
+   "tests_pass": 158,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 65.8,
+   "minutes": 6,
+   "compactions": 2,
+   "ctx": 131072,
+   "kv": "f16",
+   "verdict": "pass",
+   "finished": "2026-10-11 22:03",
+   "struggle": {
+    "compiles": 8,
+    "failed_compiles": 5,
+    "rust_errors": 7,
+    "loc": 9497,
+    "errors_per_kloc": 0.7
+   }
+  },
+  {
+   "case": "t4-bugfix-targets-tiel-q4kxl-r2",
+   "model": "lcpp6-tiel-coder-35b-q4kxl",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 4,
+   "tests_pass": 156,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 80.8,
+   "minutes": 5,
+   "compactions": 0,
+   "ctx": 131072,
+   "kv": "f16",
+   "verdict": "pass",
+   "finished": "2026-10-11 22:08",
+   "struggle": {
+    "compiles": 7,
+    "failed_compiles": 3,
+    "rust_errors": 3,
+    "loc": 9496,
+    "errors_per_kloc": 0.5
+   }
+  },
+  {
+   "case": "t4-config-timeouts-tiel-q4kxl-r2",
+   "model": "lcpp6-tiel-coder-35b-q4kxl",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 13,
+   "tests_pass": 161,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 62.2,
+   "minutes": 19,
+   "compactions": 7,
+   "ctx": 131072,
+   "kv": "f16",
+   "verdict": "pass",
+   "finished": "2026-10-11 22:28",
+   "struggle": {
+    "compiles": 11,
+    "failed_compiles": 5,
+    "rust_errors": 51,
+    "loc": 9664,
+    "errors_per_kloc": 5.3
+   }
+  },
+  {
+   "case": "t4-feature-filter-tiel-q4kxl-r2",
+   "model": "lcpp6-tiel-coder-35b-q4kxl",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 11,
+   "tests_pass": 157,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 60.2,
+   "minutes": 5,
+   "compactions": 2,
+   "ctx": 131072,
+   "kv": "f16",
+   "verdict": "pass",
+   "finished": "2026-10-11 22:33",
+   "struggle": {
+    "compiles": 5,
+    "failed_compiles": 2,
+    "rust_errors": 2,
+    "loc": 9464,
+    "errors_per_kloc": 0.2
+   }
+  },
+  {
+   "case": "t4-bugfix-targets-tiel-q4kxl-r3",
+   "model": "lcpp6-tiel-coder-35b-q4kxl",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 4,
+   "tests_pass": 156,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 71.0,
+   "minutes": 2,
+   "compactions": 0,
+   "ctx": 131072,
+   "kv": "f16",
+   "verdict": "pass",
+   "finished": "2026-10-11 22:36",
+   "struggle": {
+    "compiles": 4,
+    "failed_compiles": 1,
+    "rust_errors": 1,
+    "loc": 9453,
+    "errors_per_kloc": 0.1
+   }
+  },
+  {
+   "case": "t4-config-timeouts-tiel-q4kxl-r3",
+   "model": "lcpp6-tiel-coder-35b-q4kxl",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 13,
+   "tests_pass": 164,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 64.5,
+   "minutes": 13,
+   "compactions": 5,
+   "ctx": 131072,
+   "kv": "f16",
+   "verdict": "pass",
+   "finished": "2026-10-11 22:49",
+   "struggle": {
+    "compiles": 8,
+    "failed_compiles": 3,
+    "rust_errors": 3,
+    "loc": 9722,
+    "errors_per_kloc": 0.3
+   }
+  },
+  {
+   "case": "t4-feature-filter-tiel-q4kxl-r3",
+   "model": "lcpp6-tiel-coder-35b-q4kxl",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 11,
+   "tests_pass": 159,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 61.3,
+   "minutes": 9,
+   "compactions": 4,
+   "ctx": 131072,
+   "kv": "f16",
+   "verdict": "pass",
+   "finished": "2026-10-11 22:59",
+   "struggle": {
+    "compiles": 4,
+    "failed_compiles": 2,
+    "rust_errors": 4,
+    "loc": 9497,
+    "errors_per_kloc": 0.4
+   }
+  }
+ ],
+ "test3_new": [
+  {
+   "case": "t3o-maya-m-glm-5.3-flash",
+   "model": "maya1113m-glm-5.3-flash",
+   "flavor": "3O",
+   "mcp_facts": "13/14",
+   "api_facts": "13/14",
+   "judgement_right": false,
+   "rubric": 12,
+   "note": "Maya-M IQ2_S on Maya v1.1.13, own server, untuned. The first probe failed on every call with a protocol-version error in the _meta field; it traced the gate in its own source, relaxed it, updated the tests and re-probed. 13 of 14 facts matched REST; the fixed server passes test 2 (7 tools, 67 tests). The one miss: it read the HVAC mode as an absent attribute, so the judgement is marked wrong. No split-digit fault. 34 min.",
+   "tps": 5.4,
+   "minutes": 34,
+   "finished": "2026-10-17 19:58"
+  },
+  {
+   "case": "t3g-maya-m-glm-5.3-flash",
+   "model": "maya1113m-glm-5.3-flash",
+   "flavor": "3G",
+   "mcp_facts": "14/14",
+   "api_facts": "14/14",
+   "judgement_right": true,
+   "rubric": 12,
+   "note": "Maya-M IQ2_S on Maya v1.1.13, known-good server, untuned. REST ground truth first, then one probe session of 12 calls with exact filters and verbatim error reporting; all 14 facts matched REST, and it trusted the server unchanged, which is right. The number-copying fault of the earlier Maya-S runs did not recur. 9 min.",
+   "tps": 7.1,
+   "minutes": 9,
+   "finished": "2026-10-17 20:13"
+  }
+ ],
+ "models_new": {
+  "exl3-qwen3.8-27b-dflash2-162": {
+   "id": "exl3-qwen3.8-27b-dflash2-162",
+   "family": "Qwen3.8 27B",
+   "label": "Qwen3.8-27B EXL3 4-bit · exllamav3 1.6.2, DFlash2 drafts, 98k, 8-bit cache",
+   "base": "Qwen/Qwen3.8-27B",
+   "arch": "dense 27B",
+   "engine": "exllamav3 tabbyapi-d6e62270-exl3-1.6.2",
+   "quant": "EXL3 4.00bpw (head 6 bits, MTP 4 bits)",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "",
+   "vision": {
+    "label": "yes (built in)",
+    "status": "native"
+   }
+  },
+  "lcpp6-saluki-27b-iq2": {
+   "id": "lcpp6-saluki-27b-iq2",
+   "family": "Qwen3.8 27B",
+   "label": "Underdog Saluki 27B IQ2-mix · llama.cpp 0.6",
+   "base": "Qwen/Qwen3.8-27B",
+   "arch": "dense 27B",
+   "engine": "llama.cpp 0.6",
+   "quant": "IQ2-mix (GSQ-RCO)",
+   "kind": "tune",
+   "uncensored": true,
+   "note": "Qwen3.8-27B tuned to keep tool calling at 2 bits; card sampling, thinking on, q8_0 cache, context from the tune",
+   "vision": {
+    "label": "not surveyed",
+    "status": null
+   }
+  },
+  "maya1111-glm-5.3-flash": {
+   "id": "maya1111-glm-5.3-flash",
+   "family": "GLM",
+   "label": "GLM-5.3-Flash · Maya v1.1.11, 131k context",
+   "base": "zai-org/GLM-5.3-Flash",
+   "arch": "MoE 321B / 18B active",
+   "engine": "maya maya-1.1.11",
+   "quant": "Maya-S-v2 IQ2_XXS",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "",
+   "vision": {
+    "label": "yes (head)",
+    "status": "head"
+   }
+  },
+  "maya1113m-glm-5.3-flash": {
+   "id": "maya1113m-glm-5.3-flash",
+   "family": "GLM",
+   "label": "GLM-5.3-Flash · Maya-M IQ2_S, Maya v1.1.13, 131k context",
+   "base": "zai-org/GLM-5.3-Flash",
+   "arch": "MoE 321B / 18B active",
+   "engine": "maya maya-1.1.13",
+   "quant": "Maya-M IQ2_S",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "",
+   "vision": {
+    "label": "yes (head)",
+    "status": "head"
+   }
+  },
+  "strata44-flash-next-pcie": {
+   "id": "strata44-flash-next-pcie",
+   "family": "Qwen3.8 Flash-Next",
+   "label": "Flash-Next · Strata 0.1.44.1, old PCIe share, 262k context",
+   "base": "Qwen/Qwen3.8-Flash-Next",
+   "arch": "MoE 125B / 6B active",
+   "engine": "strata strata-0.1.44.1",
+   "quant": "GSQ-RCO IQ3_S",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "",
+   "vision": {
+    "label": "yes (head)",
+    "status": "head"
+   }
+  },
+  "strata020-gyro-s-mtp-test": {
+   "id": "strata020-gyro-s-mtp-test",
+   "family": "Qwen3.8 Flash-Next",
+   "label": "Flash-Next Gyro-S TQ1_0 + MTP draft · Strata 0.2.0-beta, 262k context, int8 KV",
+   "base": "Qwen/Qwen3.8-Flash-Next",
+   "arch": "MoE 125B / 6B active",
+   "engine": "Strata 0.2.0-beta",
+   "quant": "Gyro-S TQ1_0 (trellis-coded experts, Hadamard-rotated)",
+   "kind": "tune",
+   "uncensored": false,
+   "note": "Smallest quant of the Gyro family; experts read from local NVMe, MTP draft head, text only",
+   "vision": {
+    "label": "no",
+    "status": "none"
+   }
+  }
+ },
+ "ab_new": [
+  {
+   "model": "strata42-flash-next-pcie",
+   "engine": "Strata 0.1.42",
+   "variant": "2 rounds, first one cold",
+   "decode": 18.3,
+   "quote": null,
+   "prefill": 722.9,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "strata44-flash-next-pcie",
+   "engine": "Strata 0.1.44.1",
+   "variant": "2 rounds",
+   "decode": 44.9,
+   "quote": null,
+   "prefill": 1416.4,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "maya-glm-5.3-flash",
+   "engine": "Maya 1.0.4",
+   "variant": "2 rounds, 3.5 bpw Maya-S",
+   "decode": 14.6,
+   "quote": null,
+   "prefill": null,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "maya1111-glm-5.3-flash",
+   "engine": "Maya 1.1.11",
+   "variant": "2 rounds, same pack",
+   "decode": 17.0,
+   "quote": null,
+   "prefill": null,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "exl3-qwen3.8-27b-dflash2",
+   "engine": "exllamav3 1.6.1",
+   "variant": "2 rounds, DFlash2, thinking off",
+   "decode": 138.6,
+   "quote": null,
+   "prefill": null,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "exl3-qwen3.8-27b-dflash2-162",
+   "engine": "exllamav3 1.6.2",
+   "variant": "2 rounds, DFlash2, thinking off",
+   "decode": 140.1,
+   "quote": null,
+   "prefill": null,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "strata020-gyro-s-mtp-test",
+   "engine": "Strata 0.2.0-beta",
+   "variant": "Gyro-S + MTP, code prompt",
+   "decode": 118.6,
+   "quote": null,
+   "prefill": 2550.9,
+   "vram": 23862,
+   "error": ""
+  },
+  {
+   "model": "strata44-flash-next-pcie",
+   "engine": "Strata 0.2.0-beta",
+   "variant": "IQ3_S + MTP, code prompt",
+   "decode": 35.4,
+   "quote": null,
+   "prefill": 2645.4,
+   "vram": 23868,
+   "error": ""
+  },
+  {
+   "model": "strata44-flash-next-pcie",
+   "engine": "Strata 0.1.45",
+   "variant": "IQ3_S + MTP, code prompt",
+   "decode": 29.4,
+   "quote": null,
+   "prefill": 2597.8,
+   "vram": 23874,
+   "error": ""
+  },
+  {
+   "model": "strata020-gyro-s-mtp-test",
+   "engine": "Strata 0.2.2",
+   "variant": "Gyro-S + MTP, code prompt",
+   "decode": 144.1,
+   "quote": null,
+   "prefill": 2545.7,
+   "vram": 23862,
+   "error": ""
+  },
+  {
+   "model": "strata020-gyro-s-mtp-test",
+   "engine": "Strata 0.2.0-beta",
+   "variant": "Gyro-S + MTP, code prompt, same-day control",
+   "decode": 121.6,
+   "quote": null,
+   "prefill": 2539.8,
+   "vram": 23862,
+   "error": ""
+  }
+ ],
+ "tests": [
+  {
+   "id": "t4",
+   "number": "4",
+   "name": "Ticket fixes in Rust",
+   "kind": "agentic",
+   "what": "Fix three tickets in a known-good Rust MCP server.",
+   "graded": "Hidden black-box checks run against the built server, plus its 155 existing tests; a claim of 'done' that fails the checks is counted."
+  },
+  {
+   "id": "t7",
+   "number": "7",
+   "name": "The labyrinth",
+   "kind": "agentic",
+   "what": "Write a seeded generator for a three-floor labyrinth meeting ten rules.",
+   "graded": "Ten unseen seeds, each in its own container, must give ten different mazes that pass the checker; walkability and honest notes are judged by hand."
+  },
+  {
+   "id": "t8",
+   "number": "8",
+   "name": "Pagoda and orrery as agent tasks",
+   "kind": "agentic",
+   "what": "Tests 5 and 6 solved by an agent with a sealed browser.",
+   "graded": "Same rubrics as tests 5 and 6, from offline renders of the file the agent leaves; two-hour cap."
+  }
+ ],
+ "timeline": [
+  {
+   "date": "2026-10-08",
+   "era": "Engines",
+   "title": "GLM-5.3-Flash runs on Maya",
+   "what": "Two engine patches lift decode from 4 to 19 tok/s; tests 1 and 2 both pass.",
+   "why": "Can a large model work on one card?"
+  },
+  {
+   "date": "2026-10-09",
+   "era": "Harness",
+   "title": "Maker sampling and a loop guard",
+   "what": "Entries serve the maker's recommended sampling, and the agent stops when it repeats itself.",
+   "why": "Loops had ruined several runs."
+  },
+  {
+   "date": "2026-10-10",
+   "era": "Harness",
+   "title": "Graders audited, all old runs regraded",
+   "what": "125 archived runs rechecked; four test-1 verdicts changed and some test counts were corrected.",
+   "why": "Old and new scores must compare."
+  },
+  {
+   "date": "2026-10-11",
+   "era": "Engines",
+   "title": "Old PCIe share doubles Flash-Next on Strata",
+   "what": "Restoring the old PCIe share lifts long-answer decode from 48 to 95 tok/s.",
+   "why": "A newer default had halved speed."
+  },
+  {
+   "date": "2026-10-11",
+   "era": "Tests",
+   "title": "Test 4: ticket fixes in Rust",
+   "what": "Tiel Coder fixed three tickets, three runs each, on a crate with 155 passing tests.",
+   "why": "Tests 1 and 2 never touch existing code."
+  },
+  {
+   "date": "2026-10-13",
+   "era": "Engines",
+   "title": "Engine shoot-out on Qwen3.8-27B",
+   "what": "TensorFold, exllamav3 and llama.cpp compared with and without drafting on one 3090.",
+   "why": "Pick the fastest stack for the daily model."
+  },
+  {
+   "date": "2026-10-14",
+   "era": "Tests",
+   "title": "Tests 7 and 8 added",
+   "what": "Test 7 is a seeded labyrinth generator; test 8 gives the pagoda and orrery to an agent.",
+   "why": "Measure design work, not only code."
+  },
+  {
+   "date": "2026-10-14",
+   "era": "Harness",
+   "title": "Agent window margin changed",
+   "what": "At 150k served, the agent now compacts at 89,328 tokens (60%), up from 71,000 (47%).",
+   "why": "Fewer compactions, longer runs."
+  },
+  {
+   "date": "2026-10-14",
+   "era": "Engines",
+   "title": "Night search for speed at 141k context",
+   "what": "Four stacks timed on code at 141k tokens; Gemma-4-26B-A4B kept 123 tok/s.",
+   "why": "Find what stays fast with a long history."
+  },
+  {
+   "date": "2026-10-15",
+   "era": "Release",
+   "title": "Public model-research update; LFM2.5 and Saluki tested",
+   "what": "LFM2.5-24B (five quants) and a 2-bit Qwen3.8-27B tune went through tests 1 and 2.",
+   "why": "Check small and very low-bit models."
+  },
+  {
+   "date": "2026-10-16",
+   "era": "Engines",
+   "title": "Strata 0.1.44.1, Maya 1.1.11, exllamav3 1.6.2",
+   "what": "Strata cut load time and doubled decode in the A/B; Maya fixed split digits; exllamav3 matched.",
+   "why": "Re-measure each engine before changing defaults."
+  },
+  {
+   "date": "2026-10-17",
+   "era": "Tests",
+   "title": "First graded test 8 batches",
+   "what": "Six models that drew blank one-shot pagodas scored 7 to 10 as agents.",
+   "why": "Show what tools and a browser add."
+  },
+  {
+   "date": "2026-10-18",
+   "era": "Engines",
+   "title": "llama.cpp 0.7.0 replaces 0.6.0 in the router",
+   "what": "Version 0.7.0 adds a GPU cache for experts and an option to keep all experts in RAM.",
+   "why": "Big mixture models need that cache."
+  },
+  {
+   "date": "2026-10-20",
+   "era": "Engines",
+   "title": "Gyro-S quant on Strata 0.2",
+   "what": "A 1-bit-class Flash-Next quant with an MTP draft decodes 119 tok/s and passes test 2 in 24 minutes.",
+   "why": "Long agent runs at 20 tok/s are too slow."
+  },
+  {
+   "date": "2026-10-22",
+   "era": "Flash-Next",
+   "title": "Expert cache, Strata 0.2.2, Flint and tqLLM",
+   "what": "Flash-Next sped up on llama.cpp and Strata; a new MoE and a new engine were tried.",
+   "why": "Make the 125B model usable on one card."
+  }
+ ],
+ "findings": [
+  {
+   "date": "2026-10-22",
+   "title": "Strata 0.2.2 is 17% faster than 0.2.0",
+   "kind": "engine",
+   "summary": "Same-day control on the Gyro-S build with an MTP draft: code decode rose from 121.6 to 144.1 tok/s, prose from 106.4 to 123.4.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Decode, code",
+     "before": 121.6,
+     "after": 144.1,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Decode, prose",
+     "before": 106.4,
+     "after": 123.4,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Decode, JSON",
+     "before": 135.2,
+     "after": 157.7,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Tool call and needle probes passed on both builds.",
+   "caveat": "One load per engine; no agent run on 0.2.2 yet."
+  },
+  {
+   "date": "2026-10-22",
+   "title": "Flint: a 40B coding MoE fits the card",
+   "kind": "model",
+   "summary": "Flint (39.8B total, about 2.5B active, Apache-2.0) at Q3_K_XL runs entirely on the GPU at 262k context with q8 KV.",
+   "settings": "-c 262144 -ctk q8_0 -ctv q8_0 -b 2048 -ub 2048 -fit off",
+   "metrics": [
+    {
+     "label": "Decode, short prompt",
+     "before": null,
+     "after": 128.7,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Decode, 11.7k deep",
+     "before": null,
+     "after": 106.4,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Prefill, 11.7k",
+     "before": null,
+     "after": 5357,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Decode, Q4_K_XL, 15 expert layers in RAM",
+     "before": null,
+     "after": 81.4,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Not graded: no test has been run, and its one-shots are ungraded.",
+   "caveat": "Needs llama.cpp b11803 or newer; f16 KV does not fit. Q4_K_XL slows from 81 to 64 tok/s as more experts move to RAM."
+  },
+  {
+   "date": "2026-10-22",
+   "title": "tqLLM serves Flash-Next fast but not for agents",
+   "kind": "engine",
+   "summary": "tqLLM 1.2.3 loaded the Flash-Next IQ3_S GGUF and decoded faster than llama.cpp on short benchmarks, but long prompts and several sessions failed.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Decode, 32k window, code",
+     "before": null,
+     "after": 101.7,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Decode, llama.cpp control, code",
+     "before": null,
+     "after": 40.3,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Multi-session probe, 32k window",
+     "before": null,
+     "after": 3,
+     "unit": "of 11"
+    },
+    {
+     "label": "Multi-session probe, llama.cpp",
+     "before": null,
+     "after": 11,
+     "unit": "of 11"
+    }
+   ],
+   "quality": "Tool calls and a 30k needle passed at 32k; the 262k arm answered long prompts with HTTP 500.",
+   "caveat": "Short outputs with thinking off flatter the speed; the best 262k arm streamed 54 tok/s and passed 4 of 11 sessions. First load took 23 minutes cold."
+  },
+  {
+   "date": "2026-10-21",
+   "title": "Stock SGLang now serves Flash-Next to 11 of 11 sessions",
+   "kind": "engine",
+   "summary": "Three stock SGLang builds of Flash-Next, 204,800 context and two slots, all passed the multi-session probe and needles at 100k, 150k and 190k.",
+   "settings": "fp8 weights; fp8 or 8-bit KV",
+   "metrics": [
+    {
+     "label": "Decode, v3 fp8",
+     "before": null,
+     "after": 24.1,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Decode, v3 with 8-bit KV",
+     "before": null,
+     "after": 24.6,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Decode, plain fp8",
+     "before": null,
+     "after": 25.1,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Needles found at 100k, 150k and 190k; prefill about 2,600 tok/s.",
+   "caveat": "The phased build was dropped; no agent test was run on these builds in this round."
+  },
+  {
+   "date": "2026-10-20",
+   "title": "Ornith-1.5-122B reaches 16 tok/s on one card",
+   "kind": "model",
+   "summary": "A 122B Qwen3.5 mixture (8 of 256 experts per token) at UD-Q4_K_XL with 262k context and q8 KV, sweeping how many expert layers stay on the CPU.",
+   "settings": "-ngl 99 --n-cpu-moe 40 to 44, -ctk q8_0 -ctv q8_0",
+   "metrics": [
+    {
+     "label": "Decode, 42 layers on CPU",
+     "before": null,
+     "after": 13.7,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Decode, 40 layers on CPU",
+     "before": null,
+     "after": 16.3,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Decode, 44 layers with MTP n=2",
+     "before": null,
+     "after": 16.7,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Deep-prompt decode 15.8 tok/s at 40 layers; larger batches lift prefill from 118 to 392 tok/s.",
+   "caveat": "Not graded: one-shots ran at about 15 tok/s but were not scored, and no test has been run."
+  },
+  {
+   "date": "2026-10-20",
+   "title": "Gyro-S + MTP: a competent 24-minute test-2 run",
+   "kind": "model",
+   "summary": "Flash-Next in Gyro-S (TQ1_0) on Strata 0.2.0-beta with an MTP draft decodes 119 tok/s on code, passes test 2 in full and scores 9 of 10 on the agent pagoda.",
+   "settings": "262k context, int8 KV, MTP draft",
+   "metrics": [
+    {
+     "label": "Decode, code, Gyro-S",
+     "before": 35.4,
+     "after": 118.6,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Load time",
+     "before": 67.4,
+     "after": 23.4,
+     "unit": "s"
+    }
+   ],
+   "quality": "Test 2: 6 tools, 108 tests, none failing; tool call, needles at 16k and 64k and the test-1 smoke all passed.",
+   "caveat": "One run. The comparison arm is the IQ3_S quant on the same engine; Strata 0.2.0 was in beta."
+  },
+  {
+   "date": "2026-10-17",
+   "title": "Tools and a browser rescue blank pagodas",
+   "kind": "method",
+   "summary": "Six models whose one-shot pagoda was blank scored 7 to 10 once they ran as agents with a sealed browser.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Mean pagoda score, one-shot",
+     "before": null,
+     "after": 0,
+     "unit": "of 10"
+    },
+    {
+     "label": "Mean pagoda score, agent",
+     "before": null,
+     "after": 8.3,
+     "unit": "of 10"
+    }
+   ],
+   "quality": "Same rubric and offline renders for both; the six are Coder 390, ThinkingCap, Orcarouter, Abliterated s1.5, Cyber and Cyber Q5.",
+   "caveat": "One agent run per model; orrery results are mixed (0 to 10) and some test-8 runs are not graded yet."
+  },
+  {
+   "date": "2026-10-16",
+   "title": "Maya 1.1.11 fixes split digits and speeds up",
+   "kind": "engine",
+   "summary": "On the same GLM-5.3-Flash pack, Maya 1.1.11 copied all 12 digit strings exactly and found both needles; 1.0.4 split one string and found one needle.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Decode",
+     "before": 14.6,
+     "after": 17.0,
+     "unit": "tok/s"
+    },
+    {
+     "label": "First token",
+     "before": 92.4,
+     "after": 18.3,
+     "unit": "s"
+    },
+    {
+     "label": "Exact digit strings",
+     "before": 9,
+     "after": 12,
+     "unit": "of 12"
+    }
+   ],
+   "quality": "Maya-S and Maya-M on 1.1.13 also scored 12 of 12 with both needles.",
+   "caveat": "Two rounds per version."
+  },
+  {
+   "date": "2026-10-16",
+   "title": "exllamav3 1.6.2 matches 1.6.1",
+   "kind": "engine",
+   "summary": "The DFlash2 build of Qwen3.8-27B on exllamav3 1.6.2 decodes as fast as on 1.6.1 and finds the needle at 128k, 112k and 94k.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Decode",
+     "before": 138.6,
+     "after": 140.1,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Needle 48213-KESTREL found at all three windows.",
+   "caveat": "Two rounds each; the difference is within noise."
+  },
+  {
+   "date": "2026-10-15",
+   "title": "Saluki: a 2-bit Qwen3.8-27B that still calls tools",
+   "kind": "model",
+   "summary": "A 2-bit tune of Qwen3.8-27B (7.9 GB) passed test 1 with 72 tests and part-passed test 2, with 17 tools.",
+   "settings": "262k context, q8_0 KV, thinking on",
+   "metrics": [
+    {
+     "label": "Test 1, tests passing",
+     "before": null,
+     "after": 72,
+     "unit": "tests"
+    },
+    {
+     "label": "Test 2, tests passing",
+     "before": null,
+     "after": 47,
+     "unit": "tests"
+    },
+    {
+     "label": "Decode, test 1",
+     "before": null,
+     "after": 25.3,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Graded by the standard test 1 and test 2 graders.",
+   "caveat": "Test 2 was partial (166 minutes at 22.0 tok/s); one run each."
+  },
+  {
+   "date": "2026-10-15",
+   "title": "LFM2.5-24B is fast but passes no test 2",
+   "kind": "model",
+   "summary": "Five quants of LFM2.5-24B decoded at 125 to 176 tok/s on test 1 and passed it in three of five; none passed test 2.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Test 2 passes",
+     "before": null,
+     "after": 0,
+     "unit": "of 5"
+    },
+    {
+     "label": "Decode, test 1, slowest quant",
+     "before": null,
+     "after": 125.5,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Decode, test 1, fastest quant",
+     "before": null,
+     "after": 176.2,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Graded by the standard graders; test-2 servers had 0 to 3 tools.",
+   "caveat": "Test-1 runs were often two minutes long, so the test counts are small."
+  },
+  {
+   "date": "2026-10-15",
+   "title": "Strata 0.1.44.1 doubles decode",
+   "kind": "engine",
+   "summary": "Flash-Next on Strata, two rounds each: 0.1.44.1 loaded in a mean 60 s against 214 s, and decoded 44.9 tok/s against 18.3.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Decode",
+     "before": 18.3,
+     "after": 44.9,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Load time",
+     "before": 214,
+     "after": 60,
+     "unit": "s"
+    }
+   ],
+   "quality": "Same prompts and engine settings in all rounds.",
+   "caveat": "The first 0.1.42 round was cold; its warm round decoded 23.5 tok/s, so the true gain is nearer 1.9 times. Load time: 60 s against 214 s on the round mean, but the warm 0.1.42 round loaded in 41.5 s."
+  },
+  {
+   "date": "2026-10-14",
+   "title": "Thinking models fail the one-shot pagoda",
+   "kind": "method",
+   "summary": "Qwen3.8-27B on vLLM with thinking on ran out of length in seven tries; with thinking off the three pages were blank.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Tries that finished",
+     "before": null,
+     "after": 0,
+     "unit": "of 7"
+    }
+   ],
+   "quality": "Identical blank pages in the thinking-off tries.",
+   "caveat": "Other stacks also scored 0 on some tries: Tiel Coder one of five, Gemma-4-26B-A4B one of five, exllamav3 MTP five of six."
+  },
+  {
+   "date": "2026-10-14",
+   "title": "Speed at 141k context",
+   "kind": "tuning",
+   "summary": "Four stacks timed on code with a 141k-token history: Gemma-4-26B-A4B with an MTP draft stays fastest, though it loses the most (54 %).",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Gemma-4-26B-A4B, MTP",
+     "before": 266.9,
+     "after": 123.1,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Tiel Coder IQ4_XS",
+     "before": 148.8,
+     "after": 98.0,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Qwen3.8-27B vLLM",
+     "before": 126.9,
+     "after": 85.0,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Qwen3.8-27B exllamav3 + MTP",
+     "before": 115.2,
+     "after": 71.7,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Needle found at 141k by all four.",
+   "caveat": "Prefill at that depth: 2,094, 2,046, 739 and about 650 tok/s."
+  },
+  {
+   "date": "2026-10-13",
+   "title": "Engine shoot-out on Qwen3.8-27B",
+   "kind": "engine",
+   "summary": "Drafting lifts decode from 42 tok/s to 95 to 170 tok/s on code; TensorFold with DFlash2 is fastest but holds the smallest window.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "TensorFold + DFlash2, code",
+     "before": 28,
+     "after": 170,
+     "unit": "tok/s"
+    },
+    {
+     "label": "exllamav3 + DFlash2, code",
+     "before": 42,
+     "after": 158,
+     "unit": "tok/s"
+    },
+    {
+     "label": "exllamav3 + MTP, code",
+     "before": 42,
+     "after": 116,
+     "unit": "tok/s"
+    },
+    {
+     "label": "llama.cpp + MTP, code",
+     "before": 42,
+     "after": 93,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "At temperature 0 drafting changed 7 of 15 exllamav3 DFlash2 replies, 10 of 15 with MTP, 4 of 15 on llama.cpp and none on TensorFold.",
+   "caveat": "The window with an 8-bit cache is 98k (exllamav3 DFlash2), 131k (MTP) and 43 to 73k (TensorFold). Baselines are each engine without drafting."
+  },
+  {
+   "date": "2026-10-11",
+   "title": "Test 4: Tiel Coder fixes 9 of 9 tickets",
+   "kind": "test",
+   "summary": "Three tickets in a known-good Rust crate, three runs each: every run passed all hidden checks with no regressions and no false 'done'.",
+   "settings": "262k window, f16 KV",
+   "metrics": [
+    {
+     "label": "Hidden checks passed",
+     "before": null,
+     "after": 84,
+     "unit": "of 84"
+    },
+    {
+     "label": "Fastest run",
+     "before": null,
+     "after": 2,
+     "unit": "min"
+    }
+   ],
+   "quality": "Hidden black-box checks (4, 11 and 13 per ticket) plus the crate's 155 tests; runs finished with 156 to 168 passing tests.",
+   "caveat": "One model only; the slowest run took 42 minutes."
+  },
+  {
+   "date": "2026-10-11",
+   "title": "Old PCIe share doubles Flash-Next on Strata 0.1.42",
+   "kind": "engine",
+   "summary": "Setting the old PCIe share on Strata 0.1.42 raised long-answer decode from 48 to 95 tok/s and big-prompt reads from 1,177 to 1,983 tok/s.",
+   "settings": "STRATA_PCIE_FRAC_DEFAULT=old",
+   "metrics": [
+    {
+     "label": "Decode, long answers",
+     "before": 48.0,
+     "after": 95.2,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Big-prompt read",
+     "before": 1176.9,
+     "after": 1982.7,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Test 2 run",
+     "before": 19.2,
+     "after": 30.1,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Test 1 run",
+     "before": 16.8,
+     "after": 33.8,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Test 1 passed in 51 minutes instead of 94; test 2 passed with 77 tests in 61 minutes instead of 98 (72 tests).",
+   "caveat": "Two probe rounds per variant; one agent run each."
+  },
+  {
+   "date": "2026-10-10",
+   "title": "Grader audit changes four test-1 verdicts",
+   "kind": "method",
+   "summary": "All 125 archived test-1 and test-2 runs were regraded after fixing the graders; four test-1 verdicts changed.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Runs regraded",
+     "before": null,
+     "after": 125,
+     "unit": "runs"
+    },
+    {
+     "label": "Verdicts changed",
+     "before": null,
+     "after": 4,
+     "unit": "runs"
+    }
+   ],
+   "quality": "Changes: Bonsai ada fail to pass, a Flash-Next row and a Qwen3.8 row partial to pass, Devstral Small 2 pass to partial.",
+   "caveat": "Twelve other rows had test counts corrected; six rows lost a no-crash tick."
+  },
+  {
+   "date": "2026-10-08",
+   "title": "Maya patches take GLM-5.3-Flash to 19 tok/s",
+   "kind": "engine",
+   "summary": "Two engine patches lifted decode from 3.95 to 18.7 tok/s; the model then passed test 1 (44 tests) and test 2 (7 tools, 66 tests, 322 minutes).",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Decode",
+     "before": 3.95,
+     "after": 18.7,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Test 2, tests passing",
+     "before": null,
+     "after": 66,
+     "unit": "tests"
+    }
+   ],
+   "quality": "Standard graders; both tests passed.",
+   "caveat": "Decode figures come from the run log, not a result file. A 1-bit variant failed both tests."
+  }
+ ],
+ "amend": [
+  {
+   "date": "2026-10-22",
+   "title": "An expert cache doubles Flash-Next on one 3090",
+   "note": "The 13 to 24 tok/s for orca is the best arm of the sweep. With the shipped config the streamed figure is about 19 tok/s (25 to 37 raw).",
+   "extra_metrics": [
+    {
+     "label": "Decode, heretic2 (streamed)",
+     "before": 12.3,
+     "after": 17.6,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Decode, unpruned IQ3_S",
+     "before": 13.8,
+     "after": 22.0,
+     "unit": "tok/s"
+    }
+   ],
+   "caveat_add": "The tqLLM control run measured the same GGUF at about 40 tok/s on short outputs; that measure is higher than the streamed one."
+  }
+ ],
+ "picks": {
+  "overall": [
+   {
+    "role": "Smartest",
+    "model": "flashnext",
+    "change": "tradeoff text only",
+    "tradeoff": "Slower than the 27B stacks. The earlier build crashed under several sessions; the current stock builds served 11 of 11 sessions at about 25 tok/s on 2026-10-21, though no agent test has been rerun on them.",
+    "evidence": [
+     "findings.stock-sglang"
+    ]
+   },
+   {
+    "role": "Fastest competent",
+    "model": "qwen3.8-27b-vllm",
+    "change": "none",
+    "tradeoff": "Gyro-S + MTP on Strata decodes 119 tok/s with a full test-2 pass in 24 minutes, but it is one run and Strata 0.2 is in beta.",
+    "evidence": [
+     "runs_new.t2-gyro-s-mtp-r1"
+    ]
+   }
+  ],
+  "uncensored": [],
+  "best_per_test": [
+   {
+    "test": "4",
+    "model": "lcpp6-tiel-coder-35b-q4kxl",
+    "evidence": "9 of 9 tickets, 84 of 84 hidden checks (only model tested)"
+   },
+   {
+    "test": "5",
+    "model": "lcpp6-tiel-coder-35b-t06 and qwen3.8-27b-uncensored-vllm / Orcarouter (agent)",
+    "evidence": "orrery 10 of 10"
+   },
+   {
+    "test": "6",
+    "model": "lcpp6-tiel-coder-35b-t06, and as an agent qwen3.8-27b-uncensored-vllm and Coder 390",
+    "evidence": "pagoda 10 of 10"
+   }
+  ],
+  "daily_drivers": {
+   "as_of": "2026-10-14",
+   "slots": [
+    "qwen3.8-27b-vllm (default)",
+    "orcasaq2-cyber-27b",
+    "maya-glm-5.3-flash",
+    "lcpp6-orcarouter-fn-uncensored",
+    "lcpp6-tiel-coder-35b-t06",
+    "gemma-4-26b-a4b"
+   ],
+   "note": "Later changes are not visible in the files read."
+  }
+ },
+ "schema": "history/1",
+ "generated_from": "private bake-off tree, 2026-10-07 to 2026-10-22"
+}

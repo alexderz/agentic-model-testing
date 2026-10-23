@@ -63,12 +63,24 @@ for json in "$work"/mut/*.json; do
   grep -q 'id="load-error"[^>]*hidden' "$dom" || problems+=("the data file failed to load")
   grep -q '<dl class="hero-stats"[^>]*><div><dt>' "$dom" || problems+=("hero stats are empty")
   grep -q 'class="motif"' "$dom" || problems+=("no chapter motif was drawn")
+  grep -q 'id="log"' "$dom" && problems+=("the lab notebook chapter is back")
+  grep -q '<details id="caveats"[^>]*><summary id="caveats-summary">[^<]' "$dom" || problems+=("the caveats disclosure in the footer is empty")
   if [ "$name" = real ]; then
     loaded=$(grep -o 'data-loaded="1"' "$dom" | wc -l)
     [ "$loaded" -ge 1 ] || problems+=("no gallery frame reported loaded")
     grep -q 'class="shot featured' "$dom" || problems+=("no full-marks card in the gallery wall")
     grep -q 'class="play"' "$dom" || problems+=("no Play live control in the gallery")
     grep -q '<iframe' "$dom" && problems+=("an iframe exists before the viewer was opened")
+    sets=$(python3 -I -c 'import json,sys; print(len(json.load(open(sys.argv[1]))["oneshots"]))' "$json")
+    [ "$(grep -o 'class="set-card[^"]*"' "$dom" | wc -l)" = "$sets" ] || problems+=("expected $sets set cards, found $(grep -o 'class="set-card[^"]*"' "$dom" | wc -l)")
+    pairs=$(python3 -I -c 'import json,sys; o=json.load(open(sys.argv[1]))["oneshots"]; print(sum(1 for k in o if k.startswith("agent-") and k[6:] in o))' "$json")
+    [ "$(grep -o '<svg class="pairs"' "$dom" | wc -l)" = "$pairs" ] || problems+=("expected $pairs one-shot/agent charts, found $(grep -o '<svg class="pairs"' "$dom" | wc -l)")
+    grep -q 'class="shot[^"]*playable"[^>]*data-case="t8-' "$dom" || grep -q 'data-case="t8-[^"]*"[^>]*class="shot[^"]*playable' "$dom" || problems+=("no playable agent (t8) piece in the gallery")
+    steps=$(python3 -I -c 'import json,sys; print(len(json.load(open(sys.argv[1]))["timeline"]))' "$json")
+    [ "$(grep -o '<li><div class="date">' "$dom" | wc -l)" = "$steps" ] || problems+=("expected $steps timeline steps, found $(grep -o '<li><div class="date">' "$dom" | wc -l)")
+    last=$(python3 -I -c 'import json,sys; d=json.load(open(sys.argv[1])); print(max(t["date"] for t in d["timeline"]))' "$json")
+    grep -q "datetime=\"$last\"" "$dom" || problems+=("the newest timeline step ($last) is not on the page")
+    grep -q 'id="agent" class="pairs-block"[^>]*hidden' "$dom" && problems+=("the one-shot/agent block is hidden on real data")
   fi
   if [ "${#problems[@]}" -eq 0 ]; then
     echo "  ok   $name: rendered, no section errors ($(grep -o 'class="chapter-head"' "$dom" | wc -l) chapters)"

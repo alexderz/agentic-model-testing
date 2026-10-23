@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
  "generated": "2026-10-15 14:36 CDT",
- "built": "2026-10-22 18:31 CDT",
+ "built": "2026-10-22 19:48 CDT",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -60,6 +60,14 @@
    "graded": "Facts checked against the recording, a judgement on whether the server can be trusted, and the fix run against the client."
   },
   {
+   "id": "t4",
+   "number": "4",
+   "name": "Ticket fixes in Rust",
+   "kind": "agentic",
+   "what": "Fix three tickets in a known-good Rust MCP server.",
+   "graded": "Hidden black-box checks run against the built server, plus its 155 existing tests; a claim of 'done' that fails the checks is counted."
+  },
+  {
    "id": "t5",
    "number": "5",
    "name": "Brass orrery",
@@ -78,10 +86,18 @@
   {
    "id": "t7",
    "number": "7",
-   "name": "Ticket fixes in Rust",
+   "name": "The labyrinth",
    "kind": "agentic",
-   "what": "Ticket-sized fixes in a real Rust project.",
-   "graded": "The project's own tests, run after the agent finishes."
+   "what": "Write a seeded generator for a three-floor labyrinth meeting ten rules.",
+   "graded": "Ten unseen seeds, each in its own container, must give ten different mazes that pass the checker; walkability and honest notes are judged by hand."
+  },
+  {
+   "id": "t8",
+   "number": "8",
+   "name": "Pagoda and orrery as agent tasks",
+   "kind": "agentic",
+   "what": "Tests 5 and 6 solved by an agent with a sealed browser.",
+   "graded": "Same rubrics as tests 5 and 6, from offline renders of the file the agent leaves; two-hour cap."
   }
  ],
  "findings": [
@@ -115,10 +131,121 @@
      "before": 13,
      "after": 20,
      "unit": "tok/s"
+    },
+    {
+     "label": "Decode, heretic2 (streamed)",
+     "before": 12.3,
+     "after": 17.6,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Decode, unpruned IQ3_S",
+     "before": 13.8,
+     "after": 22.0,
+     "unit": "tok/s"
     }
    ],
    "quality": "Against the old f16 KV config: mean KL 0.0011 and 98 % top-1 agreement over 100k tokens of real code; two loads of the same config differ by KL 0.0002. Needles found at 100k, 190k and 250k.",
-   "caveat": "Lazy tensor reads (llama.cpp's default) make the first pass over unseen text slow when the page cache is cold; -lzm off fixes it but costs about 28 GB of extra RAM."
+   "caveat": "Lazy tensor reads (llama.cpp's default) make the first pass over unseen text slow when the page cache is cold; -lzm off fixes it but costs about 28 GB of extra RAM. The 13 to 24 tok/s for orca is the best arm of the sweep. With the shipped config the streamed figure is about 19 tok/s (25 to 37 raw). The tqLLM control run measured the same GGUF at about 40 tok/s on short outputs; that measure is higher than the streamed one."
+  },
+  {
+   "date": "2026-10-22",
+   "title": "Strata 0.2.2 is 17% faster than 0.2.0",
+   "kind": "engine",
+   "summary": "Same-day control on the Gyro-S build with an MTP draft: code decode rose from 121.6 to 144.1 tok/s, prose from 106.4 to 123.4.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Decode, code",
+     "before": 121.6,
+     "after": 144.1,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Decode, prose",
+     "before": 106.4,
+     "after": 123.4,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Decode, JSON",
+     "before": 135.2,
+     "after": 157.7,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Tool call and needle probes passed on both builds.",
+   "caveat": "One load per engine; no agent run on 0.2.2 yet."
+  },
+  {
+   "date": "2026-10-22",
+   "title": "Flint: a 40B coding MoE fits the card",
+   "kind": "model",
+   "summary": "Flint (39.8B total, about 2.5B active, Apache-2.0) at Q3_K_XL runs entirely on the GPU at 262k context with q8 KV.",
+   "settings": "-c 262144 -ctk q8_0 -ctv q8_0 -b 2048 -ub 2048 -fit off",
+   "metrics": [
+    {
+     "label": "Decode, short prompt",
+     "before": null,
+     "after": 128.7,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Decode, 11.7k deep",
+     "before": null,
+     "after": 106.4,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Prefill, 11.7k",
+     "before": null,
+     "after": 5357,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Decode, Q4_K_XL, 15 expert layers in RAM",
+     "before": null,
+     "after": 81.4,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Not graded: no test has been run, and its one-shots are ungraded.",
+   "caveat": "Needs llama.cpp b11803 or newer; f16 KV does not fit. Q4_K_XL slows from 81 to 64 tok/s as more experts move to RAM."
+  },
+  {
+   "date": "2026-10-22",
+   "title": "tqLLM serves Flash-Next fast but not for agents",
+   "kind": "engine",
+   "summary": "tqLLM 1.2.3 loaded the Flash-Next IQ3_S GGUF and decoded faster than llama.cpp on short benchmarks, but long prompts and several sessions failed.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Decode, 32k window, code",
+     "before": null,
+     "after": 101.7,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Decode, llama.cpp control, code",
+     "before": null,
+     "after": 40.3,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Multi-session probe, 32k window",
+     "before": null,
+     "after": 3,
+     "unit": "of 11"
+    },
+    {
+     "label": "Multi-session probe, llama.cpp",
+     "before": null,
+     "after": 11,
+     "unit": "of 11"
+    }
+   ],
+   "quality": "Tool calls and a 30k needle passed at 32k; the 262k arm answered long prompts with HTTP 500.",
+   "caveat": "Short outputs with thinking off flatter the speed; the best 262k arm streamed 54 tok/s and passed 4 of 11 sessions. First load took 23 minutes cold."
   },
   {
    "date": "2026-10-21",
@@ -140,6 +267,428 @@
     }
    ],
    "quality": "Tools, vision and 11 of 11 multi-session checks pass; needle found at 100k, 150k and 190k; a repeated 190k prompt answers in 0.5 s."
+  },
+  {
+   "date": "2026-10-21",
+   "title": "Stock SGLang now serves Flash-Next to 11 of 11 sessions",
+   "kind": "engine",
+   "summary": "Three stock SGLang builds of Flash-Next, 204,800 context and two slots, all passed the multi-session probe and needles at 100k, 150k and 190k.",
+   "settings": "fp8 weights; fp8 or 8-bit KV",
+   "metrics": [
+    {
+     "label": "Decode, v3 fp8",
+     "before": null,
+     "after": 24.1,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Decode, v3 with 8-bit KV",
+     "before": null,
+     "after": 24.6,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Decode, plain fp8",
+     "before": null,
+     "after": 25.1,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Needles found at 100k, 150k and 190k; prefill about 2,600 tok/s.",
+   "caveat": "The phased build was dropped; no agent test was run on these builds in this round."
+  },
+  {
+   "date": "2026-10-20",
+   "title": "Ornith-1.5-122B reaches 16 tok/s on one card",
+   "kind": "model",
+   "summary": "A 122B Qwen3.5 mixture (8 of 256 experts per token) at UD-Q4_K_XL with 262k context and q8 KV, sweeping how many expert layers stay on the CPU.",
+   "settings": "-ngl 99 --n-cpu-moe 40 to 44, -ctk q8_0 -ctv q8_0",
+   "metrics": [
+    {
+     "label": "Decode, 42 layers on CPU",
+     "before": null,
+     "after": 13.7,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Decode, 40 layers on CPU",
+     "before": null,
+     "after": 16.3,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Decode, 44 layers with MTP n=2",
+     "before": null,
+     "after": 16.7,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Deep-prompt decode 15.8 tok/s at 40 layers; larger batches lift prefill from 118 to 392 tok/s.",
+   "caveat": "Not graded: one-shots ran at about 15 tok/s but were not scored, and no test has been run."
+  },
+  {
+   "date": "2026-10-20",
+   "title": "Gyro-S + MTP: a competent 24-minute test-2 run",
+   "kind": "model",
+   "summary": "Flash-Next in Gyro-S (TQ1_0) on Strata 0.2.0-beta with an MTP draft decodes 119 tok/s on code, passes test 2 in full and scores 9 of 10 on the agent pagoda.",
+   "settings": "262k context, int8 KV, MTP draft",
+   "metrics": [
+    {
+     "label": "Decode, code, Gyro-S",
+     "before": 35.4,
+     "after": 118.6,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Load time",
+     "before": 67.4,
+     "after": 23.4,
+     "unit": "s"
+    }
+   ],
+   "quality": "Test 2: 6 tools, 108 tests, none failing; tool call, needles at 16k and 64k and the test-1 smoke all passed.",
+   "caveat": "One run. The comparison arm is the IQ3_S quant on the same engine; Strata 0.2.0 was in beta."
+  },
+  {
+   "date": "2026-10-17",
+   "title": "Tools and a browser rescue blank pagodas",
+   "kind": "method",
+   "summary": "Six models whose one-shot pagoda was blank scored 7 to 10 once they ran as agents with a sealed browser.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Mean pagoda score, one-shot",
+     "before": null,
+     "after": 0,
+     "unit": "of 10"
+    },
+    {
+     "label": "Mean pagoda score, agent",
+     "before": null,
+     "after": 8.3,
+     "unit": "of 10"
+    }
+   ],
+   "quality": "Same rubric and offline renders for both; the six are Coder 390, ThinkingCap, Orcarouter, Abliterated s1.5, Cyber and Cyber Q5.",
+   "caveat": "One agent run per model; orrery results are mixed (0 to 10) and some test-8 runs are not graded yet."
+  },
+  {
+   "date": "2026-10-16",
+   "title": "Maya 1.1.11 fixes split digits and speeds up",
+   "kind": "engine",
+   "summary": "On the same GLM-5.3-Flash pack, Maya 1.1.11 copied all 12 digit strings exactly and found both needles; 1.0.4 split one string and found one needle.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Decode",
+     "before": 14.6,
+     "after": 17.0,
+     "unit": "tok/s"
+    },
+    {
+     "label": "First token",
+     "before": 92.4,
+     "after": 18.3,
+     "unit": "s"
+    },
+    {
+     "label": "Exact digit strings",
+     "before": 9,
+     "after": 12,
+     "unit": "of 12"
+    }
+   ],
+   "quality": "Maya-S and Maya-M on 1.1.13 also scored 12 of 12 with both needles.",
+   "caveat": "Two rounds per version."
+  },
+  {
+   "date": "2026-10-16",
+   "title": "exllamav3 1.6.2 matches 1.6.1",
+   "kind": "engine",
+   "summary": "The DFlash2 build of Qwen3.8-27B on exllamav3 1.6.2 decodes as fast as on 1.6.1 and finds the needle at 128k, 112k and 94k.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Decode",
+     "before": 138.6,
+     "after": 140.1,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Needle 48213-KESTREL found at all three windows.",
+   "caveat": "Two rounds each; the difference is within noise."
+  },
+  {
+   "date": "2026-10-15",
+   "title": "Saluki: a 2-bit Qwen3.8-27B that still calls tools",
+   "kind": "model",
+   "summary": "A 2-bit tune of Qwen3.8-27B (7.9 GB) passed test 1 with 72 tests and part-passed test 2, with 17 tools.",
+   "settings": "262k context, q8_0 KV, thinking on",
+   "metrics": [
+    {
+     "label": "Test 1, tests passing",
+     "before": null,
+     "after": 72,
+     "unit": "tests"
+    },
+    {
+     "label": "Test 2, tests passing",
+     "before": null,
+     "after": 47,
+     "unit": "tests"
+    },
+    {
+     "label": "Decode, test 1",
+     "before": null,
+     "after": 25.3,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Graded by the standard test 1 and test 2 graders.",
+   "caveat": "Test 2 was partial (166 minutes at 22.0 tok/s); one run each."
+  },
+  {
+   "date": "2026-10-15",
+   "title": "LFM2.5-24B is fast but passes no test 2",
+   "kind": "model",
+   "summary": "Five quants of LFM2.5-24B decoded at 125 to 176 tok/s on test 1 and passed it in three of five; none passed test 2.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Test 2 passes",
+     "before": null,
+     "after": 0,
+     "unit": "of 5"
+    },
+    {
+     "label": "Decode, test 1, slowest quant",
+     "before": null,
+     "after": 125.5,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Decode, test 1, fastest quant",
+     "before": null,
+     "after": 176.2,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Graded by the standard graders; test-2 servers had 0 to 3 tools.",
+   "caveat": "Test-1 runs were often two minutes long, so the test counts are small."
+  },
+  {
+   "date": "2026-10-15",
+   "title": "Strata 0.1.44.1 doubles decode",
+   "kind": "engine",
+   "summary": "Flash-Next on Strata, two rounds each: 0.1.44.1 loaded in a mean 60 s against 214 s, and decoded 44.9 tok/s against 18.3.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Decode",
+     "before": 18.3,
+     "after": 44.9,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Load time",
+     "before": 214,
+     "after": 60,
+     "unit": "s"
+    }
+   ],
+   "quality": "Same prompts and engine settings in all rounds.",
+   "caveat": "The first 0.1.42 round was cold; its warm round decoded 23.5 tok/s, so the true gain is nearer 1.9 times. Load time: 60 s against 214 s on the round mean, but the warm 0.1.42 round loaded in 41.5 s."
+  },
+  {
+   "date": "2026-10-14",
+   "title": "Thinking models fail the one-shot pagoda",
+   "kind": "method",
+   "summary": "Qwen3.8-27B on vLLM with thinking on ran out of length in seven tries; with thinking off the three pages were blank.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Tries that finished",
+     "before": null,
+     "after": 0,
+     "unit": "of 7"
+    }
+   ],
+   "quality": "Identical blank pages in the thinking-off tries.",
+   "caveat": "Other stacks also scored 0 on some tries: Tiel Coder one of five, Gemma-4-26B-A4B one of five, exllamav3 MTP five of six."
+  },
+  {
+   "date": "2026-10-14",
+   "title": "Speed at 141k context",
+   "kind": "tuning",
+   "summary": "Four stacks timed on code with a 141k-token history: Gemma-4-26B-A4B with an MTP draft stays fastest, though it loses the most (54 %).",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Gemma-4-26B-A4B, MTP",
+     "before": 266.9,
+     "after": 123.1,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Tiel Coder IQ4_XS",
+     "before": 148.8,
+     "after": 98.0,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Qwen3.8-27B vLLM",
+     "before": 126.9,
+     "after": 85.0,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Qwen3.8-27B exllamav3 + MTP",
+     "before": 115.2,
+     "after": 71.7,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Needle found at 141k by all four.",
+   "caveat": "Prefill at that depth: 2,094, 2,046, 739 and about 650 tok/s."
+  },
+  {
+   "date": "2026-10-13",
+   "title": "Engine shoot-out on Qwen3.8-27B",
+   "kind": "engine",
+   "summary": "Drafting lifts decode from 42 tok/s to 95 to 170 tok/s on code; TensorFold with DFlash2 is fastest but holds the smallest window.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "TensorFold + DFlash2, code",
+     "before": 28,
+     "after": 170,
+     "unit": "tok/s"
+    },
+    {
+     "label": "exllamav3 + DFlash2, code",
+     "before": 42,
+     "after": 158,
+     "unit": "tok/s"
+    },
+    {
+     "label": "exllamav3 + MTP, code",
+     "before": 42,
+     "after": 116,
+     "unit": "tok/s"
+    },
+    {
+     "label": "llama.cpp + MTP, code",
+     "before": 42,
+     "after": 93,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "At temperature 0 drafting changed 7 of 15 exllamav3 DFlash2 replies, 10 of 15 with MTP, 4 of 15 on llama.cpp and none on TensorFold.",
+   "caveat": "The window with an 8-bit cache is 98k (exllamav3 DFlash2), 131k (MTP) and 43 to 73k (TensorFold). Baselines are each engine without drafting."
+  },
+  {
+   "date": "2026-10-11",
+   "title": "Test 4: Tiel Coder fixes 9 of 9 tickets",
+   "kind": "test",
+   "summary": "Three tickets in a known-good Rust crate, three runs each: every run passed all hidden checks with no regressions and no false 'done'.",
+   "settings": "262k window, f16 KV",
+   "metrics": [
+    {
+     "label": "Hidden checks passed",
+     "before": null,
+     "after": 84,
+     "unit": "of 84"
+    },
+    {
+     "label": "Fastest run",
+     "before": null,
+     "after": 2,
+     "unit": "min"
+    }
+   ],
+   "quality": "Hidden black-box checks (4, 11 and 13 per ticket) plus the crate's 155 tests; runs finished with 156 to 168 passing tests.",
+   "caveat": "One model only; the slowest run took 42 minutes."
+  },
+  {
+   "date": "2026-10-11",
+   "title": "Old PCIe share doubles Flash-Next on Strata 0.1.42",
+   "kind": "engine",
+   "summary": "Setting the old PCIe share on Strata 0.1.42 raised long-answer decode from 48 to 95 tok/s and big-prompt reads from 1,177 to 1,983 tok/s.",
+   "settings": "STRATA_PCIE_FRAC_DEFAULT=old",
+   "metrics": [
+    {
+     "label": "Decode, long answers",
+     "before": 48.0,
+     "after": 95.2,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Big-prompt read",
+     "before": 1176.9,
+     "after": 1982.7,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Test 2 run",
+     "before": 19.2,
+     "after": 30.1,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Test 1 run",
+     "before": 16.8,
+     "after": 33.8,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Test 1 passed in 51 minutes instead of 94; test 2 passed with 77 tests in 61 minutes instead of 98 (72 tests).",
+   "caveat": "Two probe rounds per variant; one agent run each."
+  },
+  {
+   "date": "2026-10-10",
+   "title": "Grader audit changes four test-1 verdicts",
+   "kind": "method",
+   "summary": "All 125 archived test-1 and test-2 runs were regraded after fixing the graders; four test-1 verdicts changed.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Runs regraded",
+     "before": null,
+     "after": 125,
+     "unit": "runs"
+    },
+    {
+     "label": "Verdicts changed",
+     "before": null,
+     "after": 4,
+     "unit": "runs"
+    }
+   ],
+   "quality": "Changes: Bonsai ada fail to pass, a Flash-Next row and a Qwen3.8 row partial to pass, Devstral Small 2 pass to partial.",
+   "caveat": "Twelve other rows had test counts corrected; six rows lost a no-crash tick."
+  },
+  {
+   "date": "2026-10-08",
+   "title": "Maya patches take GLM-5.3-Flash to 19 tok/s",
+   "kind": "engine",
+   "summary": "Two engine patches lifted decode from 3.95 to 18.7 tok/s; the model then passed test 1 (44 tests) and test 2 (7 tools, 66 tests, 322 minutes).",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Decode",
+     "before": 3.95,
+     "after": 18.7,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Test 2, tests passing",
+     "before": null,
+     "after": 66,
+     "unit": "tests"
+    }
+   ],
+   "quality": "Standard graders; both tests passed.",
+   "caveat": "Decode figures come from the run log, not a result file. A 1-bit variant failed both tests."
   }
  ],
  "picks": {
@@ -148,7 +697,7 @@
     "role": "Smartest",
     "model": "flashnext",
     "verdict": "Built the best test-2 server of every run.",
-    "tradeoff": "This build crashed under several sessions. The newer phase-d build served several at once (probe 11 of 11) and passed test 1 at 25.3 tok/s; its test 2 is queued, so the pick still rests on the older build.",
+    "tradeoff": "Slower than the 27B stacks. The earlier build crashed under several sessions; the current stock builds served 11 of 11 sessions at about 25 tok/s on 2026-10-21, though no agent test has been rerun on them.",
     "cases": [
      "wb-flashnext-sglang"
     ]
@@ -337,410 +886,114 @@
    "title": "Use an MCP server through a subagent, and fix it",
    "what": "The agent gets an MCP server's source and a subagent whose only tools are that server's. It must extract 14 facts through the subagent, check them against the REST API and fix the server if it is wrong. 3G: a known-good server; 3O: the model's own test-2 server. Transcripts scored on a 12-point rubric.",
    "why": "Measures how well a model briefs and checks subagents, which tests 1 and 2 cannot see."
+  },
+  {
+   "date": "2026-10-08",
+   "era": "Engines",
+   "title": "GLM-5.3-Flash runs on Maya",
+   "what": "Two engine patches lift decode from 4 to 19 tok/s; tests 1 and 2 both pass.",
+   "why": "Can a large model work on one card?"
+  },
+  {
+   "date": "2026-10-09",
+   "era": "Harness",
+   "title": "Maker sampling and a loop guard",
+   "what": "Entries serve the maker's recommended sampling, and the agent stops when it repeats itself.",
+   "why": "Loops had ruined several runs."
+  },
+  {
+   "date": "2026-10-10",
+   "era": "Harness",
+   "title": "Graders audited, all old runs regraded",
+   "what": "125 archived runs rechecked; four test-1 verdicts changed and some test counts were corrected.",
+   "why": "Old and new scores must compare."
+  },
+  {
+   "date": "2026-10-11",
+   "era": "Engines",
+   "title": "Old PCIe share doubles Flash-Next on Strata",
+   "what": "Restoring the old PCIe share lifts long-answer decode from 48 to 95 tok/s.",
+   "why": "A newer default had halved speed."
+  },
+  {
+   "date": "2026-10-11",
+   "era": "Tests",
+   "title": "Test 4: ticket fixes in Rust",
+   "what": "Tiel Coder fixed three tickets, three runs each, on a crate with 155 passing tests.",
+   "why": "Tests 1 and 2 never touch existing code."
+  },
+  {
+   "date": "2026-10-13",
+   "era": "Engines",
+   "title": "Engine shoot-out on Qwen3.8-27B",
+   "what": "TensorFold, exllamav3 and llama.cpp compared with and without drafting on one 3090.",
+   "why": "Pick the fastest stack for the daily model."
+  },
+  {
+   "date": "2026-10-14",
+   "era": "Tests",
+   "title": "Tests 7 and 8 added",
+   "what": "Test 7 is a seeded labyrinth generator; test 8 gives the pagoda and orrery to an agent.",
+   "why": "Measure design work, not only code."
+  },
+  {
+   "date": "2026-10-14",
+   "era": "Harness",
+   "title": "Agent window margin changed",
+   "what": "At 150k served, the agent now compacts at 89,328 tokens (60%), up from 71,000 (47%).",
+   "why": "Fewer compactions, longer runs."
+  },
+  {
+   "date": "2026-10-14",
+   "era": "Engines",
+   "title": "Night search for speed at 141k context",
+   "what": "Four stacks timed on code at 141k tokens; Gemma-4-26B-A4B kept 123 tok/s.",
+   "why": "Find what stays fast with a long history."
+  },
+  {
+   "date": "2026-10-15",
+   "era": "Release",
+   "title": "Public model-research update; LFM2.5 and Saluki tested",
+   "what": "LFM2.5-24B (five quants) and a 2-bit Qwen3.8-27B tune went through tests 1 and 2.",
+   "why": "Check small and very low-bit models."
+  },
+  {
+   "date": "2026-10-16",
+   "era": "Engines",
+   "title": "Strata 0.1.44.1, Maya 1.1.11, exllamav3 1.6.2",
+   "what": "Strata cut load time and doubled decode in the A/B; Maya fixed split digits; exllamav3 matched.",
+   "why": "Re-measure each engine before changing defaults."
+  },
+  {
+   "date": "2026-10-17",
+   "era": "Tests",
+   "title": "First graded test 8 batches",
+   "what": "Six models that drew blank one-shot pagodas scored 7 to 10 as agents.",
+   "why": "Show what tools and a browser add."
+  },
+  {
+   "date": "2026-10-18",
+   "era": "Engines",
+   "title": "llama.cpp 0.7.0 replaces 0.6.0 in the router",
+   "what": "Version 0.7.0 adds a GPU cache for experts and an option to keep all experts in RAM.",
+   "why": "Big mixture models need that cache."
+  },
+  {
+   "date": "2026-10-20",
+   "era": "Engines",
+   "title": "Gyro-S quant on Strata 0.2",
+   "what": "A 1-bit-class Flash-Next quant with an MTP draft decodes 119 tok/s and passes test 2 in 24 minutes.",
+   "why": "Long agent runs at 20 tok/s are too slow."
+  },
+  {
+   "date": "2026-10-22",
+   "era": "Flash-Next",
+   "title": "Expert cache, Strata 0.2.2, Flint and tqLLM",
+   "what": "Flash-Next sped up on llama.cpp and Strata; a new MoE and a new engine were tried.",
+   "why": "Make the 125B model usable on one card."
   }
  ],
- "events": [
-  {
-   "when": "2026-10-15 08:24",
-   "kind": "model",
-   "text": "Gated repos accepted by the operator: official PersonaPlex-7B weights and orcarouter's own vision heads downloaded and verified; the orcarouter Flash-Next vision entry now uses its own head."
-  },
-  {
-   "when": "2026-10-15 01:15",
-   "kind": "grades",
-   "text": "Ten uncensored pagodas graded: qwen3.8-27b-uncensored-vllm 9, cyber-tiel-coder-35b 9, orcasaq2-cyber-27b 7, flashnext-heretic2 5, six blank from script errors."
-  },
-  {
-   "when": "2026-10-14 22:10",
-   "kind": "grading",
-   "text": "Test 5 graded from re-rendered frames: tiel t06 run 4 10/10, tiel q4kxl 9, HyperQwen 0.31 9; HyperQwen pagoda 0 (blank)."
-  },
-  {
-   "when": "2026-10-14 21:32",
-   "kind": "finding",
-   "text": "HyperQwen vLLM 0.31 timed rounds match 0.30 on short tasks (code about 124 vs 126 tok/s, prose 93 vs 91, structured 135 to 137). The 141k needle passed both ways. Deep code is a little slower on 0.31 (79.5 vs 84.5 tok/s). The warm-up round is not compared."
-  },
-  {
-   "when": "2026-10-14 20:29",
-   "kind": "grading",
-   "text": "Gemma own-server test 3 run 5 is graded: rubric 8/12, 14/14 facts, 2.4 tok/s over 68 min. It fixed list_entities (HashMap to Vec) so tool_call passes. Init still fails, and the probe never called a tool."
-  },
-  {
-   "when": "2026-10-14 19:47",
-   "kind": "engine",
-   "text": "Queued a HyperQwen vLLM 0.31 trial: speed bench against 0.30, then pagoda and orrery one-shots; runs before the uncensored one-shots."
-  },
-  {
-   "when": "2026-10-14 19:38",
-   "kind": "grading",
-   "text": "Tiel Coder test 2 run 5 is a full pass: 26 tests, 80.4 tok/s, 15 min. Gemma test 3 runs 2 to 4 are graded. The known-good server was really checked on three runs."
-  },
-  {
-   "when": "2026-10-14 19:38",
-   "kind": "finding",
-   "text": "Four Gemma test 3 runs wrote a 14/14 facts file without an MCP tool call. Three sent the brief to explore or general instead of mcp-probe. One own-server run started 17 probes and then said it simulated them."
-  },
-  {
-   "when": "2026-10-14 18:57",
-   "kind": "tests",
-   "text": "Test 8 now alternates which task runs first, and stops a case instead of turning screenshots off when the image check gets no answer from the server."
-  },
-  {
-   "when": "2026-10-14 16:31",
-   "kind": "engine",
-   "text": "Posted our RTX 3090 TensorFold 0.6.6 + DFlash2 numbers on upstream issue #603, as a receipt for their 3090 port, with the operator's OK on the exact text. Next is a native build to try when they publish one."
-  },
-  {
-   "when": "2026-10-14 16:15",
-   "kind": "grading",
-   "text": "Gemma test 2 runs 4 and 5 are graded and archived and are not full passes. Run 4 fails the handshake and its tool calls, and its tests hang (131 min, 12 tok/s). Run 5 shakes hands, then sends the method name as the tool name (4 tests, 2 min, 134 tok/s). Qwen3.8-27B vLLM runs 2 and 3 are full passes: 40 tests in 34 min at 73 tok/s, and 32 tests in 25 min at 75 tok/s. One grep call returned a match. Public cards are agentic-toolbox PR 87."
-  },
-  {
-   "when": "2026-10-14 13:39",
-   "kind": "grading",
-   "text": "Tiel t06 test 1 run 5 is graded and archived: 5/5, 42 tests, 7 subcommands, 45 min, 30 tok/s. The read probe showed 416 fixture entities. Gemma test 2 run 2 is a thin full pass (3 tools, 3 tests, 4 min, 154 tok/s) and its glob call returned files. Run 3 fails initialize because the reply uses snake_case field names; the primary tool still returned data. Public cards are agentic-toolbox PR 86."
-  },
-  {
-   "when": "2026-10-14 12:48",
-   "kind": "grading",
-   "text": "Test 7's grader now runs each unseen seed in its own sealed container and refuses to grade a case that never ran; the runner and queue got safer exits. No test 7 case has run yet."
-  },
-  {
-   "when": "2026-10-14 12:36",
-   "kind": "grading",
-   "text": "Tiel t06 test 1 run 4 is graded and archived: 5/5, 38 tests, 18 subcommands, 13 min, 88 tok/s. The read probe showed 329 fixture entities. No glob or grep calls, and no ownership error. Run 5 is still going. The public card row is agentic-toolbox PR 85."
-  },
-  {
-   "when": "2026-10-14 12:11",
-   "kind": "test",
-   "text": "Test 7 added: each model writes a generator for a three-floor labyrinth that must pass a ten-rule checker, on seeds it has not seen; the best mazes will be built in Minecraft."
-  },
-  {
-   "when": "2026-10-14 11:42",
-   "kind": "grading",
-   "text": "Qwen3.8-27B vLLM test 1 run 5 and Tiel t06 test 1 runs 2 and 3 are graded and archived. Qwen run 5 is 5/5 with 114 tests in 25 min at 76 tok/s. Tiel run 2 is 5/5 with 33 tests in 9 min at 106 tok/s. Tiel run 3 is 2/5: reads, bad input and bad auth fail, while 39 tests pass, in 12 min at 96 tok/s. Run 4 just started."
-  },
-  {
-   "when": "2026-10-14 11:11",
-   "kind": "grading",
-   "text": "Qwen3.8-27B vLLM test 1 runs 3 and 4 are graded and archived. Both are 5/5: run 3 has 67 tests in 52 min at 70 tok/s, run 4 has 68 tests in 16 min at 73 tok/s. Run 5 is going."
-  },
-  {
-   "when": "2026-10-14 09:41",
-   "kind": "grading",
-   "text": "Graded 15 fill-to-five pagodas. Tiel t06 runs 4 and 5 both scored 10. Gemma scored 9 and 8, with flat eaves. Qwen3.8-27B vLLM thinking-on runs 1 to 5 are one byte-identical cut-off and score 0. ExLlamaV3 with thinking off scored DFlash2 6, 8, 0 and MTP 0, 0, 0."
-  },
-  {
-   "when": "2026-10-14 09:41",
-   "kind": "grading",
-   "text": "Gemma test 1 runs 2 to 5 are graded and archived. Run 2 is 5/5 checks, 9 pass and 1 fail, 167 tok/s. Run 3 is 3/5: bad input and bad auth fail, 8 tests pass, 143 tok/s. Run 4 is 5/5, 6 tests, 125 tok/s. Run 5 is 4/5 because no_crash failed, 5 tests, 102 tok/s."
-  },
-  {
-   "when": "2026-10-14 08:32",
-   "kind": "finding",
-   "text": "Fill-to-five took the lease at 07:46. Qwen3.8-27B vLLM wrote no voxel pagoda in five tries (each about 6 min, about 95 tok/s, cut off at the length cap). Tiel t06 and Gemma runs 4 and 5 did write pages, thinking-off exllamav3 MTP wrote three, and DFlash2 wrote two with the third started at 08:33. Not graded here. Phase-d was not restarted."
-  },
-  {
-   "when": "2026-10-14 08:07",
-   "kind": "finding",
-   "text": "Qwen3.8-27B on exllamav3 writes a voxel pagoda with thinking on: DFlash2 scored 7, 10 and 9, MTP 0, 0 and 9 (two ran out of the 32k cap). Its thinking budget leaves room for the page; the vLLM entry still runs out."
-  },
-  {
-   "when": "2026-10-14 08:07",
-   "kind": "settings",
-   "text": "Tiel-Coder-35B-A3B (llama.cpp 0.6, 262k) and Gemma-4-26B-A4B (on trial) are daily drivers 5 and 6. The exllamav3 MTP and DFlash2 entries for Qwen3.8-27B stay in llama-swap."
-  },
-  {
-   "when": "2026-10-14 00:48",
-   "kind": "finding",
-   "text": "Night search graded: Tiel-Coder-35B-A3B on llama.cpp 0.6.0 (262k, f16 cache, 149 tok/s short and 98 at 141k) writes the best voxel pagodas (10 and 8, one blank of three); Gemma-4-26B-A4B is fastest (27 s per page, 7, 9 and 0); Qwen3.8-27B with thinking on never finished a page at 32k or 64k."
-  },
-  {
-   "when": "2026-10-14 00:48",
-   "kind": "tests",
-   "text": "Test 6 added: a one-shot voxel Japanese pagoda in three.js, graded from frames rendered offline (no-network Chromium, vendored three.js) and the page's console, 0 to 10."
-  },
-  {
-   "when": "2026-10-14 00:31",
-   "kind": "finding",
-   "text": "The night search for a 150k-or-more coding setup finished. Six of seven meet the bar; Gemma-4-26B-A4B with MTP is the fastest (267 tok/s on short code, 123 at depth, 262k window). Test 6, the one-shot voxel pagoda, is on its third sitting and was not graded here."
-  },
-  {
-   "when": "2026-10-13 23:28",
-   "kind": "finding",
-   "text": "Our llama.cpp image (0.6.0, build 11429) runs Qwen3.8-27B with the DFlash2 drafter as a GGUF at 95 / 43 / 108 tok/s (code / prose / structured), no faster than our MTP entry (95 / 63 / 102 in the same sitting), although the drafter is accepted as often as on exllamav3 (47 %). TensorFold in the same sitting 170 / 85 / 213."
-  },
-  {
-   "when": "2026-10-13 23:28",
-   "kind": "engine",
-   "text": "llama.cpp + DFlash2 recipe under engines/llamacpp-dflash2 (no new image; drafter GGUF pinned on the NAS). Not a bake-off entry and not in llama-swap. The GPU lease was released at 23:17."
-  },
-  {
-   "when": "2026-10-13 22:44",
-   "kind": "finding",
-   "text": "exllamav3 1.6.1 with the DFlash2 drafter writes Qwen3.8-27B at 158 / 73 / 181 tok/s (code / prose / structured) on the RTX 3090, stock and unpatched; TensorFold in the same sitting 170 / 84 / 211; exllamav3 with its own MTP head 116 / 70 / 128. With DFlash2 it holds a 65k window (98k with an 8-bit cache), with MTP 131k. At temperature 0 drafting changes 7 of 15 exllamav3 replies (10 of 15 with MTP); TensorFold's stay identical."
-  },
-  {
-   "when": "2026-10-13 21:47",
-   "kind": "finding",
-   "text": "TensorFold 0.6.6 with the DFlash2 drafter writes Qwen3.8-27B at 167 / 81 / 209 tok/s (code / prose / structured) on the RTX 3090, against 93 / 64 / 100 for our llama.cpp MTP entry and 42 for plain llama.cpp. Its window is 42,724 tokens (73,308 at the memory edge) against 147k and 213k, and prompts are read at the same speed by all three."
-  },
-  {
-   "when": "2026-10-13 21:47",
-   "kind": "engine",
-   "text": "TensorFold 0.6.6 built for the RTX 3090 with a local patch (upstream refuses cards below compute capability 8.9). It is a trial under engines/tensorfold, not a bake-off entry and not in llama-swap. Grok reviewed the patch twice. The GPU lease is released."
-  },
-  {
-   "when": "2026-10-13 20:08",
-   "kind": "grading",
-   "text": "LFM2.5-24B-A2B test 1 graded on both quants with an Opus read of the code. Q4_K_M passes thin: 4 of 5 checks, three read-only commands, 10 of 25. Q6_K fails: it calls API paths the server does not have, 2 of 5 checks, 3 of 25. Both finish in under 2 minutes at 151 to 168 tok/s."
-  },
-  {
-   "when": "2026-10-13 19:32",
-   "kind": "finding",
-   "text": "LFM2.5 Q6 loaded at 131072 context, but the test did not start. The runner skipped it because the earlier harness failure is still recorded. Q4 failed the same way, from a negative thinking budget at 32k. Neither was graded."
-  },
-  {
-   "when": "2026-10-13 18:35",
-   "kind": "model",
-   "text": "LFM2.5-24B-A2B Q4_K_M and Q6_K were added on Titan. Both exit before they serve, so nothing was queued. The weights are there. This check did not retry the load."
-  },
-  {
-   "when": "2026-10-13 15:35",
-   "kind": "finding",
-   "text": "Phase-d test 2 spent 14:05 to 15:05 in two 30-minute bash timeouts on a mock server, then started the real crate. At 15:35 it had 8 Rust files and 1,837 lines, with the GPU busy. Not graded."
-  },
-  {
-   "when": "2026-10-13 14:29",
-   "kind": "finding",
-   "text": "Phase-d test 2 is wedged. Since 14:05 OpenCode has been waiting on a mock python3 server.py (127.0.0.1:8199) whose shell already exited, so the hang watchdog does not fire. The GPU is idle at 22,868 MiB. The 3 h cap is about 16:48. Not graded."
-  },
-  {
-   "when": "2026-10-13 14:07",
-   "kind": "model",
-   "text": "LFM2.5-24B-A2B Q4_K_M finished downloading to the NAS (13.53 GiB). It was not queued. Phase-d still holds the GPU."
-  },
-  {
-   "when": "2026-10-13 14:03",
-   "kind": "model",
-   "text": "The operator asked for LFM2.5-24B-A2B. Q4_K_M (13.53 GiB) is downloading to the NAS. It fits llama.cpp and was not queued. The phase-d case still holds the GPU."
-  },
-  {
-   "when": "2026-10-13 11:31",
-   "kind": "finding",
-   "text": "Titan was down from 07:59 to 11:29. The GPU is idle (lease FREE, 25 MiB). The Qwen3.5-2B baseline did not finish. The bake-off stays paused and did not grade the interrupted phase-d test 2."
-  },
-  {
-   "when": "2026-10-13 10:32",
-   "kind": "finding",
-   "text": "Titan stopped answering on the network between 09:34 and 10:32. The bake-off stays paused and did not grade the interrupted phase-d test 2."
-  },
-  {
-   "when": "2026-10-13 08:33",
-   "kind": "finding",
-   "text": "Titan does not answer on the network. At 07:29 it was running a Qwen3.5-2B baseline at 100% GPU. The bake-off stays paused and did not grade the interrupted phase-d test 2."
-  },
-  {
-   "when": "2026-10-12 05:35",
-   "kind": "grading",
-   "text": "The dashboard queue tile now follows the live test-5 log while the wave-B log still ends at ALL DONE, so a refresh no longer shows the queue as idle during the orrery."
-  },
-  {
-   "when": "2026-10-12 03:35",
-   "kind": "finding",
-   "text": "Tiel Coder with its MTP draft head, test 2 run 3: the server builds and 20 tests pass, but it flushes stdout only when stdin closes, so a client never sees a reply. Test 2 on that build is one usable server in three. Not a broken tool-call format."
-  },
-  {
-   "when": "2026-10-12 03:35",
-   "kind": "finding",
-   "text": "The follow-on is graded. Strata 0.1.42 with the old PCIe share confirmed test 1 at 33.8 tok/s and test 2 at 30.1 tok/s, against 16.8 and 19.2 on the default share. That setting stays."
-  },
-  {
-   "when": "2026-10-12 02:35",
-   "kind": "finding",
-   "text": "Strata 0.1.42 with the old PCIe share passed test 2: 9 tools, 77 tests, 61 min, 30.1 tok/s, against 72 tests, 98 min and 19.2 tok/s on the default share."
-  },
-  {
-   "when": "2026-10-12 02:35",
-   "kind": "finding",
-   "text": "Tiel Coder with its MTP draft head: test 2 run 1 is partial (invented /api/entities, 29 tests) and run 2 is a thin full pass (5 tools, 9 tests, 81 tok/s). Neither showed a broken tool-call format. Run 3 is still going."
-  },
-  {
-   "when": "2026-10-12 01:32",
-   "kind": "finding",
-   "text": "The third Tiel Coder MTP test-1 run also passed (57 tests, 82 tok/s). Grep returned matches and no tool call failed, so drafting has not broken tools on test 1. It is not clearly faster than the plain build."
-  },
-  {
-   "when": "2026-10-12 00:42",
-   "kind": "finding",
-   "text": "The Tiel Coder Q4_K_XL focus wave is fully graded (24 of 24). Test 4 passed 9 of 9 with no false done. The write-up is results-wave-b/TIEL-CODER-FOCUS.md: trust it with a small checked patch, not with one MCP server it writes."
-  },
-  {
-   "when": "2026-10-12 00:42",
-   "kind": "finding",
-   "text": "Strata 0.1.42 with the old PCIe share passed test 1 at 33.8 tok/s (the default-share run was 16.8). The first two Tiel Coder MTP test-1 runs also passed, at 75 and 67 tok/s; neither called glob or grep."
-  },
-  {
-   "when": "2026-10-11 22:37",
-   "kind": "finding",
-   "text": "Six more Tiel Coder test 4 runs passed, including the last bugfix-targets run, so that ticket is 3 of 3. Every hidden check was green and no baseline test regressed. Glob now returns file paths; the old ripgrep unpack error is still gone. Test 4 stays out of the report."
-  },
-  {
-   "when": "2026-10-11 21:41",
-   "kind": "finding",
-   "text": "First test 4 case on Tiel Coder Q4_K_XL passed the hidden checks (bugfix-targets, 161 tests, no regressions). Test 4 is not in the report, so the row lives in results-test4/grades.tsv."
-  },
-  {
-   "when": "2026-10-11 20:17",
-   "kind": "tests",
-   "text": "New test 5: one prompt, one reply, an animated SVG of a clockwork orrery; Claude's own answer is kept as the top of the scale. 15 of our models try it after the current queue."
-  },
-  {
-   "when": "2026-10-11 17:35",
-   "kind": "finding",
-   "text": "The file search tools of the coding agent work now that ripgrep is in the image: in the first three cases graded since the fix the old error is gone and the one grep call made returned its matches. No glob call has been made yet."
-  },
-  {
-   "when": "2026-10-11 15:53",
-   "kind": "tests",
-   "text": "The coding agent's glob and grep tools never worked in the test sandbox because the image had no ripgrep. It is installed now; earlier runs are not repeated, since every model had the same handicap. Runs from this wave on have working search tools."
-  },
-  {
-   "when": "2026-10-11 14:20",
-   "kind": "finding",
-   "text": "Strata 0.1.42 settings for Flash-Next, each of five settings measured twice in opposite orders. Going back to the older PCIe share was the best single change: about 152 seconds per probe against 188 with the release defaults, long answers at about 95 tok/s against 48, and a large prompt read at about 2,000 tok/s against 1,200. Turning tail skip off decodes as fast but does not help reading. Everything ran faster in the second round, so smaller differences are noise."
-  },
-  {
-   "when": "2026-10-11 13:40",
-   "kind": "finding",
-   "text": "The file search tools of the coding agent (glob and grep) have failed inside the test sandbox since at least 2026-10-01: the agent image lacks ripgrep and the fallback download cannot be unpacked there. 57 of 181 runs asked for them and got an error, the reference runs included; the models fell back to shell commands. Not fixed yet, so the running wave stays comparable."
-  },
-  {
-   "when": "2026-10-11 12:16",
-   "kind": "grading",
-   "text": "Test 3 now credits a right value even when the model wrote its answer file in its own layout. Four runs gain: OrcaSAQ-2-Cyber and Gemma 4 31B on the known-good server go from 0 to 14 of 14 facts, Coder390 from 6 to 14 on the known-good server and from 1 to 6 on its own. Every recovered value was checked by hand."
-  },
-  {
-   "when": "2026-10-11 12:16",
-   "kind": "tests",
-   "text": "Test 3 now also puts its task text in a file in the work folder, because models that compacted their conversation lost the required answer layout. Runs from today on are not strictly comparable with the 35 earlier ones."
-  },
-  {
-   "when": "2026-10-11 12:13",
-   "kind": "grading",
-   "text": "Three grading questions are settled. Test 3 will also give its task as a file, and runs that missed only on answer layout will be regraded. Test 1 keeps counting an explicit nothing-matched message with exit code 0 as clean handling of bad input. Test 2 keeps grading the server's main read tool; another working tool does not turn a partial into a pass."
-  },
-  {
-   "when": "2026-10-11 11:32",
-   "kind": "finding",
-   "text": "The newer SGLang build for Flash-Next (phase-d-main) served several sessions at once in a probe, 11 of 11 checks, which the older build could not. In test 1 it passed 5 of 5 at 25.3 tok/s; the older build ran at 44.3 tok/s on 2026-10-01 under earlier harness settings, so the two speeds are not directly comparable."
-  },
-  {
-   "when": "2026-10-11 08:53",
-   "kind": "settings",
-   "text": "Every model entry's settings file is now also copied to a folder on Titan that the llama-watch dashboard can read, with the model's record included, so the dashboard can show per-model settings."
-  },
-  {
-   "when": "2026-10-11 08:30",
-   "kind": "finding",
-   "text": "Strata 0.1.42 on Flash-Next, test 1: both settings pass 5 of 5, but the release defaults were slower on Titan (16.8 tok/s, 94 min) than the three older settings (22.4 tok/s, 62 min). On long replies alone the medians are 18.1 and 24.0 tok/s. One run each, so this needs a controlled speed check before we draw a conclusion."
-  },
-  {
-   "when": "2026-10-11 03:55",
-   "kind": "finding",
-   "text": "The Qwen3-VL-8B Q8 retry fell into a loop in test 1: since 02:34 it has repeated one identical file search more than 1,400 times, after 12 compactions. The three-hour cap ends the run at about 04:02."
-  },
-  {
-   "when": "2026-10-11 00:55",
-   "kind": "finding",
-   "text": "Titan fan work, heat-soaked comparison at the same graphics card load (about 278 W): processor 74 °C instead of 79 °C on average with peaks of 79 °C instead of 90 °C, coolant 34 °C instead of 40 °C, board 34 °C instead of 51 °C, drives 7 to 9 °C cooler, graphics card 2 °C cooler with its fan at 62% instead of 71%."
-  },
-  {
-   "when": "2026-10-10 23:50",
-   "kind": "finding",
-   "text": "Nemotron 3 Nano on the newer llama.cpp with researched sampling still ends test 1 early: it wrote three files in 76 seconds, never ran them and stopped. The command-line tool shows help but reads nothing."
-  },
-  {
-   "when": "2026-10-10 23:20",
-   "kind": "finding",
-   "text": "Titan runs cooler after the fan work. On the same test the processor averaged 71 °C instead of 82 °C and the coolant 34 °C instead of 43 °C; the earlier figures came from a heat-soaked case, so a soaked comparison follows."
-  },
-  {
-   "when": "2026-10-10 17:20",
-   "kind": "finding",
-   "text": "In test 3, a compaction often drops the answer layout the prompt asks for (Gemma 31B, Gemma 26B, Coder390): the values are right but the automatic grade gives little or no credit. The task text exists only in the first message, so the agent cannot re-read it."
-  },
-  {
-   "when": "2026-10-10 16:25",
-   "kind": "model",
-   "text": "Ten retry-wave entries and two Strata 0.1.42 entries for Flash-Next created on Titan."
-  },
-  {
-   "when": "2026-10-10 15:55",
-   "kind": "finding",
-   "text": "The server Gemma 4 26B built on vLLM passed our test-2 grader, but OpenCode cannot connect to it. The grader's client is more forgiving than a real one; a stricter handshake check and a regrade are planned."
-  },
-  {
-   "when": "2026-10-10 14:40",
-   "kind": "engine",
-   "text": "Strata 0.1.42 built and loaded on Titan beside 0.1.40.3. It skips rarely used experts by default (claimed 13 to 16% faster decode, answers change slightly) and keeps the prompt cache when the tool list is reordered."
-  },
-  {
-   "when": "2026-10-10 13:15",
-   "kind": "grading",
-   "text": "Graders repaired and all 125 archived test-1 and test-2 runs regraded. Four test-1 verdicts changed: Bonsai on the ada-surgery stack fail to pass, Flash-Next and one Qwen3.8 quoting run partial to pass, the second Devstral run pass to partial. Test counts corrected on 15 more rows."
-  },
-  {
-   "when": "2026-10-10 13:10",
-   "kind": "grading",
-   "text": "Grader image gained the test libraries respx, pytest-mock and pytest-asyncio; the three Gemma 26B test-1 runs now show 8, 7 and 9 passing tests where they showed 0."
-  },
-  {
-   "when": "2026-10-10 12:00",
-   "kind": "finding",
-   "text": "GLM-5.3-Flash on Maya writes multi-digit numbers split by spaces in tool arguments (a limit of \"1 0\", 434 read as 4342). Both of its test-3 cases timed out because of it. Likely a decode fault in the engine build or the 2-bit weights; not yet diagnosed."
-  },
-  {
-   "when": "2026-10-10 11:00",
-   "kind": "model",
-   "text": "From the daily bookmark scan: Qwen-Image-2.1-Turbo downloaded (not run yet); Mirai S noted as needing an engine of its own; Samsung LittleBit recorded as research only."
-  },
-  {
-   "when": "2026-10-10 10:45",
-   "kind": "tests",
-   "text": "Report builder no longer keeps its own list of models: it reads the entry specs and model records. A plan for one master model catalog is written (catalog/DESIGN.md)."
-  },
-  {
-   "when": "2026-10-10 10:15",
-   "kind": "grading",
-   "text": "Independent audit of queue, configuration, results and graders. Fixed: the test-2 grade script used the live replay port; the retry queue script unloaded models before taking the lease; a failed load could be marked done."
-  },
-  {
-   "when": "2026-10-10 09:50",
-   "kind": "tests",
-   "text": "Test 4 (consistency) built: three tickets against an existing Rust project, five runs each, 45-minute cap. Test 1B repeats test 1 four more times. Eleven models are listed, including Flash-Next on SGLang, Flash-Next Heretic2 and GLM-5.3-Flash on Maya."
-  },
-  {
-   "when": "2026-10-10 00:30",
-   "kind": "model",
-   "text": "Qwen3.8-27B Cyber dropped after its 5-bit rerun failed test 2. Qwen3.8-27B Coder390 EfficientThink added on llama.cpp 0.6."
-  },
-  {
-   "when": "2026-10-10 00:20",
-   "kind": "settings",
-   "text": "Fixed a bug in the script that rewrites an entry's flags for a matrix row (lib.sh set_variant)."
-  },
-  {
-   "when": "2026-10-09 15:00",
-   "kind": "settings",
-   "text": "Two rules adopted after the Cyber loops: every entry serves the maker's recommended sampling (checklist item C13, recommended sampling), and every harness denies repeated identical tool calls (C14, loop guard)."
-  },
-  {
-   "when": "2026-10-09 13:00",
-   "kind": "engine",
-   "text": "Bonsai 2 prepared on the community ada-surgery serving stack (its own engine build on Saturn)."
-  }
- ],
+ "events": [],
  "models": {
   "bonsai2-27b-ada": {
    "id": "bonsai2-27b-ada",
@@ -845,7 +1098,7 @@
    "base": "Qwen/Qwen3.8-27B",
    "arch": "dense 27B",
    "engine": "exllamav3 1.6.1 (TabbyAPI)",
-   "quant": "EXL3 4.00bpw (head 6 bits, MTP 4 bits); the HF cache keeps two snapshots: 113cf7ab is 4.00bpw (served), 6fe61ad6 is 3.00bpw",
+   "quant": "EXL3 4.00bpw (head 6 bits, MTP 4 bits)",
    "kind": "stock",
    "uncensored": false,
    "note": "",
@@ -861,7 +1114,7 @@
    "base": "Qwen/Qwen3.8-27B",
    "arch": "dense 27B",
    "engine": "exllamav3 1.6.1 (TabbyAPI)",
-   "quant": "EXL3 4.00bpw (head 6 bits, MTP 4 bits); the HF cache keeps two snapshots: 113cf7ab is 4.00bpw (served), 6fe61ad6 is 3.00bpw",
+   "quant": "EXL3 4.00bpw (head 6 bits, MTP 4 bits)",
    "kind": "stock",
    "uncensored": false,
    "note": "",
@@ -1693,7 +1946,7 @@
    "base": "",
    "arch": "",
    "engine": "llama.cpp 0.4",
-   "quant": "",
+   "quant": null,
    "kind": "unknown",
    "uncensored": false,
    "note": "",
@@ -1709,7 +1962,7 @@
    "base": "",
    "arch": "",
    "engine": "llama.cpp 0.4",
-   "quant": "",
+   "quant": null,
    "kind": "unknown",
    "uncensored": false,
    "note": "",
@@ -1917,7 +2170,7 @@
    "base": "",
    "arch": "",
    "engine": "llama.cpp 0.4",
-   "quant": "",
+   "quant": null,
    "kind": "unknown",
    "uncensored": false,
    "note": "",
@@ -1949,7 +2202,7 @@
    "base": "",
    "arch": "",
    "engine": "llama.cpp 0.4",
-   "quant": "",
+   "quant": null,
    "kind": "unknown",
    "uncensored": false,
    "note": "",
@@ -2132,6 +2385,102 @@
    "vision": {
     "label": "yes (head)",
     "status": "head"
+   }
+  },
+  "exl3-qwen3.8-27b-dflash2-162": {
+   "id": "exl3-qwen3.8-27b-dflash2-162",
+   "family": "Qwen3.8 27B",
+   "label": "Qwen3.8-27B EXL3 4-bit · exllamav3 1.6.2, DFlash2 drafts, 98k, 8-bit cache",
+   "base": "Qwen/Qwen3.8-27B",
+   "arch": "dense 27B",
+   "engine": "exllamav3 tabbyapi-d6e62270-exl3-1.6.2",
+   "quant": "EXL3 4.00bpw (head 6 bits, MTP 4 bits)",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "",
+   "vision": {
+    "label": "yes (built in)",
+    "status": "native"
+   }
+  },
+  "lcpp6-saluki-27b-iq2": {
+   "id": "lcpp6-saluki-27b-iq2",
+   "family": "Qwen3.8 27B",
+   "label": "Underdog Saluki 27B IQ2-mix · llama.cpp 0.6",
+   "base": "Qwen/Qwen3.8-27B",
+   "arch": "dense 27B",
+   "engine": "llama.cpp 0.6",
+   "quant": "IQ2-mix (GSQ-RCO)",
+   "kind": "tune",
+   "uncensored": true,
+   "note": "Qwen3.8-27B tuned to keep tool calling at 2 bits; card sampling, thinking on, q8_0 cache, context from the tune",
+   "vision": {
+    "label": "not surveyed",
+    "status": null
+   }
+  },
+  "maya1111-glm-5.3-flash": {
+   "id": "maya1111-glm-5.3-flash",
+   "family": "GLM",
+   "label": "GLM-5.3-Flash · Maya v1.1.11, 131k context",
+   "base": "zai-org/GLM-5.3-Flash",
+   "arch": "MoE 321B / 18B active",
+   "engine": "maya maya-1.1.11",
+   "quant": "Maya-S-v2 IQ2_XXS",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "",
+   "vision": {
+    "label": "yes (head)",
+    "status": "head"
+   }
+  },
+  "maya1113m-glm-5.3-flash": {
+   "id": "maya1113m-glm-5.3-flash",
+   "family": "GLM",
+   "label": "GLM-5.3-Flash · Maya-M IQ2_S, Maya v1.1.13, 131k context",
+   "base": "zai-org/GLM-5.3-Flash",
+   "arch": "MoE 321B / 18B active",
+   "engine": "maya maya-1.1.13",
+   "quant": "Maya-M IQ2_S",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "",
+   "vision": {
+    "label": "yes (head)",
+    "status": "head"
+   }
+  },
+  "strata44-flash-next-pcie": {
+   "id": "strata44-flash-next-pcie",
+   "family": "Qwen3.8 Flash-Next",
+   "label": "Flash-Next · Strata 0.1.44.1, old PCIe share, 262k context",
+   "base": "Qwen/Qwen3.8-Flash-Next",
+   "arch": "MoE 125B / 6B active",
+   "engine": "strata strata-0.1.44.1",
+   "quant": "GSQ-RCO IQ3_S",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "",
+   "vision": {
+    "label": "yes (head)",
+    "status": "head"
+   }
+  },
+  "strata020-gyro-s-mtp-test": {
+   "id": "strata020-gyro-s-mtp-test",
+   "family": "Qwen3.8 Flash-Next",
+   "label": "Flash-Next Gyro-S TQ1_0 + MTP draft · Strata 0.2.0-beta, 262k context, int8 KV",
+   "base": "Qwen/Qwen3.8-Flash-Next",
+   "arch": "MoE 125B / 6B active",
+   "engine": "Strata 0.2.0-beta",
+   "quant": "Gyro-S TQ1_0 (trellis-coded experts, Hadamard-rotated)",
+   "kind": "tune",
+   "uncensored": false,
+   "note": "Smallest quant of the Gyro family; experts read from local NVMe, MTP draft head, text only",
+   "vision": {
+    "label": "no",
+    "status": "none"
    }
   }
  },
@@ -6719,6 +7068,366 @@
     "loc": 345,
     "errors_per_kloc": 1087.0
    }
+  },
+  {
+   "case": "wa-saluki-27b-iq2",
+   "model": "lcpp6-saluki-27b-iq2",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 72,
+   "tests_fail": 0,
+   "subcmds": 9,
+   "tps": 25.3,
+   "minutes": 63,
+   "compactions": 0,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-15 17:47",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 1643,
+    "errors_per_kloc": 0.0
+   }
+  },
+  {
+   "case": "wb-lfm25-24b-ud-q5kxl",
+   "model": "lcpp6-lfm25-24b-ud-q5kxl",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 3,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 137.3,
+   "minutes": 7,
+   "compactions": 1,
+   "ctx": 131072,
+   "kv": "f16",
+   "verdict": "fail",
+   "finished": "2026-10-15 15:25",
+   "struggle": {
+    "compiles": 30,
+    "failed_compiles": 16,
+    "rust_errors": 116,
+    "loc": 442,
+    "errors_per_kloc": 262.4
+   }
+  },
+  {
+   "case": "wb-lfm25-24b-ud-q6kxl",
+   "model": "lcpp6-lfm25-24b-ud-q6kxl",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 0,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 140.3,
+   "minutes": 23,
+   "compactions": 5,
+   "ctx": 122880,
+   "kv": "f16",
+   "verdict": "fail",
+   "finished": "2026-10-15 15:48",
+   "struggle": {
+    "compiles": 102,
+    "failed_compiles": 37,
+    "rust_errors": 201,
+    "loc": 329,
+    "errors_per_kloc": 610.9
+   }
+  },
+  {
+   "case": "wb-lfm25-24b-ud-q4kxl-rerun",
+   "model": "lcpp6-lfm25-24b-ud-q4kxl",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 2,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 144.4,
+   "minutes": 5,
+   "compactions": 1,
+   "ctx": 131072,
+   "kv": "f16",
+   "verdict": "fail",
+   "finished": "2026-10-15 15:53",
+   "struggle": {
+    "compiles": 12,
+    "failed_compiles": 8,
+    "rust_errors": 79,
+    "loc": 382,
+    "errors_per_kloc": 206.8
+   }
+  },
+  {
+   "case": "wb-saluki-27b-iq2",
+   "model": "lcpp6-saluki-27b-iq2",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 47,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 22.0,
+   "minutes": 166,
+   "compactions": 1,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "partial",
+   "finished": "2026-10-15 21:06",
+   "struggle": {
+    "compiles": 18,
+    "failed_compiles": 17,
+    "rust_errors": 95,
+    "loc": 1944,
+    "errors_per_kloc": 48.9
+   }
+  },
+  {
+   "case": "t2-gyro-s-mtp-r1",
+   "model": "strata020-gyro-s-mtp-test",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 108,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 89.8,
+   "minutes": 24,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "int8",
+   "verdict": "pass",
+   "finished": "2026-10-20 11:10",
+   "struggle": {
+    "compiles": 41,
+    "failed_compiles": 26,
+    "rust_errors": 103,
+    "loc": 4781,
+    "errors_per_kloc": 21.8
+   }
+  },
+  {
+   "case": "t4-bugfix-targets-tiel-q4kxl-r1",
+   "model": "lcpp6-tiel-coder-35b-q4kxl",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 4,
+   "tests_pass": 161,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 18.2,
+   "minutes": 42,
+   "compactions": 2,
+   "ctx": 131072,
+   "kv": "f16",
+   "verdict": "pass",
+   "finished": "2026-10-11 21:36",
+   "struggle": {
+    "compiles": 5,
+    "failed_compiles": 2,
+    "rust_errors": 3,
+    "loc": 9491,
+    "errors_per_kloc": 0.4
+   }
+  },
+  {
+   "case": "t4-config-timeouts-tiel-q4kxl-r1",
+   "model": "lcpp6-tiel-coder-35b-q4kxl",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 13,
+   "tests_pass": 168,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 61.5,
+   "minutes": 19,
+   "compactions": 8,
+   "ctx": 131072,
+   "kv": "f16",
+   "verdict": "pass",
+   "finished": "2026-10-11 21:56",
+   "struggle": {
+    "compiles": 10,
+    "failed_compiles": 2,
+    "rust_errors": 8,
+    "loc": 9844,
+    "errors_per_kloc": 0.8
+   }
+  },
+  {
+   "case": "t4-feature-filter-tiel-q4kxl-r1",
+   "model": "lcpp6-tiel-coder-35b-q4kxl",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 11,
+   "tests_pass": 158,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 65.8,
+   "minutes": 6,
+   "compactions": 2,
+   "ctx": 131072,
+   "kv": "f16",
+   "verdict": "pass",
+   "finished": "2026-10-11 22:03",
+   "struggle": {
+    "compiles": 8,
+    "failed_compiles": 5,
+    "rust_errors": 7,
+    "loc": 9497,
+    "errors_per_kloc": 0.7
+   }
+  },
+  {
+   "case": "t4-bugfix-targets-tiel-q4kxl-r2",
+   "model": "lcpp6-tiel-coder-35b-q4kxl",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 4,
+   "tests_pass": 156,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 80.8,
+   "minutes": 5,
+   "compactions": 0,
+   "ctx": 131072,
+   "kv": "f16",
+   "verdict": "pass",
+   "finished": "2026-10-11 22:08",
+   "struggle": {
+    "compiles": 7,
+    "failed_compiles": 3,
+    "rust_errors": 3,
+    "loc": 9496,
+    "errors_per_kloc": 0.5
+   }
+  },
+  {
+   "case": "t4-config-timeouts-tiel-q4kxl-r2",
+   "model": "lcpp6-tiel-coder-35b-q4kxl",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 13,
+   "tests_pass": 161,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 62.2,
+   "minutes": 19,
+   "compactions": 7,
+   "ctx": 131072,
+   "kv": "f16",
+   "verdict": "pass",
+   "finished": "2026-10-11 22:28",
+   "struggle": {
+    "compiles": 11,
+    "failed_compiles": 5,
+    "rust_errors": 51,
+    "loc": 9664,
+    "errors_per_kloc": 5.3
+   }
+  },
+  {
+   "case": "t4-feature-filter-tiel-q4kxl-r2",
+   "model": "lcpp6-tiel-coder-35b-q4kxl",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 11,
+   "tests_pass": 157,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 60.2,
+   "minutes": 5,
+   "compactions": 2,
+   "ctx": 131072,
+   "kv": "f16",
+   "verdict": "pass",
+   "finished": "2026-10-11 22:33",
+   "struggle": {
+    "compiles": 5,
+    "failed_compiles": 2,
+    "rust_errors": 2,
+    "loc": 9464,
+    "errors_per_kloc": 0.2
+   }
+  },
+  {
+   "case": "t4-bugfix-targets-tiel-q4kxl-r3",
+   "model": "lcpp6-tiel-coder-35b-q4kxl",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 4,
+   "tests_pass": 156,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 71.0,
+   "minutes": 2,
+   "compactions": 0,
+   "ctx": 131072,
+   "kv": "f16",
+   "verdict": "pass",
+   "finished": "2026-10-11 22:36",
+   "struggle": {
+    "compiles": 4,
+    "failed_compiles": 1,
+    "rust_errors": 1,
+    "loc": 9453,
+    "errors_per_kloc": 0.1
+   }
+  },
+  {
+   "case": "t4-config-timeouts-tiel-q4kxl-r3",
+   "model": "lcpp6-tiel-coder-35b-q4kxl",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 13,
+   "tests_pass": 164,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 64.5,
+   "minutes": 13,
+   "compactions": 5,
+   "ctx": 131072,
+   "kv": "f16",
+   "verdict": "pass",
+   "finished": "2026-10-11 22:49",
+   "struggle": {
+    "compiles": 8,
+    "failed_compiles": 3,
+    "rust_errors": 3,
+    "loc": 9722,
+    "errors_per_kloc": 0.3
+   }
+  },
+  {
+   "case": "t4-feature-filter-tiel-q4kxl-r3",
+   "model": "lcpp6-tiel-coder-35b-q4kxl",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 11,
+   "tests_pass": 159,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 61.3,
+   "minutes": 9,
+   "compactions": 4,
+   "ctx": 131072,
+   "kv": "f16",
+   "verdict": "pass",
+   "finished": "2026-10-11 22:59",
+   "struggle": {
+    "compiles": 4,
+    "failed_compiles": 2,
+    "rust_errors": 4,
+    "loc": 9497,
+    "errors_per_kloc": 0.4
+   }
   }
  ],
  "test3": [
@@ -7358,6 +8067,32 @@
    "tps": 2.4,
    "minutes": 68,
    "finished": "2026-10-14 20:28"
+  },
+  {
+   "case": "t3o-maya-m-glm-5.3-flash",
+   "model": "maya1113m-glm-5.3-flash",
+   "flavor": "3O",
+   "mcp_facts": "13/14",
+   "api_facts": "13/14",
+   "judgement_right": false,
+   "rubric": 12,
+   "note": "Maya-M IQ2_S on Maya v1.1.13, own server, untuned. The first probe failed on every call with a protocol-version error in the _meta field; it traced the gate in its own source, relaxed it, updated the tests and re-probed. 13 of 14 facts matched REST; the fixed server passes test 2 (7 tools, 67 tests). The one miss: it read the HVAC mode as an absent attribute, so the judgement is marked wrong. No split-digit fault. 34 min.",
+   "tps": 5.4,
+   "minutes": 34,
+   "finished": "2026-10-17 19:58"
+  },
+  {
+   "case": "t3g-maya-m-glm-5.3-flash",
+   "model": "maya1113m-glm-5.3-flash",
+   "flavor": "3G",
+   "mcp_facts": "14/14",
+   "api_facts": "14/14",
+   "judgement_right": true,
+   "rubric": 12,
+   "note": "Maya-M IQ2_S on Maya v1.1.13, known-good server, untuned. REST ground truth first, then one probe session of 12 calls with exact filters and verbatim error reporting; all 14 facts matched REST, and it trusted the server unchanged, which is right. The number-copying fault of the earlier Maya-S runs did not recur. 9 min.",
+   "tps": 7.1,
+   "minutes": 9,
+   "finished": "2026-10-17 20:13"
   }
  ],
  "ab": [
@@ -7609,6 +8344,116 @@
    "quote": 105.8,
    "prefill": 1186.0,
    "vram": "19532",
+   "error": ""
+  },
+  {
+   "model": "strata42-flash-next-pcie",
+   "engine": "Strata 0.1.42",
+   "variant": "2 rounds, first one cold",
+   "decode": 18.3,
+   "quote": null,
+   "prefill": 722.9,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "strata44-flash-next-pcie",
+   "engine": "Strata 0.1.44.1",
+   "variant": "2 rounds",
+   "decode": 44.9,
+   "quote": null,
+   "prefill": 1416.4,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "maya-glm-5.3-flash",
+   "engine": "Maya 1.0.4",
+   "variant": "2 rounds, 3.5 bpw Maya-S",
+   "decode": 14.6,
+   "quote": null,
+   "prefill": null,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "maya1111-glm-5.3-flash",
+   "engine": "Maya 1.1.11",
+   "variant": "2 rounds, same pack",
+   "decode": 17.0,
+   "quote": null,
+   "prefill": null,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "exl3-qwen3.8-27b-dflash2",
+   "engine": "exllamav3 1.6.1",
+   "variant": "2 rounds, DFlash2, thinking off",
+   "decode": 138.6,
+   "quote": null,
+   "prefill": null,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "exl3-qwen3.8-27b-dflash2-162",
+   "engine": "exllamav3 1.6.2",
+   "variant": "2 rounds, DFlash2, thinking off",
+   "decode": 140.1,
+   "quote": null,
+   "prefill": null,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "strata020-gyro-s-mtp-test",
+   "engine": "Strata 0.2.0-beta",
+   "variant": "Gyro-S + MTP, code prompt",
+   "decode": 118.6,
+   "quote": null,
+   "prefill": 2550.9,
+   "vram": 23862,
+   "error": ""
+  },
+  {
+   "model": "strata44-flash-next-pcie",
+   "engine": "Strata 0.2.0-beta",
+   "variant": "IQ3_S + MTP, code prompt",
+   "decode": 35.4,
+   "quote": null,
+   "prefill": 2645.4,
+   "vram": 23868,
+   "error": ""
+  },
+  {
+   "model": "strata44-flash-next-pcie",
+   "engine": "Strata 0.1.45",
+   "variant": "IQ3_S + MTP, code prompt",
+   "decode": 29.4,
+   "quote": null,
+   "prefill": 2597.8,
+   "vram": 23874,
+   "error": ""
+  },
+  {
+   "model": "strata020-gyro-s-mtp-test",
+   "engine": "Strata 0.2.2",
+   "variant": "Gyro-S + MTP, code prompt",
+   "decode": 144.1,
+   "quote": null,
+   "prefill": 2545.7,
+   "vram": 23862,
+   "error": ""
+  },
+  {
+   "model": "strata020-gyro-s-mtp-test",
+   "engine": "Strata 0.2.0-beta",
+   "variant": "Gyro-S + MTP, code prompt, same-day control",
+   "decode": 121.6,
+   "quote": null,
+   "prefill": 2539.8,
+   "vram": 23862,
    "error": ""
   }
  ],
@@ -9412,15 +10257,523 @@
     ],
     "live": "live/pagoda/t6unc1-qwen3.8-27b-uncensored-vllm/page.html"
    }
+  ],
+  "agent-orrery": [
+   {
+    "case": "t8-orrery-uncvllm-r1",
+    "entry": "qwen3.8-27b-uncensored-vllm",
+    "test": 8,
+    "finish": "agent done",
+    "tokens": 68536.0,
+    "wall_s": 5153.6,
+    "tok_s": 13.3,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 10.0,
+    "note": "Vision off; 22 browser calls, 2 screenshots, 5 compactions, 86 min. Six planets, Mercury to Saturn, at exact period ratios; ring gears and pinions mesh internally; the night side faces away from the sun while the surface turns.",
+    "frames": [
+     "frames/agent-orrery/t8-orrery-uncvllm-r1/frame-100.webp",
+     "frames/agent-orrery/t8-orrery-uncvllm-r1/frame-2000.webp",
+     "frames/agent-orrery/t8-orrery-uncvllm-r1/frame-6000.webp"
+    ],
+    "live": "live/agent-orrery/t8-orrery-uncvllm-r1/orrery.svg"
+   },
+   {
+    "case": "t8-orrery-orcasaq2-r1",
+    "entry": "lcpp6-orcasaq2-cyber-27b",
+    "test": 8,
+    "finish": "agent done",
+    "tokens": 302501.0,
+    "wall_s": 5467.9,
+    "tok_s": 55.3,
+    "points": {
+     "A": 1.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 1.0,
+     "E": 2.0
+    },
+    "total": 8.0,
+    "note": "Vision off; 35 browser calls, 7 screenshots, 16 compactions, 91 min. Six planets at exact ratios and everything animates, but plates cover the orbit circles and the gear train is hidden (D 1).",
+    "frames": [
+     "frames/agent-orrery/t8-orrery-orcasaq2-r1/frame-100.webp",
+     "frames/agent-orrery/t8-orrery-orcasaq2-r1/frame-2000.webp",
+     "frames/agent-orrery/t8-orrery-orcasaq2-r1/frame-6000.webp"
+    ],
+    "live": "live/agent-orrery/t8-orrery-orcasaq2-r1/orrery.svg"
+   },
+   {
+    "case": "t8-orrery-coder390-r1",
+    "entry": "lcpp6-q38-coder390",
+    "test": 8,
+    "finish": "agent done",
+    "tokens": 69964.0,
+    "wall_s": 1544.2,
+    "tok_s": 45.3,
+    "points": {
+     "A": 1.0,
+     "B": 1.0,
+     "C": 2.0,
+     "D": 0.0,
+     "E": 1.0
+    },
+    "total": 5.0,
+    "note": "Vision off; 24 browser calls, 5 screenshots, 5 compactions, 26 min. The orbit groups rotate about the top-left corner (the animation replaces the translate), so the planets leave the frame; the gear rings have no visible teeth.",
+    "frames": [
+     "frames/agent-orrery/t8-orrery-coder390-r1/frame-100.webp",
+     "frames/agent-orrery/t8-orrery-coder390-r1/frame-2000.webp",
+     "frames/agent-orrery/t8-orrery-coder390-r1/frame-6000.webp"
+    ],
+    "live": "live/agent-orrery/t8-orrery-coder390-r1/orrery.svg"
+   },
+   {
+    "case": "t8-orrery-thinkcap-r1",
+    "entry": "lcpp6-thinkingcap-27b-heretic",
+    "test": 8,
+    "finish": "time cap",
+    "tokens": 185456.0,
+    "wall_s": 7200.1,
+    "tok_s": 25.8,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 1.0,
+     "E": 1.0
+    },
+    "total": 8.0,
+    "note": "Stopped at the 2 h cap and graded as left; 1 browser call, 1 compaction. Eight planets at exact ratios on brass ring gears; the gear train does not demonstrably drive the orbits (D 1); the night shade is fixed because planets do not spin (E 1).",
+    "frames": [
+     "frames/agent-orrery/t8-orrery-thinkcap-r1/frame-100.webp",
+     "frames/agent-orrery/t8-orrery-thinkcap-r1/frame-2000.webp",
+     "frames/agent-orrery/t8-orrery-thinkcap-r1/frame-6000.webp"
+    ],
+    "live": "live/agent-orrery/t8-orrery-thinkcap-r1/orrery.svg"
+   },
+   {
+    "case": "t8-orrery-q38cyberq5-r1",
+    "entry": "lcpp6-q38-27b-cyber-q5",
+    "test": 8,
+    "finish": "time cap",
+    "tokens": 192790.0,
+    "wall_s": 7200.1,
+    "tok_s": 26.8,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "Stopped at the 2 h cap with 16 compactions and no browser call; orrery.svg was a 0-byte file, so nothing rendered.",
+    "frames": [
+     "frames/agent-orrery/t8-orrery-q38cyberq5-r1/frame-100.webp",
+     "frames/agent-orrery/t8-orrery-q38cyberq5-r1/frame-2000.webp",
+     "frames/agent-orrery/t8-orrery-q38cyberq5-r1/frame-6000.webp"
+    ],
+    "live": null
+   },
+   {
+    "case": "t8-orrery-cybertiel-r1",
+    "entry": "cyber-tiel-coder-35b",
+    "test": 8,
+    "finish": "agent done",
+    "tokens": 92519.0,
+    "wall_s": 2199.6,
+    "tok_s": 42.1,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 0.0,
+     "E": 2.0
+    },
+    "total": 8.0,
+    "note": "Vision on; 58 browser calls, 16 screenshots, 37 min. Eight planets at exact ratios; orbits and spins animate; the gears are plain discs with no teeth (D 0).",
+    "frames": [
+     "frames/agent-orrery/t8-orrery-cybertiel-r1/frame-100.webp",
+     "frames/agent-orrery/t8-orrery-cybertiel-r1/frame-2000.webp",
+     "frames/agent-orrery/t8-orrery-cybertiel-r1/frame-6000.webp"
+    ],
+    "live": "live/agent-orrery/t8-orrery-cybertiel-r1/orrery.svg"
+   },
+   {
+    "case": "t8-orrery-heretic2-r1",
+    "entry": "lcpp6-flashnext-heretic2",
+    "test": 8,
+    "finish": "agent done",
+    "tokens": 44616.0,
+    "wall_s": 3179.0,
+    "tok_s": 14.0,
+    "points": {
+     "A": 1.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 1.0,
+     "E": 1.0
+    },
+    "total": 7.0,
+    "note": "Vision off; 5 browser calls, 53 min. Eight planets at exact ratios and the arms orbit, but the gear paths are drawn at the corner and cover the title, so no pair meshes (D 1); fixed crescent shade (E 1).",
+    "frames": [
+     "frames/agent-orrery/t8-orrery-heretic2-r1/frame-100.webp",
+     "frames/agent-orrery/t8-orrery-heretic2-r1/frame-2000.webp",
+     "frames/agent-orrery/t8-orrery-heretic2-r1/frame-6000.webp"
+    ],
+    "live": "live/agent-orrery/t8-orrery-heretic2-r1/orrery.svg"
+   },
+   {
+    "case": "t8-orrery-abl15-r1",
+    "entry": "lcpp6-flashnext-abliterated-s15",
+    "test": 8,
+    "finish": "agent done",
+    "tokens": 14879.0,
+    "wall_s": 1091.8,
+    "tok_s": 13.6,
+    "points": {
+     "A": 1.0,
+     "B": 1.0,
+     "C": 0.0,
+     "D": 1.0,
+     "E": 0.0
+    },
+    "total": 3.0,
+    "note": "Vision off; 9 browser calls, 1 screenshot, 18 min. Planet gears pile up at the top-left corner and nothing orbits (C 0); the planets are flat discs with no night side (E 0).",
+    "frames": [
+     "frames/agent-orrery/t8-orrery-abl15-r1/frame-100.webp",
+     "frames/agent-orrery/t8-orrery-abl15-r1/frame-2000.webp",
+     "frames/agent-orrery/t8-orrery-abl15-r1/frame-6000.webp"
+    ],
+    "live": "live/agent-orrery/t8-orrery-abl15-r1/orrery.svg"
+   },
+   {
+    "case": "t8-orrery-orcarouter-r1",
+    "entry": "lcpp6-orcarouter-fn-uncensored",
+    "test": 8,
+    "finish": "agent done",
+    "tokens": 75472.0,
+    "wall_s": 5243.4,
+    "tok_s": 14.4,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 10.0,
+    "note": "Vision off; 19 browser calls, 87 min. Eight planets at exact ratios; each arm's toothed pinion meshes with the sun gear and obeys the planetary-gear law; the night gradient faces away from the sun while the surface turns.",
+    "frames": [
+     "frames/agent-orrery/t8-orrery-orcarouter-r1/frame-100.webp",
+     "frames/agent-orrery/t8-orrery-orcarouter-r1/frame-2000.webp",
+     "frames/agent-orrery/t8-orrery-orcarouter-r1/frame-6000.webp"
+    ],
+    "live": "live/agent-orrery/t8-orrery-orcarouter-r1/orrery.svg"
+   }
+  ],
+  "agent-pagoda": [
+   {
+    "case": "t8-pagoda-uncvllm-r1",
+    "entry": "qwen3.8-27b-uncensored-vllm",
+    "test": 8,
+    "finish": "agent done",
+    "tokens": 64192.0,
+    "wall_s": 5432.2,
+    "tok_s": 11.8,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 10.0,
+    "note": "Vision off; 42 browser calls, 6 compactions, 90 min. Five cream and red storeys with raised eave blocks, stepped gold spire, stone platform, three cherry trees, pond with footbridge, red torii; orbit by code, petals, shadows.",
+    "frames": [
+     "frames/agent-pagoda/t8-pagoda-uncvllm-r1/frame-1500.webp",
+     "frames/agent-pagoda/t8-pagoda-uncvllm-r1/frame-5000.webp",
+     "frames/agent-pagoda/t8-pagoda-uncvllm-r1/frame-10000.webp"
+    ],
+    "live": "live/agent-pagoda/t8-pagoda-uncvllm-r1/page.html"
+   },
+   {
+    "case": "t8-pagoda-orcasaq2-r1",
+    "entry": "lcpp6-orcasaq2-cyber-27b",
+    "test": 8,
+    "finish": "agent done",
+    "tokens": 59423.0,
+    "wall_s": 1116.7,
+    "tok_s": 53.2,
+    "points": {
+     "A": 1.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 9.0,
+    "note": "Vision off; 30 browser calls, 4 screenshots, 2 compactions, 19 min. Everything draws; the eave tips are detached stepped blocks that float apart from the roofs (A 1). Four cherry trees, pond, torii, lantern.",
+    "frames": [
+     "frames/agent-pagoda/t8-pagoda-orcasaq2-r1/frame-1500.webp",
+     "frames/agent-pagoda/t8-pagoda-orcasaq2-r1/frame-5000.webp",
+     "frames/agent-pagoda/t8-pagoda-orcasaq2-r1/frame-10000.webp"
+    ],
+    "live": "live/agent-pagoda/t8-pagoda-orcasaq2-r1/page.html"
+   },
+   {
+    "case": "t8-pagoda-coder390-r1",
+    "entry": "lcpp6-q38-coder390",
+    "test": 8,
+    "finish": "agent done",
+    "tokens": 30856.0,
+    "wall_s": 632.1,
+    "tok_s": 48.8,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 10.0,
+    "note": "Vision off; 14 browser calls, 1 compaction, 11 min. Five storeys with raised double eave blocks, stepped gold spire, three trees, round pond, large torii. Title glyphs show as boxes (no CJK font in the renderer; not scored).",
+    "frames": [
+     "frames/agent-pagoda/t8-pagoda-coder390-r1/frame-1500.webp",
+     "frames/agent-pagoda/t8-pagoda-coder390-r1/frame-5000.webp",
+     "frames/agent-pagoda/t8-pagoda-coder390-r1/frame-10000.webp"
+    ],
+    "live": "live/agent-pagoda/t8-pagoda-coder390-r1/page.html"
+   },
+   {
+    "case": "t8-pagoda-thinkcap-r1",
+    "entry": "lcpp6-thinkingcap-27b-heretic",
+    "test": 8,
+    "finish": "agent done",
+    "tokens": 134514.0,
+    "wall_s": 6849.8,
+    "tok_s": 19.6,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 1.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 9.0,
+    "note": "Vision off; 32 browser calls, 1 compaction, 114 min. Clean render, ringed red and gold spire; the eave upturns are single cubes level with the upper layer, so none visibly rises (C 1).",
+    "frames": [
+     "frames/agent-pagoda/t8-pagoda-thinkcap-r1/frame-1500.webp",
+     "frames/agent-pagoda/t8-pagoda-thinkcap-r1/frame-5000.webp",
+     "frames/agent-pagoda/t8-pagoda-thinkcap-r1/frame-10000.webp"
+    ],
+    "live": "live/agent-pagoda/t8-pagoda-thinkcap-r1/page.html"
+   },
+   {
+    "case": "t8-pagoda-q38cyber-r1",
+    "entry": "q38-27b-cyber",
+    "test": 8,
+    "finish": "agent done",
+    "tokens": 60672.0,
+    "wall_s": 1974.0,
+    "tok_s": 30.7,
+    "points": {
+     "A": 1.0,
+     "B": 2.0,
+     "C": 1.0,
+     "D": 1.0,
+     "E": 2.0
+    },
+    "total": 7.0,
+    "note": "Vision off; 48 browser calls, 5 screenshots, 33 min. The camera sits too close: only storeys 2 to 4 are in frame, so the top storey and spire never show (C 1); the pond is buried under the platform (D 1).",
+    "frames": [
+     "frames/agent-pagoda/t8-pagoda-q38cyber-r1/frame-1500.webp",
+     "frames/agent-pagoda/t8-pagoda-q38cyber-r1/frame-5000.webp",
+     "frames/agent-pagoda/t8-pagoda-q38cyber-r1/frame-10000.webp"
+    ],
+    "live": "live/agent-pagoda/t8-pagoda-q38cyber-r1/page.html"
+   },
+   {
+    "case": "t8-pagoda-q38cyberq5-r1",
+    "entry": "lcpp6-q38-27b-cyber-q5",
+    "test": 8,
+    "finish": "agent done",
+    "tokens": 18525.0,
+    "wall_s": 675.6,
+    "tok_s": 27.4,
+    "points": {
+     "A": 1.0,
+     "B": 2.0,
+     "C": 0.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 7.0,
+    "note": "Vision off; 25 browser calls, 1 screenshot, 1 compaction, 11 min. Dark sky and fog with the camera so close that blossom cubes block the view; no recognisable pagoda, the spire never shows (C 0).",
+    "frames": [
+     "frames/agent-pagoda/t8-pagoda-q38cyberq5-r1/frame-1500.webp",
+     "frames/agent-pagoda/t8-pagoda-q38cyberq5-r1/frame-5000.webp",
+     "frames/agent-pagoda/t8-pagoda-q38cyberq5-r1/frame-10000.webp"
+    ],
+    "live": "live/agent-pagoda/t8-pagoda-q38cyberq5-r1/page.html"
+   },
+   {
+    "case": "t8-pagoda-cybertiel-r1",
+    "entry": "cyber-tiel-coder-35b",
+    "test": 8,
+    "finish": "agent done",
+    "tokens": 124735.0,
+    "wall_s": 3140.6,
+    "tok_s": 39.7,
+    "points": {
+     "A": 2.0,
+     "B": 1.0,
+     "C": 1.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 8.0,
+    "note": "Vision on; 75 browser calls, 6 screenshots, 52 min. The ground is a plane and the sky a sphere (B 1); the spire is a very long pole that runs out of frame (C 1); two cherry trees, one standing in the pond.",
+    "frames": [
+     "frames/agent-pagoda/t8-pagoda-cybertiel-r1/frame-1500.webp",
+     "frames/agent-pagoda/t8-pagoda-cybertiel-r1/frame-5000.webp",
+     "frames/agent-pagoda/t8-pagoda-cybertiel-r1/frame-10000.webp"
+    ],
+    "live": "live/agent-pagoda/t8-pagoda-cybertiel-r1/page.html"
+   },
+   {
+    "case": "t8-pagoda-heretic2-r1",
+    "entry": "lcpp6-flashnext-heretic2",
+    "test": 8,
+    "finish": "agent done",
+    "tokens": 18398.0,
+    "wall_s": 1548.0,
+    "tok_s": 11.9,
+    "points": {
+     "A": 1.0,
+     "B": 2.0,
+     "C": 1.0,
+     "D": 1.0,
+     "E": 2.0
+    },
+    "total": 7.0,
+    "note": "Vision off; 11 browser calls, 26 min. The camera aspect is never updated, so the scene is stretched 1.6 times sideways (A 1); the spire is cut off at the top (C 1); the pond is out of frame (D 1).",
+    "frames": [
+     "frames/agent-pagoda/t8-pagoda-heretic2-r1/frame-1500.webp",
+     "frames/agent-pagoda/t8-pagoda-heretic2-r1/frame-5000.webp",
+     "frames/agent-pagoda/t8-pagoda-heretic2-r1/frame-10000.webp"
+    ],
+    "live": "live/agent-pagoda/t8-pagoda-heretic2-r1/page.html"
+   },
+   {
+    "case": "t8-pagoda-abl15-r1",
+    "entry": "lcpp6-flashnext-abliterated-s15",
+    "test": 8,
+    "finish": "agent done",
+    "tokens": 29039.0,
+    "wall_s": 3038.0,
+    "tok_s": 9.6,
+    "points": {
+     "A": 1.0,
+     "B": 2.0,
+     "C": 1.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 8.0,
+    "note": "Vision off; 21 browser calls, 1 screenshot, 51 min. Wall cubes overlap the wood ring and z-fight (A 1); the camera cuts the spire off (C 1); platform, four cherry trees, pond and torii all visible.",
+    "frames": [
+     "frames/agent-pagoda/t8-pagoda-abl15-r1/frame-1500.webp",
+     "frames/agent-pagoda/t8-pagoda-abl15-r1/frame-5000.webp",
+     "frames/agent-pagoda/t8-pagoda-abl15-r1/frame-10000.webp"
+    ],
+    "live": "live/agent-pagoda/t8-pagoda-abl15-r1/page.html"
+   },
+   {
+    "case": "t8-pagoda-orcarouter-r1",
+    "entry": "lcpp6-orcarouter-fn-uncensored",
+    "test": 8,
+    "finish": "agent done",
+    "tokens": 47168.0,
+    "wall_s": 3787.8,
+    "tok_s": 12.4,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 1.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 9.0,
+    "note": "Vision off; 27 browser calls, 2 screenshots, 63 min. Clean render; the gold spire runs out of the top of the frame (C 1); platform, five cherry trees, round pond, torii, two lanterns.",
+    "frames": [
+     "frames/agent-pagoda/t8-pagoda-orcarouter-r1/frame-1500.webp",
+     "frames/agent-pagoda/t8-pagoda-orcarouter-r1/frame-5000.webp",
+     "frames/agent-pagoda/t8-pagoda-orcarouter-r1/frame-10000.webp"
+    ],
+    "live": "live/agent-pagoda/t8-pagoda-orcarouter-r1/page.html"
+   },
+   {
+    "case": "t8-pagoda-tiel-r1",
+    "entry": "lcpp6-tiel-coder-35b-t06",
+    "test": 8,
+    "finish": "agent done",
+    "tokens": 66695.0,
+    "wall_s": 668.5,
+    "tok_s": 99.8,
+    "points": {
+     "A": 1.0,
+     "B": 1.0,
+     "C": 2.0,
+     "D": 1.0,
+     "E": 1.0
+    },
+    "total": 6.0,
+    "note": "Vision off; 35 browser calls, 2 screenshots, 11 min. Every tree trunk is placed near the origin, so the canopies float and stubs poke out of the pagoda (A 1, D 1); the ground is a plane (B 1); no petal is ever visible (E 1).",
+    "frames": [
+     "frames/agent-pagoda/t8-pagoda-tiel-r1/frame-1500.webp",
+     "frames/agent-pagoda/t8-pagoda-tiel-r1/frame-5000.webp",
+     "frames/agent-pagoda/t8-pagoda-tiel-r1/frame-10000.webp"
+    ],
+    "live": "live/agent-pagoda/t8-pagoda-tiel-r1/page.html"
+   },
+   {
+    "case": "t8-pagoda-gyro-s-mtp-r2",
+    "entry": "strata020-gyro-s-mtp-test",
+    "test": 8,
+    "finish": "agent done",
+    "tokens": 82834.0,
+    "wall_s": 969.8,
+    "tok_s": 85.41,
+    "points": {
+     "A": 2.0,
+     "B": 1.0,
+     "C": 2.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 9.0,
+    "note": "Vision off (the entry has no vision path); 54 browser calls, 0 screenshots, 0 compactions, 16 min. All frames render a complete scene; most parts are cubes but the roofs use half-height slabs (B 1); five storeys with upturned eaves and spire, stone platform, cherry trees, pond, torii; camera moves and petals fall.",
+    "frames": [
+     "frames/agent-pagoda/t8-pagoda-gyro-s-mtp-r2/frame-1500.webp",
+     "frames/agent-pagoda/t8-pagoda-gyro-s-mtp-r2/frame-5000.webp",
+     "frames/agent-pagoda/t8-pagoda-gyro-s-mtp-r2/frame-10000.webp"
+    ],
+    "live": "live/agent-pagoda/t8-pagoda-gyro-s-mtp-r2/page.html"
+   }
   ]
  },
  "counts": {
-  "models": 87,
-  "runs": 191,
-  "test3": 49,
-  "oneshots": 79,
-  "frames": 162,
-  "pass": 122,
-  "live": 54
+  "models": 93,
+  "runs": 206,
+  "test3": 51,
+  "oneshots": 100,
+  "frames": 225,
+  "pass": 133,
+  "live": 74
  }
 }
