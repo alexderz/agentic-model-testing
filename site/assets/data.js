@@ -5,9 +5,11 @@
 // Frame paths: relative, under frames/, every segment starts with a letter/digit/_/- (so "." and ".." segments and
 // dot-files are impossible), no "//", and the lookahead rejects ".." anywhere at all.
 export const FRAME_RE = /^(?!.*\.\.)frames\/(?:[A-Za-z0-9_-][A-Za-z0-9._-]*\/)*[A-Za-z0-9_-][A-Za-z0-9._-]*\.webp$/;
-// Live pieces (the model's own one-shot file, run only inside a sandboxed iframe): exactly live/<set>/<case>/<file>
-// with the two known sets and file names, one case segment of safe characters, and never ".." anywhere.
-export const LIVE_RE = /^live\/(pagoda|orrery)\/[A-Za-z0-9._-]+\/(page\.html|orrery\.svg)$/;
+// Live pieces (the model's own file, run only inside a sandboxed iframe): exactly live/<set>/<case>/<file> with the
+// four known sets, each paired with its one file name (a pagoda set serves page.html, an orrery set orrery.svg), one
+// case segment of safe characters, and never ".." anywhere. A new set must be added here by hand, on purpose.
+export const LIVE_SETS = ['pagoda', 'agent-pagoda', 'orrery', 'agent-orrery'];
+export const LIVE_RE = /^live\/(?:(?:pagoda|agent-pagoda)\/[A-Za-z0-9._-]+\/page\.html|(?:orrery|agent-orrery)\/[A-Za-z0-9._-]+\/orrery\.svg)$/;
 export const REPO_PREFIX = 'https://github.com/alexderz/agentic-model-testing';
 export const OTHER_FAMILIES = new Set(['other', 'unknown', '']);
 export const OTHER_COLOR = '#8a94a8'; // neutral silver for Other/Unknown; never handed to a real family
@@ -56,6 +58,15 @@ export function fmtDate(s) {
   return `${months[mi] || m[2]} ${+m[3]}, ${m[1]}`;
 }
 export const shortLabel = (label) => str(label).split(' · ')[0].trim();
+// The first sentence of a paragraph (up to the first ". ", "! " or "? "), for one-line summaries.
+export function firstSentence(s) {
+  const t = str(s).trim();
+  const m = t.match(/^(.*?[.!?])(?:\s|$)/);
+  return m ? m[1] : t;
+}
+// A set key as a label: "agent-pagoda" → "agent pagoda". The base set of an agent set is the same key without "agent-".
+export const setLabel = (set) => str(set).replace(/-/g, ' ');
+export const baseSet = (set) => (/^agent-/.test(str(set)) ? str(set).slice(6) : null);
 export const frameMs = (url) => { const m = str(url).match(/(\d+)\.webp$/); return m ? +m[1] : null; };
 // Deterministic 0..1 from a string (FNV-1a); used to scatter decorative marks without Math.random.
 export function hash01(s) {
@@ -227,12 +238,31 @@ export const colorOf = (colors, family) => (colors && colors.has(family) ? color
 
 // ------------------------------------------------------------------- scales
 // "n of m" scales come from the data: an optional tests[].max_* field, else the largest value seen.
+// Checks: tests[].max_checks, else the largest value seen for the test. When the test's passing runs reach different
+// totals (test 4: each ticket has its own hidden-check count) there is no single scale and the count stands alone.
 export function checksMax(data, test) {
   const t = testOf(data, test);
   if (t.max_checks != null) return t.max_checks;
   const k = testKey(test);
-  const seen = arr(data.runs).filter((r) => r.test === k || r.flavor === k).map((r) => r.checks).filter((v) => v != null);
-  return seen.length ? Math.max(...seen) : null;
+  const rows = arr(data.runs).filter((r) => r.test === k || r.flavor === k);
+  const seen = rows.map((r) => r.checks).filter((v) => v != null);
+  if (!seen.length) return null;
+  const passing = new Set(rows.filter((r) => r.verdict === 'pass' && r.checks != null).map((r) => r.checks));
+  return passing.size > 1 ? null : Math.max(...seen);
+}
+// Names for the one-shot rubric points: tests[].points, else the parenthesised list in tests[].graded that has one name per
+// point ("five points of 0-2 (draws, planets, gears, lighting, motion)"), else the base set's names for an agent set.
+export function pointNames(data, test, set, n, depth = 0) {
+  const t = testOf(data, test);
+  if (t.points.length) return t.points;
+  for (const m of str(t.graded).matchAll(/\(([^()]+)\)/g)) {
+    const names = m[1].split(',').map((x) => x.trim()).filter(Boolean);
+    if (n > 0 && names.length === n && names.every((x) => /^[A-Za-z][A-Za-z -]*$/.test(x))) return names;
+  }
+  const base = baseSet(set);
+  const rows = base ? arr(obj(data.oneshots)[base]) : [];
+  if (rows.length && depth < 2) return pointNames(data, rows[0].test, base, n, depth + 1);
+  return [];
 }
 export function pointMax(data, test) {
   const t = testOf(data, test);
@@ -262,12 +292,18 @@ export function summary(data) {
   const dates = [...runs.map((r) => r.finished), ...arr(data.test3).map((r) => r.finished)].filter(Boolean).sort();
   const findingDates = arr(data.findings).map((f) => f.date).filter(Boolean).sort();
   const families = familyOrder(data).filter((f) => !OTHER_FAMILIES.has(f.toLowerCase()));
-  const minutes = runs.reduce((s, r) => s + (r.minutes || 0), 0) + arr(data.test3).reduce((s, r) => s + (r.minutes || 0), 0);
+  const minutes = runs.reduce((s, r) => s + (r.minutes || 0), 0) + arr(data.test3).reduce((s, r) => s + (r.minutes || 0), 0)
+    + oneshotRows.reduce((s, r) => s + (testOf(data, r.test).kind === 'agentic' && r.wall_s ? r.wall_s / 60 : 0), 0);
+  // a one-shot set holds one reply each; a set whose test is agentic (test 8) holds agent pieces
+  const agentPieces = oneshotRows.filter((r) => testOf(data, r.test).kind === 'agentic').length;
+  // the span of dated things: timeline steps, runs, test 3 rows and findings
+  const all = [...dates, ...findingDates, ...arr(data.timeline).map((t) => t.date).filter(Boolean)].map((d) => d.slice(0, 10)).sort();
   return {
     models: models.length, families: families.length, runs: runs.length, passes, test3: arr(data.test3).length,
-    oneshots: oneshotRows.length, frames, playable, uncensored: models.filter((m) => data.models[m].uncensored).length,
+    oneshots: oneshotRows.length - agentPieces, agentPieces, frames, playable, uncensored: models.filter((m) => data.models[m].uncensored).length,
     fastest: tps.length ? Math.max(...tps) : null, slowest: tps.length ? Math.min(...tps) : null,
     first: dates[0] || '', last: dates[dates.length - 1] || '', newestFinding: findingDates[findingDates.length - 1] || '', agentHours: minutes / 60,
+    covers: { from: all[0] || '', to: all[all.length - 1] || '' },
     tests: new Set([...runs.map(effectiveTest), ...arr(data.test3).length ? ['3'] : [], ...oneshotRows.map((r) => r.test)]).size,
   };
 }
@@ -439,14 +475,14 @@ export function oneshotCards(data, { test = 'all', sort = 'score', q = '' } = {}
     for (const r of rows) {
       const m = modelOf(data, r.entry), t = testOf(data, r.test);
       if (!pmax.has(r.test)) pmax.set(r.test, pointMax(data, r.test));
-      const pointNames = t.points.length ? t.points : [];
+      const names = pointNames(data, r.test, set, r.points.length);
       const pointMaxV = pmax.get(r.test);
       const max = r.points.length * pointMaxV;
       cards.push({
-        ...r, set, modelLabel: m.label, short: shortLabel(m.label), family: m.family, color: colorOf(colors, m.family), uncensored: m.uncensored,
+        ...r, set, setLabel: setLabel(set), kind: t.kind, modelLabel: m.label, short: shortLabel(m.label), family: m.family, color: colorOf(colors, m.family), uncensored: m.uncensored,
         testName: t.name, pointMax: pointMaxV, max, full: max > 0 && r.total != null && r.total >= max,
-        points: r.points.map((p, i) => ({ ...p, name: pointNames[i] || p.key })),
-        alt: `${t.name || `Test ${r.test}`} by ${shortLabel(m.label)}, test ${r.test}`,
+        points: r.points.map((p, i) => ({ ...p, name: names[i] || p.key })),
+        alt: `${setLabel(set)} by ${shortLabel(m.label)}, test ${r.test}`,
       });
     }
   }
@@ -465,10 +501,44 @@ export function oneshotSets(data) {
     const t = rows.length ? testOf(data, rows[0].test) : null;
     const pm = rows.length ? pointMax(data, rows[0].test) : 1;
     const graded = rows.filter((r) => r.total != null);
-    return { set, test: rows.length ? rows[0].test : '?', name: t ? t.name : set, n: rows.length, withFrames: rows.filter((r) => r.frames.length).length, live: rows.filter((r) => r.live).length,
-      pointMax: pm, full: graded.filter((r) => r.points.length && r.total >= r.points.length * pm).length, zero: graded.filter((r) => r.total === 0).length,
-      cut: rows.filter((r) => r.finish === 'length').length, mean: graded.length ? graded.reduce((s, r) => s + r.total, 0) / graded.length : null };
+    return { set, label: setLabel(set), base: baseSet(set), kind: t ? t.kind : '', test: rows.length ? rows[0].test : '?', name: t ? t.name : set, n: rows.length, withFrames: rows.filter((r) => r.frames.length).length, live: rows.filter((r) => r.live).length,
+      pointMax: pm, max: rows.length ? Math.max(0, ...rows.map((r) => r.points.length * pm)) : 0, full: graded.filter((r) => r.points.length && r.total >= r.points.length * pm).length, zero: graded.filter((r) => r.total === 0).length,
+      cut: rows.filter((r) => /length|cap/i.test(r.finish)).length, mean: graded.length ? graded.reduce((s, r) => s + r.total, 0) / graded.length : null };
   });
+}
+// One shot against agent: for every set named agent-<base> whose base set exists, each agent row is paired with the best
+// graded one-shot reply by the same model (best of n, so the comparison favours the one-shot). Rows sort by agent score.
+export function agentPairs(data) {
+  const colors = familyColors(data);
+  const sets = obj(data.oneshots);
+  const panels = [];
+  for (const [set, rows] of Object.entries(sets)) {
+    const base = baseSet(set);
+    if (!base || !Array.isArray(sets[base])) continue;
+    const t = rows.length ? testOf(data, rows[0].test) : null;
+    const pm = rows.length ? pointMax(data, rows[0].test) : 1;
+    const max = Math.max(1, ...rows.map((r) => r.points.length * pm));
+    const byModel = new Map();
+    for (const r of rows) {
+      if (!byModel.has(r.entry)) byModel.set(r.entry, { agent: [], oneshot: [] });
+      byModel.get(r.entry).agent.push(r);
+    }
+    for (const r of sets[base]) if (byModel.has(r.entry) && r.total != null) byModel.get(r.entry).oneshot.push(r);
+    const best = (list) => list.filter((r) => r.total != null).sort((a, b) => b.total - a.total)[0] || null;
+    const out = [];
+    for (const [id, g] of byModel) {
+      const m = modelOf(data, id), a = best(g.agent), o = best(g.oneshot);
+      out.push({ model: id, label: m.label, short: shortLabel(m.label), family: m.family, color: colorOf(colors, m.family), uncensored: m.uncensored,
+        agent: a ? a.total : null, agentN: g.agent.length, agentCase: a ? a.case : '', oneshot: o ? o.total : null, oneshotN: g.oneshot.length, oneshotCase: o ? o.case : '' });
+    }
+    out.sort((a, b) => (b.agent ?? -1) - (a.agent ?? -1) || (b.oneshot ?? -1) - (a.oneshot ?? -1) || a.label.localeCompare(b.label));
+    const both = out.filter((r) => r.agent != null && r.oneshot != null);  // means over the same models on both sides
+    const mean = (k) => { const vs = both.map((r) => r[k]); return vs.length ? vs.reduce((s, v) => s + v, 0) / vs.length : null; };
+    panels.push({ set, base, label: setLabel(set), baseLabel: setLabel(base), test: rows.length ? rows[0].test : '?', name: t ? t.name : set, max, rows: out,
+      meanAgent: mean('agent'), meanOneshot: mean('oneshot'), lifted: out.filter((r) => r.agent != null && r.oneshot != null && r.agent > r.oneshot).length, paired: out.filter((r) => r.oneshot != null).length });
+  }
+  panels.sort((a, b) => b.rows.length - a.rows.length || a.set.localeCompare(b.set));
+  return panels;
 }
 
 // -------------------------------------------------------------------- picks
@@ -497,11 +567,6 @@ export function findingMetrics(f) {
     return { ...m, beforePct: m.before == null ? null : (m.before / max) * 100, afterPct: m.after == null ? null : (m.after / max) * 100,
       gain: m.before && m.after != null ? m.after / m.before : null };
   });
-}
-export function eventKinds(data) {
-  const c = new Map();
-  for (const e of arr(data.events)) c.set(e.kind, (c.get(e.kind) || 0) + 1);
-  return [...c.entries()].sort((a, b) => b[1] - a[1]).map(([kind, n]) => ({ kind, n }));
 }
 
 // ------------------------------------------------------------------- motifs
@@ -545,11 +610,6 @@ export function motifs(data) {
   const tl = arr(data.timeline).filter((t) => t.date);
   const t0 = tl.length ? Date.parse(tl[0].date) : 0, t1 = tl.length ? Date.parse(tl[tl.length - 1].date) : 1;
   out.timeline = tl.map((t) => { const ms = Date.parse(t.date); return { x: Number.isFinite(ms) && t1 > t0 ? (ms - t0) / (t1 - t0) : 0 }; });
-  const kinds = eventKinds(data);
-  const kmax = Math.max(1, ...kinds.map((k) => k.n));
-  const kcols = colorSeries(kinds.length, ENGINE_BASE);
-  out.log = kinds.map((k, i) => ({ kind: k.kind, h: k.n / kmax, color: kcols[i] }));
-  out.caveats = arr(data.caveats).map((c, i) => ({ i, len: Math.min(1, c.length / 240) }));
   return out;
 }
 
@@ -567,10 +627,12 @@ export function deriveAll(raw) {
   out.test3 = test3Groups(data); out.ab = abGroups(data);
   out.oneshots = oneshotCards(data); out.oneshotSets = oneshotSets(data);
   for (const s of ['speed', 'model', 'newest']) oneshotCards(data, { sort: s, test: '5', q: 'a' });
+  oneshotCards(data, { test: 'agent-pagoda' });
   out.picks = pickCards(data); out.familyPicks = familyPickRows(data);
-  out.findings = data.findings.map(findingMetrics); out.eventKinds = eventKinds(data);
+  out.findings = data.findings.map(findingMetrics); out.pairs = agentPairs(data);
+  out.pointNames = Object.fromEntries(Object.entries(data.oneshots).map(([set, rows]) => [set, rows.length ? pointNames(data, rows[0].test, set, rows[0].points.length) : []]));
   out.motifs = motifs(data);
-  out.fmt = [fmt(1234.5), fmt(null), fmt(2.5), fmt(13.4), fmt(13.4, 1), fmtMinutes(191), fmtMinutes(null), fmtDate('2026-10-22'), fmtDate(''), fmtDate(null)];
+  out.fmt = [fmt(1234.5), fmt(null), fmt(2.5), fmt(13.4), fmt(13.4, 1), fmtMinutes(191), fmtMinutes(null), fmtDate('2026-10-22'), fmtDate(''), fmtDate(null), firstSentence('A. B'), firstSentence(null), setLabel('agent-pagoda'), baseSet('x')];
   out.series = colorSeries(14);
   return { data, out };
 }

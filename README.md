@@ -22,24 +22,26 @@ pointer, and new work lands here.
 
 ## The tests in one paragraph each
 
-- **Tests 1-4 and 7**: agentic coding against the Home Assistant REST API: a CLI, an MCP server
+- **Tests 1-4**: agentic coding against the Home Assistant REST API: a CLI, an MCP server
   built from a spec, using that server to answer questions about a recorded installation, and
   ticket-sized fixes in a Rust project. Agents run in a locked-down container (`harness/sandbox/`)
   that can reach only the model server and a replay of a recorded Home Assistant fixture
   (`harness/ha-replay.py`), never a live house.
+- **Test 7**: a seeded generator for a three-floor labyrinth, checked on unseen seeds.
 - **Test 5 (orrery) and test 6 (pagoda)**: one reply, no tools, to a single creative-coding prompt
   (`harness/suites/prompt-test5-orrery.txt`, `harness/suites/prompt-test6-pagoda.txt`), rendered
   offline and graded on a five-part rubric (`harness/suites/test5/README.md`,
   `harness/suites/test6/README.md`).
 - **Test 8**: the same two prompts given to an agent with a locked-down browser that can see its own
-  page. Its runs are evidence and are not published yet (see below).
+  page. The agent's final page, its rendered frames and the grades are in `oneshots/agent-pagoda/`
+  and `oneshots/agent-orrery/`; the transcripts and work directories are not published (see below).
 
 ## Not here yet
 
 Phase 1 publishes code, reports and the one-shot outputs only. These stay private until a further
 scrub review:
 
-- the test evidence: transcripts, work directories, per-case result sets and test 8 agent runs;
+- the test evidence: transcripts, work directories and per-case result sets, test 8 included;
 - the Home Assistant fixture, including its pseudonymized public version, and the test 3
   known-good exercise derived from it.
 

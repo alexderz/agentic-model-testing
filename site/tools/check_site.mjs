@@ -27,13 +27,18 @@ ok(D.isFrameUrl('frames/orrery/t5-qwen3.6-27b/frame-100.webp') && D.isFrameUrl('
 for (const bad of ['frames/../x.webp', 'frames/a/../b.webp', 'frames/a/..webp', 'frames//a.webp', 'frames/.hidden/a.webp', '/frames/a.webp', 'frames/a.svg', 'https://x/frames/a.webp', 'frames/a b.webp', 'oneshots/a.webp'])
   ok(!D.isFrameUrl(bad), `frame path rejected: ${bad}`);
 ok(/^\(\?!\.\*\\\.\\\.\)/.test(D.FRAME_RE.source.replace(/^\^/, '')), 'FRAME_RE itself rejects ".." anywhere');
-// live pieces: exactly live/<pagoda|orrery>/<case>/<page.html|orrery.svg>, never "..", never absolute, never another file
-for (const good of ['live/pagoda/t6-gemma-4-26b-a4b/page.html', 'live/orrery/t5-qwen3.6-27b/orrery.svg', 'live/orrery/a_b.c-d/orrery.svg'])
+// live pieces: exactly live/<set>/<case>/<file> for the four known sets, a pagoda set with page.html and an orrery set with
+// orrery.svg, never "..", never absolute, never another file, never another set name however similar
+ok(D.LIVE_SETS.join() === 'pagoda,agent-pagoda,orrery,agent-orrery', `the live allow-list names exactly four sets: ${D.LIVE_SETS.join(', ')}`);
+for (const good of ['live/pagoda/t6-gemma-4-26b-a4b/page.html', 'live/orrery/t5-qwen3.6-27b/orrery.svg', 'live/orrery/a_b.c-d/orrery.svg', 'live/agent-pagoda/t8-pagoda-abl15-r1/page.html', 'live/agent-orrery/t8-orrery-uncvllm-r1/orrery.svg'])
   ok(D.isLiveUrl(good), `live path accepted: ${good}`);
 for (const bad of ['live/pagoda/../page.html', 'live/pagoda/..x/page.html', 'live/pagoda/a/../b/page.html', 'live/orrery/t5/../../index.html', '/live/pagoda/a/page.html', 'https://example.com/live/pagoda/a/page.html',
   'javascript:alert(1)', 'javascript:/live/pagoda/a/page.html', 'live/pagoda/a/page.htm', 'live/pagoda/a/page.html.svg', 'live/orrery/a/orrery.svgz',
-  'live/lantern/a/page.html', 'live/pagoda/a/b/page.html', 'live/pagoda//page.html', 'live/pagoda/a b/page.html', 'live/pagoda/a/page.html?x=1', 'live/pagoda/a/page.html#f', 'frames/pagoda/a/page.html', 'data:text/html,hi', '', null, 42, ['live/pagoda/a/page.html']])
+  'live/lantern/a/page.html', 'live/pagoda/a/b/page.html', 'live/pagoda//page.html', 'live/pagoda/a b/page.html', 'live/pagoda/a/page.html?x=1', 'live/pagoda/a/page.html#f', 'frames/pagoda/a/page.html', 'data:text/html,hi', '', null, 42, ['live/pagoda/a/page.html'],
+  'live/pagoda/a/orrery.svg', 'live/orrery/a/page.html', 'live/agent-pagoda/a/orrery.svg', 'live/agent-orrery/a/page.html', 'live/agent/a/page.html', 'live/agent-/a/page.html', 'live/agent-lantern/a/page.html', 'live/agentpagoda/a/page.html',
+  'live/agent-pagoda-2/a/page.html', 'live/agent-pagoda/../agent-pagoda/a/page.html', 'live/agent-agent-pagoda/a/page.html', 'live/Agent-pagoda/a/page.html', 'live/agent-pagoda/a/b/page.html', 'live/agent-pagoda//page.html'])
   ok(!D.isLiveUrl(bad), `live path rejected: ${typeof bad === 'string' ? bad || '(empty)' : JSON.stringify(bad)}`);
+ok(!/\[\^|\.\*|\+\\\//.test(D.LIVE_RE.source.replace(/\[A-Za-z0-9._-\]\+/g, 'CASE')), 'LIVE_RE has no wildcard set segment: set names are spelled out');
 for (const good of [D.REPO_PREFIX, `${D.REPO_PREFIX}/`, `${D.REPO_PREFIX}/blob/main/docs/x.md`, `${D.REPO_PREFIX}#readme`, `${D.REPO_PREFIX}?tab=issues`])
   ok(D.isRepoUrl(good), `repo URL accepted: ${good.slice(D.REPO_PREFIX.length) || '(exact)'}`);
 for (const bad of [`${D.REPO_PREFIX}-evil`, `${D.REPO_PREFIX}x/`, `${D.REPO_PREFIX}/a/../b`, `${D.REPO_PREFIX}/a b`, `${D.REPO_PREFIX}/"x`, 'https://github.com/alexderz/other', 'http://github.com/alexderz/agentic-model-testing', ''])
@@ -41,6 +46,8 @@ for (const bad of [`${D.REPO_PREFIX}-evil`, `${D.REPO_PREFIX}x/`, `${D.REPO_PREF
 
 console.log('formatting');
 ok(D.fmt(2.5) === '2.5' && D.fmt(5) === '5' && D.fmt(13.4) === '13' && D.fmt(13.4, 1) === '13.4' && D.fmt(1234.5) === '1,235' && D.fmt(null) === '–', 'fmt keeps one decimal below 10 by default and honours an explicit digits');
+ok(D.firstSentence('One. Two.') === 'One.' && D.firstSentence('No stop') === 'No stop' && D.firstSentence('v3.2 is 17% faster. More') === 'v3.2 is 17% faster.' && D.firstSentence(null) === '', 'firstSentence cuts at the first sentence end');
+ok(D.setLabel('agent-pagoda') === 'agent pagoda' && D.baseSet('agent-pagoda') === 'pagoda' && D.baseSet('pagoda') === null && D.baseSet(null) === null, 'set labels and base sets');
 
 console.log('colours');
 const series = D.colorSeries(24);
@@ -73,6 +80,19 @@ if (real) {
   const missingLive = lives.filter((u) => { try { return !statSync(join(site, u)).isFile(); } catch { return true; } });
   ok(missingLive.length === 0, `all live files exist under site/ (${missingLive.length} missing${missingLive.length ? ': ' + missingLive.slice(0, 3).join(', ') : ''})`);
   ok(out.oneshotSets.reduce((n, s) => n + s.live, 0) === lives.length, `set cards count the same playable pieces: ${out.oneshotSets.map((s) => `${s.set}:${s.live}`).join(' ')}`);
+  ok(out.oneshotSets.length === Object.keys(raw.oneshots || {}).length && out.oneshotSets.every((s) => s.label && (s.base == null || raw.oneshots[s.base])), `one set card per set in the file (${out.oneshotSets.map((s) => s.set).join(', ')})`);
+  ok(out.summary.oneshots + out.summary.agentPieces === (raw.counts && raw.counts.oneshots != null ? raw.counts.oneshots : out.summary.oneshots + out.summary.agentPieces), `one-shots (${out.summary.oneshots}) + agent pieces (${out.summary.agentPieces}) = counts.oneshots (${raw.counts && raw.counts.oneshots})`);
+  ok(out.summary.covers.from <= out.summary.covers.to && out.summary.covers.to >= out.summary.newestFinding && out.summary.covers.to >= out.summary.last.slice(0, 10), `the page spans ${out.summary.covers.from} to ${out.summary.covers.to}, derived from timeline, runs and findings`);
+  // one shot against agent: one panel per agent-<base> set, every agent row paired with the best one-shot by the same model
+  const agentSets = Object.keys(raw.oneshots || {}).filter((k) => /^agent-/.test(k) && raw.oneshots[k.slice(6)]);
+  ok(out.pairs.length === agentSets.length && out.pairs.every((p) => p.rows.length === new Set(raw.oneshots[p.set].map((r) => r.entry)).size), `paired charts: ${out.pairs.map((p) => `${p.set} ${p.rows.length} models, ${p.paired} with a one-shot, mean ${p.meanOneshot == null ? '–' : p.meanOneshot.toFixed(1)} → ${p.meanAgent == null ? '–' : p.meanAgent.toFixed(1)}`).join('; ')}`);
+  for (const p of out.pairs) {
+    const bad = p.rows.filter((r) => { const own = raw.oneshots[p.base].filter((o) => o.entry === r.model && o.total != null).map((o) => o.total); return (own.length ? Math.max(...own) : null) !== r.oneshot; });
+    ok(bad.length === 0, `${p.set}: every one-shot mark is the model's best graded ${p.base} reply`);
+    ok(p.rows.every((r) => r.agent == null || (r.agent >= 0 && r.agent <= p.max)) && p.max > 0, `${p.set}: agent scores sit on a 0..${p.max} scale`);
+  }
+  ok(Object.values(out.pointNames).every((n) => n.length === 5) && out.pointNames['agent-pagoda'].join() === out.pointNames.pagoda.join(), `rubric point names come from the test catalogue, agent sets borrow the base set's: ${JSON.stringify(out.pointNames)}`);
+  ok(out.tests.some((t) => t.t.number === '4' && t.n === data.runs.filter((r) => r.test === '4').length) && out.tests.some((t) => t.t.number === '7') && out.tests.some((t) => t.t.number === '8' && t.n === Object.values(data.oneshots).flat().filter((r) => r.test === '8').length), `tests 4, 7 and 8 are listed with their counts: ${out.tests.map((t) => `${t.t.number}:${t.n}`).join(' ')}`);
   ok(out.planets.planets.length >= out.summary.models, `hero has ${out.planets.planets.length} planets in ${out.planets.bands.length} bands`);
   // each run is counted on exactly one test card
   const runKeys = new Set(data.runs.map(D.effectiveTest));
@@ -81,12 +101,17 @@ if (real) {
   const t2 = out.tests.find((t) => t.t.number === '2'), t2t = out.tests.find((t) => t.t.number === '2T');
   if (t2 && t2t) ok(t2.n + t2t.n === data.runs.filter((r) => r.test === '2').length, `test 2 (${t2.n}) + 2T (${t2t.n}) = all test-2 runs`);
   ok(out.scales.checks['1'] === Math.max(...data.runs.filter((r) => r.test === '1').map((r) => r.checks || 0)), `checks scale for test 1 is the max seen (${out.scales.checks['1']})`);
+  const t4pass = new Set(data.runs.filter((r) => r.test === '4' && r.verdict === 'pass').map((r) => r.checks));
+  ok(t4pass.size <= 1 || out.scales.checks['4'] == null, `test 4 passing runs reach ${[...t4pass].join('/')} checks, so no single scale is shown (${out.scales.checks['4']})`);
   ok(out.scales.rubric === Math.max(...data.test3.map((r) => r.rubric || 0)), `rubric scale is the max seen (${out.scales.rubric})`);
   ok(Object.values(out.scales.point).every((v) => v > 0), `point scales per one-shot test: ${JSON.stringify(out.scales.point)}`);
   const c = out.cleanest;
   ok(!c || (c.verdict === 'pass' && c.struggle.loc > 0 && c.struggle.compiles >= 1), `cleanest run is a passing build with lines and a compile: ${c ? `${c.case} (${c.struggle.compiles} builds, ${c.struggle.loc} lines, ${c.struggle.errors_per_kloc} err/kloc)` : 'none'}`);
   ok(out.ab.engines.length === out.ab.colors.size && new Set(out.ab.colors.values()).size === out.ab.engines.length, `engine colours: ${[...out.ab.colors.entries()].map(([e, c]) => `${e}=${c}`).join(', ')}`);
-  ok(Object.keys(out.motifs).length === 12, `motif data for ${Object.keys(out.motifs).length} chapters`);
+  const indexHtml = readFileSync(join(site, 'index.html'), 'utf8');
+  const chapters = [...indexHtml.matchAll(/<section id="([a-z0-9-]+)" class="chapter"/g)].map((m) => m[1]);
+  ok(chapters.length > 0 && chapters.every((c) => c in out.motifs) && Object.keys(out.motifs).every((k) => chapters.includes(k)), `motif data for every chapter and nothing else: ${Object.keys(out.motifs).join(', ')}`);
+  ok(!/id="log"|id="events-list"/.test(indexHtml), 'the lab notebook chapter is gone (its entries stopped a week before the timeline)');
 }
 
 // Mutation 1: everything empty.
@@ -111,6 +136,10 @@ weird.findings.unshift({ date: '2026-11-01', title: 'A finding of a new kind', k
 weird.oneshots.lantern = [{ case: 't7-new', entry: 'nobody', test: 7, points: { A: 1, F: 2, G: null }, total: null, frames: ['frames/lantern/t7-new/frame-10.webp', 'https://evil.example/x.webp', '../oneshots/x.svg', 'frames/../../etc/passwd.webp', null] }];
 weird.oneshots.orrery.push({ case: 'bad', entry: 'qwen3.8-27b-vllm', test: 5, points: null, frames: 'not-a-list', live: 'live/orrery/../../index.html' });
 weird.oneshots.lantern[0].live = 'live/lantern/t7-new/page.html';
+weird.oneshots['agent-lantern'] = [{ case: 't9-agent', entry: 'nobody', test: 9, points: { A: 2 }, frames: [], live: 'live/agent-lantern/t9-agent/page.html' }];
+weird.oneshots['agent-ghost'] = [{ case: 't9-ghost', entry: 'nobody', test: 9, points: { A: 2 }, frames: [] }];
+weird.oneshots['agent-orrery'].push({ case: 'zz-agent-bad', entry: 'qwen3.8-27b-vllm', test: 8, points: { A: 1 }, frames: [], live: 'live/agent-orrery/zz/page.html' }, { case: 'zz-agent-ok', entry: 'qwen3.8-27b-vllm', test: 8, points: { A: 1 }, frames: [], live: 'live/agent-orrery/zz-agent-ok/orrery.svg' });
+weird.oneshots['agent-pagoda'].push({ case: 'zz-agent-nomodel', entry: 'model-that-does-not-exist', test: 8, points: null, frames: [] });
 weird.oneshots.pagoda.push({ case: 'zz-abs', entry: 'nobody', test: 6, points: {}, frames: [], live: 'https://evil.example/live/pagoda/x/page.html' },
   { case: 'zz-js', entry: 'nobody', test: 6, points: {}, frames: [], live: 'javascript:alert(1)' },
   { case: 'zz-ext', entry: 'nobody', test: 6, points: {}, frames: [], live: 'live/pagoda/x/page.htm' },
@@ -138,14 +167,18 @@ if (w) {
   ok(out.scales.checks['1'] === 7, 'tests[].max_checks overrides the seen maximum');
   ok(out.scales.rubric === 40, 'rubric scale follows the largest rubric seen');
   ok(out.scales.point['7'] === 2, 'point scale for the new set is the max seen there');
-  ok(out.ab.engines.length === 4 && new Set(out.ab.colors.values()).size === 4, `a third engine value gets its own colour (${out.ab.engines.join(', ')})`);
+  ok(out.ab.engines.length === real.out.ab.engines.length + 2 && new Set(out.ab.colors.values()).size === out.ab.engines.length, `two new engine values get their own colours (${out.ab.engines.length}: ${out.ab.engines.join(', ')})`);
   ok(!Object.keys(data.links).includes('evil'), 'a look-alike repository URL is dropped');
   ok(out.tests.some((t) => t.t.number === '2X') === false && out.options.tests.includes('2X'), 'a new flavor shows in the run filter and is counted on its own card when described');
   ok(out.cleanest && out.cleanest.struggle.compiles >= 1, 'a zero-compile pass with 0 errors is not the cleanest run');
   const liveOf = (k) => (out.oneshots.find((c) => c.case === k) || {}).live;
   ok(liveOf('bad') === null && liveOf('t7-new') === null && liveOf('zz-abs') === null && liveOf('zz-js') === null && liveOf('zz-ext') === null && liveOf('zz-num') === null, 'live paths with "..", an unknown set, an absolute URL, javascript:, a wrong extension or a non-string get no Play control');
   ok(liveOf('zz-ok') === 'live/pagoda/zz-ok/page.html', 'a well-formed live path is kept even when the file is not on disk (the viewer shows a blank frame)');
-  ok(out.summary.playable === real.out.summary.playable + 1, `summary.playable counts only accepted paths (${out.summary.playable})`);
+  ok(liveOf('t9-agent') === null && liveOf('zz-agent-bad') === null && liveOf('zz-agent-ok') === 'live/agent-orrery/zz-agent-ok/orrery.svg', 'an unknown agent set and a page.html in an orrery set get no Play control; a well-formed agent-orrery path does');
+  ok(out.summary.playable === real.out.summary.playable + 2, `summary.playable counts only accepted paths (${out.summary.playable})`);
+  ok(out.pairs.length === real.out.pairs.length + 1 && out.pairs.some((p) => p.set === 'agent-lantern') && !out.pairs.some((p) => p.set === 'agent-ghost'), 'a new agent set with a base set gets a paired chart; one without a base does not');
+  const ap = out.pairs.find((p) => p.set === 'agent-pagoda');
+  ok(ap && ap.rows.some((r) => r.model === 'model-that-does-not-exist' && r.agent === null && r.oneshot === null), 'an ungraded agent row for an unknown model still gets a (blank) pair row');
 }
 if (emitDir) {
   mkdirSync(emitDir, { recursive: true });
@@ -183,6 +216,10 @@ for (const tok of ['allow-same-origin', 'allow-top-navigation', 'allow-popups', 
   ok(files.every((f) => !readFileSync(f, 'utf8').replace(/\/\/.*$/gm, '').includes(tok)), `no site source grants ${tok}`);
 ok(/setAttribute\('src', 'about:blank'\)/.test(viewer) && /removeChild\(f\)/.test(viewer), 'viewer.js blanks the iframe src and removes the element on teardown');
 ok(/tagName === 'IFRAME' \? isLiveUrl\(s\) : isFrameUrl\(s\)/.test(dom), 'dom.js lets a live path through only on an <iframe>, frames only elsewhere');
+// prose budget: chapter intros are one short line at most, and the only explanations of the method live in the footer
+const ledes = [...html.matchAll(/<p class="lede"[^>]*>([^<]*)<\/p>/g)].map((m) => m[1].trim()).filter(Boolean);
+ok(ledes.every((l) => l.split(/\s+/).length <= 12), `every chapter lede is under 12 words (${ledes.map((l) => l.split(/\s+/).length).join(', ')})`);
+ok(!/sandbox/i.test(html.slice(0, html.indexOf('<footer'))) && /<footer[\s\S]*sandbox/i.test(html), 'the sandbox is explained only in the footer');
 const bytes = files.filter((f) => /\.(js|css)$/.test(f) && !f.includes('/tools/')).reduce((s, f) => s + statSync(f).size, 0);
 ok(bytes < 170 * 1024, `JS + CSS total ${(bytes / 1024).toFixed(1)} KB (< 170 KB)`);
 

@@ -1,9 +1,10 @@
 // The Bake-off page. Fetches data/bakeoff.json and renders every section from it. Each section
 // renders inside its own try/catch so one odd record never blanks the page; a section that throws
 // is named in data-render-error on <body> (site/tools/render_smoke.sh looks for it).
+// Prose is kept to titles, labels and numbers: the charts carry the story, long text sits behind disclosures.
 import * as D from './data.js';
-import { el, svg, clear, $, familyChip, verdictChip, kindChip, revealList, repoLink, onReducedMotion } from './dom.js';
-import { speedLadder, struggleStrip, abDumbbell, petalScore, pips, beforeAfter, bigNumeral, runLine, ofMax } from './charts.js';
+import { el, clear, $, familyChip, verdictChip, kindChip, revealList, repoLink, onReducedMotion } from './dom.js';
+import { speedLadder, struggleStrip, abDumbbell, pairDumbbell, petalScore, pips, beforeAfter, bigNumeral, runLine, ofMax } from './charts.js';
 import { renderHero } from './hero.js';
 import { chapterMotif } from './motifs.js';
 import { openViewer } from './viewer.js';
@@ -34,16 +35,17 @@ async function main() {
   section('oneshots', () => renderOneshots(data));
   section('findings', () => renderFindings(data));
   section('timeline', () => renderTimeline(data));
-  section('log', () => renderLog(data));
-  section('caveats', () => renderCaveats(data));
-  section('links', () => renderLinks(data));
+  section('caveats', () => renderFoot(data));
   section('motifs', () => renderMotifs(data));
   document.body.dataset.rendered = '1';
   // a deep link (#oneshots) was resolved against the empty page; re-aim it now that the chapters have their height
   if (location.hash && /^#[A-Za-z0-9_-]+$/.test(location.hash)) {
     const target = $(location.hash.slice(1));
+    if (target && target.tagName === 'DETAILS') target.open = true;
     if (target) target.scrollIntoView({ behavior: onReducedMotion() ? 'auto' : 'instant', block: 'start' });
   }
+  // the caveats live in a closed disclosure in the footer; the nav link opens it
+  addEventListener('hashchange', () => { if (location.hash === '#caveats') { const d = $('caveats'); if (d) d.open = true; } });
 }
 function section(id, fn) {
   try { fn(); } catch (e) {
@@ -55,6 +57,9 @@ function section(id, fn) {
   }
 }
 const stat = (k, v, unit) => el('div', {}, el('dt', {}, k), el('dd', {}, fmt(v, 0), unit ? el('small', {}, unit) : null));
+// A small closed disclosure for text that should not be read unless asked for.
+const disclosure = (label, cls, ...children) => (children.some(Boolean) ? el('details', { class: `fold ${cls || ''}` }, el('summary', {}, label), ...children) : null);
+const plural = (n, one, many) => (n === 1 ? `1 ${one}` : `${fmt(n, 0)} ${many || one + 's'}`);
 
 // ------------------------------------------------------------------- hero
 function renderTop(data) {
@@ -62,19 +67,24 @@ function renderTop(data) {
   $('tagline').textContent = data.tagline;
   const s = D.summary(data);
   const stats = $('hero-stats'); clear(stats);
-  stats.append(stat('models', s.models), stat('families', s.families), stat('agent runs', s.runs), stat('passes', s.passes), stat('one-shots', s.oneshots), stat('frames', s.frames));
+  stats.append(stat('models', s.models), stat('families', s.families), stat('agent runs', s.runs), stat('passes', s.passes), stat('one-shots', s.oneshots));
+  if (s.agentPieces > 0) stats.append(stat('agent pieces', s.agentPieces));
   if (s.playable > 0) stats.append(stat('live pieces', s.playable));
   if (s.fastest != null) stats.append(stat('fastest run', s.fastest, 'tok/s'));
   if (s.agentHours > 0) stats.append(stat('agent hours', Math.round(s.agentHours)));
-  // freshness: the run table is a snapshot; findings are written as they happen and are usually newer
+  // freshness, derived: the span of everything dated in the file, and when the file was built
   const gen = $('generated'); clear(gen);
   const bit = (k, v) => el('span', { class: 'fresh' }, el('small', {}, k), ' ', v);
-  if (data.generated) gen.appendChild(bit('data generated', data.generated));
-  if (data.built) gen.appendChild(bit('site built', data.built));
-  if (s.last) gen.appendChild(bit('newest run', fmtDate(s.last)));
-  if (s.newestFinding) gen.appendChild(bit('newest finding', fmtDate(s.newestFinding)));
+  if (s.covers.from && s.covers.to) gen.appendChild(bit('covers', s.covers.from === s.covers.to ? fmtDate(s.covers.to) : `${fmtDate(s.covers.from)} – ${fmtDate(s.covers.to)}`));
+  if (data.built) gen.appendChild(bit('built', data.built));
+  else if (data.generated) gen.appendChild(bit('generated', data.generated));
   if (!gen.childNodes.length) gen.textContent = 'Data snapshot';
+  // the key to the orrery: four marks, four words each
+  const key = $('hero-key'); clear(key);
+  const mark = (cls) => el('i', { class: `mark ${cls}`, 'aria-hidden': 'true' });
+  key.append(el('li', {}, mark('speed'), 'speed · best tok/s'), el('li', {}, mark('size'), 'size · runs'), el('li', {}, mark('halo'), 'halo · passed test 2'), el('li', {}, mark('unc'), 'dashed · uncensored'));
   renderHero(data, $('orrery'), $('hero-caption'), $('hero-legend'));
+  $('hero-caption').textContent = '';
 }
 
 // ---------------------------------------------------------------- machine
@@ -103,12 +113,12 @@ function renderTests(data) {
 }
 function testCard(t, n, undocumented = false) {
   const kindCls = (t.kind || '').replace(/[^a-z-]/gi, '').toLowerCase();
-  return el('article', { class: `test-card ${kindCls}` },
+  return el('article', { class: `test-card ${kindCls}${n ? '' : ' pending'}` },
     el('span', { class: 'tn', 'aria-hidden': 'true' }, t.number || '?'),
     el('h3', {}, el('span', { class: 'sr' }, `Test ${t.number}: `), t.name),
-    t.what ? el('p', { class: 'what' }, t.what) : undocumented ? el('p', { class: 'what empty' }, 'Appears in the results but is not described yet.') : null,
-    t.graded ? el('p', { class: 'graded' }, t.graded) : null,
-    el('div', { class: 'meta' }, t.kind ? kindChip(t.kind, kindCls) : null, el('span', { class: 'n' }, n === 1 ? '1 graded run' : `${fmt(n, 0)} graded runs`)));
+    t.what ? el('p', { class: 'what' }, t.what) : undocumented ? el('p', { class: 'what empty' }, 'Not described yet.') : null,
+    el('div', { class: 'meta' }, t.kind ? kindChip(t.kind, kindCls) : null, el('span', { class: 'n' }, n ? plural(n, 'graded run') : 'no graded runs yet')),
+    disclosure('grading', 'small', t.graded ? el('p', {}, t.graded) : null));
 }
 
 // ------------------------------------------------------------------ picks
@@ -121,9 +131,9 @@ function renderPicks(data) {
   if (!rows.length) fam.appendChild(el('p', { class: 'empty' }, 'No family table yet.'));
   for (const f of rows) {
     fam.appendChild(el('div', { class: 'fam-row', style: { '--c': f.color } },
-      el('div', { class: 'famhead' }, familyChip(f.family, f.color), el('div', { class: 'count' }, f.models === 1 ? '1 model tried' : `${f.models} models tried`)),
-      ...f.cells.map(([k, v]) => el('div', { class: 'cell' }, el('small', {}, k), v ? el('b', {}, v) : el('span', { class: 'none' }, 'none yet'))),
-      f.note ? el('p', { class: 'note' }, f.note) : null));
+      el('div', { class: 'famhead' }, familyChip(f.family, f.color), el('div', { class: 'count' }, plural(f.models, 'model'))),
+      ...f.cells.map(([k, v]) => el('div', { class: 'cell' }, el('small', {}, k), v ? el('b', {}, v) : el('span', { class: 'none' }, '–'))),
+      disclosure('note', 'small', f.note ? el('p', {}, f.note) : null)));
   }
 }
 function fill(host, items, render, emptyText) {
@@ -136,9 +146,9 @@ function pickCard(p) {
     el('div', { class: 'role' }, p.role),
     el('h4', {}, p.short || p.model || 'unnamed'),
     el('div', { class: 'meta' }, familyChip(p.family, p.color), p.uncensored ? kindChip('uncensored') : null, p.quant ? el('span', { class: 'mono' }, p.quant) : null, p.engine ? el('span', { class: 'mono' }, p.engine) : null, p.missing ? kindChip('no model card in data') : null),
-    p.verdict ? el('p', { class: 'verdict-text' }, p.verdict) : null,
-    p.tradeoff ? el('p', { class: 'trade' }, p.tradeoff) : null,
-    p.runs.length ? el('ul', {}, ...p.runs.map(runLine)) : null);
+    p.verdict ? el('p', { class: 'verdict-text' }, D.firstSentence(p.verdict)) : null,
+    p.runs.length ? el('ul', {}, ...p.runs.map(runLine)) : null,
+    disclosure('trade-off', 'small', p.tradeoff ? el('p', {}, p.tradeoff) : null));
 }
 
 // ------------------------------------------------------------------- runs
@@ -157,7 +167,7 @@ function renderRuns(data) {
     const host = $('ladder'); clear(host); host.appendChild(speedLadder(rows, { limit }));
     const more = $('ladder-more');
     more.hidden = rows.length <= limit;
-    more.textContent = `Show ${Math.min(40, rows.length - limit)} more rows (${rows.length - limit} left)`;
+    more.textContent = `Show ${Math.min(40, rows.length - limit)} more (${rows.length - limit} left)`;
     const tbl = $('run-table'); clear(tbl); tbl.appendChild(runTable(rows));
   };
   form.addEventListener('input', () => { limit = 40; draw(); });
@@ -195,51 +205,60 @@ function renderStruggle(data) {
   if (!rows.length) { host.appendChild(el('p', { class: 'empty' }, 'No test-2 runs with a struggle score yet.')); return; }
   const draw = () => { clear(host); host.appendChild(struggleStrip(rows, host.clientWidth - 16)); };
   draw();
-  let t; addEventListener('resize', () => { clearTimeout(t); t = setTimeout(draw, 150); });
+  onResize(draw);
   const sum = D.struggleSummary(rows);
   const row = $('struggle-summary'); clear(row);
   for (const v of ['pass', 'partial', 'fail']) {
     if (!sum[v]) continue;
-    row.appendChild(el('div', { class: 'stat' }, el('div', { class: 'k' }, verdictChip(v), `${sum[v].n} runs`), el('div', { class: 'v' }, fmt(sum[v].median, 1), el('small', {}, ' median errors / kloc'))));
+    row.appendChild(el('div', { class: 'stat' }, el('div', { class: 'k' }, verdictChip(v), plural(sum[v].n, 'run')), el('div', { class: 'v' }, fmt(sum[v].median, 1), el('small', {}, ' median err / kloc'))));
   }
   const c = D.cleanestRun(rows);
-  if (c) row.appendChild(el('div', { class: 'stat' }, el('div', { class: 'k' }, 'cleanest passing build'),
-    el('div', { class: 'v' }, c.short, el('small', {}, ` ${fmt(c.struggle.errors_per_kloc, 1)} errors / kloc · ${fmt(c.struggle.compiles, 0)} build${c.struggle.compiles === 1 ? '' : 's'} · ${fmt(c.struggle.loc, 0)} lines`)),
-    el('div', { class: 'k' }, verdictChip(c.verdict))));
+  if (c) row.appendChild(el('div', { class: 'stat wide' }, el('div', { class: 'k' }, 'cleanest pass'),
+    el('div', { class: 'v' }, c.short, el('small', {}, ` ${fmt(c.struggle.errors_per_kloc, 1)} err / kloc · ${plural(c.struggle.compiles, 'build')} · ${fmt(c.struggle.loc, 0)} lines`))));
+}
+let resizeFns = [];
+function onResize(fn) {
+  resizeFns.push(fn);
+  if (resizeFns.length === 1) { let t; addEventListener('resize', () => { clearTimeout(t); t = setTimeout(() => resizeFns.forEach((f) => f()), 150); }); }
 }
 
 // ----------------------------------------------------------------- test 3
 function renderTest3(data) {
-  const { groups, rubricMax } = D.test3Groups(data);
+  const { groups, flavors, rubricMax } = D.test3Groups(data);
+  const lede = $('test3-lede');
+  const t = D.testOf(data, '3');
+  // the flavours, as the data names them, make the one line under the title
+  lede.textContent = flavors.length ? flavors.map((f) => `${f}: ${/G$/i.test(f) ? 'known-good server' : /O$/i.test(f) ? "the model's own server" : 'flavour'}`).join(' · ') : (t.what || '');
   const host = $('test3-groups');
-  const btn = $('test3-more');
-  const r = revealList(host, groups, (g) => el('article', { class: 't3', style: { '--c': g.color } },
+  const head = el('div', { class: 't3-head', 'aria-hidden': 'true' }, el('span', {}), el('span', {}, 'MCP facts'), el('span', {}, 'API facts'), el('span', {}, 'rubric'), el('span', {}, 'judged'), el('span', { class: 'num' }, 'speed · time'));
+  revealList(host, groups, (g) => el('article', { class: 't3', style: { '--c': g.color } },
     el('div', { class: 'head' }, el('b', {}, g.short), el('div', { class: 'chips' }, familyChip(g.family, g.color), g.uncensored ? kindChip('uncensored') : null)),
-    el('div', { class: 'flavors' }, ...g.rows.map((row) => el('div', { class: 't3-row' },
-      el('span', { class: 'flavor', title: `flavor ${row.flavor}` }, row.flavor),
-      el('div', { class: 'facts' },
-        el('span', {}, 'MCP facts ', pips(row.mcp_facts.got, row.mcp_facts.of), ` ${row.mcp_facts.text}`),
-        el('span', {}, 'API facts ', pips(row.api_facts.got, row.api_facts.of, 'api'), ` ${row.api_facts.text}`),
-        el('span', {}, 'rubric ', pips(row.rubric, rubricMax, 'rubric'), el('span', { class: 'rubric-num' }, ` ${ofMax(row.rubric, rubricMax)}`)),
-        el('span', { class: `judge ${row.judgement_right === true ? 'ok' : row.judgement_right === false ? 'bad' : ''}` }, row.judgement_right === true ? '✓ judged the server right' : row.judgement_right === false ? '✗ misjudged the server' : 'judgement not recorded')),
-      el('span', { class: 'num' }, `${fmt(row.tps, 1)} tok/s · ${fmtMinutes(row.minutes)}`),
-      ...noteBlock(row.note, 220))))), { step: 8, label: 'Show more models' });
-  btn.hidden = true; // revealList carries its own button
-  return r;
+    el('div', { class: 'flavors' }, ...g.rows.map((row) => {
+      const [note, noteBtn] = noteBlock(row.note);
+      const judge = row.judgement_right === true ? 'ok' : row.judgement_right === false ? 'bad' : '';
+      return el('div', { class: 't3-row' },
+        el('span', { class: 'flavor', title: `flavor ${row.flavor}` }, row.flavor),
+        el('span', { class: 'cell' }, pips(row.mcp_facts.got, row.mcp_facts.of), el('small', {}, row.mcp_facts.text)),
+        el('span', { class: 'cell' }, pips(row.api_facts.got, row.api_facts.of, 'api'), el('small', {}, row.api_facts.text)),
+        el('span', { class: 'cell' }, pips(row.rubric, rubricMax, 'rubric'), el('small', { class: 'rubric-num' }, ofMax(row.rubric, rubricMax))),
+        el('span', { class: `judge ${judge}`, role: 'img', 'aria-label': judge === 'ok' ? 'judged the server right' : judge === 'bad' ? 'misjudged the server' : 'judgement not recorded', title: judge === 'ok' ? 'judged the server right' : judge === 'bad' ? 'misjudged the server' : 'judgement not recorded' }, judge === 'ok' ? '✓' : judge === 'bad' ? '✗' : '·'),
+        el('span', { class: 'num' }, `${fmt(row.tps, 1)} tok/s · ${fmtMinutes(row.minutes)}`, noteBtn),
+        note);
+    }))), { step: 8, label: 'Show more models' });
+  if (groups.length) host.insertBefore(head, host.firstChild);
 }
 
 // -------------------------------------------------------------------- A/B
 function renderAB(data) {
   const { groups, engines, colors, max } = D.abGroups(data);
   const legend = $('ab-legend'); clear(legend);
-  for (const e of engines) legend.appendChild(el('li', {}, el('i', { style: { '--c': colors.get(e) }, 'aria-hidden': 'true' }), `engine ${e}`));
-  if (engines.length) legend.appendChild(el('li', {}, 'dot = one probe variant; the line spans the model’s range; ×n is the gain between engines with the same flags'));
+  for (const e of engines) legend.appendChild(el('li', {}, el('i', { style: { '--c': colors.get(e) }, 'aria-hidden': 'true' }), e));
   const host = $('ab-groups'); clear(host);
   if (!groups.length) { host.appendChild(el('p', { class: 'empty' }, 'No engine probes yet.')); return; }
   for (const g of groups.filter((g) => !g.allFailed)) host.appendChild(abDumbbell(g, max, colors));
   const failed = data.ab.filter((r) => r.decode == null);
   if (failed.length) {
-    host.appendChild(el('details', { class: 'ab-errors' }, el('summary', {}, `${failed.length} probe${failed.length === 1 ? '' : 's'} failed to load`),
+    host.appendChild(el('details', { class: 'ab-errors fold' }, el('summary', {}, `${plural(failed.length, 'probe')} failed to load`),
       el('ul', {}, ...failed.map((r) => el('li', {}, el('b', {}, D.shortLabel(D.modelOf(data, r.model).label)), ` · ${r.engine} · ${r.variant}: `, el('code', {}, r.error.slice(0, 160) || 'no error text'))))));
   }
 }
@@ -248,24 +267,16 @@ function renderAB(data) {
 function renderOneshots(data) {
   const sets = D.oneshotSets(data);
   const setRow = $('oneshot-sets'); clear(setRow);
+  const n = (v, k) => el('span', { class: 'sn' }, el('b', {}, fmt(v, v != null && v < 10 && v % 1 ? 1 : 0)), ' ', k);
   for (const s of sets) {
-    setRow.appendChild(el('div', { class: 'set-card' }, el('b', {}, `Test ${s.test} · ${s.name}`),
-      el('span', {}, `${s.n} replies · ${s.withFrames} rendered · ${s.full} full marks · ${s.zero} scored zero`),
-      el('span', {}, `${s.cut} cut off by the token cap${s.mean != null ? ` · mean ${fmt(s.mean, 1)}` : ''}`),
-      s.live > 0 ? el('span', { class: 'live-n' }, el('i', { 'aria-hidden': 'true' }, '▶'), ` ${s.live} can be played live`) : null));
+    setRow.appendChild(el('div', { class: `set-card ${(s.kind || '').replace(/[^a-z-]/gi, '')}` },
+      el('div', { class: 'set-head' }, el('b', {}, s.label), kindChip(`test ${s.test}`)),
+      el('div', { class: 'set-nums' }, n(s.n, 'pieces'), s.live > 0 ? el('span', { class: 'sn live-n' }, el('i', { 'aria-hidden': 'true' }, '▶'), el('b', {}, fmt(s.live, 0)), ' live') : null,
+        s.mean != null ? n(s.mean, `mean of ${fmt(s.max, 0)}`) : null, n(s.full, 'full'), n(s.zero, 'zero'), s.cut ? n(s.cut, 'cut') : null)));
   }
-  // header line: how many pieces can be played, from the data
-  const liveLine = $('oneshot-live');
-  const playable = sets.reduce((n, s) => n + (s.live || 0), 0), total = sets.reduce((n, s) => n + s.n, 0);
-  if (liveLine) {
-    clear(liveLine);
-    liveLine.hidden = playable <= 0;
-    if (playable > 0) liveLine.append(el('i', { 'aria-hidden': 'true' }, '▶'), ` ${fmt(playable, 0)} of the ${fmt(total, 0)} replies produced a file you can run here, exactly as the model wrote it: `,
-      sets.filter((s) => s.live > 0).map((s) => `${fmt(s.live, 0)} ${plural(s.set, s.live)}`).join(' and '),
-      '. Press “Play live” on a card; each piece runs alone, in a sandboxed frame.');
-  }
+  renderPairs(data);
   const tsel = $('o-test'); clear(tsel); tsel.appendChild(el('option', { value: 'all' }, 'all'));
-  for (const s of sets) tsel.appendChild(el('option', { value: s.test }, `${s.test} · ${s.name}`));
+  for (const s of sets) tsel.appendChild(el('option', { value: s.set }, `${s.label} · test ${s.test}`));
   const form = $('oneshot-filters');
   const grid = $('oneshot-grid');
   let current = [];
@@ -273,8 +284,8 @@ function renderOneshots(data) {
     const cards = D.oneshotCards(data, { test: tsel.value, sort: $('o-sort').value, q: $('o-q').value.trim() });
     current = cards;
     const live = cards.filter((c) => c.live).length;
-    $('o-count').textContent = `${cards.length} replies${live ? ` · ${live} playable` : ''}`;
-    revealList(grid, cards, (c, i) => shotCard(c, () => openViewerAt(current, i)), { step: 12, label: 'Show more replies' });
+    $('o-count').textContent = `${cards.length} pieces${live ? ` · ${live} live` : ''}`;
+    revealList(grid, cards, (c, i) => shotCard(c, () => openViewerAt(current, i)), { step: 12, label: 'Show more' });
   };
   const openViewerAt = (cards, i) => { const btn = grid.querySelector(`.shot[data-case="${CSS.escape(cards[i].case)}"] .play`); openViewer(cards, i, btn); };
   form.addEventListener('input', draw);
@@ -282,18 +293,41 @@ function renderOneshots(data) {
   draw();
   startFlipbooks(grid);
 }
-const plural = (w, n) => (n === 1 ? w : /y$/.test(w) ? `${w.slice(0, -1)}ies` : `${w}s`);
-const blankCard = (c) => el('div', { class: 'blank' }, el('span', {}, el('i', { 'aria-hidden': 'true' }, '∅'), c.finish === 'length' ? 'Cut off by the token cap, nothing to render' : c.frames.length ? 'The renders could not be loaded' : 'No render available'));
+// One shot against agent: one paired chart per agent set, drawn from the same rows as the gallery.
+function renderPairs(data) {
+  const panels = D.agentPairs(data);
+  const block = $('agent'), host = $('pairs'), lede = $('pairs-lede');
+  clear(host);
+  block.hidden = !panels.length;
+  if (!panels.length) return;
+  lede.textContent = 'Same model, same rubric; best of n one-shots.';
+  const draw = () => {
+    clear(host);
+    const figs = panels.map((p) => {
+      const fig = el('figure', { class: 'pair-fig' });
+      fig.append(el('figcaption', {}, el('b', {}, p.baseLabel), el('span', { class: 'arrow' }, ' → '), el('b', {}, p.label),
+        el('span', { class: 'pair-stat' }, `mean ${p.meanOneshot == null ? '–' : fmt(p.meanOneshot)} → ${p.meanAgent == null ? '–' : fmt(p.meanAgent)} · ${p.lifted} of ${p.paired} up`)));
+      host.appendChild(fig);
+      return fig;
+    });
+    // every figure is in the grid now, so each chart takes the width its figure really has (one or two columns)
+    panels.forEach((p, i) => figs[i].appendChild(pairDumbbell(p, Math.max(280, figs[i].clientWidth - 22))));
+  };
+  draw();
+  onResize(draw);
+}
+const blankCard = (c) => el('div', { class: 'blank' }, el('span', {}, el('i', { 'aria-hidden': 'true' }, '∅'), /length|cap/i.test(c.finish) ? 'cut off, nothing to render' : c.frames.length ? 'renders could not be loaded' : 'no render'));
 function shotCard(c, onPlay) {
   const pic = el('div', { class: 'pic' });
   const frames = c.frames;
+  const square = /orrery/i.test(c.set);
   if (frames.length) {
     const last = frames.length - 1;
     let failed = 0;
     // The last frame is the richest, so it is shown first and fetched eagerly; the others load lazily and the
     // flipbook only ever advances onto a frame that has really loaded. If none loads the card goes blank.
     const imgs = frames.map((f, i) => {
-      const im = el('img', { src: f.url, alt: `${c.alt}, frame at ${f.ms == null ? '?' : fmt(f.ms, 0)} ms`, loading: i === last ? 'eager' : 'lazy', decoding: 'async', width: c.set === 'orrery' ? 1000 : 1280, height: c.set === 'orrery' ? 1000 : 800, class: i === last ? 'on' : '' });
+      const im = el('img', { src: f.url, alt: `${c.alt}, frame at ${f.ms == null ? '?' : fmt(f.ms, 0)} ms`, loading: i === last ? 'eager' : 'lazy', decoding: 'async', width: square ? 1000 : 1280, height: square ? 1000 : 800, class: i === last ? 'on' : '' });
       im.addEventListener('load', () => { if (im.classList.contains('on')) pic.dataset.loaded = '1'; });
       im.addEventListener('error', () => { im.classList.add('broken'); if (++failed === frames.length) { clear(pic); delete pic.dataset.flip; pic.appendChild(blankCard(c)); } });
       return im;
@@ -318,23 +352,19 @@ function shotCard(c, onPlay) {
     pic.appendChild(play);
     if (c.full) pic.appendChild(el('span', { class: 'ribbon', 'aria-hidden': 'true' }, 'live'));
   }
-  const [note, noteBtn] = noteBlock(c.note, 160);
+  const [note, noteBtn] = noteBlock(c.note);
   const body = el('div', { class: 'body' },
-    el('div', {}, el('b', {}, c.short), el('div', { class: 'meta' }, familyChip(c.family, c.color), c.uncensored ? kindChip('uncensored') : null,
-      el('span', {}, `${fmt(c.tok_s, 1)} tok/s`), el('span', {}, `${fmt(c.tokens, 0)} tokens`), c.finish === 'length' ? el('span', { class: 'cut' }, 'hit the cap') : null)),
+    el('div', {}, el('b', {}, c.short), el('div', { class: 'meta' }, familyChip(c.family, c.color), kindChip(c.setLabel, c.kind === 'agentic' ? 'agentic' : ''), c.uncensored ? kindChip('uncensored') : null,
+      el('span', {}, `${fmt(c.tok_s, 1)} tok/s`), /length|cap/i.test(c.finish) ? el('span', { class: 'cut' }, c.finish === 'length' ? 'hit the cap' : c.finish) : null, noteBtn)),
     petalScore(c), note);
-  const pmax = c.pointMax > 0 ? c.pointMax : 1;
-  if (c.points.length) body.appendChild(el('div', { class: 'pts' }, ...c.points.map((p) => { const v = p.value || 0; return el('span', { class: v <= 0 ? 'l0' : v >= pmax ? 'l2' : 'l1' }, `${p.name} ${fmt(p.value)}`); })));
-  if (noteBtn) body.appendChild(noteBtn);
   return el('article', { class: `shot${c.full && frames.length ? ' featured' : ''}${c.live ? ' playable' : ''}`, title: c.case, 'data-case': c.case, style: { '--c': c.color } }, pic, body);
 }
-// A clamped note plus a "full note" toggle when it is long. Returns [p, button|null].
-function noteBlock(text, threshold) {
+// A grader's or operator's note, folded away behind a "note" toggle. Returns [p, button] or [null, null].
+function noteBlock(text) {
   if (!text) return [null, null];
-  const p = el('p', { class: 'note' }, text);
-  if (text.length <= threshold) return [p, null];
-  const b = el('button', { type: 'button', class: 'noteb', 'aria-expanded': 'false' }, 'full note');
-  b.addEventListener('click', () => { const open = p.classList.toggle('open'); b.setAttribute('aria-expanded', String(open)); b.textContent = open ? 'less' : 'full note'; });
+  const p = el('p', { class: 'note', hidden: true }, text);
+  const b = el('button', { type: 'button', class: 'noteb', 'aria-expanded': 'false' }, 'note');
+  b.addEventListener('click', () => { p.hidden = !p.hidden; b.setAttribute('aria-expanded', String(!p.hidden)); b.classList.toggle('open', !p.hidden); });
   return [p, b];
 }
 const imgLoaded = (im) => im.complete && im.naturalWidth > 0;
@@ -367,68 +397,61 @@ function startFlipbooks(grid) {
 }
 
 // --------------------------------------------------------------- findings
+// A card leads with its numbers: the first metric as big numerals, the rest as before/after bars. The summary is
+// its first sentence; the full text, settings, quality check and caveat fold away.
 function renderFindings(data) {
-  const host = $('findings-list'); clear(host);
-  if (!data.findings.length) { host.appendChild(el('p', { class: 'empty' }, 'No headline findings yet.')); return; }
-  for (const f of data.findings) {
+  const host = $('findings-list');
+  revealList(host, data.findings, (f) => {
     const metrics = D.findingMetrics(f);
     const right = el('div', { class: 'numbers' });
     if (metrics.length) {
-      // the lead metric is the typographic moment; the rest are bars under it
       const lead = metrics.find((m) => m.after != null) || metrics[0];
       right.appendChild(bigNumeral(lead));
-      const rest = metrics.filter((m) => m !== lead);
-      if (rest.length) {
-        right.appendChild(el('div', { class: 'ba-key' }, el('span', {}, el('i', { class: 'before' }), 'before'), el('span', {}, el('i', { class: 'after' }), 'after')));
-        for (const m of rest) right.appendChild(beforeAfter(m));
-      }
+      for (const m of metrics.filter((m) => m !== lead)) right.appendChild(beforeAfter(m));
     }
-    if (f.quality) right.appendChild(el('p', { class: 'quality', 'data-k': 'quality check' }, f.quality));
-    if (f.caveat) right.appendChild(el('p', { class: 'caveat', 'data-k': 'caveat' }, f.caveat));
-    host.appendChild(el('article', { class: 'finding' },
+    const line = D.firstSentence(f.summary);
+    const more = disclosure('details', '',
+      f.summary && f.summary !== line ? el('p', {}, f.summary) : null,
+      f.settings ? el('p', { class: 'settings' }, 'settings ', el('code', {}, f.settings)) : null,
+      f.quality ? el('p', { class: 'quality', 'data-k': 'quality check' }, f.quality) : null,
+      f.caveat ? el('p', { class: 'caveat', 'data-k': 'caveat' }, f.caveat) : null);
+    return el('article', { class: 'finding' },
       el('div', { class: 'when' }, f.date ? el('time', { datetime: f.date }, fmtDate(f.date)) : null, kindChip(f.kind)),
       el('h3', {}, f.title),
-      el('div', {}, el('p', { class: 'summary' }, f.summary), f.settings ? el('p', { class: 'settings' }, 'settings ', el('code', {}, f.settings)) : null),
-      right));
-  }
+      el('div', { class: 'text' }, line ? el('p', { class: 'summary' }, line) : null, more),
+      right);
+  }, { step: 8, label: 'Show more findings' });
+  if (!data.findings.length) { clear(host); host.appendChild(el('p', { class: 'empty' }, 'No headline findings yet.')); }
 }
 
 // --------------------------------------------------------------- timeline
+// Date, title, the what line; a month mark where the month turns; why on hover, focus or the toggle.
 function renderTimeline(data) {
   const ol = $('timeline-list'); clear(ol);
   if (!data.timeline.length) { ol.appendChild(el('li', { class: 'empty' }, 'No timeline yet.')); return; }
+  let month = '';
   for (const t of data.timeline) {
-    ol.appendChild(el('li', {},
-      el('div', { class: 'date' }, t.date ? el('time', { datetime: t.date }, fmtDate(t.date)) : null, t.era ? el('span', { class: 'era' }, t.era) : null),
-      el('h3', {}, t.title), t.what ? el('p', { class: 'what' }, t.what) : null, t.why ? el('p', { class: 'why' }, t.why) : null));
+    const m = t.date.slice(0, 7);
+    if (m && m !== month) { month = m; ol.appendChild(el('li', { class: 'month', 'aria-hidden': 'true' }, el('span', {}, monthName(m)))); }
+    const why = t.why ? el('p', { class: 'why' }, t.why) : null;
+    const btn = why ? el('button', { type: 'button', class: 'noteb why-b', 'aria-expanded': 'false' }, 'why') : null;
+    const li = el('li', {},
+      el('div', { class: 'date' }, t.date ? el('time', { datetime: t.date }, dayLabel(t.date)) : null, t.era ? el('span', { class: 'era' }, t.era) : null),
+      el('h3', {}, t.title), t.what ? el('p', { class: 'what' }, t.what, ' ', btn) : btn, why);
+    if (btn) btn.addEventListener('click', () => { const open = li.classList.toggle('open'); btn.setAttribute('aria-expanded', String(open)); });
+    ol.appendChild(li);
   }
 }
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const monthName = (ym) => { const m = ym.match(/^(\d{4})-(\d{2})/); return m ? `${MONTHS[+m[2] - 1] || m[2]} ${m[1]}` : ym; };
+const dayLabel = (d) => { const m = d.match(/^\d{4}-(\d{2})-(\d{2})/); return m ? `${(MONTHS[+m[1] - 1] || m[1]).slice(0, 3)} ${+m[2]}` : fmtDate(d); };
 
-// -------------------------------------------------------------------- log
-function renderLog(data) {
-  const kinds = D.eventKinds(data);
-  const row = $('event-kinds'); clear(row);
-  let active = 'all';
-  const host = $('events-list');
-  const draw = () => {
-    const items = active === 'all' ? data.events : data.events.filter((e) => e.kind === active);
-    revealList(host, items, (e) => el('article', { class: 'event' },
-      el('div', {}, el('time', {}, e.when), kindChip(e.kind)), el('p', {}, e.text)), { step: 12, label: 'Show more entries' });
-    row.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.kind === active)));
-  };
-  const mk = (kind, label) => { const b = el('button', { type: 'button', 'data-kind': kind, 'aria-pressed': 'false' }, label); b.addEventListener('click', () => { active = kind; draw(); }); return el('li', {}, b); };
-  row.appendChild(mk('all', `all ${data.events.length}`));
-  for (const k of kinds) row.appendChild(mk(k.kind, `${k.kind} ${k.n}`));
-  draw();
-}
-
-// ---------------------------------------------------------------- caveats
-function renderCaveats(data) {
+// ------------------------------------------------------------------ footer
+function renderFoot(data) {
   const ol = $('caveat-list'); clear(ol);
+  $('caveats-summary').textContent = data.caveats.length ? `${plural(data.caveats.length, 'caveat')}, read before quoting a number` : 'Caveats';
   if (!data.caveats.length) ol.appendChild(el('li', {}, 'No caveats are recorded in the data. Treat every number as one sample from a changing harness.'));
   for (const c of data.caveats) ol.appendChild(el('li', {}, c));
-}
-function renderLinks(data) {
   const ul = $('links'); clear(ul);
   const names = { repo: 'Repository', cards: 'Model cards', method: 'Method', conclusions: 'Conclusions', log: 'Research log' };
   for (const [k, v] of Object.entries(data.links)) ul.appendChild(el('li', {}, repoLink(v, names[k] || k)));
@@ -448,4 +471,3 @@ function renderMotifs(data) {
 }
 
 main();
-export { svg };

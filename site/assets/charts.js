@@ -16,7 +16,9 @@ export function speedLadder(rows, { limit = 40 } = {}) {
     tick.style.left = `${scale.pos(t) * 100}%`;
     axis.appendChild(tick);
   }
-  wrap.appendChild(el('div', { class: 'ladder-head' }, el('span', {}, 'model · run'), axis, el('span', { class: 'num' }, 'tok/s')));
+  // the verdict key rides the head, in the colours the bars use
+  const key = el('span', { class: 'vkey' }, ...['pass', 'partial', 'fail'].map((v) => el('span', { class: `v-${v}` }, el('span', { 'aria-hidden': 'true' }, VERDICT_GLYPH[v]), ` ${v}`)));
+  wrap.appendChild(el('div', { class: 'ladder-head' }, key, axis, el('span', { class: 'num' }, 'tok/s')));
   const list = el('ol', { class: 'ladder-rows' });
   rows.slice(0, limit).forEach((r) => {
     const pct = Math.max(0.6, scale.pos(r.tps) * 100);
@@ -70,6 +72,46 @@ export function struggleStrip(rows, width) {
       root.appendChild(g);
     }
   });
+  return root;
+}
+
+// One shot against agent: one row per model, a hollow mark for the best one-shot score and a filled mark (family colour)
+// for the agent score on a 0..max axis, joined by a line that is green when the agent did better. Numbers sit at the end
+// of every row, so the chart needs no legend beyond the two glyphs in its head.
+export function pairDumbbell(panel, width) {
+  const W = Math.max(320, width || 560), left = Math.min(230, Math.max(120, Math.round(W * 0.38))), right = 72, rowH = 24, top = 30, bottom = 24;
+  const rows = panel.rows;
+  const H = top + (rows.length + 1) * rowH + bottom;
+  const x = (v) => left + (Math.max(0, Math.min(panel.max, v)) / panel.max) * (W - left - right);
+  const root = svg('svg', { class: 'pairs', viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img',
+    'aria-label': `${panel.baseLabel} one-shot against ${panel.label} for ${rows.length} models, scores out of ${fmt(panel.max, 0)}: ` + rows.map((r) => `${r.short} ${r.oneshot == null ? 'no one-shot' : fmt(r.oneshot)} to ${r.agent == null ? 'not graded' : fmt(r.agent)}`).join('; ') });
+  const ticks = [0, panel.max / 2, panel.max];
+  for (const t of ticks) {
+    root.appendChild(svg('line', { x1: x(t), x2: x(t), y1: top - 4, y2: H - bottom + 4, class: 'grid' }));
+    root.appendChild(svg('text', { x: x(t), y: H - 6, class: 'axis', 'text-anchor': 'middle' }, fmt(t, 0)));
+  }
+  root.appendChild(svg('text', { x: left - 10, y: 14, class: 'axis dim', 'text-anchor': 'end' }, 'model'));
+  const head = svg('text', { x: W - 6, y: 14, class: 'axis dim', 'text-anchor': 'end' });
+  head.append(svg('tspan', { class: 'one' }, '○'), svg('tspan', {}, ' one-shot → '), svg('tspan', { class: 'agent' }, '●'), svg('tspan', {}, ' agent'));
+  root.appendChild(head);
+  const draw = (r, i, cls = '') => {
+    const cy = top + i * rowH + rowH / 2;
+    const g = svg('g', { class: `pair ${cls}`, tabindex: 0 });
+    g.appendChild(svg('title', {}, `${r.label}: one-shot ${r.oneshot == null ? 'none' : fmt(r.oneshot) + (r.oneshotN > 1 ? ` (best of ${r.oneshotN})` : '')} → agent ${r.agent == null ? 'not graded' : fmt(r.agent)}${r.agentN > 1 ? ` (best of ${r.agentN})` : ''}`));
+    const maxChars = Math.max(12, Math.floor((left - 14) / 7.2));
+    const name = r.short.length > maxChars ? r.short.slice(0, maxChars - 1).trimEnd() + '…' : r.short;
+    g.appendChild(svg('text', { x: left - 10, y: cy + 4, class: 'axis lbl', 'text-anchor': 'end' }, name));
+    if (r.oneshot != null && r.agent != null) g.appendChild(svg('line', { x1: x(r.oneshot), x2: x(r.agent), y1: cy, y2: cy, class: `link ${r.agent > r.oneshot ? 'up' : r.agent < r.oneshot ? 'down' : 'flat'}` }));
+    if (r.oneshot != null) g.appendChild(svg('circle', { cx: x(r.oneshot), cy, r: 5, class: 'one' }));
+    if (r.agent != null) g.appendChild(svg('circle', { cx: x(r.agent), cy, r: 6, class: 'agent', style: { '--c': r.color } }));
+    g.appendChild(svg('text', { x: W - right + 8, y: cy + 4, class: 'axis num' }, `${r.oneshot == null ? '–' : fmt(r.oneshot)} → ${r.agent == null ? '–' : fmt(r.agent)}`));
+    root.appendChild(g);
+  };
+  rows.forEach((r, i) => draw(r, i));
+  if (rows.length) {
+    root.appendChild(svg('line', { x1: 8, x2: W - 8, y1: top + rows.length * rowH + 1, y2: top + rows.length * rowH + 1, class: 'lane' }));
+    draw({ label: `mean of ${rows.length}`, short: 'mean', oneshot: panel.meanOneshot, agent: panel.meanAgent, color: '#f2c14e', oneshotN: 1, agentN: 1 }, rows.length, 'mean');
+  }
   return root;
 }
 

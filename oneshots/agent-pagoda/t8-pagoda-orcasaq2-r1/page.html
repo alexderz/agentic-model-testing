@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voxel Pagoda Garden</title>
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #bcd7ee; }
+  canvas { display: block; }
+</style>
+</head>
+<body>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js';
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xbcd7ee);
+scene.fog = new THREE.Fog(0xbcd7ee, 75, 190);
+
+const camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.1, 500);
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+renderer.setSize(innerWidth, innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.15;
+document.body.appendChild(renderer.domElement);
+
+addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+// ---------- lights ----------
+scene.add(new THREE.HemisphereLight(0xdfeaff, 0x7a9a6a, 1.1));
+const sun = new THREE.DirectionalLight(0xfff1dc, 2.6);
+sun.position.set(28, 42, 18);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.camera.left = -48;
+sun.shadow.camera.right = 48;
+sun.shadow.camera.top = 48;
+sun.shadow.camera.bottom = -48;
+sun.shadow.camera.near = 1;
+sun.shadow.camera.far = 140;
+sun.shadow.bias = -0.0004;
+sun.shadow.normalBias = 0.5;
+scene.add(sun);
+scene.add(sun.target);
+
+// ---------- material registry & merged-box builder ----------
+const MATS = {};
+function mkMat(key, color, extra) {
+  MATS[key] = new THREE.MeshLambertMaterial(Object.assign({ color }, extra || {}));
+  return key;
+}
+const _mat = { ground: mkMat('ground', 0x7fae62), stone1: mkMat('stone1', 0x9b9b93), stone2: mkMat('stone2', 0xa5a59c), stone3: mkMat('stone3', 0x90908a), body: mkMat('body', 0xb25a38), dark: mkMat('dark', 0x38271f), eave1: mkMat('eave1', 0x45414d), eave2: mkMat('eave2', 0x5a5566), eave3: mkMat('eave3', 0x67616f), spire1: mkMat('spire1', 0x7a5f38), spire2: mkMat('spire2', 0x8a6d3f), spire3: mkMat('spire3', 0x96764a), gold: mkMat('gold', 0xd9a441), red: mkMat('red', 0xd84a35), cap: mkMat('cap', 0x3a3a40), trunk: mkMat('trunk', 0x5d473a), pink1: mkMat('pink1', 0xf7b7ca), pink2: mkMat('pink2', 0xf9c9d8), pink3: mkMat('pink3', 0xf1a3bb), pondfloor: mkMat('pondfloor', 0x3f5f8a), rim: mkMat('rim', 0x8f8f88), lily: mkMat('lily', 0x6f9e57), path: mkMat('path', 0x9a9a92), lt1: mkMat('lt1', 0x94948c), lt2: mkMat('lt2', 0x8a8a82), lamp: mkMat('lamp', 0xf4d27a, { emissive: 0xf4d27a, emissiveIntensity: 0.8 }), g1: mkMat('g1', 0x6f9e57), g2: mkMat('g2', 0x79a85f), g3: mkMat('g3', 0x659650), g4: mkMat('g4', 0x82b06a), rock: mkMat('rock', 0x8d8d85) };
+
+const buckets = new Map();
+function addBox(w, h, d, x, y, z, key, rot, parent) {
+  let b = buckets.get(key);
+  if (!b) { b = { pos: [], nor: [], idx: [], base: 0 }; buckets.set(key, b); }
+  const g = new THREE.BoxGeometry(w, h, d);
+  const p = g.attributes.position, n = g.attributes.normal, ix = g.index;
+  const e = new THREE.Euler(rot ? rot[0] : 0, rot ? rot[1] : 0, rot ? rot[2] : 0);
+  const q = new THREE.Quaternion().setFromEuler(e);
+  let m = new THREE.Matrix4().compose(new THREE.Vector3(x, y, z), q, new THREE.Vector3(1, 1, 1));
+  if (parent) {
+    const pm = new THREE.Matrix4();
+    const pq = new THREE.Quaternion().setFromEuler(parent.rotation);
+    pm.compose(parent.position, pq, new THREE.Vector3(1, 1, 1));
+    m = pm.multiply(m);
+  }
+  const nm = new THREE.Matrix3().getNormalMatrix(m);
+  const v = new THREE.Vector3();
+  for (let i = 0; i < p.count; i++) {
+    v.fromBufferAttribute(p, i).applyMatrix4(m);
+    b.pos.push(v.x, v.y, v.z);
+    v.fromBufferAttribute(n, i).applyMatrix3(nm);
+    b.nor.push(v.x, v.y, v.z);
+  }
+  for (let i = 0; i < ix.count; i++) b.idx.push(ix.array[i] + b.base);
+  b.base += p.count;
+  g.dispose();
+}
+function buildBuckets() {
+  for (const [key, b] of buckets) {
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(b.pos, 3));
+    geo.setAttribute('normal', new THREE.Float32BufferAttribute(b.nor, 3));
+    geo.setIndex(b.idx);
+    const mesh = new THREE.Mesh(geo, MATS[key]);
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    scene.add(mesh);
+  }
+}
+
+// ---------- ground ----------
+addBox(92, 0.6, 92, 0, -0.3, 0, _mat.ground);
+
+// ---------- stone platform ----------
+addBox(16, 0.8, 16, 0, 0.4, 0, _mat.stone1);
+addBox(13, 0.8, 13, 0, 1.2, 0, _mat.stone2);
+addBox(10.5, 0.8, 10.5, 0, 2.0, 0, _mat.stone3);
+
+// ---------- five-story pagoda ----------
+const bodyW = [6.4, 5.8, 5.2, 4.6, 4.0];
+const overhang = [3.4, 3.0, 2.6, 2.2, 1.8];
+const bodyH = 2.3;
+let y = 2.4;
+for (let i = 0; i < 5; i++) {
+  const b = bodyW[i];
+  addBox(b, bodyH, b, 0, y + bodyH / 2, 0, _mat.body);
+  if (i === 0) {
+    addBox(1.5, 1.9, 0.16, 0, y + 0.95, b / 2 + 0.03, _mat.dark);
+  } else {
+    addBox(0.9, 1.3, 0.16, -b * 0.22, y + 1.25, b / 2 + 0.03, _mat.dark);
+    addBox(0.9, 1.3, 0.16, b * 0.22, y + 1.25, b / 2 + 0.03, _mat.dark);
+  }
+  const e = b + overhang[i];
+  addBox(e, 0.55, e, 0, y + bodyH - 0.275, 0, _mat.eave1);
+  for (const sx of [-1, 1]) {
+    for (const sz of [-1, 1]) {
+      const cx = sx * e / 2, cz = sz * e / 2;
+      addBox(1.15, 0.4, 1.15, cx + sx * 0.15, y + bodyH + 0.05, cz + sz * 0.15, _mat.eave2);
+      addBox(0.85, 0.35, 0.85, cx + sx * 0.95, y + bodyH + 0.45, cz + sz * 0.95, _mat.eave2);
+      addBox(0.6, 0.3, 0.6, cx + sx * 1.55, y + bodyH + 0.85, cz + sz * 1.55, _mat.eave3);
+    }
+  }
+  y += bodyH;
+}
+// spire (sorin)
+addBox(2.2, 0.45, 2.2, 0, y + 0.22, 0, _mat.spire1);
+addBox(0.6, 3.4, 0.6, 0, y + 1.95, 0, _mat.spire2);
+const rings = [2.0, 1.7, 1.4, 1.1, 0.8];
+const rh = [0.32, 0.3, 0.28, 0.26, 0.24];
+let ry = y + 3.75;
+for (let i = 0; i < rings.length; i++) {
+  addBox(rings[i], rh[i], rings[i], 0, ry, 0, _mat.spire3);
+  ry += 0.42;
+}
+addBox(0.55, 0.55, 0.55, 0, ry + 0.15, 0, _mat.gold);
+addBox(0.2, 0.5, 0.2, 0, ry + 0.7, 0, _mat.gold);
+
+// ---------- red torii gate ----------
+const gate = new THREE.Group();
+gate.position.set(12, 0, 10);
+gate.rotation.y = Math.atan2(-12, -10);
+scene.add(gate);
+for (const s of [-1, 1]) {
+  addBox(1.2, 0.5, 1.2, s * 2.4, 0.25, 0, _mat.stone1, null, gate);
+  addBox(0.85, 4.6, 0.85, s * 2.4, 2.3, 0, _mat.red, null, gate);
+}
+addBox(6.4, 0.5, 0.6, 0, 3.3, 0, _mat.red, null, gate);
+addBox(0.4, 0.9, 0.5, 0, 3.95, 0, _mat.red, null, gate);
+addBox(7.6, 0.5, 1.1, 0, 4.55, 0, _mat.red, null, gate);
+addBox(7.9, 0.22, 1.3, 0, 4.95, 0, _mat.cap, null, gate);
+for (const s of [-1, 1]) {
+  addBox(1.0, 0.3, 1.2, s * 3.9, 5.14, 0, _mat.cap, [0, 0, s * 0.3], gate);
+}
+
+// ---------- cherry blossom trees ----------
+const treePos = [[-12, -8], [14.5, -6], [-15, 7], [7, 16]];
+for (const [tx, tz] of treePos) {
+  const g = new THREE.Group();
+  g.position.set(tx, 0, tz);
+  g.rotation.y = Math.random() * Math.PI * 2;
+  scene.add(g);
+  addBox(0.9, 2.6, 0.9, 0, 1.3, 0, _mat.trunk, null, g);
+  addBox(0.55, 1.8, 0.55, 0.7, 3.2, 0.4, _mat.trunk, [0, 0, -0.5], g);
+  addBox(0.5, 1.6, 0.5, -0.6, 3.0, -0.3, _mat.trunk, [0.4, 0, 0.4], g);
+  addBox(4.6, 3.0, 4.6, 0, 4.6, 0, _mat.pink1, null, g);
+  addBox(2.8, 2.2, 2.6, 2.0, 5.6, 1.2, _mat.pink2, null, g);
+  addBox(2.6, 2.0, 2.8, -2.1, 5.4, -0.8, _mat.pink2, null, g);
+  addBox(2.4, 1.8, 2.4, 0.4, 6.2, -1.8, _mat.pink3, null, g);
+  addBox(2.2, 1.7, 2.2, -0.8, 6.4, 0.9, _mat.pink1, null, g);
+  addBox(2.0, 1.6, 2.0, 1.6, 4.2, -1.9, _mat.pink3, null, g);
+}
+
+// ---------- pond ----------
+const PX = -3, PZ = 14.5;
+addBox(8.4, 0.2, 4.7, PX, -0.12, PZ, _mat.pondfloor);
+addBox(9.6, 0.5, 1.0, PX, 0.18, PZ - 2.85, _mat.rim);
+addBox(9.6, 0.5, 1.0, PX, 0.18, PZ + 2.85, _mat.rim);
+addBox(1.0, 0.5, 4.7, PX - 4.3, 0.18, PZ, _mat.rim);
+addBox(1.0, 0.5, 4.7, PX + 4.3, 0.18, PZ, _mat.rim);
+for (let i = 0; i < 4; i++) {
+  addBox(0.7, 0.06, 0.7, PX + (Math.random() - 0.5) * 6.5, 0.16, PZ + (Math.random() - 0.5) * 3.4, _mat.lily);
+}
+for (let i = 0; i < 6; i++) {
+  addBox(0.25, 0.03, 0.16, PX + (Math.random() - 0.5) * 7, 0.16, PZ + (Math.random() - 0.5) * 3.8, _mat.pink2, [0, Math.random() * Math.PI, 0]);
+}
+
+// ---------- stone path ----------
+const pathAngle = Math.atan2(0.768, 0.640);
+const stones = [[4.8, 3.6], [6.9, 5.7], [9.0, 7.8], [10.9, 9.6]];
+for (const [sx, sz] of stones) {
+  addBox(1.5, 0.22, 1.1, sx, 0.11, sz, _mat.path, [0, Math.PI / 2 - pathAngle, 0]);
+}
+
+// ---------- stone lanterns ----------
+function lantern(x, z) {
+  addBox(0.9, 0.4, 0.9, x, 0.2, z, _mat.lt1);
+  addBox(0.35, 1.1, 0.35, x, 0.95, z, _mat.lt2);
+  addBox(0.34, 0.34, 0.34, x, 1.66, z, _mat.lamp);
+  addBox(1.1, 0.45, 1.1, x, 1.75, z, _mat.lt1);
+  addBox(1.35, 0.22, 1.35, x, 2.05, z, _mat.lt2);
+  addBox(0.3, 0.25, 0.3, x, 2.25, z, _mat.lt1);
+}
+lantern(4.2, 4.2);
+lantern(-7.5, 10.5);
+
+// ---------- grass tufts & rocks ----------
+const grassKeys = [_mat.g1, _mat.g2, _mat.g3, _mat.g4];
+function clearOf(x, z, pad) {
+  if (Math.abs(x) < 9.5 + pad && Math.abs(z) < 9.5 + pad) return false;
+  if (x > -8.6 - pad && x < 2.6 + pad && z > 10.2 - pad && z < 18.8 + pad) return false;
+  if (Math.hypot(x - 12, z - 10) < 3.6 + pad) return false;
+  for (const [tx, tz] of treePos) if (Math.hypot(x - tx, z - tz) < 2.0 + pad) return false;
+  return true;
+}
+for (let i = 0; i < 130; i++) {
+  for (let t = 0; t < 25; t++) {
+    const a = Math.random() * Math.PI * 2;
+    const r = 9.5 + Math.random() * 33;
+    const x = Math.cos(a) * r, z = Math.sin(a) * r;
+    if (!clearOf(x, z, 0)) continue;
+    const h = 0.25 + Math.random() * 0.45;
+    const s = 0.4 + Math.random() * 0.8;
+    addBox(s, h, s, x, h / 2, z, grassKeys[i % 4]);
+    break;
+  }
+}
+for (let i = 0; i < 10; i++) {
+  for (let t = 0; t < 25; t++) {
+    const a = Math.random() * Math.PI * 2;
+    const r = 10 + Math.random() * 32;
+    const x = Math.cos(a) * r, z = Math.sin(a) * r;
+    if (!clearOf(x, z, 0.2)) continue;
+    const s = 0.4 + Math.random() * 0.6;
+    addBox(s, s * 0.6, s, x, s * 0.3, z, _mat.rock);
+    break;
+  }
+}
+
+// ---------- water (separate material) ----------
+const water = new THREE.Mesh(
+  new THREE.BoxGeometry(8.4, 0.12, 4.7),
+  new THREE.MeshPhongMaterial({ color: 0x4f86c2, shininess: 90, specular: 0x99c4ff })
+);
+water.position.set(PX, 0.08, PZ);
+water.receiveShadow = true;
+scene.add(water);
+
+buildBuckets();
+
+// ---------- falling blossom petals (instanced) ----------
+const PETALS = 60;
+const petalInst = new THREE.InstancedMesh(
+  new THREE.BoxGeometry(0.26, 0.02, 0.18),
+  new THREE.MeshLambertMaterial({ color: 0xf9c2d0 }),
+  PETALS
+);
+petalInst.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+petalInst.castShadow = true;
+scene.add(petalInst);
+const petalData = [];
+function spawnPetal(p, first) {
+  const ti = (Math.random() * treePos.length) | 0;
+  const [tx, tz] = treePos[ti];
+  p.x = tx + (Math.random() - 0.5) * 8;
+  p.z = tz + (Math.random() - 0.5) * 8;
+  p.y = first ? 1 + Math.random() * 11 : 8 + Math.random() * 6;
+  p.vy = 0.5 + Math.random() * 0.8;
+  p.ph = Math.random() * Math.PI * 2;
+  p.sw = 0.4 + Math.random() * 0.7;
+  p.rx = Math.random() * Math.PI;
+  p.ry = Math.random() * Math.PI;
+  p.rw = new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5);
+}
+for (let i = 0; i < PETALS; i++) {
+  const p = {};
+  spawnPetal(p, true);
+  p.rx = Math.random() * Math.PI;
+  p.ry = Math.random() * Math.PI;
+  petalData.push(p);
+}
+// a few petals resting on the ground
+for (let i = 0; i < 30; i++) {
+  const ti = (Math.random() * treePos.length) | 0;
+  const [tx, tz] = treePos[ti];
+  addBox(0.26, 0.03, 0.18, tx + (Math.random() - 0.5) * 10, 0.02, tz + (Math.random() - 0.5) * 10, _mat.pink2, [0, Math.random() * Math.PI, 0]);
+}
+
+// ---------- camera orbit ----------
+const ORBIT_R = 38, ORBIT_H = 17, LOOK = new THREE.Vector3(0, 6.5, 0), SPIN = 0.1, A0 = 0.6;
+function placeCamera(t) {
+  const a = A0 + t * SPIN;
+  camera.position.set(ORBIT_R * Math.sin(a), ORBIT_H, ORBIT_R * Math.cos(a));
+  camera.lookAt(LOOK);
+}
+placeCamera(0);
+
+// ---------- debug hooks ----------
+window.__scene = scene;
+window.__renderer = renderer;
+window.__camera = camera;
+window.__frame = (x, y) => {
+  const gl = renderer.getContext();
+  const px = new Uint8Array(4);
+  gl.readPixels(x | 0, y | 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px);
+  return [px[0], px[1], px[2], px[3]];
+};
+
+// ---------- animation ----------
+const dummy = new THREE.Object3D();
+let last = performance.now();
+function updatePetals(dt, t) {
+  for (let i = 0; i < PETALS; i++) {
+    const p = petalData[i];
+    p.y -= p.vy * dt;
+    p.x += Math.sin(t * p.sw * 2 + p.ph) * 0.35 * dt;
+    p.z += Math.cos(t * p.sw * 1.7 + p.ph) * 0.35 * dt;
+    if (p.y < 0.06) spawnPetal(p, false);
+    p.rx += p.rw.x * dt * 2;
+    p.ry += p.rw.y * dt * 2;
+    dummy.position.set(p.x, p.y, p.z);
+    dummy.rotation.set(p.rx, p.ry, 0);
+    dummy.updateMatrix();
+    petalInst.setMatrixAt(i, dummy.matrix);
+  }
+  petalInst.instanceMatrix.needsUpdate = true;
+}
+function animate() {
+  requestAnimationFrame(animate);
+  const now = performance.now();
+  let dt = (now - last) / 1000;
+  last = now;
+  if (dt > 0.05) dt = 0.05;
+  const t = now / 1000;
+  updatePetals(dt, t);
+  placeCamera(t);
+  renderer.render(scene, camera);
+}
+renderer.render(scene, camera); // pre-warm shaders
+animate();
+</script>
+</body>
+</html>

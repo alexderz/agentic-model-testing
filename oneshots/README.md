@@ -1,4 +1,4 @@
-# One-shot replies: orrery (test 5) and pagoda (test 6)
+# One-shot replies: orrery (test 5) and pagoda (test 6), and the same tasks as agent runs (test 8)
 
 **Everything under `orrery/*/` and `pagoda/*/` except the frames is model output.** Models wrote these
 SVG and HTML files in one reply, without tools, and nobody edited them. The operator read them and judged
@@ -11,6 +11,13 @@ the code safe to run, and the project site plays them (see below).
 - `page.html` files load three.js from a public CDN, and a few load Google Fonts (`meta.json` lists each
   page's external URLs). Opening one makes those requests and runs the model's script.
 - The frames (`*.webp`) were rendered offline, in a container with no network. Grades come from them.
+
+## Test 8: `agent-orrery/` and `agent-pagoda/`
+
+The same two prompts given to an agent with a sealed browser that can see its own page, a two-hour cap and the same
+rubrics. Each case has the file the agent left (`orrery.svg` or `page.html`, unedited), three frames rendered offline,
+and a row in that folder's `grades.tsv`. The operator judged these files safe to run too, and the site plays them the
+same way. The transcripts and work directories are not published.
 
 ## Layout
 

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Voxel Japanese Pagoda</title>
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #141a21; }
+  canvas { display: block; }
+</style>
+</head>
+<body>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+
+// ---------- helpers ----------
+const R = (a, b) => a + Math.random() * (b - a);
+
+function jitterMat(base, amt) {
+  const c = base.isColor ? base.clone() : new THREE.Color(base);
+  c.offsetHSL(R(-amt, amt) * 0.12, R(-amt, amt), R(-amt, amt));
+  return c;
+}
+
+function box(x, y, z, w, h, d, mat) {
+  const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+  m.position.set(x, y, z);
+  m.castShadow = m.receiveShadow = true;
+  return m;
+}
+
+// ---------- renderer / scene ----------
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.08;
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+const SKY = new THREE.Color(0x24313f);
+scene.background = SKY;
+scene.fog = new THREE.FogExp2(SKY.getHex(), 0.0135);
+
+const camera = new THREE.PerspectiveCamera(42, innerWidth / innerHeight, 0.5, 140);
+
+window.__s = { renderer, scene, camera };
+window.THREE = THREE;
+
+addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+// ---------- lights ----------
+const hemi = new THREE.HemisphereLight(0xbcd2ea, 0x39424a, 0.55);
+hemi.color = new THREE.Color(0xbcd2ea);
+hemi.groundColor = new THREE.Color(0x39424a);
+scene.add(hemi);
+
+const sun = new THREE.DirectionalLight(0xffe3c0, 1.75);
+sun.position.set(15, 24, 10);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.camera.left = -20;
+sun.shadow.camera.right = 20;
+sun.shadow.camera.top = 20;
+sun.shadow.camera.bottom = -20;
+sun.shadow.camera.near = 4;
+sun.shadow.camera.far = 55;
+sun.shadow.bias = -0.0005;
+sun.shadow.normalBias = 0.6;
+scene.add(sun, sun.target);
+
+// ---------- ground + pond ----------
+{
+  const g = box(0, 0.4, 0, 32, 0.8, 32,
+    new THREE.MeshLambertMaterial({ color: 0xd8b183 }));
+  scene.add(g);
+  g.castShadow = false;
+
+  const pTop = box(-6.8, 0.84, -4.2, 8.4, 0.5, 6.4,
+    new THREE.MeshLambertMaterial({ color: 0x4f8fd2, transparent: true, opacity: 0.88 }));
+  const pBed = box(-6.8, 0.72, -4.2, 9.4, 0.3, 7.4,
+    new THREE.MeshLambertMaterial({ color: 0x54483b }));
+  pTop.castShadow = false; pTop.receiveShadow = true;
+  scene.add(pBed, pTop);
+}
+
+// ---------- stone platform ----------
+{
+  const stone = (x, y, z, w, h, d) =>
+    box(x, y, z, w, h, d, new THREE.MeshLambertMaterial({ color: jitterMat(0x71767e, 0.16) }));
+
+  const p = new THREE.Group();
+  p.add(
+    stone(0, 1, 0, 15.5, 2, 15.5),
+    stone(0, 2.6, 0, 12, 1.2, 12),
+    stone(0, 3.45, 7.6, 4.2, 0.55, 1.5),
+    stone(0, 2.8, 8.7, 4.8, 0.55, 1.5),
+    stone(0, 2.15, 9.8, 5.4, 0.55, 1.5)
+  );
+  scene.add(p);
+}
+
+// ---------- five-story pagoda ----------
+function pagodaRoof(w, rise, base) {
+  // square ring of cells, corners lift for the upturned eave
+  const inner = w - 2;
+  const g = new THREE.Group();
+  const n = w / 2;
+  for (let x = -n; x <= n + 1e-6; x += 1) {
+    for (let z = -n; z <= n + 1e-6; z += 1) {
+      const mx = Math.abs(x), mz = Math.abs(z);
+      const outer = Math.max(mx, mz), innerD = Math.min(mx, mz);
+      if (outer > n + 1e-6 || innerD < (inner) / 2 - 1e-6) continue;
+      const lift = rise * Math.pow(innerD / (inner / 2), 1.35);
+      g.add(box(x, 0.55 + lift, z, 1.04, 1.1, 1.04,
+        new THREE.MeshLambertMaterial({ color: jitterMat(base, 0.1) })));
+    }
+  }
+  return g;
+}
+
+const pagoda = new THREE.Group();
+{
+  const F = [
+    { w: 9.0, r: 13.0, h: 2.3 },
+    { w: 7.5, r: 11.6, h: 2.15 },
+    { w: 6.5, r: 10.6, h: 2.0 },
+    { w: 5.5, r: 9.6,  h: 1.9 },
+    { w: 4.5, r: 8.6,  h: 1.8 },
+  ];
+  let y = 3.4; // top of platform
+  for (let i = 0; i < 5; i++) {
+    const f = F[i];
+    const bodyMat = new THREE.MeshLambertMaterial({ color: jitterMat(0xa85a32, 0.13) });
+    const body = box(0, y + f.h / 2, 0, f.w, f.h, f.w, bodyMat);
+    // window row on the +z face
+    const winMat = new THREE.MeshLambertMaterial({ color: 0x2e2018, emissive: 0x50311a });
+    const nw = Math.max(0, Math.floor((f.w - 2) / 3) - 1);
+    for (let k = 0; k < nw; k++) {
+      const wx = -((nw - 1) * 1.6) / 2 + k * 1.6;
+      const win = box(wx, y + f.h * 0.52, f.w / 2 + 0.02, 1.15, 1.3, 0.18, winMat);
+      body.add(win);
+    }
+    pagoda.add(body);
+    y += f.h;
+
+    const roof = pagodaRoof(f.r, 0.9 + i * 0.22, 0x41464f);
+    roof.position.y = y;
+    pagoda.add(roof);
+    y += 1.1;
+  }
+
+  // spire (kusu no ki)
+  const gold = 0xc89a4b;
+  const spire = new THREE.Group();
+  const S = [3.2, 2.5, 2.0, 1.5, 1.0, 0.6];
+  let sy = y;
+  for (let i = 0; i < S.length; i++) {
+    spire.add(box(0, sy + 0.38, 0, S[i], 0.76, S[i],
+      new THREE.MeshLambertMaterial({ color: jitterMat(gold, 0.15) })));
+    sy += 0.76;
+  }
+  spire.add(box(0, sy + 1.05, 0, 0.7, 2.2, 0.7,
+    new THREE.MeshLambertMaterial({ color: gold })));
+  pagoda.add(spire);
+}
+scene.add(pagoda);
+
+// ---------- torii ----------
+{
+  const red = (x, yy, z, w, h, d, rotY = 0) => {
+    const m = box(x, yy, z, w, h, d,
+      new THREE.MeshLambertMaterial({ color: jitterMat(0xc73e2e, 0.1) }));
+    m.rotation.y = rotY;
+    return m;
+  };
+  const t = new THREE.Group();
+  t.add(
+    red(-3.5, 3.6, 0, 1.1, 7.2, 1.1),
+    red(3.5, 3.6, 0, 1.1, 7.2, 1.1),
+    red(0, 4.35, 0, 8.9, 0.95, 0.95),
+    red(0, 5.5, 0, 9.6, 0.55, 1.35),
+    red(0, 6.45, 0, 10.6, 1.05, 1.5),
+    red(-5.45, 6.7, 0, 1.35, 1.5, 1.55, Math.PI / 4),
+    red(5.45, 6.7, 0, 1.35, 1.5, 1.55, -Math.PI / 4),
+    red(0, 3.7, 0, 0.7, 1.1, 0.7)
+  );
+  t.position.set(0.4, 0.8, 8.6);
+  scene.add(t);
+}
+
+// ---------- cherry blossom trees ----------
+function cherry(x, z) {
+  const g = new THREE.Group();
+  const bark = 0x6d4a30;
+  g.add(box(0, 3, 0, 1.2, 6, 1.2, new THREE.MeshLambertMaterial({ color: bark })));
+  const br = (bx, by, bz, r = 0.9) =>
+    box(bx, by, bz, r, r, r, new THREE.MeshLambertMaterial({ color: jitterMat(bark, 0.2) }));
+  g.add(
+    br(0.9, 5.2, 0),
+    br(-1.0, 6.4, 0.4),
+    br(0.5, 7.2, -0.7)
+  );
+  const crown = new THREE.Group();
+  for (let i = 0; i < 34; i++) {
+    const v = new THREE.Vector3(R(-1, 1), R(-1, 1), R(-1, 1)).normalize()
+      .multiplyScalar(R(0.35, 1) ** 0.5 * 3.3);
+    const s = R(1.3, 2.7);
+    crown.add(box(v.x, 8.4 + v.y, v.z, s, s * R(0.75, 1.05), s,
+      new THREE.MeshLambertMaterial({ color: jitterMat(0xe9a7bb, 0.18) })));
+  }
+  g.add(crown);
+  g.position.set(x, 0.8, z);
+  g.rotation.y = R(0, 6.28);
+  scene.add(g);
+}
+cherry(-8.2, -6.4);
+cherry(7.6, -7.2);
+cherry(-5.2, 6.6);
+cherry(8.1, 4.4);
+
+// ---------- falling petals ----------
+const PETALS = 90;
+const petalGeo = new THREE.BoxGeometry(0.34, 0.05, 0.34);
+const petals = [];
+const pMat = new THREE.MeshBasicMaterial({ color: 0xf4bfd0 });
+for (let i = 0; i < PETALS; i++) {
+  const p = new THREE.Mesh(petalGeo, pMat.clone());
+  p.userData = {
+    x: R(-14, 14), z: R(-14, 14),
+    y: R(9, 22),
+    speed: R(1.5, 2.4),
+    sx: R(0.5, 1.1), sy: R(0.5, 1.1),
+    px: R(0, 6.28), py: R(0, 6.28),
+    rx: R(0.6, 1.6), ry: R(0.6, 1.6)
+  };
+  p.position.set(p.userData.x, p.userData.y, p.userData.z);
+  p.castShadow = false; p.receiveShadow = false;
+  scene.add(p);
+  petals.push(p);
+}
+
+// ---------- animate ----------
+const clock = new THREE.Clock();
+const target = new THREE.Vector3(0, 6.4, 0);
+
+function tick() {
+  requestAnimationFrame(tick);
+  const t = clock.getElapsedTime();
+
+  const th = t * 0.42;
+  const rad = 27;
+  camera.position.set(
+    target.x + Math.sin(th) * rad,
+    target.y + 7.4,
+    target.z + Math.cos(th) * rad
+  );
+  camera.lookAt(target);
+
+  for (const p of petals) {
+    const u = p.userData;
+    p.position.x = u.x + Math.sin(t * u.sx + u.px) * 0.8;
+    p.position.z = u.z + Math.cos(t * u.sy + u.py) * 0.8;
+    p.position.y = u.y - (t * u.speed);
+    if (p.position.y < 0.9) {
+      p.position.y += 13.5;
+      p.position.x = R(-14, 14);
+      p.position.z = R(-14, 14);
+      u.y = R(9, 22);
+    }
+    p.rotation.x += u.rx * 0.016;
+    p.rotation.y += u.ry * 0.016;
+  }
+
+  renderer.render(scene, camera);
+}
+tick();
+</script>
+</body>
+</html>

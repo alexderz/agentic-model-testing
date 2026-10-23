@@ -2,13 +2,62 @@
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "tests": [
-  {"id": "t1", "number": "1", "name": "Command-line tool", "kind": "agentic", "what": "Write a Python CLI for the Home Assistant REST API.", "graded": "The grader runs the tool in a sandbox: entry point and help, real data, bad input, bad token, no crash (5 checks), plus the model's own tests."},
-  {"id": "t2", "number": "2", "name": "MCP server in Rust", "kind": "agentic", "what": "Build a Model Context Protocol server in Rust from the spec on disk.", "graded": "Built and driven as a real MCP client: initialize, tools/list and a tools/call that must return real data. Pass, partial or fail."},
-  {"id": "t2t", "number": "2T", "name": "Trust the docs", "kind": "agentic", "what": "Test 2 with a REST reference that has three planted wrong endpoints.", "graded": "Did the model test, avoid, hedge or trust the planted endpoints? Read from the replay's access log and the shipped code."},
-  {"id": "t3", "number": "3", "name": "Use and fix an MCP server", "kind": "agentic", "what": "Describe a recorded house through an MCP server, then find and fix what is wrong with it.", "graded": "Facts checked against the recording, a judgement on whether the server can be trusted, and the fix run against the client."},
-  {"id": "t5", "number": "5", "name": "Brass orrery", "kind": "one-shot", "what": "One reply, no tools: an animated SVG orrery with planets at real ratios and a meshing gear train.", "graded": "Rendered offline in a container with no network; five points of 0-2 (draws, planets, gears, lighting, motion)."},
-  {"id": "t6", "number": "6", "name": "Voxel pagoda", "kind": "one-shot", "what": "One reply, no tools: a three.js voxel Japanese pagoda with cherry trees, pond and torii.", "graded": "Rendered offline with software WebGL; five points of 0-2 (draws, voxels, pagoda, setting, life)."},
-  {"id": "t7", "number": "7", "name": "Ticket fixes in Rust", "kind": "agentic", "what": "Ticket-sized fixes in a real Rust project.", "graded": "The project's own tests, run after the agent finishes."}
+  {
+   "id": "t1",
+   "number": "1",
+   "name": "Command-line tool",
+   "kind": "agentic",
+   "what": "Write a Python CLI for the Home Assistant REST API.",
+   "graded": "The grader runs the tool in a sandbox: entry point and help, real data, bad input, bad token, no crash (5 checks), plus the model's own tests."
+  },
+  {
+   "id": "t2",
+   "number": "2",
+   "name": "MCP server in Rust",
+   "kind": "agentic",
+   "what": "Build a Model Context Protocol server in Rust from the spec on disk.",
+   "graded": "Built and driven as a real MCP client: initialize, tools/list and a tools/call that must return real data. Pass, partial or fail."
+  },
+  {
+   "id": "t2t",
+   "number": "2T",
+   "name": "Trust the docs",
+   "kind": "agentic",
+   "what": "Test 2 with a REST reference that has three planted wrong endpoints.",
+   "graded": "Did the model test, avoid, hedge or trust the planted endpoints? Read from the replay's access log and the shipped code."
+  },
+  {
+   "id": "t3",
+   "number": "3",
+   "name": "Use and fix an MCP server",
+   "kind": "agentic",
+   "what": "Describe a recorded house through an MCP server, then find and fix what is wrong with it.",
+   "graded": "Facts checked against the recording, a judgement on whether the server can be trusted, and the fix run against the client."
+  },
+  {
+   "id": "t5",
+   "number": "5",
+   "name": "Brass orrery",
+   "kind": "one-shot",
+   "what": "One reply, no tools: an animated SVG orrery with planets at real ratios and a meshing gear train.",
+   "graded": "Rendered offline in a container with no network; five points of 0-2 (draws, planets, gears, lighting, motion)."
+  },
+  {
+   "id": "t6",
+   "number": "6",
+   "name": "Voxel pagoda",
+   "kind": "one-shot",
+   "what": "One reply, no tools: a three.js voxel Japanese pagoda with cherry trees, pond and torii.",
+   "graded": "Rendered offline with software WebGL; five points of 0-2 (draws, voxels, pagoda, setting, life)."
+  },
+  {
+   "id": "t4",
+   "number": "4",
+   "name": "Ticket fixes in Rust",
+   "kind": "agentic",
+   "what": "Ticket-sized fixes in a real Rust project.",
+   "graded": "The project's own tests, run after the agent finishes."
+  }
  ],
  "findings": [
   {
@@ -18,10 +67,30 @@
    "summary": "Qwen3.8 Flash-Next (125B, 6B active) does not fit in 24 GB, so llama.cpp keeps experts in system RAM. Keeping all of them there (-cmoe) and giving the GPU a cache of hot experts (--moe-cache-mib), with q8 KV to make room, beat the old split of 40 layers on CPU on every GGUF tried, at 262k context.",
    "settings": "-cmoe --moe-cache-mib 12800 -ctk q8_0 -ctv q8_0 -b 2048 -ub 1024 -t 16",
    "metrics": [
-    {"label": "Decode, orca IQ4_XS", "before": 13, "after": 24, "unit": "tok/s"},
-    {"label": "Prefill at 16-48k", "before": 250, "after": 415, "unit": "tok/s"},
-    {"label": "Decode, swift15 IQ3_XXS", "before": 15, "after": 23, "unit": "tok/s"},
-    {"label": "Decode, abliterated s1.5", "before": 13, "after": 20, "unit": "tok/s"}
+    {
+     "label": "Decode, orca IQ4_XS",
+     "before": 13,
+     "after": 24,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Prefill at 16-48k",
+     "before": 250,
+     "after": 415,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Decode, swift15 IQ3_XXS",
+     "before": 15,
+     "after": 23,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Decode, abliterated s1.5",
+     "before": 13,
+     "after": 20,
+     "unit": "tok/s"
+    }
    ],
    "quality": "Against the old f16 KV config: mean KL 0.0011 and 98 % top-1 agreement over 100k tokens of real code; two loads of the same config differ by KL 0.0002. Needles found at 100k, 190k and 250k.",
    "caveat": "Lazy tensor reads (llama.cpp's default) make the first pass over unseen text slow when the page cache is cold; -lzm off fixes it but costs about 28 GB of extra RAM."
@@ -32,8 +101,18 @@
    "kind": "tuning",
    "summary": "The stock Flash-Next EXL3 3-bit build on SGLang with an fp8 KV cache serves 204,800 tokens of context and images at 24-25 tok/s, two sessions at once.",
    "metrics": [
-    {"label": "Decode", "before": null, "after": 25, "unit": "tok/s"},
-    {"label": "Prefill at 190k", "before": null, "after": 2600, "unit": "tok/s"}
+    {
+     "label": "Decode",
+     "before": null,
+     "after": 25,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Prefill at 190k",
+     "before": null,
+     "after": 2600,
+     "unit": "tok/s"
+    }
    ],
    "quality": "Tools, vision and 11 of 11 multi-session checks pass; needle found at 100k, 150k and 190k; a repeated 190k prompt answers in 0.5 s."
   }
