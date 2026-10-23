@@ -22,19 +22,32 @@ pointer, and new work lands here.
 
 ## The tests in one paragraph each
 
-- **Tests 1-4**: agentic coding against the Home Assistant REST API: a CLI, an MCP server
-  built from a spec, using that server to answer questions about a recorded installation, and
-  ticket-sized fixes in a Rust project. Agents run in a locked-down container (`harness/sandbox/`)
-  that can reach only the model server and a replay of a recorded Home Assistant fixture
-  (`harness/ha-replay.py`), never a live house.
-- **Test 7**: a seeded generator for a three-floor labyrinth, checked on unseen seeds.
+- **Test 1**: a Python command-line tool for the Home Assistant REST API, run and checked by a grader
+  in a locked-down container (`harness/sandbox/`). Agents can reach only the model server and a
+  replay of a recorded Home Assistant fixture (`harness/ha-replay.py`), never a live house.
+- **Test 2**: an MCP server built from a spec, with the same container and replay. **Test 2T** is
+  test 2 with a reference document in the workspace that has three deliberately wrong endpoints.
+- **Test 3**: use an MCP server through a subagent that has only that server's tools. The agent
+  gets 14 facts about the recorded installation, checks them, decides whether to trust the server
+  and fixes it if not (3G: a known-good server; 3O: the model's own server from test 2). A
+  12-point rubric scores how the agent works with the subagent.
+- **Test 4**: ticket-sized fixes (a bug, a feature, a cross-cutting change) in a Rust MCP server that
+  already passes its 155 tests, graded with hidden checks and a regression count.
 - **Test 5 (orrery) and test 6 (pagoda)**: one reply, no tools, to a single creative-coding prompt
   (`harness/suites/prompt-test5-orrery.txt`, `harness/suites/prompt-test6-pagoda.txt`), rendered
   offline and graded on a five-part rubric (`harness/suites/test5/README.md`,
-  `harness/suites/test6/README.md`).
-- **Test 8**: the same two prompts given to an agent with a locked-down browser that can see its own
-  page. The agent's final page, its rendered frames and the grades are in `oneshots/agent-pagoda/`
-  and `oneshots/agent-orrery/`; the transcripts and work directories are not published (see below).
+  `harness/suites/test6/README.md`). Frames and grades: `oneshots/orrery/` and `oneshots/pagoda/`.
+- **Test 7**: a seeded generator for a three-floor labyrinth, checked on unseen seeds. Only pilot
+  runs are graded so far.
+- **Test 8**: the same two prompts as tests 5 and 6, given to an agent with a locked-down browser
+  that can see its own page and a 2 hour cap. The agent's final page, its rendered frames and the
+  grades are in `oneshots/agent-pagoda/` and `oneshots/agent-orrery/`; the transcripts and work
+  directories are not published (see below). A model whose one-shot pagoda was blank scored 7 to 10
+  as an agent, so the one-shot score does not predict the agent score.
+
+Method, results and settings are written up in [`docs/model-research/`](docs/model-research/README.md):
+[Method](docs/model-research/method.md), [Conclusions](docs/model-research/conclusions.md),
+[Engines](docs/model-research/engines.md) and [Tuning](docs/model-research/tuning.md).
 
 ## Not here yet
 

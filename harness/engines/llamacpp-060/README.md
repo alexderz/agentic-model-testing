@@ -1,5 +1,8 @@
 # llama.cpp v0.6.0 as a second llama.cpp engine
 
+Status (2026-10-22): superseded. llama.cpp 0.7.0 has been the build behind every llama.cpp entry since
+2026-10-18 (see `docs/model-research/engines.md`). This note records how 0.6.0 was set up.
+
 Claw's llama-swap image on titan carries llama.cpp 0.4.1-dev (commit 4260903).
 v0.6.0 (2026-10-05) runs beside it from the official image, untouched by and
 not touching Claw's setup:

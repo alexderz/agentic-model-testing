@@ -27,7 +27,7 @@ Setups that load the vision head or tower:
 
 | Variant | Head lives on | Extra VRAM | Tokens per screenshot | Status |
 | --- | --- | --- | --- | --- |
-| ThinkingCap-27B Heretic · llama.cpp 0.6, all on GPU + vision | CPU (--no-mmproj-offload) | ~0 GB (est.); 0.6 GB head + buffers in system RAM; 7.5 s per screenshot request | 922 (measured) | planned, not configured yet |
+| ThinkingCap-27B Heretic · llama.cpp 0.6, all on GPU + vision | CPU (--no-mmproj-offload) | ~0 GB (est.); 0.6 GB head + buffers in system RAM; 7.5 s per screenshot request | 922 (measured) | configured; answered the smoke image on 2026-10-15 |
 
 Loading a head costs VRAM: its weights plus a compute buffer, about 1.1 to 2.7 GB by head type. On a card already full with the model and its context, the head goes on the CPU instead (llama.cpp --no-mmproj-offload, or the engine's host-RAM offload): then it costs almost no VRAM but system RAM, and every image is encoded on the CPU, which takes longer per screenshot. Every screenshot also takes context: about 400 to 1,200 tokens for a 1280x720 image, depending on the head. A long agent run that takes screenshots often fills its context and compacts sooner. For example, with a head that costs about 920 tokens per screenshot (the Qwen3-VL style), 100 screenshots in a 2-hour run are about 92,000 tokens, over a third of a 262k window.
 
@@ -58,4 +58,13 @@ The model gets an MCP server's source and a probe subagent whose only tools are 
 | 3G | 14/14 | 2 | no | 12/12 | 19.8 | 9 | Read the whole source, built REST ground truth (caught and fixed a bug in its own script), then two probes in parallel, each a short list of exact tool calls with exact arguments, the one field to report per call, "ABSENT" markers for missing attributes and verbatim errors. … |
 | 3O | 14/14 | 2 | fixed: 8 tools, 58 tests pass | 12/12 | 24.7 | 15 | Baseline probe named its own tools and asked for the text and the structured value per call, errors verbatim. Found that temperature, HVAC mode and lock service names lived only in structuredContent, which OpenCode does not pass to the probe, so they were unreachable through … |
 
-_Generated from the bake-off results on 2026-10-15._
+## Test 8: the pagoda and the orrery as an agent task
+
+The same two prompts as the one-shot tests 5 and 6, solved by an agent in OpenCode with a sealed browser to look at its own page, a two-hour cap and the same five-part rubric (A to E, 0-2 each, 10 in all). One run per task. The files and frames are in [`oneshots/agent-pagoda`](../../../oneshots/agent-pagoda/) and [`oneshots/agent-orrery`](../../../oneshots/agent-orrery/).
+
+| Entry | Task | Score | Minutes | tok/s | Notes |
+| --- | --- | --- | --- | --- | --- |
+| lcpp6-thinkingcap-27b-heretic | Pagoda | 9/10 (A2 B2 C1 D2 E2) | 114 | 19.6 | Vision off; 32 browser calls, 1 compaction, 114 min. Clean render, ringed red and gold spire; the eave upturns are single cubes level with the upper layer, so none visibly rises (C 1). |
+| lcpp6-thinkingcap-27b-heretic | Orrery | 8/10 (A2 B2 C2 D1 E1) | 120 | 25.8 | Stopped at the 2 h cap and graded as left; 1 browser call, 1 compaction. Eight planets at exact ratios on brass ring gears; the gear train does not demonstrably drive the orbits (D 1); the night shade is fixed because planets do not spin (E 1). |
+
+_Generated from the bake-off results on 2026-10-15; the Test 8 section was added by hand on 2026-10-22._

@@ -3,7 +3,8 @@
 Third llama.cpp engine beside Claw's llama-swap build (0.4.1-dev) and `lcpp6` (v0.6.0, b11429).
 Needed for two architectures that landed after b11429: MiniCPM-V 4.7 (projector `minicpmv4_7`)
 and EmbeddingGemma 2 (`gemma-embedding2`). Prepared 2026-10-15 (Model Master 2).
-No llama-swap entry exists yet: the entries below are DRAFTS for the parent to add in a queue step.
+Status (2026-10-22): superseded. llama.cpp 0.7.0 has been the build behind every llama.cpp entry since
+2026-10-18 (see `docs/model-research/engines.md`). The entries below are the original drafts, kept as a record.
 
     ghcr.io/ggml-org/llama.cpp:server-cuda12-b11641   (same index as server-cuda-b11641 and, today, server-cuda12)
     = ghcr.io/ggml-org/llama.cpp@sha256:9dfa49ca795363f5fff96f501469e3565e757951f04701a8ad8a5dc5e3ee916d   (OCI index)

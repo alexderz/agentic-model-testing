@@ -15,7 +15,7 @@ Flash-Next with refusals removed by Heretic's automated abliteration. Vision-cap
 
 ## Verdict
 
-Fastest of the big uncensored models. On llama.cpp 0.6 with long-horizon settings it passed test 2 (7 tools, 33 tests) in 120 minutes at 14.6 tok/s: about twice as fast as the Orcarouter fine-tune on the same engine, which built more (8 tools, 54 tests). Test 1 passed (5/5) on llama.cpp 0.4. In test 3 it handled the known-good server perfectly (14/14 facts, rubric 12/12) but misjudged its own: that server returns data only as structured content with a one-line text summary, so its probe saw 5 of 14 facts, and it still declared the server correct (rubric 8/12).
+Fastest of the big uncensored models. On llama.cpp 0.6 with long-horizon settings it passed test 2 (7 tools, 33 tests) in 120 minutes at 14.6 tok/s: about twice as fast as the Orcarouter fine-tune on the same engine, which built more (8 tools, 54 tests). Test 1 passed (5/5) on llama.cpp 0.4. In test 3 it handled the known-good server perfectly (14/14 facts, rubric 12/12) but misjudged its own: that server returns data only as structured content with a one-line text summary, so its probe saw 5 of 14 facts, and it still declared the server correct (rubric 8/12). Since 2026-10-22 the llama.cpp entry runs on 0.7.0 with all experts in RAM and a 12800 MiB GPU cache (`-cmoe --moe-cache-mib 12800`, 8-bit KV, `-b 2048 -ub 1024`): about 18 tok/s streamed, was 11-14 (12.3 in the sweep). Tools, vision, a 211k needle and 11 of 11 multi-session checks pass on it. Mean KL against the old f16-KV configuration is 0.0011 (measured on the Orcarouter GGUF). This configuration has not been through tests 1 and 2; the results below are from llama.cpp 0.4 and 0.6.
 
 ## Vision
 
@@ -28,7 +28,7 @@ Setups that load the vision head or tower:
 | Variant | Head lives on | Extra VRAM | Tokens per screenshot | Status |
 | --- | --- | --- | --- | --- |
 | Flash-Next Heretic2 · llama.cpp, experts in RAM | GPU | +1.4-2.7 GB (est.) | ~920 (est.) | configured |
-| Flash-Next Heretic2 · llama.cpp 0.6, experts in RAM + vision | CPU (--no-mmproj-offload) | ~0 GB (est.); 0.9 GB head + buffers in system RAM; 11.5 s per screenshot request | 922 (measured) | planned, not configured yet |
+| Flash-Next Heretic2 · llama.cpp 0.6, experts in RAM + vision | CPU (--no-mmproj-offload) | ~0 GB (est.); 0.9 GB head + buffers in system RAM; 11.5 s per screenshot request | 922 (measured) | configured; answered the smoke image on 2026-10-15 |
 
 Loading a head costs VRAM: its weights plus a compute buffer, about 1.1 to 2.7 GB by head type. On a card already full with the model and its context, the head goes on the CPU instead (llama.cpp --no-mmproj-offload, or the engine's host-RAM offload): then it costs almost no VRAM but system RAM, and every image is encoded on the CPU, which takes longer per screenshot. Every screenshot also takes context: about 400 to 1,200 tokens for a 1280x720 image, depending on the head. A long agent run that takes screenshots often fills its context and compacts sooner. For example, with a head that costs about 920 tokens per screenshot (the Qwen3-VL style), 100 screenshots in a 2-hour run are about 92,000 tokens, over a third of a 262k window.
 
@@ -40,6 +40,7 @@ Each variant is one engine and settings combination. Context and expert offload 
 | --- | --- | --- | --- | --- | --- |
 | Flash-Next Heretic2 · llama.cpp, experts in RAM | llama.cpp 0.4 | IQ4XS-NGQ4 | 128k | 42 | 8.7 |
 | Flash-Next Heretic2 · llama.cpp 0.6, experts in RAM | llama.cpp 0.6 | IQ4XS-NGQ4 | 256k | 40 | 14.6 |
+| Flash-Next Heretic2 · llama.cpp 0.7.0, all experts in RAM plus a 12800 MiB GPU cache, q8 KV | llama.cpp 0.7.0 | IQ4XS-NGQ4 | 256k | all | not run through a test; about 18 tok/s streamed (2026-10-22) |
 
 ## Results
 
@@ -59,4 +60,13 @@ The model gets an MCP server's source and a probe subagent whose only tools are 
 | 3G | 14/14 | 1 | no | 12/12 | 5.5 | 19 | One probe session with eight numbered calls naming exact arguments and fields, the tool's own matched/returned/next_cursor plus the probe's own tally, a list_domains cross-check and errors quoted verbatim; then built REST ground truth in one curl and Python pass and matched all … |
 | 3O | 5/14 | 2 | fixed: 7 tools, 33 tests pass | 8/12 | 10.3 | 44 | Two probe sessions with good numbered briefs (exact definitions, errors quoted verbatim, final 14-fact table) and a full REST ground truth. Its own server returns data only in structuredContent with a one-line text summary, so the probe saw just "434 entities", "light: 52 … |
 
-_Generated from the bake-off results on 2026-10-15._
+## Test 8: the pagoda and the orrery as an agent task
+
+The same two prompts as the one-shot tests 5 and 6, solved by an agent in OpenCode with a sealed browser to look at its own page, a two-hour cap and the same five-part rubric (A to E, 0-2 each, 10 in all). One run per task. The files and frames are in [`oneshots/agent-pagoda`](../../../oneshots/agent-pagoda/) and [`oneshots/agent-orrery`](../../../oneshots/agent-orrery/).
+
+| Entry | Task | Score | Minutes | tok/s | Notes |
+| --- | --- | --- | --- | --- | --- |
+| lcpp6-flashnext-heretic2 | Pagoda | 7/10 (A1 B2 C1 D1 E2) | 26 | 11.9 | Vision off; 11 browser calls, 26 min. The camera aspect is never updated, so the scene is stretched 1.6 times sideways (A 1); the spire is cut off at the top (C 1); the pond is out of frame (D 1). |
+| lcpp6-flashnext-heretic2 | Orrery | 7/10 (A1 B2 C2 D1 E1) | 53 | 14.0 | Vision off; 5 browser calls, 53 min. Eight planets at exact ratios and the arms orbit, but the gear paths are drawn at the corner and cover the title, so no pair meshes (D 1); fixed crescent shade (E 1). |
+
+_Generated from the bake-off results on 2026-10-15; the Test 8 section was added by hand on 2026-10-22._

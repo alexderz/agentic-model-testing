@@ -1,6 +1,6 @@
 # Privacy / review boundary
 
-Local review draft; not published. Independent scoped privacy and offline fixture review completed; no publication was performed. No commit, push or GitHub comment performed.
+Review notes for the package, committed to this repository on 2026-10-16. Independent scoped privacy and offline fixture review completed. This file records the review, not any GitHub comment.
 
 ## Included / excluded
 
