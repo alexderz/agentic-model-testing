@@ -6,7 +6,7 @@
       "name": "llama.cpp",
       "kind": "GGUF server; dense models and MoE with experts in RAM",
       "versions": [
-        {"version": "0.4.1-dev (commit 4260903)", "date": "2026-09-23 to 2026-10-18", "note": "Bundled build used by the native entries; Flash-Next with experts in RAM: 2.2 tok/s on the probe."},
+        {"version": "0.4.1-dev (commit 4260903)", "date": "2026-09-23 to 2026-10-18", "note": "Bundled build used by the native entries; Flash-Next with experts in RAM: 2.2 tok/s on the probe; long agent runs on it ran out of time."},
         {"version": "0.6.0 (official image, build 11429)", "date": "2026-10-05", "note": "2.5-4x faster than 0.4 on Flash-Next with experts in RAM; MTP and n-gram drafting fixes."},
         {"version": "0.7.0", "date": "2026-10-15", "note": "Adds a GPU cache for experts kept in RAM (--moe-cache-mib); in the router since 2026-10-18."},
         {"version": "Newer official builds", "date": "2026-10-21", "note": "Flint needs b11803 or later; Carbon-X needs b11742 or later; trials ran by hand, not in the router."}
@@ -43,7 +43,7 @@
         {"model": "Qwen3.8-27B Cyber", "config": "0.6, all on GPU, with MTP", "decode": 82.2, "prefill": null, "unit": "tok/s", "context": "49k", "date": "2026-10-05"},
         {"model": "OrcaSAQ-2-Cyber-27B", "config": "0.6, all on GPU, no drafting", "decode": 83.2, "prefill": null, "unit": "tok/s", "context": "49k", "date": "2026-10-05"},
         {"model": "OrcaSAQ-2-Cyber-27B", "config": "0.6, n-gram drafts, copy-heavy output", "decode": 412, "prefill": null, "unit": "tok/s", "context": "49k", "date": "2026-10-05"},
-        {"model": "Cyber-Tiel-Coder-35B", "config": "0.6, 20 expert layers in RAM", "decode": 50.5, "prefill": null, "unit": "tok/s", "context": "49k", "date": "2026-10-05"}
+        {"model": "Cyber-Tiel-Coder-35B", "config": "0.6, 20 expert layers in RAM, short probe", "decode": 50.5, "prefill": null, "unit": "tok/s", "context": "49k", "date": "2026-10-05"}
       ],
       "bugs": [
         {"text": "0.4.1-dev ran Flash-Next with experts in RAM 2.5-4x slower than 0.6", "status": "fixed", "date": "2026-10-05"},
@@ -91,7 +91,7 @@
       "versions": [
         {"version": "Original fork build", "date": "2026-10-01 to 2026-10-04", "note": "200k, fp8 KV; built the best test-2 server of all runs: 12 tools, 155 tests, 124 minutes."},
         {"version": "Newer fork build (phase D)", "date": "2026-10-11", "note": "11 of 11 multi-session checks; test 2 cut off and never graded; dropped 2026-10-21."},
-        {"version": "Three stock builds", "date": "2026-10-21", "note": "204,800 context, two slots, EXL3 3.05 bpw, 21-21.4 GB, load 252-262 s."}
+        {"version": "Three stock builds", "date": "2026-10-21", "note": "204,800 context, two slots, EXL3 3.05 bpw, 20.8-21.4 GB, load 252-262 s; needles at 100k, 150k, 190k passed on two of three builds (8-bit KV build not run)."}
       ],
       "good_at": "Most capable Flash-Next setup tested: images, 200k window",
       "watch_out": "Slower than the 27B stacks; no agent test rerun on stock builds",
@@ -117,7 +117,7 @@
       "versions": [
         {"version": "0.1.39 / 0.1.40.3", "date": "2026-10-04 to 2026-10-09", "note": "30-45 tok/s decode, 21-30 over a whole run; test 2 full passes with Flash-Next and Swift 1.5."},
         {"version": "0.1.42", "date": "2026-10-10 to 2026-10-12", "note": "Release defaults slower; the old PCIe share doubled long-answer decode."},
-        {"version": "0.1.44.1", "date": "2026-10-15", "note": "Load 60 s against 214 s; decode 44.9 against 18.3 (23.5 warm) on 0.1.42."},
+        {"version": "0.1.44.1", "date": "2026-10-15", "note": "Load 60 s against 214 s; decode 44.9 against 18.3 on 0.1.42 (mean of two rounds: cold 13.1, warm 23.5)."},
         {"version": "0.1.45", "date": "2026-10-20", "note": "IQ3_S with MTP, code prompt: 29.4 tok/s."},
         {"version": "0.2.0-beta", "date": "2026-10-20", "note": "Gyro-S with MTP: test 2 full pass in 24 minutes, 89.8 tok/s over the run; agent pagoda 9 of 10."},
         {"version": "0.2.2", "date": "2026-10-22", "note": "Gyro-S: code 121.6 to 144.1 tok/s on the same-day control, load 23 s; no agent run yet."}
@@ -129,7 +129,7 @@
         {"model": "Qwen3.8-Flash-Next (GSQ-RCO quants)", "config": "0.1.39 / 0.1.40.3, decode; 21-30 over a whole run", "decode": "30-45", "prefill": null, "unit": "tok/s", "context": null, "date": "2026-10-09"},
         {"model": "Qwen3.8-Flash-Next", "config": "0.1.42 release-default PCIe share, long answers", "decode": 48, "prefill": 1177, "unit": "tok/s", "context": null, "date": "2026-10-11"},
         {"model": "Qwen3.8-Flash-Next", "config": "0.1.42 old PCIe share, long answers", "decode": 95, "prefill": 1983, "unit": "tok/s", "context": null, "date": "2026-10-11"},
-        {"model": "Qwen3.8-Flash-Next", "config": "0.1.42, first round, cold", "decode": 18.3, "prefill": null, "unit": "tok/s", "context": null, "date": "2026-10-15"},
+        {"model": "Qwen3.8-Flash-Next", "config": "0.1.42, first round, cold", "decode": 13.1, "prefill": null, "unit": "tok/s", "context": null, "date": "2026-10-15"},
         {"model": "Qwen3.8-Flash-Next", "config": "0.1.42, warm round", "decode": 23.5, "prefill": null, "unit": "tok/s", "context": null, "date": "2026-10-15"},
         {"model": "Qwen3.8-Flash-Next", "config": "0.1.44.1", "decode": 44.9, "prefill": null, "unit": "tok/s", "context": null, "date": "2026-10-15"},
         {"model": "Flash-Next IQ3_S", "config": "0.1.45, MTP, code prompt", "decode": 29.4, "prefill": null, "unit": "tok/s", "context": null, "date": "2026-10-20"},
@@ -154,7 +154,7 @@
       "name": "Maya",
       "kind": "tiered-expert MoE server (VRAM, RAM, SSD)",
       "versions": [
-        {"version": "1.0.4 with three patches", "date": "2026-10-08", "note": "About 4 tok/s out of the box; 17-19 with patches. Test 1 pass (44 tests), test 2 pass (7 tools, 66 tests, 322 minutes)."},
+        {"version": "1.0.4 with three patches", "date": "2026-10-08", "note": "About 4 tok/s out of the box; 17-19 with patches once weights were on local disk. Test 1 pass (44 tests), test 2 pass (7 tools, 66 tests, 322 minutes)."},
         {"version": "1.1.11", "date": "2026-10-16", "note": "Patches upstream; 17.0 against 14.6 tok/s, first token 18 s against 92 s, 12 of 12 digit strings."},
         {"version": "1.1.13", "date": "2026-10-17", "note": "Maya-S and Maya-M IQ2_S: 12 of 12 digits, 2 of 2 needles; test 3 rubric 12 of 12 on both."}
       ],
@@ -163,9 +163,9 @@
       "multi_session": {"ok": null, "note": "Not measured; treated as one request at a time"},
       "speeds": [
         {"model": "GLM-5.3-Flash Maya-S IQ2_XXS", "config": "1.0.4 out of the box", "decode": 4, "prefill": null, "unit": "tok/s", "context": null, "date": "2026-10-08"},
-        {"model": "GLM-5.3-Flash Maya-S IQ2_XXS", "config": "1.0.4 with three patches", "decode": "17-19", "prefill": null, "unit": "tok/s", "context": null, "date": "2026-10-08"},
-        {"model": "GLM-5.3-Flash Maya-S IQ2_XXS", "config": "1.1.11, two rounds", "decode": 17.0, "prefill": null, "unit": "tok/s", "context": null, "date": "2026-10-16"},
-        {"model": "GLM-5.3-Flash Maya-S / Maya-M", "config": "1.1.13, test 3 runs, both flavors", "decode": "5.4-7.1", "prefill": null, "unit": "tok/s", "context": null, "date": "2026-10-17"},
+        {"model": "GLM-5.3-Flash Maya-S IQ2_XXS", "config": "1.0.4 with three patches, weights on local disk", "decode": "17-19", "prefill": null, "unit": "tok/s", "context": null, "date": "2026-10-08"},
+        {"model": "GLM-5.3-Flash Maya-S IQ2_XXS", "config": "1.1.11, two probe rounds (1.0.x: 14.6 on the same 3.5 bpw pack)", "decode": 17.0, "prefill": null, "unit": "tok/s", "context": null, "date": "2026-10-16"},
+        {"model": "GLM-5.3-Flash Maya-S / Maya-M", "config": "1.1.13, test 3 runs, both flavors", "decode": "5.4-6.9", "prefill": null, "unit": "tok/s", "context": null, "date": "2026-10-17"},
         {"model": "GLM-5.3-Flash Maya-M IQ2_S", "config": "no draft head, default PCIe share 0.36", "decode": 16.0, "prefill": null, "unit": "tok/s", "context": null, "date": "2026-10-17"},
         {"model": "GLM-5.3-Flash Maya-M IQ2_S", "config": "PCIe share 0.25 (candidate, not applied)", "decode": 17.9, "prefill": null, "unit": "tok/s", "context": null, "date": "2026-10-17"},
         {"model": "GLM-5.3-Flash Maya-M IQ2_S", "config": "no DFlash2 draft head", "decode": 15.35, "prefill": null, "unit": "tok/s", "context": null, "date": "2026-10-17"},
@@ -242,12 +242,15 @@
       ],
       "good_at": "Fast short replies: about 2.5 times llama.cpp on the same GGUF",
       "watch_out": "Fails after one out-of-memory prefill; health check still says ok",
-      "multi_session": {"ok": false, "note": "Failed: 3, 0, 4 of 11 at 32k, 128k, 262k"},
+      "multi_session": {"ok": false, "note": "Failed: 4 of 11 at best; llama.cpp passed 11"},
       "speeds": [
         {"model": "Flash-Next IQ3_S + MTP head", "config": "short outputs, thinking off, code; prefill about 2,000 on a 30k prompt", "decode": 101.7, "prefill": 2000, "unit": "tok/s", "context": "32k", "date": "2026-10-22"},
         {"model": "Flash-Next IQ3_S + MTP head", "config": "short outputs, thinking off, prose", "decode": 79.9, "prefill": null, "unit": "tok/s", "context": "32k", "date": "2026-10-22"},
         {"model": "Flash-Next IQ3_S + MTP head", "config": "short outputs, thinking off, structured output", "decode": 111.8, "prefill": null, "unit": "tok/s", "context": "32k", "date": "2026-10-22"},
-        {"model": "Flash-Next IQ3_S + MTP head", "config": "best 262k arm, streamed", "decode": 54, "prefill": null, "unit": "tok/s", "context": "262k", "date": "2026-10-22"}
+        {"model": "Flash-Next IQ3_S + MTP head", "config": "default 262k window, same bench, code", "decode": 105.2, "prefill": null, "unit": "tok/s", "context": "262k", "date": "2026-10-22"},
+        {"model": "Flash-Next IQ3_S + MTP head", "config": "default 262k window, same bench, prose", "decode": 83.5, "prefill": null, "unit": "tok/s", "context": "262k", "date": "2026-10-22"},
+        {"model": "Flash-Next IQ3_S + MTP head", "config": "default 262k window, same bench, structured output", "decode": 107.1, "prefill": null, "unit": "tok/s", "context": "262k", "date": "2026-10-22"},
+        {"model": "Flash-Next IQ3_S + MTP head", "config": "smoke decode of a 37-token prompt, best 262k arm (not a bench)", "decode": 53.9, "prefill": null, "unit": "tok/s", "context": "262k", "date": "2026-10-22"}
       ],
       "bugs": [
         {"text": "First prompt short on VRAM for prefill fails; every later request fails", "status": "open", "date": "2026-10-22"},
@@ -279,8 +282,8 @@
     },
     {
       "id": "expert-cache",
-      "title": "Cache hot experts instead of splitting layers",
-      "rule": "Keep all experts in RAM and cache the hot ones on the GPU (llama.cpp 0.7.0).",
+      "title": "Cache hot experts on Flash-Next",
+      "rule": "For Flash-Next, keep all experts in RAM and cache the hot ones on the GPU.",
       "metrics": [
         {"label": "Orcarouter IQ4_XS streamed decode", "before": "12-14", "after": 19, "unit": "tok/s"},
         {"label": "Heretic2 IQ4XS-NGQ4 streamed decode", "before": "11-14", "after": 18, "unit": "tok/s"},
@@ -290,8 +293,8 @@
         {"label": "Prefill on fresh loads, 16k and 48k", "before": 250, "after": "415-427", "unit": "tok/s"}
       ],
       "chart": "bars",
-      "evidence": "2026-10-22, Flash-Next, five GGUFs at 262k: cache beat layer split on all; live on 12 entries.",
-      "caveat": "Not yet run through tests 1 and 2.",
+      "evidence": "2026-10-22, Flash-Next only, five GGUFs at 262k: cache beat layer split on all; live on 12 entries.",
+      "caveat": "Untested for Ornith and Flint; not yet run through tests 1 and 2.",
       "doc": "docs/model-research/tuning.md#2-expert-placement--ncmoe-against--cmoe-plus-the-expert-cache"
     },
     {
@@ -316,12 +319,12 @@
       "title": "Raise ubatch until it stops loading",
       "rule": "Take the largest -ub that still loads with everything else in place.",
       "metrics": [
-        {"label": "Ornith prefill, 41 expert layers on CPU, -ub 2048", "before": 118, "after": 392, "unit": "tok/s"},
-        {"label": "Ornith decode, same change", "before": 16.1, "after": 16.1, "unit": "tok/s"},
+        {"label": "Ornith prefill, 41 expert layers on CPU, -ub 2048", "before": 116, "after": 392, "unit": "tok/s"},
+        {"label": "Ornith decode, same change", "before": 16.0, "after": 16.1, "unit": "tok/s"},
         {"label": "Flint prefill of 11.7k prompt at -ub 2048", "before": null, "after": 5357, "unit": "tok/s"}
       ],
       "chart": "slope",
-      "evidence": "Ornith, 41 expert layers on CPU, 2026-10-20: -ub 2048 lifted prefill from 118 to 392 tok/s.",
+      "evidence": "Ornith, 41 expert layers on CPU, 2026-10-20: -ub 2048 lifted prefill from 116 to 392 tok/s.",
       "caveat": "Too large fails: OrcaSAQ-2 needed -ub 256 at 22.7 of 24 GiB.",
       "doc": "docs/model-research/tuning.md#4-batch-and-ubatch"
     },
@@ -394,9 +397,9 @@
       "rule": "Warm up before timing; run each setting twice in opposite orders; never rank on one run.",
       "metrics": [
         {"label": "Strata 0.1.42 prompt reading, cold against warm", "before": 44, "after": 1269, "unit": "tok/s"},
-        {"label": "Strata 0.1.42 decode, cold against warm round", "before": 18.3, "after": 23.5, "unit": "tok/s"},
+        {"label": "Strata 0.1.42 decode, cold against warm round", "before": 13.1, "after": 23.5, "unit": "tok/s"},
         {"label": "Unpruned Flash-Next GGUF, raw benchmark against streamed", "before": 40, "after": "21-23", "unit": "tok/s"},
-        {"label": "tqLLM short replies against best long arm", "before": "100-110", "after": 54, "unit": "tok/s"}
+        {"label": "Prefill, fresh load against quality-script runs (not reproduced)", "before": "85-100", "after": 415, "unit": "tok/s"}
       ],
       "chart": "slope",
       "evidence": "Strata 0.1.42, 2026-10-11: the same prompt read at 44 tok/s cold and 1,269 warm.",
@@ -430,7 +433,7 @@
         {"label": "Flash-Next: Strata (2026-10-04)", "before": null, "after": "30-45", "unit": "tok/s"},
         {"label": "Flash-Next: llama.cpp 0.7.0 with cache, streamed (2026-10-22)", "before": null, "after": "19-26", "unit": "tok/s"},
         {"label": "Flash-Next Gyro-S on Strata 0.2.2, code (2026-10-22)", "before": null, "after": 144, "unit": "tok/s"},
-        {"label": "Multi-session checks passed: tqLLM against stock SGLang", "before": 3, "after": 11, "unit": "of 11"}
+        {"label": "Multi-session checks passed: tqLLM (best) against stock SGLang", "before": 4, "after": 11, "unit": "of 11"}
       ],
       "chart": "timeline",
       "evidence": "Flash-Next with experts in RAM: 2.2 tok/s on llama.cpp 0.4 to 144 on Strata 0.2.2 (2026-10-22).",
@@ -443,13 +446,13 @@
       "rule": "Run quality and multi-session checks on every new engine or settings change before ranking speed.",
       "metrics": [
         {"label": "tqLLM code decode against llama.cpp on the same GGUF", "before": 40.3, "after": 101.7, "unit": "tok/s"},
-        {"label": "Multi-session checks passed, tqLLM against llama.cpp live", "before": 3, "after": 11, "unit": "of 11"},
+        {"label": "Multi-session checks passed, tqLLM (best) against llama.cpp live", "before": 4, "after": 11, "unit": "of 11"},
         {"label": "Multi-session checks passed, Carbon-X at one slot", "before": null, "after": 10, "unit": "of 11"},
         {"label": "Old runs regraded, 2026-10-10", "before": null, "after": 125, "unit": "runs"},
         {"label": "Verdicts changed by the regrade", "before": null, "after": 4, "unit": "verdicts"}
       ],
       "chart": "bars",
-      "evidence": "2026-10-22: tqLLM decoded about 2.5 times faster than llama.cpp yet passed 3 of 11 multi-session checks.",
+      "evidence": "2026-10-22: tqLLM decoded about 2.5 times faster than llama.cpp yet passed at best 4 of 11 multi-session checks.",
       "caveat": "A speed result without the probe next to it is a lead, not a pick.",
       "doc": "docs/model-research/tuning.md#11-the-quality-checks-we-use"
     }
@@ -467,7 +470,7 @@
       "name": "Needle in a haystack",
       "what": "Planted code in filler text, 16k to 250k tokens, room left for thinking",
       "threshold": null,
-      "example": "Stock SGLang found needles at 100k, 150k and 190k"
+      "example": "Stock SGLang needles at 100k, 150k, 190k on two of three builds"
     },
     {
       "id": "digit-copy",
