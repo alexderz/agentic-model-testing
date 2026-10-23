@@ -62,8 +62,9 @@ Network use, as written:
 - The pack (`tools/iq_pack.py --compat-bf16`): written next to the GGUFs at
   `/srv/store/models/llm/glm-5.3-flash-maya/Maya-S-v2-IQ2_XXS/pack/` (the engine finds the GGUFs at `<pack>/..`).
 - `../../tools/add_maya_entry.py IMAGE_ID`: titan entry `maya-glm-5.3-flash` and `~/ai/maya/configs/glm-5.3-flash.json`
-  (131072 context, 24k budget, RAM tier 95 GB). Not run yet.
-- `../../matrix-maya-a.tsv`, `../../matrix-maya-b.tsv`: test 1 and test 2 rows, not queued.
+  (131072 context, 24k budget, RAM tier 95 GB). Run since; results for Maya 1.0.4, 1.1.11 and 1.1.13 are in
+  `docs/model-research/engines.md` and the GLM-5.3-Flash card.
+- `../../matrix-maya-a.tsv`, `../../matrix-maya-b.tsv`: test 1 and test 2 rows (since run).
 
 ## Build and pack results (Saturn, 2026-10-07)
 

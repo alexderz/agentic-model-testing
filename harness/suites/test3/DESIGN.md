@@ -49,4 +49,5 @@ fits the evidence.
 ## First runs
 
 The current picks, both flavors: qwen3.8-27b-vllm, flashnext (SGLang), lcpp6-orcarouter-fn-uncensored,
-lcpp6-thinkingcap-27b-heretic. `matrix-test3.tsv`, not queued yet.
+lcpp6-thinkingcap-27b-heretic. `matrix-test3.tsv` lists the first runs. Test 3 has since been run on several models; results are in
+`docs/model-research/` ([Method](../../../docs/model-research/method.md) and the model cards).
