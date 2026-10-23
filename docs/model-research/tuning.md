@@ -17,7 +17,7 @@ its size. There are three tiers; choose the tier, then the model.
 | --- | --- | --- |
 | Everything on the GPU | 45-175 tok/s | Tiel Coder 35B IQ4_XS 151 (llama.cpp 0.7.0); Flint 40B Q3_K_XL 129 and 106 at 11.7k depth; LFM2.5-24B 125-176; Carbon-X 14.8B Q8_0 52; dense Qwen3.8-27B 42-45 plain, 70-170 with drafting |
 | Most on the GPU, a few expert layers in RAM | 60-95 | Flint Q4_K_XL: 95 tok/s with 10 layers in RAM at a 150k window, 81 with 15, 73 with 19, 64 with 24 (262k); Tiel Coder Q4_K_XL with 6 layers in RAM 77-81 |
-| Experts mostly in RAM | 3-26 | Flash-Next 12-14 on llama.cpp 0.6, 19-26 streamed with the expert cache; Ornith-1.5-122B 13.7-16.7; GLM-5.3-Flash on Maya 17; Cyber-Tiel 6-bit with 20 layers in RAM 43-44 |
+| Experts mostly in RAM | 3-26 | Flash-Next 12-14 on llama.cpp 0.6, 19-26 streamed with the expert cache; Ornith-1.5-122B 13.7-16.7; GLM-5.3-Flash on Maya 17; Cyber-Tiel 6-bit with 20 layers in RAM 44 over a test 1 run (50-52 on the short probe) |
 
 **Evidence.**
 
@@ -33,10 +33,11 @@ its size. There are three tiers; choose the tier, then the model.
 
 ## 2. Expert placement: `-ncmoe` against `-cmoe` plus the expert cache
 
-**Rule.** For a mixture-of-experts model that does not fit, keep all experts in
+**Rule.** For Qwen3.8-Flash-Next, the only model tested both ways, keep all experts in
 RAM (`-cmoe`) and give the GPU a cache of the hot ones (`--moe-cache-mib N`) in
-llama.cpp 0.7.0, with 8-bit KV to make room. Do not split by layers (`-ncmoe`)
-any more. Offloaded experts must load eagerly, or the first request stalls.
+llama.cpp 0.7.0, with 8-bit KV to make room, instead of splitting by layers
+(`-ncmoe`). Ornith and Flint were only run as layer splits, so for them the
+cache is untested. Offloaded experts must load eagerly, or the first request stalls.
 
 **Evidence.**
 
@@ -96,8 +97,8 @@ VRAM. Take the largest that still loads with everything else in place.
 **Evidence.**
 
 - Flint (all on GPU, 2026-10-22): `-ub 2048` read an 11.7k prompt at 5,357 tok/s.
-- Ornith, 41 layers on the CPU: `-ub 2048` lifted prefill from 118 to 392 tok/s
-  with the same 16.1 tok/s decode (2026-10-20).
+- Ornith, 41 layers on the CPU: `-ub 2048` lifted prefill from 116 to 392 tok/s
+  with the same decode (16.1 against 16.0 tok/s, 2026-10-20).
 - Flash-Next live entries use `-b 2048 -ub 1024`: `-ub 2048` with a 12288 MiB
   cache did not fit beside the vision head and four slots (2026-10-22).
 - The opposite failure: OrcaSAQ-2 with DFlash2 drafts loaded on llama.cpp 0.7.0
@@ -165,7 +166,7 @@ change the answers you need.
 - Qwen3.8-27B code decode, 4-bit, one card (2026-10-13): 42 tok/s plain, 93
   llama.cpp with MTP, 116 ExLlamaV3 with MTP, 158 ExLlamaV3 with a DFlash2
   drafter, 170 TensorFold with DFlash2. The same drafter in llama.cpp was no
-  faster than MTP (95 against 95; 47 % of drafts accepted), so the engine
+  faster than MTP (95 against 93; 47 % of drafts accepted), so the engine
   matters as much as the draft.
 - Gemma 4 26B-A4B with its MTP drafter: 267 tok/s on short code, 123 at 141k
   of history, the fastest stack at that depth (2026-10-14).
@@ -196,8 +197,9 @@ setting twice in opposite orders.
 - The same prompt was read at 44 tok/s on a cold start and 1,269 tok/s warm
   (Strata 0.1.42, 2026-10-11). The first settings probe could not rank anything
   because its opening run was cold.
-- Strata 0.1.44.1 against 0.1.42: the first 0.1.42 round decoded 18.3 tok/s cold
-  and 23.5 warm, so the true gain is about 1.9x, not 2.5x (2026-10-15).
+- Strata 0.1.44.1 against 0.1.42 (2026-10-15): 0.1.42 decoded 13.1 tok/s cold
+  and 23.5 warm; 18.3 is the mean of the two rounds. Against the mean the gain
+  looks like 2.5x (44.9), against the warm round it is about 1.9x.
 - In the repeated probe everything ran faster in the second round, so
   differences smaller than that were treated as noise (2026-10-11).
 - Maya first token: 92 s on 1.0.4 and 18 s on 1.1.11; its first load reads
@@ -208,8 +210,8 @@ setting twice in opposite orders.
 - tqLLM's first load took 23 minutes cold and 2-3 minutes after.
 - A raw benchmark of short outputs with thinking off overstates agent speed: on
   the unpruned Flash-Next GGUF it read about 40 tok/s while the streamed figure
-  was 21-23. tqLLM's 100-110 tok/s on short replies fell to 54 on its best long
-  arm.
+  was 21-23. tqLLM's 105.2 / 83.5 / 107.1 tok/s (code / prose / structured, 262k default)
+  is the same kind of figure: short replies, thinking off.
 
 ## 9. PCIe share and other engine-internal knobs
 

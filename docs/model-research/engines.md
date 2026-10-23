@@ -12,8 +12,9 @@ was released.
 - If the model fits on the GPU, use **vLLM** for the dense 27B and
   **llama.cpp 0.7.0** for everything else that has a GGUF.
 - If a mixture-of-experts model must keep experts in system RAM, use
-  **llama.cpp 0.7.0 with the expert cache** (`-cmoe --moe-cache-mib N`). For
-  Qwen3.8-Flash-Next, **Strata** and **stock SGLang** are the faster or
+  **llama.cpp 0.7.0**. For Qwen3.8-Flash-Next the expert cache
+  (`-cmoe --moe-cache-mib N`) beat the layer split on every build tested; Ornith
+  and Flint were only run as layer splits. For Flash-Next, **Strata** and **stock SGLang** are the faster or
   steadier alternatives (below).
 - Speculative decoding (MTP or a draft model) pays off only when the model is
   GPU-resident, or when the engine is built around it (Strata with Flash-Next).
@@ -30,9 +31,9 @@ was released.
 | SGLang (EXL3) | Flash-Next | 24-25 tok/s | 11 of 11 on the stock builds | Stock builds serve it; the best test-2 server of all runs came from an older build |
 | Strata 0.1.44.1 / 0.2.x | Flash-Next family, Gyro quants | 144 tok/s on code (Gyro-S + MTP, 0.2.2) | Needs two batch slots set up | 0.2 is beta |
 | Maya 1.1.11 / 1.1.13 | GLM-5.3-Flash | 17 tok/s | Not measured | In the router |
-| ExLlamaV3 1.6.2 (TabbyAPI) | Qwen3.8-27B with MTP or DFlash2 | 140 tok/s, DFlash2, short prompts | Not measured | Two entries kept |
+| ExLlamaV3 1.6.2 (TabbyAPI) | Qwen3.8-27B with MTP or DFlash2 | 158 tok/s on short code with DFlash2 (1.6.1); 140 in the 1.6.2 comparison | Not measured | Two entries kept |
 | TensorFold 0.6.6 | Qwen3.8-27B with DFlash2 | 170 tok/s on short code | Not measured | Parked, not in the router |
-| tqLLM 1.2.3 | Flash-Next GGUF | about 100-110 tok/s on short replies | 3 of 11 at best | Trial only; not usable for agents |
+| tqLLM 1.2.3 | Flash-Next GGUF | about 100-110 tok/s on short replies | 4 of 11 at best | Trial only; not usable for agents |
 
 ## llama.cpp
 
@@ -44,7 +45,7 @@ most of the small models.
 
 | Version | Dates | What changed for us |
 | --- | --- | --- |
-| 0.4.1-dev (commit 4260903) | Round 1 (2026-09-23) until 2026-10-18 | The build bundled in the router, used by the native entries. Flash-Next with experts in RAM: 2.2 tok/s on the probe, 7-8 tok/s over a run. |
+| 0.4.1-dev (commit 4260903) | Round 1 (2026-09-23) until 2026-10-18 | The build bundled in the router, used by the native entries. Flash-Next with experts in RAM: 2.2 tok/s on the probe; the long agent runs on it ran out of time. |
 | 0.6.0 (official image, build 11429) | Tested 2026-10-05 | 2.5-4x faster than 0.4 on Flash-Next with experts in RAM (table below); MTP and n-gram drafting fixes. |
 | 0.7.0 (released 2026-10-15) | In the router since 2026-10-18 | Adds a GPU cache for experts kept in RAM (`--moe-cache-mib`). All llama.cpp entries now run it as separate containers behind the router; Bonsai 2 runs on its makers' fork image. |
 | Newer official builds | 2026-10-21 and later | Flint needs b11803 or later; Carbon-X needs b11742 or later. Both trials ran on such a build, started by hand, not in the router. |
@@ -83,7 +84,7 @@ A short-prompt probe at 49k context, thinking off, temperature 0, llama.cpp
 | Orcarouter Flash-Next Uncensored (experts in RAM) | 5.3 tok/s | 13.1 tok/s | – | 295 → 486 tok/s |
 | Qwen3.8-27B Cyber (all on GPU) | 44.9 tok/s | 45.1 tok/s | 82.2 tok/s with MTP | about the same |
 | OrcaSAQ-2-Cyber-27B (all on GPU) | 85.5 tok/s | 83.2 tok/s | 412 tok/s on copy-heavy output with n-gram drafts | about the same |
-| Cyber-Tiel-Coder-35B (20 expert layers in RAM) | 52.3 tok/s | 50.5 tok/s | – | about the same |
+| Cyber-Tiel-Coder-35B (20 expert layers in RAM; short probe) | 52.3 tok/s | 50.5 tok/s | – | about the same |
 
 In a real 8-hour agent run, the Orcarouter model on 0.6 averaged 7.6 tok/s:
 much better than 0.4 (which could not finish) but far below the probe.
@@ -189,7 +190,7 @@ expert cache.
 | --- | --- | --- |
 | Original fork build, 200k, fp8 KV | 2026-10-01 to 2026-10-04 | Built the best test-2 server of all runs: 12 tools, 155 tests, 124 minutes, 36 tok/s over the run. Test 1 at 44.3 tok/s. |
 | Newer fork build (phase D) | 2026-10-11 | 11 of 11 multi-session checks and test 1 at 25.3 tok/s (earlier settings, not directly comparable). Its test 2 was cut off and never graded. Dropped on 2026-10-21. |
-| Three stock builds, 204,800 context, two slots | 2026-10-21 | EXL3 3.05 bpw weights, fp8 or 8-bit KV: 24.1, 24.6 and 25.1 tok/s decode; tools, vision and needles at 100k, 150k and 190k pass; prefill about 2,600 tok/s at 190k (73 s); a repeated 190k prompt answers in 0.5 s; 11 of 11 multi-session checks; 21-21.4 GB; load 252-262 s. |
+| Three stock builds, 204,800 context, two slots | 2026-10-21 | EXL3 3.05 bpw weights, fp8 or 8-bit KV: 24.1, 24.6 and 25.1 tok/s decode; tools and vision pass; 11 of 11 multi-session checks; 20.8-21.4 GB; load 252-262 s. Needles at 100k, 150k and 190k passed on two of the three (the 8-bit KV build, 20.8 GB, was not run); prefill about 2,600 tok/s at 190k (73 s); a repeated 190k prompt answers in 0.5 s. |
 
 **Good at.** The most capable Flash-Next setup we have tested, with images and
 a 200k window. It is slower than the 27B stacks.
@@ -213,7 +214,7 @@ from 0.2) with a hot-expert cache in VRAM and its own MTP drafting.
 | --- | --- | --- |
 | 0.1.39 / 0.1.40.3 | 2026-10-04 to 2026-10-09 | 30-45 tok/s decode, 21-30 tok/s over a whole run; test 2 full passes with Flash-Next and Swift 1.5. |
 | 0.1.42 | 2026-10-10 to 2026-10-12 | Release defaults were slower on Titan (test 1 at 16.8 tok/s, 94 min; test 2 at 19.2 tok/s, 98 min). With the old PCIe share, long answers decoded at 95 tok/s against 48 and large prompts were read at 1,983 against 1,177 tok/s; test 1 at 33.8 and test 2 at 30.1 tok/s (61 min). |
-| 0.1.44.1 | 2026-10-15 | Two rounds each against 0.1.42: load 60 s against 214 s, decode 44.9 against 18.3 tok/s. The first 0.1.42 round was cold; its warm round decoded 23.5, so the true gain is about 1.9x. |
+| 0.1.44.1 | 2026-10-15 | Two rounds each against 0.1.42: load 60 s against 214 s, decode 44.9 against 18.3 tok/s. Decode is the mean of two rounds each. The first 0.1.42 round was cold (13.1 tok/s) and the second warm (23.5), so against the warm round the gain is about 1.9x. |
 | 0.1.45 | 2026-10-20 | IQ3_S with MTP, code prompt: 29.4 tok/s, against 35.4 on 0.2.0-beta on the same prompt. |
 | 0.2.0-beta | 2026-10-20 | Gyro-S (TQ1_0) with an MTP draft: 118.6 tok/s on code, text only. Test 2: full pass in 24 minutes (6 tools, 108 tests), 89.8 tok/s over the run. Agent pagoda 9 of 10. |
 | 0.2.2 | 2026-10-22 | Same-day control on the Gyro-S build: code 121.6 → 144.1 tok/s, prose 106.4 → 123.4, JSON 135.2 → 157.7 (about 17 %), load 23 s. Tool call and needles at 16k and 64k pass on both. One load per engine; no agent run on 0.2.2 yet. |
@@ -255,9 +256,9 @@ experts tiered over VRAM, RAM and SSD. We run the Maya-S IQ2_XXS pack and, from
 
 | Version | Date | Result |
 | --- | --- | --- |
-| 1.0.4 with three patches | 2026-10-08 | Out of the box about 4 tok/s (every VRAM eviction meant a re-read over the network). With the patches (all experts eligible for RAM, evicted experts kept in RAM, GLM tool-call parsing) 17-19 tok/s. Test 1 pass (44 tests), test 2 pass (7 tools, 66 tests, 322 minutes). |
+| 1.0.4 with three patches | 2026-10-08 | Out of the box about 4 tok/s (every VRAM eviction meant a re-read over the network). With the patches (all experts eligible for RAM, evicted experts kept in RAM, GLM tool-call parsing) 17-19 tok/s once the weights were on local disk (18.7 in the run log). The 14.6 against 17.0 in the next row is a different measure: two probe rounds on the 3.5 bpw pack. Test 1 pass (44 tests), test 2 pass (7 tools, 66 tests, 322 minutes). |
 | 1.1.11 | 2026-10-16 | The patches are upstream. Same pack, two rounds each: 17.0 against 14.6 tok/s, first token 18 s against 92 s, 12 of 12 digit strings copied exactly against 9, both needles found against one. |
-| 1.1.13 | 2026-10-17 | Maya-S: 12 of 12 digits, 2 of 2 needles. Maya-M IQ2_S: 12 of 12 and 2 of 2, 121 s load, test 3 rubric 12 of 12 on both flavors (5.4-7.1 tok/s). It needed a 100 GB RAM tier; 95 GB held 2,243 of 2,328 slots. |
+| 1.1.13 | 2026-10-17 | Maya-S: 12 of 12 digits, 2 of 2 needles. Maya-M IQ2_S: 12 of 12 and 2 of 2, 121 s load, test 3 rubric 12 of 12 on both flavors (5.4-6.9 tok/s). It needed a 100 GB RAM tier; 95 GB held 2,243 of 2,328 slots. |
 
 **Good at.** Running a model of this size on one card at all, and passing both
 tests with it. It is slow: the slowest model to pass both tests.
@@ -339,12 +340,14 @@ MTP head, against the live llama.cpp entry on the same GGUF.
 **Measured speeds.** At a 32k window, code 101.7, prose 79.9 and structured
 111.8 tok/s, about 2.5 times llama.cpp's 40.3 / 41.3 / 41.0 on the same
 GGUF. Prefill about 2,000 tok/s on a 30k prompt. Short outputs with thinking
-off flatter this; the best 262k arm streamed 54 tok/s. First load took 23
+off flatter agent speed. At the 262k default window the same bench gave 105.2 /
+83.5 / 107.1 tok/s; no streamed agent figure was measured (the smoke decode of a
+37-token prompt on the best 262k arm was 53.9 tok/s). First load took 23
 minutes cold, then 2-3 minutes.
 
-**Several sessions.** Failed. The multi-session probe passed 3 of 11 checks at
-a 32k window, 0 of 11 at 128k, 4 of 11 at 262k with a smaller expert cache and
-chunk; the llama.cpp control passed 11 of 11.
+**Several sessions.** Failed. The multi-session probe passed 4 of 11 checks at
+best (3 of 11 at a 32k window, 0 of 11 at 128k, 4 of 11 at 262k with a smaller
+expert cache and chunk); the llama.cpp control passed 11 of 11.
 
 **Known problems.** The first prompt of 256 or more tokens that runs short of
 VRAM for its prefill buffer fails with an out-of-memory error, and every later
@@ -359,6 +362,4 @@ for agents.
 ## Running engines as containers behind a router
 
 When an engine runs as a container behind llama-swap, restarting
-llama-swap does not stop the container. Stop the container first, or the
-orphan keeps the GPU and the next load fails. A container that outlives the
-router's logical unload also makes the next load look like foreign GPU use.
+llama-swap does not stop the container.

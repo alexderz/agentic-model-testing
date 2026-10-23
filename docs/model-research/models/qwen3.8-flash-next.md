@@ -15,7 +15,7 @@ The smartest model we can run. Too large for the card, so most experts live in s
 
 ## Verdict
 
-Smartest overall. On SGLang (EXL3 3-bit, GPU expert cache) it built the best server of every run: 12 tools, 155 tests. Strata also passes test 2. That run used the original SGLang build, which served one session at a time. The stock SGLang builds tried on 2026-10-21 (EXL3 3-bit, 204,800 context, two slots, images) passed 11 of 11 multi-session checks and needles at 100k, 150k and 190k at 24-25 tok/s; no agent test has been rerun on them. In test 3 it scored 12/12 on both the known-good server and its own: clear probe briefs, every fact checked against the API, and on its own server a deliberate second probe to rule out a made-up first report. Both runs took about an hour, over a third of it waiting for first tokens, and both reports overstate how thoroughly it compared the lists.
+Smartest overall. On SGLang (EXL3 3-bit, GPU expert cache) it built the best server of every run: 12 tools, 155 tests. Strata also passes test 2. That run used the original SGLang build, which served one session at a time. The stock SGLang builds tried on 2026-10-21 (EXL3 3-bit, 204,800 context, two slots, images) passed 11 of 11 multi-session checks at 24-25 tok/s, and two of the three also passed needles at 100k, 150k and 190k; no agent test has been rerun on them. In test 3 it scored 12/12 on both the known-good server and its own: clear probe briefs, every fact checked against the API, and on its own server a deliberate second probe to rule out a made-up first report. Both runs took about an hour, over a third of it waiting for first tokens, and both reports overstate how thoroughly it compared the lists.
 
 ## Vision
 
@@ -93,7 +93,7 @@ tok/s on code / prose / structured output at a 32k window, about 2.5 times the
 live llama.cpp entry on the same GGUF (40.3 / 41.3 / 41.0). It is not usable for
 agents: the first prompt of 256 or more tokens that runs short of VRAM leaves
 every later request failing until a restart, even an 18-token one, and the
-multi-session probe passed 3 of 11 checks at 32k (llama.cpp: 11 of 11). Details
+multi-session probe passed 4 of 11 checks at best, 3 of 11 at 32k (llama.cpp: 11 of 11). Details
 in [Engines](../engines.md).
 
 _Generated from the bake-off results on 2026-10-15; the 2026-10-22 section was added by hand._

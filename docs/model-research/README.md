@@ -90,7 +90,6 @@ software, through the same coding tests as every other model.
 | [Qwen3.8-Flash-Next Coder (1.6-bit)](models/flash-next-coder.md) | Qwen3.8 Flash-Next | Dropped |  | yes (head) | MoE, 125B total / 6B active |
 | [GLM-5.3 (full) abliterated builds](models/glm-5.3-abliterated-full.md) | GLM | Does not fit | yes | – | Full GLM-5.3 |
 | [DeepSeek V4.1 Flash Uncensored](models/deepseek-v4.1-flash-uncensored.md) | Other | Does not fit | yes | – | MoE, 552B, vision, 1M context |
-| [Ling 3.1 Flash](models/ling-3.1-flash.md) | Other | Does not fit |  | – | Hybrid MoE (BailingMoeV3), about 572B parameters |
 | [Mistral Large 4](models/mistral-large-4.md) | Other | Does not fit |  | – | MoE, 1.05T total / 49B active, 1M context, vision |
 | [Naive N0.5 Flash](models/naive-n0.5-flash.md) | Other | Does not fit |  | – | MoE, 309B / 15.5B active |
 | [Step 5 Preview](models/step-5-preview.md) | Other | Does not fit |  | – | Sparse MoE, about 600B total / 27B active, 1M context, text, image and video input |
@@ -106,9 +105,7 @@ software, through the same coding tests as every other model.
 | [Qwen3.8-27B DFlash2 draft for ExLlamaV3](models/qwen3.8-27b-dflash2-exl3.md) | Qwen3.8 27B | Needs an engine update |  | – | DFlash2 draft model for Qwen3.8-27B, EXL3 5.0 bpw, 1.4 GB |
 | [PersonaPlex-7B](models/personaplex-7b.md) | Speech | Needs an engine update |  | – | 7B full-duplex speech-to-speech, Moshi |
 | [VibeVoice-ASR-BitNet](models/vibevoice-asr-bitnet.md) | Speech | Needs an engine update |  | – | ASR, BitNet I2_S language model plus an I8_S audio encoder |
-| [Jev 1.14 (TypeSafe)](models/jev-1.14.md) | Decision | Watching (no weights yet) |  | – | Decision model with image input, 262k context with a long-context header |
 | [Liquid d1](models/liquid-d1.md) | Decision | Watching (no weights yet) |  | – | Decision model with vision |
-| [Ultramarine 1 Flash (Paper Instruments)](models/ultramarine-1-flash.md) | GLM | Watching (no weights yet) |  | – | Post-trained GLM-5.3-Flash: MoE, about 320B / 18B active, 131k training context |
 | [Qwen 4 (rumoured: Max, Plus, Flash, 27B)](models/qwen4.md) | Other | Watching (no weights yet) |  | – | Unknown; a 27B tier is rumoured |
 | [Reflection Beam 501B](models/reflection-beam.md) | Other | Watching (no weights yet) |  | – | MoE, 501B / 23B active, 1M context |
 | [Reka Rho-1](models/reka-rho-1.md) | Other | Watching (no weights yet) |  | – | 19B omni (text, image, video, actions) |

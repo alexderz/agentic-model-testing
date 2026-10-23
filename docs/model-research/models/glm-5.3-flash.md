@@ -35,7 +35,7 @@ Each variant is one engine and settings combination. Context and expert offload 
 | --- | --- | --- | --- | --- | --- |
 | GLM-5.3-Flash · Maya (Strata engine for GLM), experts in VRAM and RAM | Maya 1.3 (patched) | Maya-S-v2 IQ2_XXS | – | – | 13.9 |
 | GLM-5.3-Flash · Maya 1.1.11, Maya-S-v2 IQ2_XXS, 131k | Maya 1.1.11 | Maya-S-v2 IQ2_XXS | 128k | – | no test run; 17.0 in a short probe (2026-10-16) |
-| GLM-5.3-Flash · Maya 1.1.13, Maya-M IQ2_S, 131k | Maya 1.1.13 | Maya-M IQ2_S | 128k | – | test 3 only: 5.4-7.1 (2026-10-17) |
+| GLM-5.3-Flash · Maya 1.1.13, Maya-M IQ2_S, 131k | Maya 1.1.13 | Maya-M IQ2_S | 128k | – | test 3 only: 5.4-6.9 (2026-10-17) |
 
 ## Results
 

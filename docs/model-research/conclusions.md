@@ -69,8 +69,8 @@ scored 10. See [Method](method.md) and the model cards.
 2. **The engine matters as much as the model.** The same weights ran 2-5x
    faster on a better-suited engine. See [Engines](engines.md). A fast engine
    is not an agent engine until it passes a multi-session probe: tqLLM decodes
-   about 2.5x faster than llama.cpp on the same Flash-Next GGUF and passed 3 of
-   11 checks.
+   about 2.5x faster than llama.cpp on the same Flash-Next GGUF and passed at best 4
+   of 11 checks.
 3. **Offloaded experts must load eagerly** (`-lm none` on 0.6), or the first
    request stalls on page faults.
 4. **Speculative decoding pays only when the model is GPU-resident.**

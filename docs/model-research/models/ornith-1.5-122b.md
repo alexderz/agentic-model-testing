@@ -19,7 +19,7 @@ temperature 0.6, top-p 0.95, top-k 20.
 
 No agent test has run. On llama.cpp 0.7.0 with 262k context and an 8-bit cache
 the best offload decodes at 16.3 tok/s (40 expert layers on the CPU), 15.8 at
-depth; larger batches lift prefill from 118 to 392 tok/s. The one-shot pagoda
+depth; larger batches lift prefill from 116 to 392 tok/s (41 layers). The one-shot pagoda
 and orrery ran at about 15 tok/s and are not graded. The sweep (2026-10-20) is below.
 
 ## Variants we ran
