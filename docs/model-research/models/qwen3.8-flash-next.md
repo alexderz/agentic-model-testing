@@ -11,11 +11,11 @@
 
 ## Summary
 
-The smartest model we can run. Too large for the card, so most experts live in system RAM. Engine choice decides speed: llama.cpp 0.4 ran 7 tok/s, llama.cpp 0.6 2.5-4x more, Strata and SGLang 24-36 tok/s over a whole run.
+The smartest model we can run. Too large for the card, so most experts live in system RAM. Engine choice decides speed: llama.cpp 0.4 ran 7 tok/s, llama.cpp 0.6 2.5-4x more, Strata and SGLang 24-36 tok/s over a whole run. Since 2026-10-22 llama.cpp 0.7.0 with an expert cache in VRAM streams 21-23 tok/s on the unpruned GGUF (was 12.5-15), and Strata 0.2.2 with the Gyro-S quant ([card](gyro-s-flash-next.md)) decodes 144 tok/s on code.
 
 ## Verdict
 
-Smartest overall. On SGLang (EXL3 3-bit, GPU expert cache) it built the best server of every run: 12 tools, 155 tests. Strata also passes test 2. SGLang is single-session only. In test 3 it scored 12/12 on both the known-good server and its own: clear probe briefs, every fact checked against the API, and on its own server a deliberate second probe to rule out a made-up first report. Both runs took about an hour, over a third of it waiting for first tokens, and both reports overstate how thoroughly it compared the lists.
+Smartest overall. On SGLang (EXL3 3-bit, GPU expert cache) it built the best server of every run: 12 tools, 155 tests. Strata also passes test 2. That run used the original SGLang build, which served one session at a time. The stock SGLang builds tried on 2026-10-21 (EXL3 3-bit, 204,800 context, two slots, images) passed 11 of 11 multi-session checks and needles at 100k, 150k and 190k at 24-25 tok/s; no agent test has been rerun on them. In test 3 it scored 12/12 on both the known-good server and its own: clear probe briefs, every fact checked against the API, and on its own server a deliberate second probe to rule out a made-up first report. Both runs took about an hour, over a third of it waiting for first tokens, and both reports overstate how thoroughly it compared the lists.
 
 ## Vision
 
@@ -42,7 +42,7 @@ Each variant is one engine and settings combination. Context and expert offload 
 | Variant | Engine | Quantization | Context | Expert layers in RAM | Best tok/s over a run |
 | --- | --- | --- | --- | --- | --- |
 | Flash-Next (unpruned) · llama.cpp, experts in RAM | llama.cpp 0.4 | GSQ-RCO IQ3_S | 128k | 42 | 8.3 |
-| Flash-Next (unpruned) · llama.cpp 0.6, experts in RAM | llama.cpp 0.6 | GSQ-RCO IQ3_S | not run yet | | |
+| Flash-Next (unpruned) · llama.cpp 0.7.0, all experts in RAM plus a 9216 MiB GPU cache, q8 KV | llama.cpp 0.7.0 | GSQ-RCO IQ3_S | 212k | all | not run through a test; 21-23 streamed (2026-10-22) |
 | Flash-Next · Strata, GPU expert cache, 262k context | Strata | GSQ-RCO IQ3_S | 256k | – | 30.2 |
 | Flash-Next · Strata, two batch slots (multi-agent), 262k context | Strata | GSQ-RCO IQ3_S | test 3 only | – | 20.0 |
 | Flash-Next · Strata 0.1.42, GPU expert cache, 262k context | strata strata-0.1.42 | GSQ-RCO IQ3_S | – | – | 19.2 |
@@ -51,6 +51,9 @@ Each variant is one engine and settings combination. Context and expert offload 
 | Flash-Next · Strata 0.1.42, old PCIe share, 262k context | strata strata-0.1.42 | GSQ-RCO IQ3_S | – | – | 33.8 |
 | Flash-Next · SGLang, EXL3 3-bit, GPU expert cache | SGLang | EXL3 3.05 bpw | 200k | – | 44.7 |
 | Flash-Next · SGLang fork phase-d-main, EXL3 3-bit, GPU expert cache | sglang sglang-exl3-phase-d-main | EXL3 3.05 bpw | – | – | 25.3 |
+| Flash-Next · stock SGLang builds, EXL3 3.05 bpw, two slots, fp8 or 8-bit KV | SGLang | EXL3 3.05 bpw | 200k | – | 24.1-25.1 decode, no test yet (2026-10-21) |
+| Flash-Next · Strata 0.1.44.1, old PCIe share, 262k context | Strata 0.1.44.1 | GSQ-RCO IQ3_S | 256k | – | 44.9 decode in the A/B, no test yet (2026-10-15) |
+| Flash-Next · tqLLM 1.2.3 with its MTP head | tqLLM | GSQ-RCO IQ3_S | 32k-262k | – | about 100-110 on short replies; not usable for agents (2026-10-22) |
 
 ## Results
 
@@ -83,4 +86,14 @@ The model gets an MCP server's source and a probe subagent whose only tools are 
 | 3O | 14/14 | 3 | fixed: 10 tools, 106 tests pass | 12/12 | 18.1 | 17 | Three probe sessions: an eight-question brief with method notes (paginate, cross-check counts, quote errors), a verbatim cross-check through resources and tools, and a re-check after the fix. Found that its own ha_overview counted 'unknown' entities as 'unavailable'; split the … |
 | 3O | 14/14 | 2 | no | 12/12 | 3.0 | 59 | Two probe sessions: eight numbered facts in plain terms (state "unavailable" in ANY domain, tool used, raw output, counted entity IDs, errors with their text), then a deliberate nine-call re-check with exact arguments to rule out a made-up first report; all 37 calls are in the … |
 
-_Generated from the bake-off results on 2026-10-15._
+## tqLLM trial (2026-10-22)
+
+tqLLM 1.2.3 loaded the unpruned IQ3_S GGUF and decoded at 101.7 / 79.9 / 111.8
+tok/s on code / prose / structured output at a 32k window, about 2.5 times the
+live llama.cpp entry on the same GGUF (40.3 / 41.3 / 41.0). It is not usable for
+agents: the first prompt of 256 or more tokens that runs short of VRAM leaves
+every later request failing until a restart, even an 18-token one, and the
+multi-session probe passed 3 of 11 checks at 32k (llama.cpp: 11 of 11). Details
+in [Engines](../engines.md).
+
+_Generated from the bake-off results on 2026-10-15; the 2026-10-22 section was added by hand._

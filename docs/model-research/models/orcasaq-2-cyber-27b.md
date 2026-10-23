@@ -27,7 +27,7 @@ Setups that load the vision head or tower:
 
 | Variant | Head lives on | Extra VRAM | Tokens per screenshot | Status |
 | --- | --- | --- | --- | --- |
-| OrcaSAQ-2-Cyber-27B · llama.cpp 0.6, DFlash2 + n-gram drafts + vision | CPU (--no-mmproj-offload) | ~0 GB (est.); 0.9 GB head + buffers in system RAM; 6.5 s per screenshot request | 922 (measured) | planned, not configured yet |
+| OrcaSAQ-2-Cyber-27B · llama.cpp 0.6, DFlash2 + n-gram drafts + vision | CPU (--no-mmproj-offload) | ~0 GB (est.); 0.9 GB head + buffers in system RAM; 6.5 s per screenshot request | 922 (measured) | configured; answered the smoke image on 2026-10-15 |
 
 Loading a head costs VRAM: its weights plus a compute buffer, about 1.1 to 2.7 GB by head type. On a card already full with the model and its context, the head goes on the CPU instead (llama.cpp --no-mmproj-offload, or the engine's host-RAM offload): then it costs almost no VRAM but system RAM, and every image is encoded on the CPU, which takes longer per screenshot. Every screenshot also takes context: about 400 to 1,200 tokens for a 1280x720 image, depending on the head. A long agent run that takes screenshots often fills its context and compacts sooner. For example, with a head that costs about 920 tokens per screenshot (the Qwen3-VL style), 100 screenshots in a 2-hour run are about 92,000 tokens, over a third of a 262k window.
 
@@ -61,4 +61,13 @@ The model gets an MCP server's source and a probe subagent whose only tools are 
 | 3G | 14/14 | 2 | no | 12/12 | 42.7 | 16 | It sent one probe session with the eight questions in plain terms, asking for the exact tool calls, the raw values and the exact error text; it built REST ground truth in Python, matched all 14 facts, and then read the source. It suspected that only_available filters UI-hidden … |
 | 3O | 14/14 | 1 | no | 12/12 | 45.5 | 8 | It built REST ground truth and read its own six-file server before sending one probe session: ten numbered calls with exact tool names, arguments and the field to report, errors to be quoted, and a summary table at the end. All 14 facts matched, a fresh REST pull confirmed them … |
 
-_Generated from the bake-off results on 2026-10-15._
+## Test 8: the pagoda and the orrery as an agent task
+
+The same two prompts as the one-shot tests 5 and 6, solved by an agent in OpenCode with a sealed browser to look at its own page, a two-hour cap and the same five-part rubric (A to E, 0-2 each, 10 in all). One run per task. The files and frames are in [`oneshots/agent-pagoda`](../../../oneshots/agent-pagoda/) and [`oneshots/agent-orrery`](../../../oneshots/agent-orrery/).
+
+| Entry | Task | Score | Minutes | tok/s | Notes |
+| --- | --- | --- | --- | --- | --- |
+| lcpp6-orcasaq2-cyber-27b | Pagoda | 9/10 (A1 B2 C2 D2 E2) | 19 | 53.2 | Vision off; 30 browser calls, 4 screenshots, 2 compactions, 19 min. Everything draws; the eave tips are detached stepped blocks that float apart from the roofs (A 1). Four cherry trees, pond, torii, lantern. |
+| lcpp6-orcasaq2-cyber-27b | Orrery | 8/10 (A1 B2 C2 D1 E2) | 91 | 55.3 | Vision off; 35 browser calls, 7 screenshots, 16 compactions, 91 min. Six planets at exact ratios and everything animates, but plates cover the orbit circles and the gear train is hidden (D 1). |
+
+_Generated from the bake-off results on 2026-10-15; the Test 8 section was added by hand on 2026-10-22._

@@ -28,8 +28,8 @@ Setups that load the vision head or tower:
 
 | Variant | Head lives on | Extra VRAM | Tokens per screenshot | Status |
 | --- | --- | --- | --- | --- |
-| Qwen3.8-27B Cyber (abliterated) · llama.cpp, all on GPU + vision | CPU (--no-mmproj-offload) | ~0 GB (est.); 0.9 GB head + buffers in system RAM; 7.4 s per screenshot request | 922 (measured) | planned, not configured yet |
-| Qwen3.8-27B Cyber (abliterated) Q5_K_M · llama.cpp 0.6, all on GPU at 80k, recommended sampling + vision | CPU (--no-mmproj-offload) | ~0 GB (est.); 0.9 GB head + buffers in system RAM; 7.4 s per screenshot request | 922 (measured) | planned, not configured yet |
+| Qwen3.8-27B Cyber (abliterated) · llama.cpp, all on GPU + vision | CPU (--no-mmproj-offload) | ~0 GB (est.); 0.9 GB head + buffers in system RAM; 7.4 s per screenshot request | 922 (measured) | configured; answered the smoke image on 2026-10-15 |
+| Qwen3.8-27B Cyber (abliterated) Q5_K_M · llama.cpp 0.6, all on GPU at 80k, recommended sampling + vision | CPU (--no-mmproj-offload) | ~0 GB (est.); 0.9 GB head + buffers in system RAM; 7.4 s per screenshot request | 922 (measured) | configured; answered the smoke image on 2026-10-15 |
 
 Loading a head costs VRAM: its weights plus a compute buffer, about 1.1 to 2.7 GB by head type. On a card already full with the model and its context, the head goes on the CPU instead (llama.cpp --no-mmproj-offload, or the engine's host-RAM offload): then it costs almost no VRAM but system RAM, and every image is encoded on the CPU, which takes longer per screenshot. Every screenshot also takes context: about 400 to 1,200 tokens for a 1280x720 image, depending on the head. A long agent run that takes screenshots often fills its context and compacts sooner. For example, with a head that costs about 920 tokens per screenshot (the Qwen3-VL style), 100 screenshots in a 2-hour run are about 92,000 tokens, over a third of a 262k window.
 
@@ -64,4 +64,14 @@ The model gets an MCP server's source and a probe subagent whose only tools are 
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | 3G | 0/14 | 3 | no | – | 19.4 | 105 | Not scored: stopped by hand at 105 min (operator saw the loop). A probe session repeated the identical ha_list_entities {"limit":30,"state":"unavailable"} call 32+ times while writing "Let me actually pass 300" (audit: 13 runs of identical calls, longest 52); no facts.json. … |
 
-_Generated from the bake-off results on 2026-10-15._
+## Test 8: the pagoda and the orrery as an agent task
+
+The same two prompts as the one-shot tests 5 and 6, solved by an agent in OpenCode with a sealed browser to look at its own page, a two-hour cap and the same five-part rubric (A to E, 0-2 each, 10 in all). One run per task. The files and frames are in [`oneshots/agent-pagoda`](../../../oneshots/agent-pagoda/) and [`oneshots/agent-orrery`](../../../oneshots/agent-orrery/).
+
+| Entry | Task | Score | Minutes | tok/s | Notes |
+| --- | --- | --- | --- | --- | --- |
+| q38-27b-cyber | Pagoda | 7/10 (A1 B2 C1 D1 E2) | 33 | 30.7 | Vision off; 48 browser calls, 5 screenshots, 33 min. The camera sits too close: only storeys 2 to 4 are in frame, so the top storey and spire never show (C 1); the pond is buried under the platform (D 1). |
+| lcpp6-q38-27b-cyber-q5 | Pagoda | 7/10 (A1 B2 C0 D2 E2) | 11 | 27.4 | Vision off; 25 browser calls, 1 screenshot, 1 compaction, 11 min. Dark sky and fog with the camera so close that blossom cubes block the view; no recognisable pagoda, the spire never shows (C 0). |
+| lcpp6-q38-27b-cyber-q5 | Orrery | 0/10 (A0 B0 C0 D0 E0) | 120 | 26.8 | Stopped at the 2 h cap with 16 compactions and no browser call; orrery.svg was a 0-byte file, so nothing rendered. |
+
+_Generated from the bake-off results on 2026-10-15; the Test 8 section was added by hand on 2026-10-22._

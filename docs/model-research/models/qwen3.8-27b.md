@@ -29,8 +29,8 @@ Setups that load the vision head or tower:
 
 | Variant | Head lives on | Extra VRAM | Tokens per screenshot | Status |
 | --- | --- | --- | --- | --- |
-| Qwen3.8-27B · vLLM, MTP drafts, 150k context + vision | host RAM (engine offload) | ~0 GB (est.); tower (~0.9 GB est.) in pinned host RAM; 0.9 s per screenshot request | 882 (measured) | planned, not configured yet |
-| Qwen3.8-27B EXL3 4-bit · exllamav3, DFlash2 drafts, 98k, 8-bit cache + vision | host RAM (engine offload) | ~0 GB (est.); tower (~0.9 GB est.) in pinned host RAM; 1.2 s per screenshot request | 882 (measured) | planned, not configured yet |
+| Qwen3.8-27B · vLLM, MTP drafts, 150k context + vision | host RAM (engine offload) | ~0 GB (est.); tower (~0.9 GB est.) in pinned host RAM; 0.9 s per screenshot request | 882 (measured) | configured; answered the smoke image on 2026-10-15 |
+| Qwen3.8-27B EXL3 4-bit · exllamav3, DFlash2 drafts, 98k, 8-bit cache + vision | host RAM (engine offload) | ~0 GB (est.); tower (~0.9 GB est.) in pinned host RAM; 1.2 s per screenshot request | 882 (measured) | configured; answered the smoke image on 2026-10-15 |
 
 - Qwen3.8-27B (UD-Q4_K_M): no setup we run loads its vision head or tower: every variant runs blind.
 
@@ -47,8 +47,9 @@ Each variant is one engine and settings combination. Context and expert offload 
 | Qwen3.8-27B · vLLM, DFlash2 drafts, 240k context, 4/2-bit KV | vLLM (HyperQwen) | HyperQwen 4-bit, KVarN KV | 240k | – | 56.5 |
 | Qwen3.8-27B · vLLM, DFlash2 drafts, 64k context | vLLM (HyperQwen) | HyperQwen 4-bit, FP8 KV | 64k | – | 97.4 |
 | Qwen3.8-27B · vLLM, DFlash2 15-token drafts, 57k context | vLLM (HyperQwen) | HyperQwen 4-bit, FP8 KV | 56k | – | 95.0 |
-| Qwen3.8-27B EXL3 4-bit · exllamav3, MTP drafts, 196k, 8-bit cache | exllamav3 1.6.1 (TabbyAPI) | EXL3 4.00bpw (head 6 bits, MTP 4 bits); the HF cache keeps two snapshots: 113cf7ab is 4.00bpw (served), 6fe61ad6 is 3.00bpw | not run yet | | |
-| Qwen3.8-27B EXL3 4-bit · exllamav3, DFlash2 drafts, 98k, 8-bit cache | exllamav3 1.6.1 (TabbyAPI) | EXL3 4.00bpw (head 6 bits, MTP 4 bits); the HF cache keeps two snapshots: 113cf7ab is 4.00bpw (served), 6fe61ad6 is 3.00bpw | not run yet | | |
+| Qwen3.8-27B EXL3 4-bit · exllamav3, MTP drafts, 196k, 8-bit cache | exllamav3 1.6.1 (TabbyAPI) | EXL3 4.00bpw (head 6 bits, MTP 4 bits); the HF cache keeps two snapshots: 113cf7ab is 4.00bpw (served), 6fe61ad6 is 3.00bpw | 196k | – | no test run; 116 on short code (probe) |
+| Qwen3.8-27B EXL3 4-bit · exllamav3, DFlash2 drafts, 98k, 8-bit cache | exllamav3 1.6.1 (TabbyAPI) | EXL3 4.00bpw (head 6 bits, MTP 4 bits); the HF cache keeps two snapshots: 113cf7ab is 4.00bpw (served), 6fe61ad6 is 3.00bpw | 98k | – | no test run; 158 on short code (probe) |
+| Qwen3.8-27B EXL3 4-bit · exllamav3 1.6.2, DFlash2 drafts, 98k, 8-bit cache | exllamav3 1.6.2 (TabbyAPI) | EXL3 4.00bpw | 98k | – | no test run; 140.1 against 138.6 on 1.6.1 (2026-10-16); needle found at 128k, 112k and 94k |
 
 ## Results
 
