@@ -1,5 +1,9 @@
 # Tests 2, 3A and 3B — building an MCP server, and using one
 
+> Status (2026-10-22): a record of the first runs of 2026-09-27 and 2026-09-28. Test 3 was reworked afterwards
+> (a subagent with only the server's tools, 14 facts, a 12-point rubric); see
+> [Method](../docs/model-research/method.md).
+
 Three tests on one RTX 3090, run 2026-09-27 to 2026-09-28 against a recorded
 fixture of a real Home Assistant installation (434 entities, 22 domains, 124
 unavailable, 126 unknown). Every agent ran in a container. Agent: Open Code

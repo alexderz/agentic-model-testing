@@ -1,5 +1,11 @@
 # Titan model bake-off — Home Assistant CLI
 
+> **Status (2026-10-22): round 1, kept as a record.** This is the first round (September 2026): one
+> prompt, the Pi agent, a single llama.cpp build, one sample per case, no tests beyond the CLI.
+> Models, engines and tests have changed since. Current results and picks are in
+> [Conclusions](../docs/model-research/conclusions.md); how the tests work now is in
+> [Method](../docs/model-research/method.md).
+
 **Task (identical for every case, no guidance, no SDLC):**
 `Write a Python command-line tool for the Home Assistant REST API.`
 
