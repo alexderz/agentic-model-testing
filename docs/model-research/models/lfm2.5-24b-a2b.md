@@ -1,6 +1,6 @@
 # LFM2.5-24B-A2B
 
-**Status:** Tested
+**Status:** Dropped
 
 | | |
 | --- | --- |
@@ -15,7 +15,7 @@ Liquid's largest LFM2.5 model: text-only, always reasons, post-trained for tool 
 
 ## Verdict
 
-Test 1 only, on llama.cpp 0.6 at 131k with an f16 cache. Q4_K_M was partial: 4 of 5 checks, 8 of its own tests passing, 4 subcommands, 157.6 tok/s, about 2 minutes, one compaction. Q6_K failed: 2 of 5 checks, 7 tests passing, 3 subcommands, 176.2 tok/s, about 1 minute. Qwen3.6-35B-A3B passed the same test 5 of 5 at 57.2 tok/s, so this is faster and less complete. Test 2 has not been run.
+Fast, and it passes no test 2. On llama.cpp 0.6 with an f16 cache (131k, or about 120k for UD-Q6_K_XL), five quants decode at 125-176 tok/s on test 1. Three of five passed it: UD-Q4_K_XL (12 tests), UD-Q5_K_XL (18 tests, 83 minutes after a pytest loop) and UD-Q6_K_XL (6 tests). Q4_K_M was partial (4 of 5 checks, 8 tests, 157.6 tok/s) and Q6_K failed (2 of 5, 7 tests, 176.2 tok/s). Test 2 failed or only partly worked on every quant, with 0 to 3 tools: each server answers `initialize` with -32601 (no initialize arm), or reads all of stdin before replying, or glues the next request to the last. Test 1 runs were often two minutes long, so their test counts are small. Qwen3.6-35B-A3B passed test 1 5 of 5 at 57.2 tok/s, so this is faster and less steady. One run each, 2026-10-13 to 15.
 
 ## Vision
 
