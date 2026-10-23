@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
  "generated": "2026-10-15 14:36 CDT",
- "built": "2026-10-22 19:48 CDT",
+ "built": "2026-10-22 20:36 CDT",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -103,15 +103,15 @@
  "findings": [
   {
    "date": "2026-10-22",
-   "title": "An expert cache doubles Flash-Next on one 3090",
+   "title": "An expert cache makes Flash-Next 1.5x faster on one 3090",
    "kind": "tuning",
    "summary": "Qwen3.8 Flash-Next (125B, 6B active) does not fit in 24 GB, so llama.cpp keeps experts in system RAM. Keeping all of them there (-cmoe) and giving the GPU a cache of hot experts (--moe-cache-mib), with q8 KV to make room, beat the old split of 40 layers on CPU on every GGUF tried, at 262k context.",
    "settings": "-cmoe --moe-cache-mib 12800 -ctk q8_0 -ctv q8_0 -b 2048 -ub 1024 -t 16",
    "metrics": [
     {
-     "label": "Decode, orca IQ4_XS",
+     "label": "Decode, orca IQ4_XS (streamed, live config)",
      "before": 13,
-     "after": 24,
+     "after": 19,
      "unit": "tok/s"
     },
     {
@@ -146,7 +146,7 @@
     }
    ],
    "quality": "Against the old f16 KV config: mean KL 0.0011 and 98 % top-1 agreement over 100k tokens of real code; two loads of the same config differ by KL 0.0002. Needles found at 100k, 190k and 250k.",
-   "caveat": "Lazy tensor reads (llama.cpp's default) make the first pass over unseen text slow when the page cache is cold; -lzm off fixes it but costs about 28 GB of extra RAM. The 13 to 24 tok/s for orca is the best arm of the sweep. With the shipped config the streamed figure is about 19 tok/s (25 to 37 raw). The tqLLM control run measured the same GGUF at about 40 tok/s on short outputs; that measure is higher than the streamed one."
+   "caveat": "Lazy tensor reads (llama.cpp's default) make the first pass over unseen text slow when the page cache is cold; -lzm off fixes it but costs about 28 GB of extra RAM. Raw decode with short outputs is higher (25-37 tok/s on orca). The tqLLM control run measured the same GGUF at about 40 tok/s on short outputs; that measure is higher than the streamed one."
   },
   {
    "date": "2026-10-22",
@@ -216,7 +216,7 @@
    "date": "2026-10-22",
    "title": "tqLLM serves Flash-Next fast but not for agents",
    "kind": "engine",
-   "summary": "tqLLM 1.2.3 loaded the Flash-Next IQ3_S GGUF and decoded faster than llama.cpp on short benchmarks, but long prompts and several sessions failed.",
+   "summary": "tqLLM 1.2.3 decodes Flash-Next about 2.5x faster than llama.cpp on the same GGUF, but one prefill out-of-memory leaves every later request failing until a restart.",
    "settings": null,
    "metrics": [
     {
@@ -244,8 +244,8 @@
      "unit": "of 11"
     }
    ],
-   "quality": "Tool calls and a 30k needle passed at 32k; the 262k arm answered long prompts with HTTP 500.",
-   "caveat": "Short outputs with thinking off flatter the speed; the best 262k arm streamed 54 tok/s and passed 4 of 11 sessions. First load took 23 minutes cold."
+   "quality": "Tool calls and a 30k needle passed at 32k; at 262k with 8k prefill chunks it found a needle in 248k tokens, then failed on a 292-token prompt.",
+   "caveat": "Short replies with thinking off; any prompt of 256+ tokens can trigger the failure. First load took 23 minutes cold."
   },
   {
    "date": "2026-10-21",

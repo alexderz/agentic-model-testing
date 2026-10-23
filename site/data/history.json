@@ -801,7 +801,7 @@
    "date": "2026-10-22",
    "title": "tqLLM serves Flash-Next fast but not for agents",
    "kind": "engine",
-   "summary": "tqLLM 1.2.3 loaded the Flash-Next IQ3_S GGUF and decoded faster than llama.cpp on short benchmarks, but long prompts and several sessions failed.",
+   "summary": "tqLLM 1.2.3 decodes Flash-Next about 2.5x faster than llama.cpp on the same GGUF, but one prefill out-of-memory leaves every later request failing until a restart.",
    "settings": null,
    "metrics": [
     {
@@ -829,8 +829,8 @@
      "unit": "of 11"
     }
    ],
-   "quality": "Tool calls and a 30k needle passed at 32k; the 262k arm answered long prompts with HTTP 500.",
-   "caveat": "Short outputs with thinking off flatter the speed; the best 262k arm streamed 54 tok/s and passed 4 of 11 sessions. First load took 23 minutes cold."
+   "quality": "Tool calls and a 30k needle passed at 32k; at 262k with 8k prefill chunks it found a needle in 248k tokens, then failed on a 292-token prompt.",
+   "caveat": "Short replies with thinking off; any prompt of 256+ tokens can trigger the failure. First load took 23 minutes cold."
   },
   {
    "date": "2026-10-21",
@@ -1258,8 +1258,8 @@
  "amend": [
   {
    "date": "2026-10-22",
-   "title": "An expert cache doubles Flash-Next on one 3090",
-   "note": "The 13 to 24 tok/s for orca is the best arm of the sweep. With the shipped config the streamed figure is about 19 tok/s (25 to 37 raw).",
+   "title": "An expert cache makes Flash-Next 1.5x faster on one 3090",
+   "note": "Raw decode with short outputs is higher (25-37 tok/s on orca).",
    "extra_metrics": [
     {
      "label": "Decode, heretic2 (streamed)",

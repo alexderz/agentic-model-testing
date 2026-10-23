@@ -62,15 +62,15 @@
  "findings": [
   {
    "date": "2026-10-22",
-   "title": "An expert cache doubles Flash-Next on one 3090",
+   "title": "An expert cache makes Flash-Next 1.5x faster on one 3090",
    "kind": "tuning",
    "summary": "Qwen3.8 Flash-Next (125B, 6B active) does not fit in 24 GB, so llama.cpp keeps experts in system RAM. Keeping all of them there (-cmoe) and giving the GPU a cache of hot experts (--moe-cache-mib), with q8 KV to make room, beat the old split of 40 layers on CPU on every GGUF tried, at 262k context.",
    "settings": "-cmoe --moe-cache-mib 12800 -ctk q8_0 -ctv q8_0 -b 2048 -ub 1024 -t 16",
    "metrics": [
     {
-     "label": "Decode, orca IQ4_XS",
+     "label": "Decode, orca IQ4_XS (streamed, live config)",
      "before": 13,
-     "after": 24,
+     "after": 19,
      "unit": "tok/s"
     },
     {
