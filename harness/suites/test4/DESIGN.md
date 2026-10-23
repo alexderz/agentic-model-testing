@@ -67,7 +67,7 @@ Eligible today, in running order (speeds are test 1 / test 2):
 8. Gemma 4 31B (31 to 53 / 39 to 50), thin but fast.
 9. Qwen3.8-Flash-Next on its fastest engine: SGLang (36 to 45 on test 2, 44 on test 1). The operator wants
    Flash-Next as the smart daily driver, so this one matters most. Strata (24 to 30) is the fallback if SGLang
-   misbehaves; test 4 and test 1B are single-agent, so SGLang's single session is enough.
+   misbehaves; test 4 and test 1B are single-agent, so SGLang's single session is enough (2026-10-22: stock SGLang builds now serve several sessions).
 
 Included below the floor by the operator's choice (2026-10-10):
 

@@ -28,7 +28,7 @@ Setups that load the vision head or tower:
 
 | Variant | Head lives on | Extra VRAM | Tokens per screenshot | Status |
 | --- | --- | --- | --- | --- |
-| Gemma 4 26B-A4B · llama.cpp, all on GPU, 262k context + vision | GPU | +1.4-1.7 GB (est.); 0.9 s per screenshot request | 407 (measured) | planned, not configured yet |
+| Gemma 4 26B-A4B · llama.cpp, all on GPU, 262k context + vision | GPU | +1.4-1.7 GB (est.); 0.9 s per screenshot request | 407 (measured) | configured; answered the smoke image on 2026-10-15 |
 | Gemma 4 26B-A4B · vLLM, AWQ, draft model | GPU (vLLM default) | in the load (est.) | ~400 (est.) | configured |
 
 Loading a head costs VRAM: its weights plus a compute buffer, about 1.1 to 2.7 GB by head type. On a card already full with the model and its context, the head goes on the CPU instead (llama.cpp --no-mmproj-offload, or the engine's host-RAM offload): then it costs almost no VRAM but system RAM, and every image is encoded on the CPU, which takes longer per screenshot. Every screenshot also takes context: about 400 to 1,200 tokens for a 1280x720 image, depending on the head. A long agent run that takes screenshots often fills its context and compacts sooner. For example, with a head that costs about 920 tokens per screenshot (the Qwen3-VL style), 100 screenshots in a 2-hour run are about 92,000 tokens, over a third of a 262k window.

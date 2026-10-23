@@ -18,7 +18,9 @@ see [Method](method.md).
   snapshot, not an apples-to-apples benchmark: the tests changed over time
   (see [History](history.md)), each model ran at its own best fit on the
   card, and each row is one run.
-- For engine choice and settings, see [Engines](engines.md).
+- For engine choice, versions and measured speeds, see [Engines](engines.md).
+- For what we learned about tuning (expert placement, KV precision, batch sizes,
+  speculative decoding, measuring), with the numbers, see [Tuning](tuning.md).
 - For dated findings and decisions, see the [Research log](log.md).
 - For a creative-writing comparison (a short story and the model's own edit), see the
   [Story test](story-test/README.md).
@@ -55,15 +57,20 @@ software, through the same coding tests as every other model.
 | [GLM-5.3-Flash](models/glm-5.3-flash.md) | GLM | Tested |  | yes (head) | MoE, 320B / 18B active, multimodal |
 | [Gemma 4 26B-A4B](models/gemma-4-26b-a4b.md) | Gemma 4 | Tested |  | yes (head) / yes (built in) | MoE, 26B / 4B active |
 | [Gemma 4 31B](models/gemma-4-31b.md) | Gemma 4 | Tested |  | yes (head) | Dense, 31B |
-| [LFM2.5-24B-A2B](models/lfm2.5-24b-a2b.md) | LFM | Tested |  | no | Hybrid MoE, 24.0B total / 2.45B active, 64 experts top-4, 131k context |
 | [OrcaSAQ-2-Cyber-27B](models/orcasaq-2-cyber-27b.md) | Qwen3.8 27B | Tested | yes | base head, unverified | Dense, 27B |
+| [Underdog Saluki 27B (2-bit)](models/saluki-27b.md) | Qwen3.8 27B | Tested |  | – | Dense, 27B |
+| [Flash-Next Gyro-S (TQ1_0)](models/gyro-s-flash-next.md) | Qwen3.8 Flash-Next | Tested |  | no | MoE, 125B total / 6B active |
 | [Qwen3.8-27B Coder390 EfficientThink](models/qwen3.8-27b-coder390-efficientthink.md) | Qwen3.8 27B | Tested | yes | yes (head) | Dense, 27B |
 | [Qwen3.8-27B Cyber (abliterated)](models/qwen3.8-27b-cyber.md) | Qwen3.8 27B | Tested | yes | yes (head) | Dense, 27B |
 | [Flash-Next Abliterated s1.5](models/flash-next-abliterated-s15.md) | Qwen3.8 Flash-Next | Tested | yes | yes (head) | MoE, 125B total / 6B active |
 | [Cyber-Tiel-Coder-35B-A3B](models/cyber-tiel-coder-35b.md) | Tiel Coder 35B | Tested | yes | yes (head) | MoE, 35B / 3B active |
 | [Tiel-Coder-35B-A3B](models/tiel-coder-35b.md) | Tiel Coder 35B | Tested |  | yes (head) | MoE, 35B / 3B active |
 | [Qwen-Image-2.1-Turbo](models/qwen-image-2.1-turbo.md) | Image generation | Downloaded, not tested yet |  | – | 7B image generation and editing model, 8-step distilled checkpoint |
+| [Flint 40B-A2.5B](models/flint-40b-a2.5b.md) | Flint | Downloaded, not tested yet |  | no | MoE, 39.8B total / about 2.5B active |
+| [Ornith-1.5-122B](models/ornith-1.5-122b.md) | Ornith | Downloaded, not tested yet |  | yes (head), not tried | MoE, a Qwen3.5 122B mixture, 8 of 256 experts per token |
+| [Carbon-X](models/carbon-x.md) | Carbon | Downloaded, not tested yet |  | no | Dense, 14.8B, 40k context, DNA and English |
 | [Nemotron 3.5 Lightning 30B-A3B](models/nemotron-3.5-lightning-30b.md) | Nemotron | Downloaded, not tested yet |  | – | Hybrid Mamba MoE, 30B / 3B active |
+| [LFM2.5-24B-A2B](models/lfm2.5-24b-a2b.md) | LFM | Dropped |  | no | Hybrid MoE, 24.0B total / 2.45B active, 64 experts top-4, 131k context |
 | [GLM-4.5-Air](models/glm-4.5-air.md) | GLM | Dropped |  | no | MoE, 106B / 12B active |
 | [GLM-4.7-Flash](models/glm-4.7-flash.md) | GLM | Dropped |  | no | MoE |
 | [Kolibri-1](models/kolibri-1.md) | Kolibri | Dropped |  | no | MoE, 78B / 3.5B active, EN/DE |
@@ -83,7 +90,6 @@ software, through the same coding tests as every other model.
 | [Qwen3.8-Flash-Next Coder (1.6-bit)](models/flash-next-coder.md) | Qwen3.8 Flash-Next | Dropped |  | yes (head) | MoE, 125B total / 6B active |
 | [GLM-5.3 (full) abliterated builds](models/glm-5.3-abliterated-full.md) | GLM | Does not fit | yes | – | Full GLM-5.3 |
 | [DeepSeek V4.1 Flash Uncensored](models/deepseek-v4.1-flash-uncensored.md) | Other | Does not fit | yes | – | MoE, 552B, vision, 1M context |
-| [Ling 3.1 Flash](models/ling-3.1-flash.md) | Other | Does not fit |  | – | Hybrid MoE (BailingMoeV3), about 572B parameters |
 | [Mistral Large 4](models/mistral-large-4.md) | Other | Does not fit |  | – | MoE, 1.05T total / 49B active, 1M context, vision |
 | [Naive N0.5 Flash](models/naive-n0.5-flash.md) | Other | Does not fit |  | – | MoE, 309B / 15.5B active |
 | [Step 5 Preview](models/step-5-preview.md) | Other | Does not fit |  | – | Sparse MoE, about 600B total / 27B active, 1M context, text, image and video input |
@@ -99,9 +105,7 @@ software, through the same coding tests as every other model.
 | [Qwen3.8-27B DFlash2 draft for ExLlamaV3](models/qwen3.8-27b-dflash2-exl3.md) | Qwen3.8 27B | Needs an engine update |  | – | DFlash2 draft model for Qwen3.8-27B, EXL3 5.0 bpw, 1.4 GB |
 | [PersonaPlex-7B](models/personaplex-7b.md) | Speech | Needs an engine update |  | – | 7B full-duplex speech-to-speech, Moshi |
 | [VibeVoice-ASR-BitNet](models/vibevoice-asr-bitnet.md) | Speech | Needs an engine update |  | – | ASR, BitNet I2_S language model plus an I8_S audio encoder |
-| [Jev 1.14 (TypeSafe)](models/jev-1.14.md) | Decision | Watching (no weights yet) |  | – | Decision model with image input, 262k context with a long-context header |
 | [Liquid d1](models/liquid-d1.md) | Decision | Watching (no weights yet) |  | – | Decision model with vision |
-| [Ultramarine 1 Flash (Paper Instruments)](models/ultramarine-1-flash.md) | GLM | Watching (no weights yet) |  | – | Post-trained GLM-5.3-Flash: MoE, about 320B / 18B active, 131k training context |
 | [Qwen 4 (rumoured: Max, Plus, Flash, 27B)](models/qwen4.md) | Other | Watching (no weights yet) |  | – | Unknown; a 27B tier is rumoured |
 | [Reflection Beam 501B](models/reflection-beam.md) | Other | Watching (no weights yet) |  | – | MoE, 501B / 23B active, 1M context |
 | [Reka Rho-1](models/reka-rho-1.md) | Other | Watching (no weights yet) |  | – | 19B omni (text, image, video, actions) |
@@ -110,10 +114,16 @@ software, through the same coding tests as every other model.
 
 Vision "–" means not recorded for that card yet, not that the model is text-only.
 
+The cards for Saluki, Gyro-S, Flint, Ornith and Carbon-X, and the rewritten LFM2.5
+card, were written by hand from the bake-off results of 2026-10-22, and the test 8
+sections on several cards were added the same way. The next generated export will
+replace them with the generated form.
+
 <!-- INDEX:END -->
 
 ## How this space is maintained
 
 The model cards and the index are generated from the graded bake-off
-results. The other pages are written by hand. New results, new candidates,
+results, except where a card says it was written by hand. The other pages are
+written by hand. New results, new candidates,
 and rejected models are added as they come in.

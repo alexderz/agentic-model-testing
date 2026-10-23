@@ -15,7 +15,7 @@ Small-active coder MoE. At IQ4_XS it fits entirely on the GPU at 262k context; t
 
 ## Verdict
 
-The fastest model that writes working test-1 code on the IQ4_XS file (101 tok/s). An invented endpoint on the first 4-bit test 2 was a sampling problem: retried at temperature 0.6, that file passed both tests (test 2 at 40.8 tok/s in 72 minutes). The Q4_K_XL build with 6 expert layers in RAM, same sampling, was then repeated across every test. Test 1 was 5/5, 5/5, 5/5, 4/5 at 69-81 tok/s; the miss is a NameError, json used and never imported, when an attribute is a list or a dict, and its own tests never show that. Test 2 was a full pass only twice in four runs (69-81 tok/s). The two failures are field names a normal client cannot survive: one reads params.toolName where MCP sends params.name, and one types the JSON-RPC id as a string so numeric ids fail to parse. Its own tests send the shape it wrote, so they stay green. With a trust trap the protocol passed three times (69-79 tok/s); one run left planted endpoints in the code and two shipped real endpoints only. Test 3 leaves a correct server alone, and a perfect 14/14 happened once in three (the other two gathered the right numbers and then mis-read HVAC mode or wrote the wrong JSON keys). On its own server it fixes the services-dict bug every time and the array wrap twice (rubric 10 to 12). Test 4, three tickets and three runs, passed 9 of 9 with no baseline regression and no false done, mostly at 60-81 tok/s. Trust it with a small checked patch. Do not trust one MCP server it writes. Beside Qwen3.8-27B on vLLM (test 1 at 70.5 tok/s, test 2 a full pass at 69.5), it is as fast on llama.cpp and less reliable on the server. Test 6 (one-shot voxel pagoda, 2026-10-14) is where it shines: it wrote three pages at 10 of 10 and one at 8 in eight samples across its three setups (only one other page, from Qwen3.8-27B on ExLlamaV3 with DFlash2, also scored 10), but its failures are all-or-nothing, four zeros: a call to a three.js API removed years ago and a wrong property name, each of which blanks the page, one cap run out while thinking, and one degenerate reply (stray tool-call text repeated); three of the four came from the Q4_K_XL + MTP build and the plain llama.cpp 0.4 entry.
+The fastest model that writes working test-1 code on the IQ4_XS file (101 tok/s). An invented endpoint on the first 4-bit test 2 was a sampling problem: retried at temperature 0.6, that file passed both tests (test 2 at 40.8 tok/s in 72 minutes). The Q4_K_XL build with 6 expert layers in RAM, same sampling, was then repeated across every test. Test 1 was 5/5, 5/5, 5/5, 4/5 at 69-81 tok/s; the miss is a NameError, json used and never imported, when an attribute is a list or a dict, and its own tests never show that. Test 2 was a full pass only twice in four runs (69-81 tok/s). The two failures are field names a normal client cannot survive: one reads params.toolName where MCP sends params.name, and one types the JSON-RPC id as a string so numeric ids fail to parse. Its own tests send the shape it wrote, so they stay green. With a trust trap the protocol passed three times (69-79 tok/s); one run left planted endpoints in the code and two shipped real endpoints only. Test 3 leaves a correct server alone, and a perfect 14/14 happened once in three (the other two gathered the right numbers and then mis-read HVAC mode or wrote the wrong JSON keys). On its own server it fixes the services-dict bug every time and the array wrap twice (rubric 10 to 12). Test 4, three tickets and three runs, passed 9 of 9 with no baseline regression and no false done, mostly at 60-81 tok/s. Trust it with a small checked patch. Do not trust one MCP server it writes. Beside Qwen3.8-27B on vLLM (test 1 at 70.5 tok/s, test 2 a full pass at 69.5), it is as fast on llama.cpp and less reliable on the server. Test 6 (one-shot voxel pagoda, 2026-10-14) is where it shines: it wrote three pages at 10 of 10 and one at 8 in eight samples across its three setups (only one other page, from Qwen3.8-27B on ExLlamaV3 with DFlash2, also scored 10), but its failures are all-or-nothing, four zeros: a call to a three.js API removed years ago and a wrong property name, each of which blanks the page, one cap run out while thinking, and one degenerate reply (stray tool-call text repeated); three of the four came from the Q4_K_XL + MTP build and the plain llama.cpp 0.4 entry. Test 4 (2026-10-11): fixed 9 of 9 tickets, three tickets three runs each, with all 84 hidden checks passing. It is the only model tested on test 4. On llama.cpp 0.7.0 the IQ4_XS entry decoded 151 tok/s in the 2026-10-18 check.
 
 ## Vision
 
@@ -29,7 +29,7 @@ Setups that load the vision head or tower:
 | Variant | Head lives on | Extra VRAM | Tokens per screenshot | Status |
 | --- | --- | --- | --- | --- |
 | Tiel-Coder-35B 4-bit · llama.cpp, all on GPU, 262k context | GPU | +1.4-2.7 GB (est.) | ~920 (est.) | configured |
-| Tiel-Coder-35B 4-bit · llama.cpp 0.6, all on GPU, 262k, author's coding sampling (temperature 0.6) + vision | CPU (--no-mmproj-offload) | ~0 GB (est.); 0.9 GB head + buffers in system RAM; 6.6 s per screenshot request | 922 (measured) | planned, not configured yet |
+| Tiel-Coder-35B 4-bit · llama.cpp 0.6, all on GPU, 262k, author's coding sampling (temperature 0.6) + vision | CPU (--no-mmproj-offload) | ~0 GB (est.); 0.9 GB head + buffers in system RAM; 6.6 s per screenshot request | 922 (measured) | configured; answered the smoke image on 2026-10-15 |
 | Tiel-Coder-35B 6-bit · llama.cpp, 20 expert layers in RAM | GPU | +1.4-2.7 GB (est.) | ~920 (est.) | configured |
 
 Loading a head costs VRAM: its weights plus a compute buffer, about 1.1 to 2.7 GB by head type. On a card already full with the model and its context, the head goes on the CPU instead (llama.cpp --no-mmproj-offload, or the engine's host-RAM offload): then it costs almost no VRAM but system RAM, and every image is encoded on the CPU, which takes longer per screenshot. Every screenshot also takes context: about 400 to 1,200 tokens for a 1280x720 image, depending on the head. A long agent run that takes screenshots often fills its context and compacts sooner. For example, with a head that costs about 920 tokens per screenshot (the Qwen3-VL style), 100 screenshots in a 2-hour run are about 92,000 tokens, over a third of a 262k window.
@@ -92,4 +92,28 @@ The model gets an MCP server's source and a probe subagent whose only tools are 
 | 3O | 14/14 | 2 | fixed: 5 tools, 22 tests pass | 12/12 | 75.8 | 12 | Tiel Coder focus wave, run 2 of test 3 with its own server. REST first, then a brief that named each fact, the tool and the arguments, and asked for raw tool output. It found list_services always empty because /api/services returns a dict, and that the probe host rejects array … |
 | 3O | 13/14 | 2 | fixed: 5 tools, 22 tests pass | 11/12 | 67.3 | 11 | Tiel Coder focus wave, run 3 of test 3 with its own server. Same list_services dict bug, fixed with extract_services; 22 tests pass and the fixed server passes test 2. It did not wrap array structuredContent, so the second probe still failed on both list tools and the list facts … |
 
-_Generated from the bake-off results on 2026-10-15._
+## Test 8: the pagoda and the orrery as an agent task
+
+The same two prompts as the one-shot tests 5 and 6, solved by an agent in OpenCode with a sealed browser to look at its own page, a two-hour cap and the same five-part rubric (A to E, 0-2 each, 10 in all). One run per task. The files and frames are in [`oneshots/agent-pagoda`](../../../oneshots/agent-pagoda/) and [`oneshots/agent-orrery`](../../../oneshots/agent-orrery/).
+
+| Entry | Task | Score | Minutes | tok/s | Notes |
+| --- | --- | --- | --- | --- | --- |
+| lcpp6-tiel-coder-35b-t06 | Pagoda | 6/10 (A1 B1 C2 D1 E1) | 11 | 99.8 | Vision off; 35 browser calls, 2 screenshots, 11 min. Every tree trunk is placed near the origin, so the canopies float and stubs poke out of the pagoda (A 1, D 1); the ground is a plane (B 1); no petal is ever visible (E 1). |
+
+## Test 4: ticket fixes in a known-good Rust crate
+
+Three tickets, three runs each, on the Q4_K_XL build (llama.cpp 0.6, 131k, f16 KV, temperature 0.6), 2026-10-11. The crate has 155 passing tests; the agent gets an issue text and the grader runs hidden black-box checks against the built server. Every run passed all of its hidden checks (4, 11 and 13 per ticket, 84 of 84 in all), no baseline test regressed, and none claimed "done" falsely. Runs ended with 156 to 168 passing tests. The fastest took 2 minutes, the slowest 42.
+
+| Ticket | Run | Hidden checks | Tests passing | tok/s | Minutes | Compactions | Failed builds | Errors per 1k lines |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| bugfix-targets | 1 | 4/4 | 161 | 18.2 | 42 | 2 | 2/5 | 0.4 |
+| bugfix-targets | 2 | 4/4 | 156 | 80.8 | 5 | 0 | 3/7 | 0.5 |
+| bugfix-targets | 3 | 4/4 | 156 | 71.0 | 2 | 0 | 1/4 | 0.1 |
+| config-timeouts | 1 | 13/13 | 168 | 61.5 | 19 | 8 | 2/10 | 0.8 |
+| config-timeouts | 2 | 13/13 | 161 | 62.2 | 19 | 7 | 5/11 | 5.3 |
+| config-timeouts | 3 | 13/13 | 164 | 64.5 | 13 | 5 | 3/8 | 0.3 |
+| feature-filter | 1 | 11/11 | 158 | 65.8 | 6 | 2 | 5/8 | 0.7 |
+| feature-filter | 2 | 11/11 | 157 | 60.2 | 5 | 2 | 2/5 | 0.2 |
+| feature-filter | 3 | 11/11 | 159 | 61.3 | 9 | 4 | 2/4 | 0.4 |
+
+_Generated from the bake-off results on 2026-10-15; the Test 4 and Test 8 sections were added by hand on 2026-10-22._

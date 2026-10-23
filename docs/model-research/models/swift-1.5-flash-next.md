@@ -15,7 +15,7 @@ An expert-pruned Flash-Next, GSQ-RCO IQ3_XXS. Smaller, so more of it stays on th
 
 ## Verdict
 
-On Strata: test-2 full pass, 10 tools, 114 tests, 130 min. On llama.cpp 0.4 it ran out of time.
+On Strata: test-2 full pass, 10 tools, 114 tests, 130 min. On llama.cpp 0.4 it ran out of time. Since 2026-10-22 the llama.cpp entry runs on 0.7.0 with all experts in RAM and a 9216 MiB GPU cache (`-cmoe --moe-cache-mib 9216`, 8-bit KV, `-b 2048 -ub 1024`): 23-26 tok/s streamed, was 13-17. Tools, vision, a 211k needle and 11 of 11 multi-session checks pass on it. Mean KL against the old f16-KV configuration is 0.0011 (measured on the Orcarouter GGUF). This configuration has not been through tests 1 and 2; the results below are from llama.cpp 0.4 and 0.6.
 
 ## Vision
 
@@ -35,6 +35,7 @@ Each variant is one engine and settings combination. Context and expert offload 
 | --- | --- | --- | --- | --- | --- |
 | Swift 1.5 Flash-Next (pruned) · llama.cpp, experts in RAM | llama.cpp 0.4 | GSQ-RCO IQ3_XXS | 128k | 42 | 7.1 |
 | Swift 1.5 Flash-Next · Strata, GPU expert cache, 262k context | Strata | GSQ-RCO IQ3_XXS | 256k | – | 21.4 |
+| Swift 1.5 Flash-Next · llama.cpp 0.7.0, all experts in RAM plus a 9216 MiB GPU cache, q8 KV | llama.cpp 0.7.0 | IQ3_XXS | 256k | all | not run through a test; 23-26 tok/s streamed (2026-10-22) |
 
 ## Results
 

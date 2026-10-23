@@ -67,8 +67,8 @@ Check ids are what preflight prints. Audit status uses the run of 2026-10-09 (`t
 ## C6. Test 3 needs an engine that serves several sessions at once
 
 - **Rule:** test 3 runs a main agent and probe subagents concurrently; the entry must be `multi_agent_ok`.
-- **Learned from:** the SGLang EXL3 build is single-session and crashed under several (2026-10-07); Strata needs a
-  two-slot entry (`-p2`).
+- **Learned from:** the SGLang EXL3 build is single-session and crashed under several (2026-10-07; stock SGLang builds
+  served 11 of 11 multi-session checks on 2026-10-21); Strata needs a two-slot entry (`-p2`).
 - **Check:** preflight C6.
 
 ## C7. The model's required template switches are on

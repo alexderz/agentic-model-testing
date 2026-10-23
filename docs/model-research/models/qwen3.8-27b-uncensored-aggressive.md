@@ -27,7 +27,7 @@ Setups that load the vision head or tower:
 
 | Variant | Head lives on | Extra VRAM | Tokens per screenshot | Status |
 | --- | --- | --- | --- | --- |
-| Qwen3.8-27B Uncensored · vLLM, MTP drafts, 150k context + vision | host RAM (engine offload) | ~0 GB (est.); tower (~0.9 GB est.) in pinned host RAM; 0.9 s per screenshot request | 882 (measured) | planned, not configured yet |
+| Qwen3.8-27B Uncensored · vLLM, MTP drafts, 150k context + vision | host RAM (engine offload) | ~0 GB (est.); tower (~0.9 GB est.) in pinned host RAM; 0.9 s per screenshot request | 882 (measured) | configured; answered the smoke image on 2026-10-15 |
 
 Loading a head costs VRAM: its weights plus a compute buffer, about 1.1 to 2.7 GB by head type. On a card already full with the model and its context, the head goes on the CPU instead (llama.cpp --no-mmproj-offload, or the engine's host-RAM offload): then it costs almost no VRAM but system RAM, and every image is encoded on the CPU, which takes longer per screenshot. Every screenshot also takes context: about 400 to 1,200 tokens for a 1280x720 image, depending on the head. A long agent run that takes screenshots often fills its context and compacts sooner. For example, with a head that costs about 920 tokens per screenshot (the Qwen3-VL style), 100 screenshots in a 2-hour run are about 92,000 tokens, over a third of a 262k window.
 
@@ -62,4 +62,13 @@ The model gets an MCP server's source and a probe subagent whose only tools are 
 | 3G | 14/14 | 2 | fixed: 12 tools, 155 tests pass | 10/12 | 47.4 | 18 | One probe session with twelve numbered calls giving exact arguments and the fields to copy verbatim; it built REST ground truth and all 14 facts matched, then re-probed after its change. It did not find the targets_entities defect, although its own probe output showed … |
 | 3O | 14/14 | 4 | no | 12/12 | 42.3 | 11 | It measured the /api/states payload (94 KB) and split the probe work into one metadata session and three parallel per-domain scans, each returning a fixed JSON shape with verbatim errors; its own list_entities has no state filter, so the probe counted "unavailable" rows itself. … |
 
-_Generated from the bake-off results on 2026-10-15._
+## Test 8: the pagoda and the orrery as an agent task
+
+The same two prompts as the one-shot tests 5 and 6, solved by an agent in OpenCode with a sealed browser to look at its own page, a two-hour cap and the same five-part rubric (A to E, 0-2 each, 10 in all). One run per task. The files and frames are in [`oneshots/agent-pagoda`](../../../oneshots/agent-pagoda/) and [`oneshots/agent-orrery`](../../../oneshots/agent-orrery/).
+
+| Entry | Task | Score | Minutes | tok/s | Notes |
+| --- | --- | --- | --- | --- | --- |
+| qwen3.8-27b-uncensored-vllm | Pagoda | 10/10 (A2 B2 C2 D2 E2) | 91 | 11.8 | Vision off; 42 browser calls, 6 compactions, 90 min. Five cream and red storeys with raised eave blocks, stepped gold spire, stone platform, three cherry trees, pond with footbridge, red torii; orbit by code, petals, shadows. |
+| qwen3.8-27b-uncensored-vllm | Orrery | 10/10 (A2 B2 C2 D2 E2) | 86 | 13.3 | Vision off; 22 browser calls, 2 screenshots, 5 compactions, 86 min. Six planets, Mercury to Saturn, at exact period ratios; ring gears and pinions mesh internally; the night side faces away from the sun while the surface turns. |
+
+_Generated from the bake-off results on 2026-10-15; the Test 8 section was added by hand on 2026-10-22._

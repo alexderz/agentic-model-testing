@@ -1,6 +1,6 @@
 # TensorFold #603: agent start here
 
-Local review draft: NOT posted, committed or pushed. Navigation and fixture manifest for the **existing harness**, not a new benchmark runner.
+Committed to this repository on 2026-10-16. Navigation and fixture manifest for the **existing harness**, not a new benchmark runner.
 
 ## Existing public entry points (immutable)
 
@@ -70,4 +70,4 @@ The patch lowers the SM floor, chooses a non-FP8 stub on pre-Ada cards, and incl
 - Exact compiled image/kernel caches and GPU execution environment are not bundled; existing image/wheel receipts are pointers, not a distributed image. No build, patch-apply, inference or native-gate test was performed for this handoff.
 - Different quantization recipes/tokenizers and one card/sitting limit comparisons; see the existing receipt. No outputs, raw results or long-context traces are included.
 
-See `PRIVACY.md` for scope/offline proof and `POST.md` for the unposted draft. Independent scoped privacy and offline fixture checks passed. Publication and GPU build/runtime validation have not been performed.
+See `PRIVACY.md` for scope/offline proof and `POST.md` for the draft reply to the fixtures request. Independent scoped privacy and offline fixture checks passed. GPU build/runtime validation has not been performed.
