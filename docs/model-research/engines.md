@@ -353,8 +353,8 @@ the first failure came on a 289-token prompt; at 32768 the same prompt works.
 The health check keeps answering ok, so a router never notices. Until the first failure a
 tool call and a 30k needle passed at 32k, and a 248k needle passed at 262k with
 8192-token prefill chunks; the default 262k arm answered long prompts with
-HTTP 500. The expert-cache flag had no visible effect on Flash-Next. This is not
-reported upstream yet. Not usable for agents.
+HTTP 500. The expert-cache flag had no visible effect on Flash-Next. Not usable
+for agents.
 
 ## Running engines as containers behind a router
 
