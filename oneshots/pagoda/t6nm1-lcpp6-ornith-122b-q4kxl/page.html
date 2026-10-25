@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voxel Japanese Pagoda</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { overflow: hidden; background: #1a1a2e; }
+canvas { display: block; }
+</style>
+</head>
+<body>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x87CEEB);
+scene.fog = new THREE.Fog(0x87CEEB, 60, 120);
+
+const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 200);
+camera.position.set(35, 25, 35);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.2;
+document.body.appendChild(renderer.domElement);
+
+// Lighting
+const ambientLight = new THREE.AmbientLight(0xffeedd, 0.5);
+scene.add(ambientLight);
+
+const sunLight = new THREE.DirectionalLight(0xfff4e0, 1.8);
+sunLight.position.set(20, 40, 15);
+sunLight.castShadow = true;
+sunLight.shadow.mapSize.width = 2048;
+sunLight.shadow.mapSize.height = 2048;
+sunLight.shadow.camera.near = 1;
+sunLight.shadow.camera.far = 100;
+sunLight.shadow.camera.left = -35;
+sunLight.shadow.camera.right = 35;
+sunLight.shadow.camera.top = 35;
+sunLight.shadow.camera.bottom = -35;
+sunLight.shadow.bias = -0.001;
+scene.add(sunLight);
+
+const fillLight = new THREE.DirectionalLight(0x88aaff, 0.3);
+fillLight.position.set(-15, 10, -10);
+scene.add(fillLight);
+
+const hemiLight = new THREE.HemisphereLight(0x87CEEB, 0x3a5f0b, 0.4);
+scene.add(hemiLight);
+
+// Materials
+const mat = (color) => new THREE.MeshStandardMaterial({ color, flatShading: true });
+
+const mats = {
+  stone: mat(0x888888),
+  stoneDark: mat(0x666666),
+  wood: mat(0x6b3a2a),
+  woodDark: mat(0x4a2518),
+  roof: mat(0x2a2a3a),
+  roofEdge: mat(0x3a3a4a),
+  gold: mat(0xdaa520),
+  goldBright: mat(0xffd700),
+  trunk: mat(0x4a3520),
+  blossom: mat(0xffb7c5),
+  blossomWhite: mat(0xfff0f5),
+  water: new THREE.MeshStandardMaterial({ color: 0x3a7abd, flatShading: true, transparent: true, opacity: 0.75 }),
+  grass: mat(0x4a7a2a),
+  grassDark: mat(0x3a6a1a),
+  toriiRed: mat(0xcc2222),
+  toriiDark: mat(0x991111),
+  path: mat(0x9a8a6a),
+  petal: new THREE.MeshStandardMaterial({ color: 0xffb7c5, flatShading: true, side: THREE.DoubleSide }),
+};
+
+// Helper to create voxel cube
+function box(w, h, d, material) {
+  const geo = new THREE.BoxGeometry(w, h, d);
+  const mesh = new THREE.Mesh(geo, material);
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  return mesh;
+}
+
+// Ground
+const ground = box(80, 1, 80, mats.grass);
+ground.position.y = -0.5;
+ground.receiveShadow = true;
+ground.castShadow = false;
+scene.add(ground);
+
+// Add some grass variation
+for (let i = 0; i < 200; i++) {
+  const gx = (Math.random() - 0.5) * 70;
+  const gz = (Math.random() - 0.5) * 70;
+  if (Math.abs(gx) < 8 && Math.abs(gz) < 8) continue;
+  const grassCube = box(0.5 + Math.random() * 0.5, 0.3 + Math.random() * 0.3, 0.5 + Math.random() * 0.5,
+    Math.random() > 0.5 ? mats.grass : mats.grassDark);
+  grassCube.position.set(gx, 0.1, gz);
+  grassCube.receiveShadow = true;
+  grassCube.castShadow = false;
+  scene.add(grassCube);
+}
+
+// Stone Platform
+function createPlatform() {
+  const group = new THREE.Group();
+  // Main platform
+  const base = box(16, 1.5, 16, mats.stone);
+  base.position.y = 0.75;
+  group.add(base);
+  // Steps on front
+  for (let i = 0; i < 3; i++) {
+    const step = box(5, 0.5, 1 + i * 0.5, mats.stoneDark);
+    step.position.set(0, 0.25 - i * 0.5, 8.5 + i * 0.5);
+    group.add(step);
+  }
+  // Corner stones
+  for (let x = -1; x <= 1; x += 2) {
+    for (let z = -1; z <= 1; z += 2) {
+      const corner = box(1.2, 2, 1.2, mats.stoneDark);
+      corner.position.set(x * 7.5, 1, z * 7.5);
+      group.add(corner);
+    }
+  }
+  return group;
+}
+scene.add(createPlatform());
+
+// Pagoda
+function createPagoda() {
+  const group = new THREE.Group();
+  const stories = 5;
+
+  for (let s = 0; s < stories; s++) {
+    const scale = 1 - s * 0.15;
+    const wallH = 2.8;
+    const floorW = 8 * scale;
+    const yBase = 1.5 + s * (wallH + 0.5 + 2.0 * scale);
+
+    // Floor
+    const floor = box(floorW + 0.5, 0.4, floorW + 0.5, mats.woodDark);
+    floor.position.y = yBase;
+    group.add(floor);
+
+    // Walls
+    const wallThickness = 0.3;
+    const halfW = floorW / 2;
+    // Four walls with window/door openings
+    for (let wall = 0; wall < 4; wall++) {
+      const wallPiece = box(
+        wall === 0 || wall === 2 ? floorW : wallThickness,
+        wallH,
+        wall === 1 || wall === 3 ? floorW : wallThickness,
+        mats.wood
+      );
+      const angle = wall * Math.PI / 2;
+      const offset = halfW;
+      wallPiece.position.set(
+        Math.sin(angle) * offset,
+        yBase + wallH / 2 + 0.2,
+        Math.cos(angle) * offset
+      );
+      wallPiece.rotation.y = angle;
+      group.add(wallPiece);
+    }
+
+    // Door opening on front (first story)
+    if (s === 0) {
+      const doorFrame = box(1.8, 2.5, 0.5, mats.woodDark);
+      doorFrame.position.set(0, yBase + 1.45, halfW);
+      group.add(doorFrame);
+      const doorInner = box(1.4, 2.2, 0.6, mats.woodDark);
+      doorInner.position.set(0, yBase + 1.3, halfW);
+      group.add(doorInner);
+    }
+
+    // Windows on other stories
+    if (s > 0) {
+      for (let side = 0; side < 4; side++) {
+        const angle = side * Math.PI / 2 + Math.PI / 4;
+        const win = box(0.8, 1, 0.4, mats.woodDark);
+        win.position.set(
+          Math.sin(angle) * (halfW + 0.1),
+          yBase + wallH / 2 + 0.2,
+          Math.cos(angle) * (halfW + 0.1)
+        );
+        win.rotation.y = angle;
+        group.add(win);
+      }
+    }
+
+    // Roof with upturned eaves
+    const roofSize = floorW + 2.5 * scale;
+    const roofH = 0.4;
+    const roof = box(roofSize, roofH, roofSize, mats.roof);
+    roof.position.y = yBase + wallH + 0.4;
+    group.add(roof);
+
+    // Upturned eaves at corners
+    const eaveSize = roofSize + 1.2 * scale;
+    const cornerOffset = roofSize / 2 + 0.3 * scale;
+    for (let cx = -1; cx <= 1; cx += 2) {
+      for (let cz = -1; cz <= 1; cz += 2) {
+        // Eave tip curving up
+        const eave = box(0.8 * scale, 0.8 * scale, 0.8 * scale, mats.roofEdge);
+        eave.position.set(
+          cx * cornerOffset,
+          yBase + wallH + 0.7 + 0.3 * scale,
+          cz * cornerOffset
+        );
+        group.add(eave);
+        // Support brackets
+        const bracket = box(0.4, 0.4, 1.5 * scale, mats.woodDark);
+        bracket.position.set(
+          cx * (cornerOffset - 0.5),
+          yBase + wallH + 0.4,
+          cz * (cornerOffset - 0.5)
+        );
+        bracket.rotation.y = Math.atan2(cz, cx) * 0.3;
+        group.add(bracket);
+      }
+    }
+
+    // Extended eave edges
+    for (let side = 0; side < 4; side++) {
+      const angle = side * Math.PI / 2;
+      const eaveEdge = box(roofSize * 0.8, 0.3, 0.6, mats.roofEdge);
+      eaveEdge.position.set(
+        Math.sin(angle) * (roofSize / 2 + 0.5),
+        yBase + wallH + 0.5,
+        Math.cos(angle) * (roofSize / 2 + 0.5)
+      );
+      eaveEdge.rotation.y = angle;
+      group.add(eaveEdge);
+    }
+  }
+
+  // Spire (Sorin) on top
+  const spireBase = 1.5 + 5 * (2.8 + 0.5 + 2.0) - 5 * 0.15 * (2.8 + 0.5 + 2.0) + 2.0;
+  const spireY = 1.5 + (2.8 + 0.5 + 2.0) * 5 - 5 * 0.15 * 2.5;
+  const actualSpireY = 1.5;
+  let currentY = 1.5;
+  for (let s = 0; s < 5; s++) {
+    currentY += 2.8 + 0.5 + 2.0 * (1 - s * 0.15);
+  }
+
+  // Spire
+  const spireH = 5;
+  const spirePole = box(0.4, spireH, 0.4, mats.goldBright);
+  spirePole.position.y = currentY + spireH / 2;
+  group.add(spirePole);
+
+  // Spire rings (hoju)
+  for (let i = 0; i < 5; i++) {
+    const ringSize = 2.0 - i * 0.3;
+    const ring = box(ringSize, 0.3, ringSize, mats.gold);
+    ring.position.y = currentY + 1 + i * 0.9;
+    ring.rotation.y = Math.PI / 4;
+    group.add(ring);
+  }
+
+  // Top ornament
+  const topOrn = box(0.8, 0.8, 0.8, mats.goldBright);
+  topOrn.position.y = currentY + spireH + 0.2;
+  group.add(topOrn);
+  const topBall = box(0.5, 0.5, 0.5, mats.goldBright);
+  topBall.position.y = currentY + spireH + 0.9;
+  topBall.rotation.y = Math.PI / 4;
+  group.add(topBall);
+
+  return group;
+}
+scene.add(createPagoda());
+
+// Cherry Blossom Tree
+function createCherryTree(x, z, size = 1) {
+  const group = new THREE.Group();
+  const trunkH = 4 * size;
+
+  // Trunk
+  const trunk = box(0.8 * size, trunkH, 0.8 * size, mats.trunk);
+  trunk.position.set(x, trunkH / 2, z);
+  group.add(trunk);
+
+  // Branches
+  for (let i = 0; i < 4; i++) {
+    const branch = box(0.4 * size, 0.4 * size, 2.5 * size, mats.trunk);
+    const angle = (i / 4) * Math.PI * 2 + Math.random() * 0.5;
+    branch.position.set(
+      x + Math.cos(angle) * 1.2 * size,
+      trunkH - 0.5 * size + i * 0.8 * size,
+      z + Math.sin(angle) * 1.2 * size
+    );
+    branch.rotation.y = angle;
+    branch.rotation.z = (Math.random() - 0.5) * 0.4;
+    group.add(branch);
+  }
+
+  // Blossom clusters
+  const clusterPositions = [
+    [0, 0], [2, 1], [-2, -1], [1, -2], [-1, 2],
+    [3, 0], [-3, 1], [0, 3], [0, -3], [2, 2], [-2, -2],
+    [1.5, -1], [-1.5, 1.5]
+  ];
+
+  for (const [dx, dz] of clusterPositions) {
+    const clusterSize = (1.2 + Math.random() * 0.8) * size;
+    const mat = Math.random() > 0.3 ? mats.blossom : mats.blossomWhite;
+    const cluster = box(clusterSize, clusterSize * 0.7, clusterSize, mat);
+    cluster.position.set(
+      x + dx * size,
+      trunkH + 0.5 * size + Math.random() * 1.5 * size,
+      z + dz * size
+    );
+    group.add(cluster);
+  }
+
+  return group;
+}
+
+scene.add(createCherryTree(-14, -8, 1.2));
+scene.add(createCherryTree(-12, 5, 1.0));
+scene.add(createCherryTree(14, -10, 1.1));
+scene.add(createCherryTree(12, 8, 0.9));
+scene.add(createCherryTree(-18, 2, 0.8));
+
+// Pond
+function createPond() {
+  const group = new THREE.Group();
+  // Pond base (darker)
+  const pondBase = box(10, 0.3, 7, mats.stoneDark);
+  pondBase.position.set(16, 0.1, 14);
+  group.add(pondBase);
+
+  // Water
+  const water = box(9.2, 0.2, 6.2, mats.water);
+  water.position.set(16, 0.35, 14);
+  water.receiveShadow = true;
+  water.castShadow = false;
+  group.add(water);
+
+  // Pond edge stones
+  for (let i = 0; i < 20; i++) {
+    const angle = (i / 20) * Math.PI * 2;
+    const rx = 5 + Math.random() * 0.5;
+    const rz = 3.5 + Math.random() * 0.5;
+    const stone = box(
+      0.8 + Math.random() * 0.6,
+      0.5 + Math.random() * 0.3,
+      0.8 + Math.random() * 0.6,
+      Math.random() > 0.5 ? mats.stone : mats.stoneDark
+    );
+    stone.position.set(
+      16 + Math.cos(angle) * rx,
+      0.25,
+      14 + Math.sin(angle) * rz
+    );
+    stone.rotation.y = Math.random() * Math.PI;
+    group.add(stone);
+  }
+
+  return group;
+}
+scene.add(createPond());
+
+// Torii Gate
+function createTorii() {
+  const group = new THREE.Group();
+  const gateX = -10;
+  const gateZ = 16;
+
+  // Two main pillars
+  const pillarH = 6;
+  const pillarW = 0.8;
+  for (let side = -1; side <= 1; side += 2) {
+    const pillar = box(pillarW, pillarH, pillarW, mats.toriiRed);
+    pillar.position.set(gateX + side * 3.5, pillarH / 2, gateZ);
+    group.add(pillar);
+
+    // Pillar base
+    const base = box(pillarW + 0.4, 0.5, pillarW + 0.4, mats.stone);
+    base.position.set(gateX + side * 3.5, 0.25, gateZ);
+    group.add(base);
+  }
+
+  // Top beam (kasagi) - curved upward
+  const topBeam = box(9, 0.7, 1.0, mats.toriiRed);
+  topBeam.position.set(gateX, pillarH + 0.2, gateZ);
+  group.add(topBeam);
+
+  // Upturned ends of top beam
+  for (let side = -1; side <= 1; side += 2) {
+    const end = box(0.8, 1.0, 1.2, mats.toriiRed);
+    end.position.set(gateX + side * 4.7, pillarH + 0.6, gateZ);
+    group.add(end);
+  }
+
+  // Second beam (nuki)
+  const secondBeam = box(8, 0.5, 0.7, mats.toriiRed);
+  secondBeam.position.set(gateX, pillarH - 1.2, gateZ);
+  group.add(secondBeam);
+
+  // Center brace (gakuzuka)
+  const brace = box(0.5, 1.2, 0.5, mats.toriiDark);
+  brace.position.set(gateX, pillarH - 0.5, gateZ);
+  group.add(brace);
+
+  return group;
+}
+scene.add(createTorii());
+
+// Small path from torii to pagoda
+function createPath() {
+  const group = new THREE.Group();
+  for (let i = 0; i < 12; i++) {
+    const pathStone = box(2 + Math.random(), 0.15, 1.5, mats.path);
+    pathStone.position.set(-10 + i * 1.5 + (Math.random() - 0.5), 0.08, 14 - i * 0.3);
+    pathStone.rotation.y = (Math.random() - 0.5) * 0.3;
+    pathStone.receiveShadow = true;
+    pathStone.castShadow = false;
+    group.add(pathStone);
+  }
+  return group;
+}
+scene.add(createPath());
+
+// Small decorative stones/lantern
+function createStoneLantern(x, z) {
+  const group = new THREE.Group();
+  // Base
+  const base = box(1, 0.5, 1, mats.stoneDark);
+  base.position.set(x, 0.25, z);
+  group.add(base);
+  // Pillar
+  const pillar = box(0.5, 1.5, 0.5, mats.stone);
+  pillar.position.set(x, 1.25, z);
+  group.add(pillar);
+  // Light chamber
+  const chamber = box(0.9, 0.8, 0.9, mats.stoneDark);
+  chamber.position.set(x, 2.3, z);
+  group.add(chamber);
+  // Roof
+  const roof = box(1.2, 0.4, 1.2, mats.stone);
+  roof.position.set(x, 2.9, z);
+  group.add(roof);
+  // Top
+  const top = box(0.5, 0.5, 0.5, mats.stoneDark);
+  top.position.set(x, 3.3, z);
+  top.rotation.y = Math.PI / 4;
+  group.add(top);
+
+  // Warm light inside
+  const lanternLight = new THREE.PointLight(0xffaa44, 0.5, 5);
+  lanternLight.position.set(x, 2.3, z);
+  group.add(lanternLight);
+
+  return group;
+}
+scene.add(createStoneLantern(-6, 10));
+scene.add(createStoneLantern(6, 10));
+
+// Blossom petals particle system
+const petalCount = 80;
+const petals = [];
+const petalGeo = new THREE.BoxGeometry(0.15, 0.05, 0.15);
+
+for (let i = 0; i < petalCount; i++) {
+  const petalMat = new THREE.MeshStandardMaterial({
+    color: Math.random() > 0.5 ? 0xffb7c5 : 0xfff0f5,
+    flatShading: true,
+    side: THREE.DoubleSide
+  });
+  const petal = new THREE.Mesh(petalGeo, petalMat);
+  petal.position.set(
+    (Math.random() - 0.5) * 50,
+    Math.random() * 25 + 5,
+    (Math.random() - 0.5) * 50
+  );
+  petal.userData = {
+    velocity: new THREE.Vector3(
+      (Math.random() - 0.5) * 0.02,
+      -0.02 - Math.random() * 0.03,
+      (Math.random() - 0.5) * 0.02
+    ),
+    rotSpeed: new THREE.Vector3(
+      Math.random() * 0.05,
+      Math.random() * 0.05,
+      Math.random() * 0.05
+    ),
+    wobbleSpeed: Math.random() * 0.02 + 0.01,
+    wobbleOffset: Math.random() * Math.PI * 2,
+    startX: petal.position.x,
+    time: Math.random() * 100
+  };
+  scene.add(petal);
+  petals.push(petal);
+}
+
+// Animation
+let time = 0;
+function animate() {
+  requestAnimationFrame(animate);
+  time += 0.005;
+
+  // Orbit camera
+  const radius = 40;
+  const height = 18 + Math.sin(time * 0.5) * 3;
+  camera.position.x = Math.cos(time) * radius;
+  camera.position.z = Math.sin(time) * radius;
+  camera.position.y = height;
+  camera.lookAt(0, 8, 0);
+
+  // Animate petals
+  for (const petal of petals) {
+    petal.userData.time += 0.016;
+    petal.position.x += petal.userData.velocity.x + Math.sin(petal.userData.time * petal.userData.wobbleSpeed + petal.userData.wobbleOffset) * 0.01;
+    petal.position.y += petal.userData.velocity.y;
+    petal.position.z += petal.userData.velocity.z + Math.cos(petal.userData.time * petal.userData.wobbleSpeed) * 0.01;
+    petal.rotation.x += petal.userData.rotSpeed.x;
+    petal.rotation.y += petal.userData.rotSpeed.y;
+    petal.rotation.z += petal.userData.rotSpeed.z;
+
+    // Reset petal when it falls too low
+    if (petal.position.y < -1) {
+      petal.position.set(
+        (Math.random() - 0.5) * 50,
+        20 + Math.random() * 10,
+        (Math.random() - 0.5) * 50
+      );
+    }
+  }
+
+  // Animate water slightly
+  renderer.render(scene, camera);
+}
+
+// Handle resize
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+animate();
+</script>
+</body>
+</html>

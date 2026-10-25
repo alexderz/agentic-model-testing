@@ -79,7 +79,7 @@ Fields marked *opt* may be missing or `null`. Types are what the page expects; i
 | Field | Type | Meaning |
 | --- | --- | --- |
 | `schema` | str | `bakeoff-site/1`. |
-| `generated` | str, opt | When the source dashboard data was generated, shown under the hero stats. |
+| `generated` | str, opt | When the newest source data was taken: history.json's `generated` when set, else the dashboard's. Shown under the hero stats. |
 | `built` | str, opt | When this file was built, shown next to `generated` with the newest run and finding dates. |
 | `title`, `tagline` | str | Hero title and one-line pitch (from `curated.json`). |
 | `links` | object | `repo`, `cards`, `method`, `conclusions`, `log`: repository URLs for the footer. Extra keys are shown too. |

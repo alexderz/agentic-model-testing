@@ -1,0 +1,45 @@
+{
+ "case": "mx22-flashnext-heretic2-t5-oneshot-orrery-r1",
+ "finish_reason": "stop",
+ "first_token_s": 5.7,
+ "max_tokens": 140000,
+ "model": "lcpp6-flashnext-heretic2",
+ "reasoning_chars": 75955,
+ "reply_chars": 22823,
+ "started": "2026-10-23T04:28:15-0500",
+ "static": {
+  "svg_found": true,
+  "parses": false,
+  "parse_error": "not well-formed (invalid token): line 120, column 0",
+  "bytes": 21251,
+  "animateTransform": 0,
+  "animate": 16,
+  "animateMotion": 0,
+  "keyframes": 4,
+  "script": 1,
+  "prose_chars_outside_svg": 1596
+ },
+ "status": "ok",
+ "test": "5",
+ "timings": {
+  "cache_n": 0,
+  "prompt_n": 101,
+  "prompt_ms": 2666.171,
+  "prompt_per_token_ms": 26.397732673267324,
+  "prompt_per_second": 37.882041324431185,
+  "predicted_n": 33547,
+  "predicted_ms": 1507725.559,
+  "predicted_per_token_ms": 44.94501755798009,
+  "predicted_per_second": 22.249407260993447
+ },
+ "tok_s": 22.3,
+ "usage": {
+  "completion_tokens": 33547,
+  "prompt_tokens": 101,
+  "total_tokens": 33648,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  }
+ },
+ "wall_s": 1513.4
+}

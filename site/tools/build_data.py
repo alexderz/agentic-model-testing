@@ -125,7 +125,8 @@ hw = dict(D.get("hardware", {}))
 hw["weights"] = "read over the network from a NAS, ~180-280 MB/s first load"
 out = {
     "schema": "bakeoff-site/1",
-    "generated": D.get("generated"),
+    # The newest source: history.json is mined after the dashboard, so its time wins when present.
+    "generated": H.get("generated") or D.get("generated"),
     "built": __import__("datetime").datetime.now().astimezone().strftime("%Y-%m-%d %H:%M %Z"),
     "title": C["title"], "tagline": C["tagline"], "links": C["links"],
     "hardware": hw, "caveats": D.get("caveats", []),

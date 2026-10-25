@@ -1,0 +1,47 @@
+{
+ "case": "t6nm1-lcpp-flint-40b-q3kxl",
+ "finish_reason": "stop",
+ "first_token_s": 0.3,
+ "max_tokens": 258048,
+ "model": "lcpp-flint-40b-q3kxl",
+ "reasoning_chars": 39763,
+ "reply_chars": 7436,
+ "started": "2026-10-22T01:05:49-0500",
+ "static": {
+  "html_found": true,
+  "bytes": 7425,
+  "complete": true,
+  "three_module": true,
+  "importmap": true,
+  "umd_three": false,
+  "external_urls": [
+   "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js"
+  ],
+  "boxes": 4,
+  "instanced": false,
+  "prose_chars_outside_html": 11
+ },
+ "status": "ok",
+ "test": "test6-pagoda",
+ "timings": {
+  "cache_n": 0,
+  "prompt_n": 142,
+  "prompt_ms": 249.918,
+  "prompt_per_token_ms": 1.7599859154929578,
+  "prompt_per_second": 568.1863651277619,
+  "predicted_n": 15958,
+  "predicted_ms": 144936.383,
+  "predicted_per_token_ms": 9.082934323494392,
+  "predicted_per_second": 110.09657940753219
+ },
+ "tok_s": 110.1,
+ "usage": {
+  "completion_tokens": 15958,
+  "prompt_tokens": 142,
+  "total_tokens": 16100,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  }
+ },
+ "wall_s": 145.2
+}

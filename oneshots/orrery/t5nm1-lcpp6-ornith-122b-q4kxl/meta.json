@@ -1,0 +1,44 @@
+{
+ "case": "t5nm1-lcpp6-ornith-122b-q4kxl",
+ "finish_reason": "stop",
+ "first_token_s": 1.7,
+ "max_tokens": 258048,
+ "model": "lcpp6-ornith-122b-q4kxl",
+ "reasoning_chars": 87398,
+ "reply_chars": 15219,
+ "started": "2026-10-20T22:01:40-0500",
+ "static": {
+  "svg_found": true,
+  "parses": true,
+  "bytes": 14076,
+  "animateTransform": 20,
+  "animate": 0,
+  "animateMotion": 0,
+  "keyframes": 0,
+  "script": 0,
+  "prose_chars_outside_svg": 1146
+ },
+ "status": "ok",
+ "test": "test5-orrery",
+ "timings": {
+  "cache_n": 0,
+  "prompt_n": 59,
+  "prompt_ms": 1462.479,
+  "prompt_per_token_ms": 24.78777966101695,
+  "prompt_per_second": 40.34245961822358,
+  "predicted_n": 29646,
+  "predicted_ms": 1938393.583,
+  "predicted_per_token_ms": 65.3868639905549,
+  "predicted_per_second": 15.293591693653475
+ },
+ "tok_s": 15.3,
+ "usage": {
+  "completion_tokens": 29646,
+  "prompt_tokens": 59,
+  "total_tokens": 29705,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  }
+ },
+ "wall_s": 1940.1
+}

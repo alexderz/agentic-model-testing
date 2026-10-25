@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-10-15 14:36 CDT",
- "built": "2026-10-22 20:40 CDT",
+ "generated": "2026-10-25 11:07 CDT",
+ "built": "2026-10-25 11:15 CDT",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -101,6 +101,187 @@
   }
  ],
  "findings": [
+  {
+   "date": "2026-10-24",
+   "title": "GPU unlock raises long-prompt prefill by 43%",
+   "kind": "engine",
+   "summary": "On Titan, vLLM Qwen3.8-27B was measured with GPU unlock off, then on, then on again. A 140826-token prompt prefilled at 736 tok/s off. Unlock rounds were 1053 and 1056 tok/s on seed 41, and 1053 and 1055 tok/s on seed 42. The probe summary calls that a 43.3% and 43.2% gain. Short code decode moved from 126.4 to 127.9 and 127.5 tok/s. The same check on llama.cpp 0.7 with Tiel left short code decode at 149.1, 148.6 and 148.8 tok/s.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "vLLM prefill, 140826 tokens, seed 41",
+     "before": 736,
+     "after": 1053,
+     "unit": "tok/s"
+    },
+    {
+     "label": "vLLM prefill, seed 41, unlock round 2",
+     "before": 736,
+     "after": 1056,
+     "unit": "tok/s"
+    },
+    {
+     "label": "vLLM prefill, seed 42, unlock round 2",
+     "before": 736,
+     "after": 1055,
+     "unit": "tok/s"
+    },
+    {
+     "label": "vLLM decode, 400-token code prompt, round 1",
+     "before": 126.4,
+     "after": 127.9,
+     "unit": "tok/s"
+    },
+    {
+     "label": "vLLM deep decode, seed 41",
+     "before": 85.3,
+     "after": 94.5,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Tiel decode, 400-token code prompt, round 1",
+     "before": 149.1,
+     "after": 148.6,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Tiel prefill, 141004 tokens, seed 41, round 1",
+     "before": 2201,
+     "after": 2397,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "The needle check passed in every unlock phase, on and off.",
+   "caveat": "One off-round and two on-rounds, one card. Short decode barely moved. Tiel deep decode stayed 97.7 tok/s on seed 41. The llama.cpp version is from the same day's entry spec, not from a spec file inside the probe directory."
+  },
+  {
+   "date": "2026-10-23",
+   "title": "Flash-Next Heretic 2 passes the coding tests and fails both one-shots",
+   "kind": "model",
+   "summary": "Test 1 scored 5 of 5 checks, 36 tests and 0 failures at 18.2 tok/s. Test 2 built, initialized, exposed 7 tools, called a tool, and passed 34 tests with 0 failures. Three test-4 tickets passed, with 4, 13 and 11 hidden checks. The orrery one-shot scored 0 of 10 because the SVG did not parse. The pagoda one-shot scored 0 of 10 because every sealed frame was only the clear color.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Test 1 checks",
+     "before": null,
+     "after": 5,
+     "unit": "of 5"
+    },
+    {
+     "label": "Test 2 tests passed",
+     "before": null,
+     "after": 34,
+     "unit": "tests"
+    },
+    {
+     "label": "Orrery score",
+     "before": null,
+     "after": 0,
+     "unit": "of 10"
+    },
+    {
+     "label": "Pagoda score",
+     "before": null,
+     "after": 0,
+     "unit": "of 10"
+    }
+   ],
+   "quality": "Code tests passed. One-shots did not render a usable scene.",
+   "caveat": "One run each. The trust-variant test 2 exposed 4 tools and passed 28 tests; that is a different case, not a failure of the 7-tool run."
+  },
+  {
+   "date": "2026-10-23",
+   "title": "Ornith 122B and Defiance pass tests 1 and 2",
+   "kind": "model",
+   "summary": "Ornith UD-Q4_K_XL scored 5 of 5 CLI checks and 48 tests at 13.4 tok/s, then a 7-tool server with 43 tests and 0 failures at 12.9 tok/s. Defiance IQ4_XS at 196608 context scored 5 of 5 checks and 82 tests at 32.5 tok/s, then 7 tools, 46 tests and 0 failures at 22.6 tok/s.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Ornith test 1 decode",
+     "before": null,
+     "after": 13.4,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Ornith test 2 tests passed",
+     "before": null,
+     "after": 43,
+     "unit": "tests"
+    },
+    {
+     "label": "Defiance test 1 decode",
+     "before": null,
+     "after": 32.5,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Defiance test 2 tests passed",
+     "before": null,
+     "after": 46,
+     "unit": "tests"
+    }
+   ],
+   "quality": "Both protocol suites passed. No new one-shot grade for either model in this window.",
+   "caveat": "One run each. Ornith has no spec snapshot, so context and KV are unknown. Defiance one-shots finished later and are not graded."
+  },
+  {
+   "date": "2026-10-23",
+   "title": "Orca uncensored passes test 4; its trust tests did not compile",
+   "kind": "model",
+   "summary": "Test 1 scored 5 of 5 checks and 41 tests. The plain test 2 built, initialized, exposed 9 tools and passed 42 tests. Three test-4 tickets passed (4, 13 and 11 hidden checks). The trust run also built, initialized and called tools (9 tools), but cargo test exited 101 while compiling. The parsed 0 and 0 counts are not a suite pass.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Test 1 tests passed",
+     "before": null,
+     "after": 41,
+     "unit": "tests"
+    },
+    {
+     "label": "Plain test 2 tests passed",
+     "before": null,
+     "after": 42,
+     "unit": "tests"
+    },
+    {
+     "label": "Trust-run cargo test exit",
+     "before": null,
+     "after": 101,
+     "unit": "exit code"
+    }
+   ],
+   "quality": "Coding tickets passed. Trust-run test quality is incomplete, not a pass.",
+   "caveat": "The plain test-2 grade is in the prerequisite regrade file, not the main grade table. Test 3 for this model is not in the canonical grade table."
+  },
+  {
+   "date": "2026-10-23",
+   "title": "Heretic 2 judges a known-good server right and its own server wrong",
+   "kind": "test",
+   "summary": "On the known-good server, MCP and REST were both 14 of 14 and the judgement was right (rubric 12). On its own server, REST was 14 of 14 and MCP 13 of 14. The fixed server builds, initializes, exposes 7 tools and passes 34 tests, but the missing fact is temperature and the final judgement is wrong (rubric 9).",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Known-good rubric",
+     "before": null,
+     "after": 12,
+     "unit": "of 12"
+    },
+    {
+     "label": "Own-server rubric",
+     "before": null,
+     "after": 9,
+     "unit": "of 12"
+    },
+    {
+     "label": "Own-server MCP facts",
+     "before": null,
+     "after": 13,
+     "unit": "of 14"
+    }
+   ],
+   "quality": "Fact match was high. The own-server trust decision was wrong.",
+   "caveat": "One run of each flavor. Minutes use the run duration without model-load time."
+  },
   {
    "date": "2026-10-22",
    "title": "An expert cache makes Flash-Next 1.5x faster on one 3090",
@@ -991,6 +1172,34 @@
    "title": "Expert cache, Strata 0.2.2, Flint and tqLLM",
    "what": "Flash-Next sped up on llama.cpp and Strata; a new MoE and a new engine were tried.",
    "why": "Make the 125B model usable on one card."
+  },
+  {
+   "date": "2026-10-23",
+   "era": "Models",
+   "title": "Ornith 122B and Defiance pass tests 1 and 2",
+   "what": "Ornith at 13.4 tok/s and Defiance at 32.5 tok/s both cleared the CLI checks and the Rust server tests.",
+   "why": "Do the new large and uncensored quants finish a real task?"
+  },
+  {
+   "date": "2026-10-23",
+   "era": "Flash-Next",
+   "title": "Heretic 2 passes the code tests",
+   "what": "Five CLI checks, a 7-tool server with 34 passing tests, and three maintenance tickets. Both one-shots scored 0.",
+   "why": "An abliterated Flash-Next quant had not been graded on this matrix."
+  },
+  {
+   "date": "2026-10-23",
+   "era": "Harness",
+   "title": "A trust run whose tests did not compile",
+   "what": "Orca uncensored passed test 1, plain test 2, and three test-4 tickets. Its trust run's tests failed to compile, so 0 and 0 is not a pass.",
+   "why": "A green protocol line can hide a broken test build."
+  },
+  {
+   "date": "2026-10-24",
+   "era": "Engines",
+   "title": "GPU unlock speeds long prefill",
+   "what": "On Titan, vLLM Qwen3.8-27B long-prompt prefill rose from 736 to about 1050 tok/s. Short decode stayed near 127 tok/s.",
+   "why": "Does unlocking the GPU clock help a model that already fits on the card?"
   }
  ],
  "events": [],
@@ -2481,6 +2690,38 @@
    "vision": {
     "label": "no",
     "status": "none"
+   }
+  },
+  "lcpp6-ornith-122b-q4kxl": {
+   "id": "lcpp6-ornith-122b-q4kxl",
+   "family": "Ornith 1.5",
+   "label": "Ornith 1.5 122B-A10B UD-Q4_K_XL · llama.cpp 0.7, experts partly in RAM",
+   "base": "ornith-ai/Ornith-1.5-122B",
+   "arch": "MoE 122B-A10B",
+   "engine": "llama.cpp 0.7",
+   "quant": "UD-Q4_K_XL",
+   "kind": "tune",
+   "uncensored": false,
+   "note": "MIT. Fine-tune of Qwen3.5-122B-A10B. Thinking on. An offload sweep on 2026-10-20 with 41 expert layers in RAM and 2048-token batches recorded 16.1 tok/s decode and 392.1 tok/s prefill. The agent runs above are slower; context and KV for those runs were not in a spec snapshot.",
+   "vision": {
+    "label": "not surveyed",
+    "status": null
+   }
+  },
+  "lcpp6-q38-defiance-192k-author": {
+   "id": "lcpp6-q38-defiance-192k-author",
+   "family": "Qwen3.8 27B",
+   "label": "Defiance IQ4_XS · llama.cpp 0.7, 196608 context, q8 KV, author sampler",
+   "base": "Qwen/Qwen3.8-27B",
+   "arch": "dense 27B",
+   "engine": "llama.cpp 0.7",
+   "quant": "IQ4_XS",
+   "kind": "uncensored-tune",
+   "uncensored": true,
+   "note": "Uncensored tune. Author sampler, no draft weights. This run served 196608 tokens with q8 KV.",
+   "vision": {
+    "label": "not surveyed",
+    "status": null
    }
   }
  },
@@ -7428,6 +7669,390 @@
     "loc": 9497,
     "errors_per_kloc": 0.4
    }
+  },
+  {
+   "case": "mx22-orcarouter-fn-uncensored-t1-cli-r1",
+   "model": "lcpp6-orcarouter-fn-uncensored",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 41,
+   "tests_fail": 0,
+   "subcmds": 10,
+   "tps": 19.9,
+   "minutes": 29,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-22 21:40",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 861,
+    "errors_per_kloc": 0.0
+   }
+  },
+  {
+   "case": "mx22-orcarouter-fn-uncensored-t2t-rust-mcp-r1",
+   "model": "lcpp6-orcarouter-fn-uncensored",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": null,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 13.9,
+   "minutes": 166,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "partial",
+   "finished": "2026-10-23 00:28",
+   "struggle": {
+    "compiles": 17,
+    "failed_compiles": 14,
+    "rust_errors": 60,
+    "loc": 2340,
+    "errors_per_kloc": 25.6
+   }
+  },
+  {
+   "case": "mx22-orcarouter-fn-uncensored-setupretry1-t4-bugfix-targets-r1",
+   "model": "lcpp6-orcarouter-fn-uncensored",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 4,
+   "tests_pass": 156,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 17.2,
+   "minutes": 12,
+   "compactions": 0,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 00:41",
+   "struggle": {
+    "compiles": 5,
+    "failed_compiles": 2,
+    "rust_errors": 2,
+    "loc": 9483,
+    "errors_per_kloc": 0.3
+   }
+  },
+  {
+   "case": "mx22-orcarouter-fn-uncensored-setupretry1-t4-config-timeouts-r1",
+   "model": "lcpp6-orcarouter-fn-uncensored",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 13,
+   "tests_pass": 170,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 17.4,
+   "minutes": 28,
+   "compactions": 0,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 01:10",
+   "struggle": {
+    "compiles": 9,
+    "failed_compiles": 5,
+    "rust_errors": 9,
+    "loc": 9888,
+    "errors_per_kloc": 0.9
+   }
+  },
+  {
+   "case": "mx22-orcarouter-fn-uncensored-setupretry1-t4-feature-filter-r1",
+   "model": "lcpp6-orcarouter-fn-uncensored",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 11,
+   "tests_pass": 159,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 14.9,
+   "minutes": 12,
+   "compactions": 0,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 01:23",
+   "struggle": {
+    "compiles": 2,
+    "failed_compiles": 1,
+    "rust_errors": 1,
+    "loc": 9613,
+    "errors_per_kloc": 0.1
+   }
+  },
+  {
+   "case": "mx22-flashnext-heretic2-t1-cli-r1",
+   "model": "lcpp6-flashnext-heretic2",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 36,
+   "tests_fail": 0,
+   "subcmds": 11,
+   "tps": 18.2,
+   "minutes": 86,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 02:52",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 1436,
+    "errors_per_kloc": 0.7
+   }
+  },
+  {
+   "case": "mx22-flashnext-heretic2-t2-rust-mcp-r1",
+   "model": "lcpp6-flashnext-heretic2",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 34,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 17.1,
+   "minutes": 91,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 04:28",
+   "struggle": {
+    "compiles": 23,
+    "failed_compiles": 9,
+    "rust_errors": 33,
+    "loc": 1752,
+    "errors_per_kloc": 18.8
+   }
+  },
+  {
+   "case": "mx22-flashnext-heretic2-t4-bugfix-targets-r1",
+   "model": "lcpp6-flashnext-heretic2",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 4,
+   "tests_pass": 156,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 13.9,
+   "minutes": 10,
+   "compactions": 0,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 05:27",
+   "struggle": {
+    "compiles": 4,
+    "failed_compiles": 1,
+    "rust_errors": 1,
+    "loc": 9440,
+    "errors_per_kloc": 0.1
+   }
+  },
+  {
+   "case": "mx22-flashnext-heretic2-t4-config-timeouts-r1",
+   "model": "lcpp6-flashnext-heretic2",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 13,
+   "tests_pass": 166,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 17.2,
+   "minutes": 32,
+   "compactions": 0,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 06:00",
+   "struggle": {
+    "compiles": 3,
+    "failed_compiles": 1,
+    "rust_errors": 1,
+    "loc": 9748,
+    "errors_per_kloc": 0.1
+   }
+  },
+  {
+   "case": "mx22-flashnext-heretic2-t4-feature-filter-r1",
+   "model": "lcpp6-flashnext-heretic2",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 11,
+   "tests_pass": 159,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 12.0,
+   "minutes": 15,
+   "compactions": 0,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 06:15",
+   "struggle": {
+    "compiles": 3,
+    "failed_compiles": 1,
+    "rust_errors": 1,
+    "loc": 9535,
+    "errors_per_kloc": 0.1
+   }
+  },
+  {
+   "case": "mx22-flashnext-heretic2-t2t-rust-mcp-r1",
+   "model": "lcpp6-flashnext-heretic2",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 28,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 19.8,
+   "minutes": 51,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 07:10",
+   "struggle": {
+    "compiles": 13,
+    "failed_compiles": 4,
+    "rust_errors": 10,
+    "loc": 1818,
+    "errors_per_kloc": 5.5
+   }
+  },
+  {
+   "case": "mx22-orcarouter-fn-uncensored-t2setupretry1-t2-rust-mcp-r1",
+   "model": "lcpp6-orcarouter-fn-uncensored",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 42,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 14.1,
+   "minutes": 152,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 09:44",
+   "struggle": {
+    "compiles": 44,
+    "failed_compiles": 20,
+    "rust_errors": 53,
+    "loc": 3337,
+    "errors_per_kloc": 15.9
+   }
+  },
+  {
+   "case": "mx22-ornith-122b-q4kxl-t1-cli-r1",
+   "model": "lcpp6-ornith-122b-q4kxl",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 48,
+   "tests_fail": 0,
+   "subcmds": 9,
+   "tps": 13.4,
+   "minutes": 90,
+   "compactions": null,
+   "ctx": null,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-10-23 13:49",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 1502,
+    "errors_per_kloc": 0.0
+   }
+  },
+  {
+   "case": "mx22-ornith-122b-q4kxl-t2-rust-mcp-r1",
+   "model": "lcpp6-ornith-122b-q4kxl",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 43,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 12.9,
+   "minutes": 82,
+   "compactions": null,
+   "ctx": null,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-10-23 18:18",
+   "struggle": {
+    "compiles": 14,
+    "failed_compiles": 6,
+    "rust_errors": 12,
+    "loc": 1648,
+    "errors_per_kloc": 7.3
+   }
+  },
+  {
+   "case": "mx22-q38-defiance-192k-author-t1-cli-r1",
+   "model": "lcpp6-q38-defiance-192k-author",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 82,
+   "tests_fail": 0,
+   "subcmds": 13,
+   "tps": 32.5,
+   "minutes": 34,
+   "compactions": null,
+   "ctx": 196608,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 18:53",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 1944,
+    "errors_per_kloc": 0.0
+   }
+  },
+  {
+   "case": "mx22-q38-defiance-192k-author-t2-rust-mcp-r1",
+   "model": "lcpp6-q38-defiance-192k-author",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 46,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 22.6,
+   "minutes": 65,
+   "compactions": null,
+   "ctx": 196608,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 23:00",
+   "struggle": {
+    "compiles": 27,
+    "failed_compiles": 6,
+    "rust_errors": 15,
+    "loc": 2415,
+    "errors_per_kloc": 6.6
+   }
   }
  ],
  "test3": [
@@ -8093,6 +8718,32 @@
    "tps": 7.1,
    "minutes": 9,
    "finished": "2026-10-17 20:13"
+  },
+  {
+   "case": "mx22-flashnext-heretic2-setupretry1-t3g-known-good-mcp-r1",
+   "model": "lcpp6-flashnext-heretic2",
+   "flavor": "3G",
+   "mcp_facts": "14/14",
+   "api_facts": "14/14",
+   "judgement_right": true,
+   "rubric": 12,
+   "note": "Known-good server. One probe, 12 calls. REST and MCP both 14 of 14. It left the server unchanged and the judgement is right. Rubric 12.",
+   "tps": 9.5,
+   "minutes": 15,
+   "finished": "2026-10-23 11:39"
+  },
+  {
+   "case": "mx22-flashnext-heretic2-setupretry1-t3o-own-mcp-r1",
+   "model": "lcpp6-flashnext-heretic2",
+   "flavor": "3O",
+   "mcp_facts": "13/14",
+   "api_facts": "14/14",
+   "judgement_right": false,
+   "rubric": 9,
+   "note": "Own server. MCP 13 of 14, REST 14 of 14. The fixed server builds, initializes, exposes 7 tools and passes 34 tests, but temperature was still missed and the final judgement is wrong. Rubric 9.",
+   "tps": 11.8,
+   "minutes": 32,
+   "finished": "2026-10-23 12:11"
   }
  ],
  "ab": [
@@ -8455,6 +9106,186 @@
    "prefill": 2539.8,
    "vram": 23862,
    "error": ""
+  },
+  {
+   "model": "qwen3.8-27b-vllm",
+   "engine": "vLLM (HyperQwen)",
+   "variant": "Titan, GPU unlock off, 400-token code prompt",
+   "decode": 126.4,
+   "quote": null,
+   "prefill": null,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "qwen3.8-27b-vllm",
+   "engine": "vLLM (HyperQwen)",
+   "variant": "Titan, GPU unlock off, 140826-token prompt, seed 41",
+   "decode": 85.3,
+   "quote": null,
+   "prefill": 736,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "qwen3.8-27b-vllm",
+   "engine": "vLLM (HyperQwen)",
+   "variant": "Titan, GPU unlock off, 140826-token prompt, seed 42",
+   "decode": 79.1,
+   "quote": null,
+   "prefill": 736,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "qwen3.8-27b-vllm",
+   "engine": "vLLM (HyperQwen)",
+   "variant": "Titan, GPU unlock on, round 1, 400-token code prompt",
+   "decode": 127.9,
+   "quote": null,
+   "prefill": null,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "qwen3.8-27b-vllm",
+   "engine": "vLLM (HyperQwen)",
+   "variant": "Titan, GPU unlock on, round 1, 140826-token prompt, seed 41",
+   "decode": 94.5,
+   "quote": null,
+   "prefill": 1053,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "qwen3.8-27b-vllm",
+   "engine": "vLLM (HyperQwen)",
+   "variant": "Titan, GPU unlock on, round 1, 140826-token prompt, seed 42",
+   "decode": 87.9,
+   "quote": null,
+   "prefill": 1053,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "qwen3.8-27b-vllm",
+   "engine": "vLLM (HyperQwen)",
+   "variant": "Titan, GPU unlock on, round 2, 400-token code prompt",
+   "decode": 127.5,
+   "quote": null,
+   "prefill": null,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "qwen3.8-27b-vllm",
+   "engine": "vLLM (HyperQwen)",
+   "variant": "Titan, GPU unlock on, round 2, 140826-token prompt, seed 41",
+   "decode": 94.4,
+   "quote": null,
+   "prefill": 1056,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "qwen3.8-27b-vllm",
+   "engine": "vLLM (HyperQwen)",
+   "variant": "Titan, GPU unlock on, round 2, 140826-token prompt, seed 42",
+   "decode": 87.7,
+   "quote": null,
+   "prefill": 1055,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "lcpp6-tiel-coder-35b-t06",
+   "engine": "llama.cpp 0.7",
+   "variant": "Titan, GPU unlock off, 400-token code prompt",
+   "decode": 149.1,
+   "quote": null,
+   "prefill": null,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "lcpp6-tiel-coder-35b-t06",
+   "engine": "llama.cpp 0.7",
+   "variant": "Titan, GPU unlock off, 141004-token prompt, seed 41",
+   "decode": 97.7,
+   "quote": null,
+   "prefill": 2201,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "lcpp6-tiel-coder-35b-t06",
+   "engine": "llama.cpp 0.7",
+   "variant": "Titan, GPU unlock off, 141004-token prompt, seed 42",
+   "decode": 97.6,
+   "quote": null,
+   "prefill": 1549,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "lcpp6-tiel-coder-35b-t06",
+   "engine": "llama.cpp 0.7",
+   "variant": "Titan, GPU unlock on, round 1, 400-token code prompt",
+   "decode": 148.6,
+   "quote": null,
+   "prefill": null,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "lcpp6-tiel-coder-35b-t06",
+   "engine": "llama.cpp 0.7",
+   "variant": "Titan, GPU unlock on, round 1, 141004-token prompt, seed 41",
+   "decode": 97.7,
+   "quote": null,
+   "prefill": 2397,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "lcpp6-tiel-coder-35b-t06",
+   "engine": "llama.cpp 0.7",
+   "variant": "Titan, GPU unlock on, round 1, 141004-token prompt, seed 42",
+   "decode": 97.9,
+   "quote": null,
+   "prefill": 1746,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "lcpp6-tiel-coder-35b-t06",
+   "engine": "llama.cpp 0.7",
+   "variant": "Titan, GPU unlock on, round 2, 400-token code prompt",
+   "decode": 148.8,
+   "quote": null,
+   "prefill": null,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "lcpp6-tiel-coder-35b-t06",
+   "engine": "llama.cpp 0.7",
+   "variant": "Titan, GPU unlock on, round 2, 141004-token prompt, seed 41",
+   "decode": 97.7,
+   "quote": null,
+   "prefill": 2396,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "lcpp6-tiel-coder-35b-t06",
+   "engine": "llama.cpp 0.7",
+   "variant": "Titan, GPU unlock on, round 2, 141004-token prompt, seed 42",
+   "decode": 97.5,
+   "quote": null,
+   "prefill": 1745,
+   "vram": null,
+   "error": ""
   }
  ],
  "engines": [
@@ -8475,8 +9306,8 @@
     },
     {
      "version": "0.7.0",
-     "date": "2026-10-15",
-     "note": "Adds a GPU cache for experts kept in RAM (--moe-cache-mib); in the router since 2026-10-18."
+     "date": "2026-10-18",
+     "note": "Released 2026-10-15. Adds a GPU cache for experts kept in RAM (--moe-cache-mib); in the router since 2026-10-18."
     },
     {
      "version": "Newer official builds",
@@ -8511,9 +9342,9 @@
     },
     {
      "model": "Flint 40B-A2.5B Q3_K_XL",
-     "config": "newer build, all on GPU, q8 KV, 11.7k depth, -ub 2048",
+     "config": "newer build, all on GPU, q8 KV, 11.7k depth",
      "decode": 106,
-     "prefill": 5357,
+     "prefill": null,
      "unit": "tok/s",
      "context": "262k",
      "date": "2026-10-22"
@@ -8525,7 +9356,7 @@
      "prefill": null,
      "unit": "tok/s",
      "context": "150k",
-     "date": "2026-10-22"
+     "date": "2026-10"
     },
     {
      "model": "Flint Q4_K_XL",
@@ -8657,7 +9488,7 @@
      "model": "Flash-Next GGUFs (fresh loads)",
      "config": "0.7.0 expert cache; prefill about 250 before",
      "decode": null,
-     "prefill": 415,
+     "prefill": "415-427",
      "unit": "tok/s",
      "context": "16k and 48k",
      "date": "2026-10-22"
@@ -9252,7 +10083,7 @@
     },
     {
      "model": "GLM-5.3-Flash Maya-M IQ2_S",
-     "config": "no draft head, default PCIe share 0.36",
+     "config": "default PCIe share 0.36 (0.25 gave 17.9)",
      "decode": 16.0,
      "prefill": null,
      "unit": "tok/s",
@@ -9984,7 +10815,7 @@
      "unit": "tok/s"
     },
     {
-     "label": "Prefill, fresh load against quality-script runs (not reproduced)",
+     "label": "Prefill, quality-script runs (not reproduced) → fresh load",
      "before": "85-100",
      "after": 415,
      "unit": "tok/s"
@@ -10085,7 +10916,7 @@
     }
    ],
    "chart": "timeline",
-   "evidence": "Flash-Next with experts in RAM: 2.2 tok/s on llama.cpp 0.4 to 144 on Strata 0.2.2 (2026-10-22).",
+   "evidence": "Flash-Next with experts in RAM: 2.2 tok/s on llama.cpp 0.4, 30-45 on Strata 0.1 (2026-10-04); Gyro-S on Strata 0.2.2 reached 144 on code (2026-10-22).",
    "caveat": "Quants differ across rows; Strata's 144 is Gyro-S on code.",
    "doc": "https://github.com/alexderz/agentic-model-testing/blob/main/docs/model-research/tuning.md#10-engine-choice"
   },
@@ -10095,13 +10926,13 @@
    "rule": "Run quality and multi-session checks on every new engine or settings change before ranking speed.",
    "metrics": [
     {
-     "label": "tqLLM code decode against llama.cpp on the same GGUF",
+     "label": "Code decode on the same GGUF, llama.cpp → tqLLM",
      "before": 40.3,
      "after": 101.7,
      "unit": "tok/s"
     },
     {
-     "label": "Multi-session checks passed, tqLLM (best) against llama.cpp live",
+     "label": "Multi-session checks passed, tqLLM (best) → llama.cpp live",
      "before": 4,
      "after": 11,
      "unit": "of 11"
@@ -10871,6 +11702,78 @@
     "note": "no SVG: length stop at 32,000 tokens, all thinking (five identical replies)",
     "frames": [],
     "live": null
+   },
+   {
+    "case": "mx22-flashnext-heretic2-t5-oneshot-orrery-r1",
+    "entry": "lcpp6-flashnext-heretic2",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 33547.0,
+    "wall_s": 1513.4,
+    "tok_s": 22.3,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "Final model-supplied standalone SVG is malformed (mismatched tag, line 77). The harness also greedily concatenated two SVG blocks/prose: that packaging error was separated by extracting the final original codeblock verbatim, which still fails XML parsing. Initial valid background-only fragment is not substituted or graded.",
+    "frames": [
+     "frames/orrery/mx22-flashnext-heretic2-t5-oneshot-orrery-r1/frame-1500.webp",
+     "frames/orrery/mx22-flashnext-heretic2-t5-oneshot-orrery-r1/frame-5000.webp",
+     "frames/orrery/mx22-flashnext-heretic2-t5-oneshot-orrery-r1/frame-10000.webp"
+    ],
+    "live": null
+   },
+   {
+    "case": "t5nm1-lcpp6-ornith-122b-q4kxl",
+    "entry": "lcpp6-ornith-122b-q4kxl",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 29646.0,
+    "wall_s": 1940.1,
+    "tok_s": 15.3,
+    "points": {
+     "A": 1.0,
+     "B": 1.0,
+     "C": 0.0,
+     "D": 1.0,
+     "E": 0.0
+    },
+    "total": 3.0,
+    "note": "Parses and draws, but planets are left at the central origin instead of translated to arm ends. Only gears visibly move; outer markers stay fixed across sealed frames. Nominal period parameters are not functioning planetary orbits. Toothed wheels turn without credible meshing; no visible planetary day/night.",
+    "frames": [
+     "frames/orrery/t5nm1-lcpp6-ornith-122b-q4kxl/frame-1500.webp",
+     "frames/orrery/t5nm1-lcpp6-ornith-122b-q4kxl/frame-5000.webp",
+     "frames/orrery/t5nm1-lcpp6-ornith-122b-q4kxl/frame-10000.webp"
+    ],
+    "live": "live/orrery/t5nm1-lcpp6-ornith-122b-q4kxl/orrery.svg"
+   },
+   {
+    "case": "t5nm1-lcpp-flint-40b-q3kxl",
+    "entry": "lcpp-flint-40b-q3kxl",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 30402.0,
+    "wall_s": 299.0,
+    "tok_s": 101.8,
+    "points": {
+     "A": 1.0,
+     "B": 2.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 1.0
+    },
+    "total": 4.0,
+    "note": "Renders with detached teeth and shadow halos; motion present; orbital periods 80/38/20/40/160/300s incorrectly order inner planets; no credible meshing pairs; offset black shadows rotate incorrectly. Independent original-source/frame review.",
+    "frames": [
+     "frames/orrery/t5nm1-lcpp-flint-40b-q3kxl/frame-1500.webp",
+     "frames/orrery/t5nm1-lcpp-flint-40b-q3kxl/frame-5000.webp",
+     "frames/orrery/t5nm1-lcpp-flint-40b-q3kxl/frame-10000.webp"
+    ],
+    "live": "live/orrery/t5nm1-lcpp-flint-40b-q3kxl/orrery.svg"
    }
   ],
   "pagoda": [
@@ -11981,6 +12884,78 @@
      "frames/pagoda/t6unc1-qwen3.8-27b-uncensored-vllm/frame-10000.webp"
     ],
     "live": "live/pagoda/t6unc1-qwen3.8-27b-uncensored-vllm/page.html"
+   },
+   {
+    "case": "mx22-flashnext-heretic2-t6-oneshot-pagoda-r1",
+    "entry": "lcpp6-flashnext-heretic2",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 29545.0,
+    "wall_s": 1359.9,
+    "tok_s": 21.8,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "Original animation throws ReferenceError: clock is not defined before scene rendering; all sealed frames contain only the clear-color background. Offline three.js dependency packaging succeeds. Blank-page rule scores every dimension zero; no diagnostic model-code fix was scored.",
+    "frames": [
+     "frames/pagoda/mx22-flashnext-heretic2-t6-oneshot-pagoda-r1/frame-1500.webp",
+     "frames/pagoda/mx22-flashnext-heretic2-t6-oneshot-pagoda-r1/frame-5000.webp",
+     "frames/pagoda/mx22-flashnext-heretic2-t6-oneshot-pagoda-r1/frame-10000.webp"
+    ],
+    "live": null
+   },
+   {
+    "case": "t6nm1-lcpp6-ornith-122b-q4kxl",
+    "entry": "lcpp6-ornith-122b-q4kxl",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 6653.0,
+    "wall_s": 523.0,
+    "tok_s": 15.4,
+    "points": {
+     "A": 1.0,
+     "B": 2.0,
+     "C": 1.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 8.0,
+    "note": "Draws consistently from boxes; five tiers/upturned eaves but full spire is cropped in every frame. Platform, cherry trees, pond and torii visible. Falling petals, shadows and frame-based camera orbit present.",
+    "frames": [
+     "frames/pagoda/t6nm1-lcpp6-ornith-122b-q4kxl/frame-1500.webp",
+     "frames/pagoda/t6nm1-lcpp6-ornith-122b-q4kxl/frame-5000.webp",
+     "frames/pagoda/t6nm1-lcpp6-ornith-122b-q4kxl/frame-10000.webp"
+    ],
+    "live": "live/pagoda/t6nm1-lcpp6-ornith-122b-q4kxl/page.html"
+   },
+   {
+    "case": "t6nm1-lcpp-flint-40b-q3kxl",
+    "entry": "lcpp-flint-40b-q3kxl",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 15958.0,
+    "wall_s": 145.2,
+    "tok_s": 110.1,
+    "points": {
+     "A": 1.0,
+     "B": 2.0,
+     "C": 1.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 8.0,
+    "note": "Draws consistently from boxes; five tiers but complete spire cropped in all three frames; platform pond cherry tree and partly occluded torii visible; petals shadows and frame-based camera orbit present. Offline CDN rewrite is packaging only; no model fix.",
+    "frames": [
+     "frames/pagoda/t6nm1-lcpp-flint-40b-q3kxl/frame-1500.webp",
+     "frames/pagoda/t6nm1-lcpp-flint-40b-q3kxl/frame-5000.webp",
+     "frames/pagoda/t6nm1-lcpp-flint-40b-q3kxl/frame-10000.webp"
+    ],
+    "live": "live/pagoda/t6nm1-lcpp-flint-40b-q3kxl/page.html"
    }
   ],
   "agent-orrery": [
@@ -12493,12 +13468,12 @@
   ]
  },
  "counts": {
-  "models": 93,
-  "runs": 206,
-  "test3": 51,
-  "oneshots": 100,
-  "frames": 225,
-  "pass": 133,
-  "live": 74
+  "models": 95,
+  "runs": 222,
+  "test3": 53,
+  "oneshots": 106,
+  "frames": 243,
+  "pass": 148,
+  "live": 78
  }
 }

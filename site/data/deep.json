@@ -8,7 +8,7 @@
       "versions": [
         {"version": "0.4.1-dev (commit 4260903)", "date": "2026-09-23 to 2026-10-18", "note": "Bundled build used by the native entries; Flash-Next with experts in RAM: 2.2 tok/s on the probe; long agent runs on it ran out of time."},
         {"version": "0.6.0 (official image, build 11429)", "date": "2026-10-05", "note": "2.5-4x faster than 0.4 on Flash-Next with experts in RAM; MTP and n-gram drafting fixes."},
-        {"version": "0.7.0", "date": "2026-10-15", "note": "Adds a GPU cache for experts kept in RAM (--moe-cache-mib); in the router since 2026-10-18."},
+        {"version": "0.7.0", "date": "2026-10-18", "note": "Released 2026-10-15. Adds a GPU cache for experts kept in RAM (--moe-cache-mib); in the router since 2026-10-18."},
         {"version": "Newer official builds", "date": "2026-10-21", "note": "Flint needs b11803 or later; Carbon-X needs b11742 or later; trials ran by hand, not in the router."}
       ],
       "good_at": "Any GGUF, including MoE models with experts in system RAM",
@@ -17,8 +17,8 @@
       "speeds": [
         {"model": "Tiel Coder 35B IQ4_XS", "config": "0.7.0, all on GPU", "decode": 151, "prefill": null, "unit": "tok/s", "context": "262k", "date": "2026-10-18"},
         {"model": "Flint 40B-A2.5B Q3_K_XL", "config": "newer build, all on GPU, q8 KV, short prompt", "decode": 129, "prefill": null, "unit": "tok/s", "context": "262k", "date": "2026-10-22"},
-        {"model": "Flint 40B-A2.5B Q3_K_XL", "config": "newer build, all on GPU, q8 KV, 11.7k depth, -ub 2048", "decode": 106, "prefill": 5357, "unit": "tok/s", "context": "262k", "date": "2026-10-22"},
-        {"model": "Flint Q4_K_XL", "config": "10 expert layers in RAM", "decode": 95, "prefill": null, "unit": "tok/s", "context": "150k", "date": "2026-10-22"},
+        {"model": "Flint 40B-A2.5B Q3_K_XL", "config": "newer build, all on GPU, q8 KV, 11.7k depth", "decode": 106, "prefill": null, "unit": "tok/s", "context": "262k", "date": "2026-10-22"},
+        {"model": "Flint Q4_K_XL", "config": "10 expert layers in RAM", "decode": 95, "prefill": null, "unit": "tok/s", "context": "150k", "date": "2026-10"},
         {"model": "Flint Q4_K_XL", "config": "15 expert layers in RAM; prefill of an 11.7k prompt", "decode": 81.4, "prefill": 2208, "unit": "tok/s", "context": null, "date": "2026-10-22"},
         {"model": "Flint Q4_K_XL", "config": "19 expert layers in RAM", "decode": 73.1, "prefill": null, "unit": "tok/s", "context": null, "date": "2026-10-22"},
         {"model": "Flint Q4_K_XL", "config": "24 expert layers in RAM; prefill of an 11.7k prompt", "decode": 64.2, "prefill": 1624, "unit": "tok/s", "context": "262k", "date": "2026-10-22"},
@@ -33,7 +33,7 @@
         {"model": "Flash-Next Abliterated s1.5 IQ4_XS", "config": "0.7.0, -cmoe, cache 13824 MiB, q8 KV, streamed", "decode": "19-21", "prefill": null, "unit": "tok/s", "context": "262k", "date": "2026-10-22"},
         {"model": "Flash-Next Swift 1.5 IQ3_XXS (pruned)", "config": "0.7.0, -cmoe, cache 9216 MiB, q8 KV, streamed", "decode": "23-26", "prefill": null, "unit": "tok/s", "context": "262k", "date": "2026-10-22"},
         {"model": "Flash-Next unpruned IQ3_S", "config": "0.7.0, -cmoe, cache 9216 MiB, q8 KV, streamed", "decode": "21-23", "prefill": null, "unit": "tok/s", "context": "262k", "date": "2026-10-22"},
-        {"model": "Flash-Next GGUFs (fresh loads)", "config": "0.7.0 expert cache; prefill about 250 before", "decode": null, "prefill": 415, "unit": "tok/s", "context": "16k and 48k", "date": "2026-10-22"},
+        {"model": "Flash-Next GGUFs (fresh loads)", "config": "0.7.0 expert cache; prefill about 250 before", "decode": null, "prefill": "415-427", "unit": "tok/s", "context": "16k and 48k", "date": "2026-10-22"},
         {"model": "Flash-Next unpruned IQ3_S", "config": "0.7.0, raw short outputs, thinking off, code; prose 41.3, structured 41.0", "decode": 40.3, "prefill": null, "unit": "tok/s", "context": "32k", "date": "2026-10-22"},
         {"model": "Qwen3.8-Flash-Next", "config": "0.4.1-dev, experts in RAM, short probe", "decode": 2.2, "prefill": 136, "unit": "tok/s", "context": "49k", "date": "2026-10-05"},
         {"model": "Qwen3.8-Flash-Next", "config": "0.6, experts in RAM, short probe", "decode": 8.9, "prefill": 569, "unit": "tok/s", "context": "49k", "date": "2026-10-05"},
@@ -166,7 +166,7 @@
         {"model": "GLM-5.3-Flash Maya-S IQ2_XXS", "config": "1.0.4 with three patches, weights on local disk", "decode": "17-19", "prefill": null, "unit": "tok/s", "context": null, "date": "2026-10-08"},
         {"model": "GLM-5.3-Flash Maya-S IQ2_XXS", "config": "1.1.11, two probe rounds (1.0.x: 14.6 on the same 3.5 bpw pack)", "decode": 17.0, "prefill": null, "unit": "tok/s", "context": null, "date": "2026-10-16"},
         {"model": "GLM-5.3-Flash Maya-S / Maya-M", "config": "1.1.13, test 3 runs, both flavors", "decode": "5.4-6.9", "prefill": null, "unit": "tok/s", "context": null, "date": "2026-10-17"},
-        {"model": "GLM-5.3-Flash Maya-M IQ2_S", "config": "no draft head, default PCIe share 0.36", "decode": 16.0, "prefill": null, "unit": "tok/s", "context": null, "date": "2026-10-17"},
+        {"model": "GLM-5.3-Flash Maya-M IQ2_S", "config": "default PCIe share 0.36 (0.25 gave 17.9)", "decode": 16.0, "prefill": null, "unit": "tok/s", "context": null, "date": "2026-10-17"},
         {"model": "GLM-5.3-Flash Maya-M IQ2_S", "config": "PCIe share 0.25 (candidate, not applied)", "decode": 17.9, "prefill": null, "unit": "tok/s", "context": null, "date": "2026-10-17"},
         {"model": "GLM-5.3-Flash Maya-M IQ2_S", "config": "no DFlash2 draft head", "decode": 15.35, "prefill": null, "unit": "tok/s", "context": null, "date": "2026-10-17"},
         {"model": "GLM-5.3-Flash Maya-M IQ2_S", "config": "with DFlash2 draft head, 91 % of drafts accepted", "decode": 10.7, "prefill": null, "unit": "tok/s", "context": null, "date": "2026-10-17"}
@@ -399,7 +399,7 @@
         {"label": "Strata 0.1.42 prompt reading, cold against warm", "before": 44, "after": 1269, "unit": "tok/s"},
         {"label": "Strata 0.1.42 decode, cold against warm round", "before": 13.1, "after": 23.5, "unit": "tok/s"},
         {"label": "Unpruned Flash-Next GGUF, raw benchmark against streamed", "before": 40, "after": "21-23", "unit": "tok/s"},
-        {"label": "Prefill, fresh load against quality-script runs (not reproduced)", "before": "85-100", "after": 415, "unit": "tok/s"}
+        {"label": "Prefill, quality-script runs (not reproduced) → fresh load", "before": "85-100", "after": 415, "unit": "tok/s"}
       ],
       "chart": "slope",
       "evidence": "Strata 0.1.42, 2026-10-11: the same prompt read at 44 tok/s cold and 1,269 warm.",
@@ -436,7 +436,7 @@
         {"label": "Multi-session checks passed: tqLLM (best) against stock SGLang", "before": 4, "after": 11, "unit": "of 11"}
       ],
       "chart": "timeline",
-      "evidence": "Flash-Next with experts in RAM: 2.2 tok/s on llama.cpp 0.4 to 144 on Strata 0.2.2 (2026-10-22).",
+      "evidence": "Flash-Next with experts in RAM: 2.2 tok/s on llama.cpp 0.4, 30-45 on Strata 0.1 (2026-10-04); Gyro-S on Strata 0.2.2 reached 144 on code (2026-10-22).",
       "caveat": "Quants differ across rows; Strata's 144 is Gyro-S on code.",
       "doc": "docs/model-research/tuning.md#10-engine-choice"
     },
@@ -445,8 +445,8 @@
       "title": "Check a setup before trusting speed",
       "rule": "Run quality and multi-session checks on every new engine or settings change before ranking speed.",
       "metrics": [
-        {"label": "tqLLM code decode against llama.cpp on the same GGUF", "before": 40.3, "after": 101.7, "unit": "tok/s"},
-        {"label": "Multi-session checks passed, tqLLM (best) against llama.cpp live", "before": 4, "after": 11, "unit": "of 11"},
+        {"label": "Code decode on the same GGUF, llama.cpp → tqLLM", "before": 40.3, "after": 101.7, "unit": "tok/s"},
+        {"label": "Multi-session checks passed, tqLLM (best) → llama.cpp live", "before": 4, "after": 11, "unit": "of 11"},
         {"label": "Multi-session checks passed, Carbon-X at one slot", "before": null, "after": 10, "unit": "of 11"},
         {"label": "Old runs regraded, 2026-10-10", "before": null, "after": 125, "unit": "runs"},
         {"label": "Verdicts changed by the regrade", "before": null, "after": 4, "unit": "verdicts"}
