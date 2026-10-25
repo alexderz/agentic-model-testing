@@ -1,4 +1,7 @@
 {
+ "schema": "history/1",
+ "generated_from": "private bake-off tree, 2026-10-07 to 2026-10-25",
+ "generated": "2026-10-25 11:07 CDT",
  "runs_new": [
   {
    "case": "wa-saluki-27b-iq2",
@@ -359,6 +362,390 @@
     "loc": 9497,
     "errors_per_kloc": 0.4
    }
+  },
+  {
+   "case": "mx22-orcarouter-fn-uncensored-t1-cli-r1",
+   "model": "lcpp6-orcarouter-fn-uncensored",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 41,
+   "tests_fail": 0,
+   "subcmds": 10,
+   "tps": 19.9,
+   "minutes": 29,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-22 21:40",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 861,
+    "errors_per_kloc": 0.0
+   }
+  },
+  {
+   "case": "mx22-orcarouter-fn-uncensored-t2t-rust-mcp-r1",
+   "model": "lcpp6-orcarouter-fn-uncensored",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": null,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 13.9,
+   "minutes": 166,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "partial",
+   "finished": "2026-10-23 00:28",
+   "struggle": {
+    "compiles": 17,
+    "failed_compiles": 14,
+    "rust_errors": 60,
+    "loc": 2340,
+    "errors_per_kloc": 25.6
+   }
+  },
+  {
+   "case": "mx22-orcarouter-fn-uncensored-setupretry1-t4-bugfix-targets-r1",
+   "model": "lcpp6-orcarouter-fn-uncensored",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 4,
+   "tests_pass": 156,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 17.2,
+   "minutes": 12,
+   "compactions": 0,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 00:41",
+   "struggle": {
+    "compiles": 5,
+    "failed_compiles": 2,
+    "rust_errors": 2,
+    "loc": 9483,
+    "errors_per_kloc": 0.3
+   }
+  },
+  {
+   "case": "mx22-orcarouter-fn-uncensored-setupretry1-t4-config-timeouts-r1",
+   "model": "lcpp6-orcarouter-fn-uncensored",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 13,
+   "tests_pass": 170,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 17.4,
+   "minutes": 28,
+   "compactions": 0,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 01:10",
+   "struggle": {
+    "compiles": 9,
+    "failed_compiles": 5,
+    "rust_errors": 9,
+    "loc": 9888,
+    "errors_per_kloc": 0.9
+   }
+  },
+  {
+   "case": "mx22-orcarouter-fn-uncensored-setupretry1-t4-feature-filter-r1",
+   "model": "lcpp6-orcarouter-fn-uncensored",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 11,
+   "tests_pass": 159,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 14.9,
+   "minutes": 12,
+   "compactions": 0,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 01:23",
+   "struggle": {
+    "compiles": 2,
+    "failed_compiles": 1,
+    "rust_errors": 1,
+    "loc": 9613,
+    "errors_per_kloc": 0.1
+   }
+  },
+  {
+   "case": "mx22-flashnext-heretic2-t1-cli-r1",
+   "model": "lcpp6-flashnext-heretic2",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 36,
+   "tests_fail": 0,
+   "subcmds": 11,
+   "tps": 18.2,
+   "minutes": 86,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 02:52",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 1436,
+    "errors_per_kloc": 0.7
+   }
+  },
+  {
+   "case": "mx22-flashnext-heretic2-t2-rust-mcp-r1",
+   "model": "lcpp6-flashnext-heretic2",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 34,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 17.1,
+   "minutes": 91,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 04:28",
+   "struggle": {
+    "compiles": 23,
+    "failed_compiles": 9,
+    "rust_errors": 33,
+    "loc": 1752,
+    "errors_per_kloc": 18.8
+   }
+  },
+  {
+   "case": "mx22-flashnext-heretic2-t4-bugfix-targets-r1",
+   "model": "lcpp6-flashnext-heretic2",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 4,
+   "tests_pass": 156,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 13.9,
+   "minutes": 10,
+   "compactions": 0,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 05:27",
+   "struggle": {
+    "compiles": 4,
+    "failed_compiles": 1,
+    "rust_errors": 1,
+    "loc": 9440,
+    "errors_per_kloc": 0.1
+   }
+  },
+  {
+   "case": "mx22-flashnext-heretic2-t4-config-timeouts-r1",
+   "model": "lcpp6-flashnext-heretic2",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 13,
+   "tests_pass": 166,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 17.2,
+   "minutes": 32,
+   "compactions": 0,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 06:00",
+   "struggle": {
+    "compiles": 3,
+    "failed_compiles": 1,
+    "rust_errors": 1,
+    "loc": 9748,
+    "errors_per_kloc": 0.1
+   }
+  },
+  {
+   "case": "mx22-flashnext-heretic2-t4-feature-filter-r1",
+   "model": "lcpp6-flashnext-heretic2",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 11,
+   "tests_pass": 159,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 12.0,
+   "minutes": 15,
+   "compactions": 0,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 06:15",
+   "struggle": {
+    "compiles": 3,
+    "failed_compiles": 1,
+    "rust_errors": 1,
+    "loc": 9535,
+    "errors_per_kloc": 0.1
+   }
+  },
+  {
+   "case": "mx22-flashnext-heretic2-t2t-rust-mcp-r1",
+   "model": "lcpp6-flashnext-heretic2",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 28,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 19.8,
+   "minutes": 51,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 07:10",
+   "struggle": {
+    "compiles": 13,
+    "failed_compiles": 4,
+    "rust_errors": 10,
+    "loc": 1818,
+    "errors_per_kloc": 5.5
+   }
+  },
+  {
+   "case": "mx22-orcarouter-fn-uncensored-t2setupretry1-t2-rust-mcp-r1",
+   "model": "lcpp6-orcarouter-fn-uncensored",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 42,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 14.1,
+   "minutes": 152,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 09:44",
+   "struggle": {
+    "compiles": 44,
+    "failed_compiles": 20,
+    "rust_errors": 53,
+    "loc": 3337,
+    "errors_per_kloc": 15.9
+   }
+  },
+  {
+   "case": "mx22-ornith-122b-q4kxl-t1-cli-r1",
+   "model": "lcpp6-ornith-122b-q4kxl",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 48,
+   "tests_fail": 0,
+   "subcmds": 9,
+   "tps": 13.4,
+   "minutes": 90,
+   "compactions": null,
+   "ctx": null,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-10-23 13:49",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 1502,
+    "errors_per_kloc": 0.0
+   }
+  },
+  {
+   "case": "mx22-ornith-122b-q4kxl-t2-rust-mcp-r1",
+   "model": "lcpp6-ornith-122b-q4kxl",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 43,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 12.9,
+   "minutes": 82,
+   "compactions": null,
+   "ctx": null,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-10-23 18:18",
+   "struggle": {
+    "compiles": 14,
+    "failed_compiles": 6,
+    "rust_errors": 12,
+    "loc": 1648,
+    "errors_per_kloc": 7.3
+   }
+  },
+  {
+   "case": "mx22-q38-defiance-192k-author-t1-cli-r1",
+   "model": "lcpp6-q38-defiance-192k-author",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 82,
+   "tests_fail": 0,
+   "subcmds": 13,
+   "tps": 32.5,
+   "minutes": 34,
+   "compactions": null,
+   "ctx": 196608,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 18:53",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 1944,
+    "errors_per_kloc": 0.0
+   }
+  },
+  {
+   "case": "mx22-q38-defiance-192k-author-t2-rust-mcp-r1",
+   "model": "lcpp6-q38-defiance-192k-author",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 46,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 22.6,
+   "minutes": 65,
+   "compactions": null,
+   "ctx": 196608,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 23:00",
+   "struggle": {
+    "compiles": 27,
+    "failed_compiles": 6,
+    "rust_errors": 15,
+    "loc": 2415,
+    "errors_per_kloc": 6.6
+   }
   }
  ],
  "test3_new": [
@@ -387,6 +774,32 @@
    "tps": 7.1,
    "minutes": 9,
    "finished": "2026-10-17 20:13"
+  },
+  {
+   "case": "mx22-flashnext-heretic2-setupretry1-t3g-known-good-mcp-r1",
+   "model": "lcpp6-flashnext-heretic2",
+   "flavor": "3G",
+   "mcp_facts": "14/14",
+   "api_facts": "14/14",
+   "judgement_right": true,
+   "rubric": 12,
+   "note": "Known-good server. One probe, 12 calls. REST and MCP both 14 of 14. It left the server unchanged and the judgement is right. Rubric 12.",
+   "tps": 9.5,
+   "minutes": 15,
+   "finished": "2026-10-23 11:39"
+  },
+  {
+   "case": "mx22-flashnext-heretic2-setupretry1-t3o-own-mcp-r1",
+   "model": "lcpp6-flashnext-heretic2",
+   "flavor": "3O",
+   "mcp_facts": "13/14",
+   "api_facts": "14/14",
+   "judgement_right": false,
+   "rubric": 9,
+   "note": "Own server. MCP 13 of 14, REST 14 of 14. The fixed server builds, initializes, exposes 7 tools and passes 34 tests, but temperature was still missed and the final judgement is wrong. Rubric 9.",
+   "tps": 11.8,
+   "minutes": 32,
+   "finished": "2026-10-23 12:11"
   }
  ],
  "models_new": {
@@ -484,6 +897,38 @@
    "vision": {
     "label": "no",
     "status": "none"
+   }
+  },
+  "lcpp6-ornith-122b-q4kxl": {
+   "id": "lcpp6-ornith-122b-q4kxl",
+   "family": "Ornith 1.5",
+   "label": "Ornith 1.5 122B-A10B UD-Q4_K_XL · llama.cpp 0.7, experts partly in RAM",
+   "base": "ornith-ai/Ornith-1.5-122B",
+   "arch": "MoE 122B-A10B",
+   "engine": "llama.cpp 0.7",
+   "quant": "UD-Q4_K_XL",
+   "kind": "tune",
+   "uncensored": false,
+   "note": "MIT. Fine-tune of Qwen3.5-122B-A10B. Thinking on. An offload sweep on 2026-10-20 with 41 expert layers in RAM and 2048-token batches recorded 16.1 tok/s decode and 392.1 tok/s prefill. The agent runs above are slower; context and KV for those runs were not in a spec snapshot.",
+   "vision": {
+    "label": "not surveyed",
+    "status": null
+   }
+  },
+  "lcpp6-q38-defiance-192k-author": {
+   "id": "lcpp6-q38-defiance-192k-author",
+   "family": "Qwen3.8 27B",
+   "label": "Defiance IQ4_XS · llama.cpp 0.7, 196608 context, q8 KV, author sampler",
+   "base": "Qwen/Qwen3.8-27B",
+   "arch": "dense 27B",
+   "engine": "llama.cpp 0.7",
+   "quant": "IQ4_XS",
+   "kind": "uncensored-tune",
+   "uncensored": true,
+   "note": "Uncensored tune. Author sampler, no draft weights. This run served 196608 tokens with q8 KV.",
+   "vision": {
+    "label": "not surveyed",
+    "status": null
    }
   }
  },
@@ -596,6 +1041,186 @@
    "quote": null,
    "prefill": 2539.8,
    "vram": 23862,
+   "error": ""
+  },
+  {
+   "model": "qwen3.8-27b-vllm",
+   "engine": "vLLM (HyperQwen)",
+   "variant": "Titan, GPU unlock off, 400-token code prompt",
+   "decode": 126.4,
+   "quote": null,
+   "prefill": null,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "qwen3.8-27b-vllm",
+   "engine": "vLLM (HyperQwen)",
+   "variant": "Titan, GPU unlock off, 140826-token prompt, seed 41",
+   "decode": 85.3,
+   "quote": null,
+   "prefill": 736,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "qwen3.8-27b-vllm",
+   "engine": "vLLM (HyperQwen)",
+   "variant": "Titan, GPU unlock off, 140826-token prompt, seed 42",
+   "decode": 79.1,
+   "quote": null,
+   "prefill": 736,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "qwen3.8-27b-vllm",
+   "engine": "vLLM (HyperQwen)",
+   "variant": "Titan, GPU unlock on, round 1, 400-token code prompt",
+   "decode": 127.9,
+   "quote": null,
+   "prefill": null,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "qwen3.8-27b-vllm",
+   "engine": "vLLM (HyperQwen)",
+   "variant": "Titan, GPU unlock on, round 1, 140826-token prompt, seed 41",
+   "decode": 94.5,
+   "quote": null,
+   "prefill": 1053,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "qwen3.8-27b-vllm",
+   "engine": "vLLM (HyperQwen)",
+   "variant": "Titan, GPU unlock on, round 1, 140826-token prompt, seed 42",
+   "decode": 87.9,
+   "quote": null,
+   "prefill": 1053,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "qwen3.8-27b-vllm",
+   "engine": "vLLM (HyperQwen)",
+   "variant": "Titan, GPU unlock on, round 2, 400-token code prompt",
+   "decode": 127.5,
+   "quote": null,
+   "prefill": null,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "qwen3.8-27b-vllm",
+   "engine": "vLLM (HyperQwen)",
+   "variant": "Titan, GPU unlock on, round 2, 140826-token prompt, seed 41",
+   "decode": 94.4,
+   "quote": null,
+   "prefill": 1056,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "qwen3.8-27b-vllm",
+   "engine": "vLLM (HyperQwen)",
+   "variant": "Titan, GPU unlock on, round 2, 140826-token prompt, seed 42",
+   "decode": 87.7,
+   "quote": null,
+   "prefill": 1055,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "lcpp6-tiel-coder-35b-t06",
+   "engine": "llama.cpp 0.7",
+   "variant": "Titan, GPU unlock off, 400-token code prompt",
+   "decode": 149.1,
+   "quote": null,
+   "prefill": null,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "lcpp6-tiel-coder-35b-t06",
+   "engine": "llama.cpp 0.7",
+   "variant": "Titan, GPU unlock off, 141004-token prompt, seed 41",
+   "decode": 97.7,
+   "quote": null,
+   "prefill": 2201,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "lcpp6-tiel-coder-35b-t06",
+   "engine": "llama.cpp 0.7",
+   "variant": "Titan, GPU unlock off, 141004-token prompt, seed 42",
+   "decode": 97.6,
+   "quote": null,
+   "prefill": 1549,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "lcpp6-tiel-coder-35b-t06",
+   "engine": "llama.cpp 0.7",
+   "variant": "Titan, GPU unlock on, round 1, 400-token code prompt",
+   "decode": 148.6,
+   "quote": null,
+   "prefill": null,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "lcpp6-tiel-coder-35b-t06",
+   "engine": "llama.cpp 0.7",
+   "variant": "Titan, GPU unlock on, round 1, 141004-token prompt, seed 41",
+   "decode": 97.7,
+   "quote": null,
+   "prefill": 2397,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "lcpp6-tiel-coder-35b-t06",
+   "engine": "llama.cpp 0.7",
+   "variant": "Titan, GPU unlock on, round 1, 141004-token prompt, seed 42",
+   "decode": 97.9,
+   "quote": null,
+   "prefill": 1746,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "lcpp6-tiel-coder-35b-t06",
+   "engine": "llama.cpp 0.7",
+   "variant": "Titan, GPU unlock on, round 2, 400-token code prompt",
+   "decode": 148.8,
+   "quote": null,
+   "prefill": null,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "lcpp6-tiel-coder-35b-t06",
+   "engine": "llama.cpp 0.7",
+   "variant": "Titan, GPU unlock on, round 2, 141004-token prompt, seed 41",
+   "decode": 97.7,
+   "quote": null,
+   "prefill": 2396,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "lcpp6-tiel-coder-35b-t06",
+   "engine": "llama.cpp 0.7",
+   "variant": "Titan, GPU unlock on, round 2, 141004-token prompt, seed 42",
+   "decode": 97.5,
+   "quote": null,
+   "prefill": 1745,
+   "vram": null,
    "error": ""
   }
  ],
@@ -730,6 +1355,34 @@
    "title": "Expert cache, Strata 0.2.2, Flint and tqLLM",
    "what": "Flash-Next sped up on llama.cpp and Strata; a new MoE and a new engine were tried.",
    "why": "Make the 125B model usable on one card."
+  },
+  {
+   "date": "2026-10-23",
+   "era": "Models",
+   "title": "Ornith 122B and Defiance pass tests 1 and 2",
+   "what": "Ornith at 13.4 tok/s and Defiance at 32.5 tok/s both cleared the CLI checks and the Rust server tests.",
+   "why": "Do the new large and uncensored quants finish a real task?"
+  },
+  {
+   "date": "2026-10-23",
+   "era": "Flash-Next",
+   "title": "Heretic 2 passes the code tests",
+   "what": "Five CLI checks, a 7-tool server with 34 passing tests, and three maintenance tickets. Both one-shots scored 0.",
+   "why": "An abliterated Flash-Next quant had not been graded on this matrix."
+  },
+  {
+   "date": "2026-10-23",
+   "era": "Harness",
+   "title": "A trust run whose tests did not compile",
+   "what": "Orca uncensored passed test 1, plain test 2, and three test-4 tickets. Its trust run's tests failed to compile, so 0 and 0 is not a pass.",
+   "why": "A green protocol line can hide a broken test build."
+  },
+  {
+   "date": "2026-10-24",
+   "era": "Engines",
+   "title": "GPU unlock speeds long prefill",
+   "what": "On Titan, vLLM Qwen3.8-27B long-prompt prefill rose from 736 to about 1050 tok/s. Short decode stayed near 127 tok/s.",
+   "why": "Does unlocking the GPU clock help a model that already fits on the card?"
   }
  ],
  "findings": [
@@ -801,7 +1454,7 @@
    "date": "2026-10-22",
    "title": "tqLLM serves Flash-Next fast but not for agents",
    "kind": "engine",
-   "summary": "tqLLM 1.2.3 loaded the Flash-Next IQ3_S GGUF and decoded faster than llama.cpp on short benchmarks, but long prompts and several sessions failed.",
+   "summary": "tqLLM 1.2.3 decodes Flash-Next about 2.5x faster than llama.cpp on the same GGUF, but one prefill out-of-memory leaves every later request failing until a restart.",
    "settings": null,
    "metrics": [
     {
@@ -829,8 +1482,8 @@
      "unit": "of 11"
     }
    ],
-   "quality": "Tool calls and a 30k needle passed at 32k; the 262k arm answered long prompts with HTTP 500.",
-   "caveat": "Short outputs with thinking off flatter the speed; the best 262k arm streamed 54 tok/s and passed 4 of 11 sessions. First load took 23 minutes cold."
+   "quality": "Tool calls and a 30k needle passed at 32k; at 262k with 8k prefill chunks it found a needle in 248k tokens. At 131072 context it failed on a 289-token prompt, and every later request failed until a restart.",
+   "caveat": "Short replies with thinking off; any prompt of 256+ tokens can trigger the failure. First load took 23 minutes cold."
   },
   {
    "date": "2026-10-21",
@@ -1253,13 +1906,194 @@
    ],
    "quality": "Standard graders; both tests passed.",
    "caveat": "Decode figures come from the run log, not a result file. A 1-bit variant failed both tests."
+  },
+  {
+   "date": "2026-10-24",
+   "title": "GPU unlock raises long-prompt prefill by 43%",
+   "kind": "engine",
+   "summary": "On Titan, vLLM Qwen3.8-27B was measured with GPU unlock off, then on, then on again. A 140826-token prompt prefilled at 736 tok/s off. Unlock rounds were 1053 and 1056 tok/s on seed 41, and 1053 and 1055 tok/s on seed 42. The probe summary calls that a 43.3% and 43.2% gain. Short code decode moved from 126.4 to 127.9 and 127.5 tok/s. The same check on llama.cpp 0.7 with Tiel left short code decode at 149.1, 148.6 and 148.8 tok/s.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "vLLM prefill, 140826 tokens, seed 41",
+     "before": 736,
+     "after": 1053,
+     "unit": "tok/s"
+    },
+    {
+     "label": "vLLM prefill, seed 41, unlock round 2",
+     "before": 736,
+     "after": 1056,
+     "unit": "tok/s"
+    },
+    {
+     "label": "vLLM prefill, seed 42, unlock round 2",
+     "before": 736,
+     "after": 1055,
+     "unit": "tok/s"
+    },
+    {
+     "label": "vLLM decode, 400-token code prompt, round 1",
+     "before": 126.4,
+     "after": 127.9,
+     "unit": "tok/s"
+    },
+    {
+     "label": "vLLM deep decode, seed 41",
+     "before": 85.3,
+     "after": 94.5,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Tiel decode, 400-token code prompt, round 1",
+     "before": 149.1,
+     "after": 148.6,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Tiel prefill, 141004 tokens, seed 41, round 1",
+     "before": 2201,
+     "after": 2397,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "The needle check passed in every unlock phase, on and off.",
+   "caveat": "One off-round and two on-rounds, one card. Short decode barely moved. Tiel long-prompt prefill rose less (2201 to 2397 tok/s on seed 41, 1549 to 1746 on seed 42) and its deep decode stayed 97.7 tok/s on seed 41. The llama.cpp version is from the same day's entry spec, not from a spec file inside the probe directory."
+  },
+  {
+   "date": "2026-10-23",
+   "title": "Flash-Next Heretic 2 passes the coding tests and fails both one-shots",
+   "kind": "model",
+   "summary": "Test 1 scored 5 of 5 checks, 36 tests and 0 failures at 18.2 tok/s. Test 2 built, initialized, exposed 7 tools, called a tool, and passed 34 tests with 0 failures. Three test-4 tickets passed, with 4, 13 and 11 hidden checks. The orrery one-shot scored 0 of 10 because the SVG did not parse. The pagoda one-shot scored 0 of 10 because every sealed frame was only the clear color.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Test 1 checks",
+     "before": null,
+     "after": 5,
+     "unit": "of 5"
+    },
+    {
+     "label": "Test 2 tests passed",
+     "before": null,
+     "after": 34,
+     "unit": "tests"
+    },
+    {
+     "label": "Orrery score",
+     "before": null,
+     "after": 0,
+     "unit": "of 10"
+    },
+    {
+     "label": "Pagoda score",
+     "before": null,
+     "after": 0,
+     "unit": "of 10"
+    }
+   ],
+   "quality": "Code tests passed. One-shots did not render a usable scene.",
+   "caveat": "One run each. The trust-variant test 2 exposed 4 tools and passed 28 tests; that is a different case, not a failure of the 7-tool run."
+  },
+  {
+   "date": "2026-10-23",
+   "title": "Ornith 122B and Defiance pass tests 1 and 2",
+   "kind": "model",
+   "summary": "Ornith UD-Q4_K_XL scored 5 of 5 CLI checks and 48 tests at 13.4 tok/s, then a 7-tool server with 43 tests and 0 failures at 12.9 tok/s. Defiance IQ4_XS at 196608 context scored 5 of 5 checks and 82 tests at 32.5 tok/s, then 7 tools, 46 tests and 0 failures at 22.6 tok/s.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Ornith test 1 decode",
+     "before": null,
+     "after": 13.4,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Ornith test 2 tests passed",
+     "before": null,
+     "after": 43,
+     "unit": "tests"
+    },
+    {
+     "label": "Defiance test 1 decode",
+     "before": null,
+     "after": 32.5,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Defiance test 2 tests passed",
+     "before": null,
+     "after": 46,
+     "unit": "tests"
+    }
+   ],
+   "quality": "Both protocol suites passed. No new one-shot grade for either model in this window.",
+   "caveat": "One run each. Ornith has no spec snapshot, so context and KV are unknown. Defiance one-shots finished later and are not graded."
+  },
+  {
+   "date": "2026-10-23",
+   "title": "Orca uncensored passes test 4; its trust tests did not compile",
+   "kind": "model",
+   "summary": "Test 1 scored 5 of 5 checks and 41 tests. The plain test 2 built, initialized, exposed 9 tools and passed 42 tests. Three test-4 tickets passed (4, 13 and 11 hidden checks). The trust run also built, initialized and called tools (9 tools), but cargo test exited 101 while compiling. The parsed 0 and 0 counts are not a suite pass.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Test 1 tests passed",
+     "before": null,
+     "after": 41,
+     "unit": "tests"
+    },
+    {
+     "label": "Plain test 2 tests passed",
+     "before": null,
+     "after": 42,
+     "unit": "tests"
+    },
+    {
+     "label": "Trust-run cargo test exit",
+     "before": null,
+     "after": 101,
+     "unit": "exit code"
+    }
+   ],
+   "quality": "Coding tickets passed. Trust-run test quality is incomplete, not a pass.",
+   "caveat": "The plain test-2 grade is in the prerequisite regrade file, not the main grade table. Test 3 for this model is not in the canonical grade table."
+  },
+  {
+   "date": "2026-10-23",
+   "title": "Heretic 2 judges a known-good server right and its own server wrong",
+   "kind": "test",
+   "summary": "On the known-good server, MCP and REST were both 14 of 14 and the judgement was right (rubric 12). On its own server, REST was 14 of 14 and MCP 13 of 14. The fixed server builds, initializes, exposes 7 tools and passes 34 tests, but the missing fact is temperature and the final judgement is wrong (rubric 9).",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Known-good rubric",
+     "before": null,
+     "after": 12,
+     "unit": "of 12"
+    },
+    {
+     "label": "Own-server rubric",
+     "before": null,
+     "after": 9,
+     "unit": "of 12"
+    },
+    {
+     "label": "Own-server MCP facts",
+     "before": null,
+     "after": 13,
+     "unit": "of 14"
+    }
+   ],
+   "quality": "Fact match was high. The own-server trust decision was wrong.",
+   "caveat": "One run of each flavor. Minutes use the run duration without model-load time."
   }
  ],
  "amend": [
   {
    "date": "2026-10-22",
-   "title": "An expert cache doubles Flash-Next on one 3090",
-   "note": "The 13 to 24 tok/s for orca is the best arm of the sweep. With the shipped config the streamed figure is about 19 tok/s (25 to 37 raw).",
+   "title": "An expert cache makes Flash-Next 1.5x faster on one 3090",
+   "note": "Raw decode with short outputs is higher (25-37 tok/s on orca).",
    "extra_metrics": [
     {
      "label": "Decode, heretic2 (streamed)",
@@ -1328,7 +2162,5 @@
    ],
    "note": "Later changes are not visible in the files read."
   }
- },
- "schema": "history/1",
- "generated_from": "private bake-off tree, 2026-10-07 to 2026-10-22"
+ }
 }

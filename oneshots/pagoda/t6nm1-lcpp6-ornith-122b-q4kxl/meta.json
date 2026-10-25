@@ -1,0 +1,48 @@
+{
+ "case": "t6nm1-lcpp6-ornith-122b-q4kxl",
+ "finish_reason": "stop",
+ "first_token_s": 90.2,
+ "max_tokens": 258048,
+ "model": "lcpp6-ornith-122b-q4kxl",
+ "reasoning_chars": 1729,
+ "reply_chars": 16404,
+ "started": "2026-10-20T21:52:57-0500",
+ "static": {
+  "html_found": true,
+  "bytes": 16393,
+  "complete": true,
+  "three_module": true,
+  "importmap": true,
+  "umd_three": false,
+  "external_urls": [
+   "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+   "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+  ],
+  "boxes": 2,
+  "instanced": false,
+  "prose_chars_outside_html": 11
+ },
+ "status": "ok",
+ "test": "test6-pagoda",
+ "timings": {
+  "cache_n": 0,
+  "prompt_n": 154,
+  "prompt_ms": 2178.123,
+  "prompt_per_token_ms": 14.143655844155845,
+  "prompt_per_second": 70.70307783352915,
+  "predicted_n": 6653,
+  "predicted_ms": 432826.366,
+  "predicted_per_token_ms": 65.06710252555622,
+  "predicted_per_second": 15.368749509127639
+ },
+ "tok_s": 15.4,
+ "usage": {
+  "completion_tokens": 6653,
+  "prompt_tokens": 154,
+  "total_tokens": 6807,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  }
+ },
+ "wall_s": 523.0
+}

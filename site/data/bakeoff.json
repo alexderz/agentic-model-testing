@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-10-15 14:36 CDT",
- "built": "2026-10-22 19:48 CDT",
+ "generated": "2026-10-25 11:07 CDT",
+ "built": "2026-10-25 11:25 CDT",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -102,16 +102,197 @@
  ],
  "findings": [
   {
+   "date": "2026-10-24",
+   "title": "GPU unlock raises long-prompt prefill by 43%",
+   "kind": "engine",
+   "summary": "On Titan, vLLM Qwen3.8-27B was measured with GPU unlock off, then on, then on again. A 140826-token prompt prefilled at 736 tok/s off. Unlock rounds were 1053 and 1056 tok/s on seed 41, and 1053 and 1055 tok/s on seed 42. The probe summary calls that a 43.3% and 43.2% gain. Short code decode moved from 126.4 to 127.9 and 127.5 tok/s. The same check on llama.cpp 0.7 with Tiel left short code decode at 149.1, 148.6 and 148.8 tok/s.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "vLLM prefill, 140826 tokens, seed 41",
+     "before": 736,
+     "after": 1053,
+     "unit": "tok/s"
+    },
+    {
+     "label": "vLLM prefill, seed 41, unlock round 2",
+     "before": 736,
+     "after": 1056,
+     "unit": "tok/s"
+    },
+    {
+     "label": "vLLM prefill, seed 42, unlock round 2",
+     "before": 736,
+     "after": 1055,
+     "unit": "tok/s"
+    },
+    {
+     "label": "vLLM decode, 400-token code prompt, round 1",
+     "before": 126.4,
+     "after": 127.9,
+     "unit": "tok/s"
+    },
+    {
+     "label": "vLLM deep decode, seed 41",
+     "before": 85.3,
+     "after": 94.5,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Tiel decode, 400-token code prompt, round 1",
+     "before": 149.1,
+     "after": 148.6,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Tiel prefill, 141004 tokens, seed 41, round 1",
+     "before": 2201,
+     "after": 2397,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "The needle check passed in every unlock phase, on and off.",
+   "caveat": "One off-round and two on-rounds, one card. Short decode barely moved. Tiel long-prompt prefill rose less (2201 to 2397 tok/s on seed 41, 1549 to 1746 on seed 42) and its deep decode stayed 97.7 tok/s on seed 41. The llama.cpp version is from the same day's entry spec, not from a spec file inside the probe directory."
+  },
+  {
+   "date": "2026-10-23",
+   "title": "Flash-Next Heretic 2 passes the coding tests and fails both one-shots",
+   "kind": "model",
+   "summary": "Test 1 scored 5 of 5 checks, 36 tests and 0 failures at 18.2 tok/s. Test 2 built, initialized, exposed 7 tools, called a tool, and passed 34 tests with 0 failures. Three test-4 tickets passed, with 4, 13 and 11 hidden checks. The orrery one-shot scored 0 of 10 because the SVG did not parse. The pagoda one-shot scored 0 of 10 because every sealed frame was only the clear color.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Test 1 checks",
+     "before": null,
+     "after": 5,
+     "unit": "of 5"
+    },
+    {
+     "label": "Test 2 tests passed",
+     "before": null,
+     "after": 34,
+     "unit": "tests"
+    },
+    {
+     "label": "Orrery score",
+     "before": null,
+     "after": 0,
+     "unit": "of 10"
+    },
+    {
+     "label": "Pagoda score",
+     "before": null,
+     "after": 0,
+     "unit": "of 10"
+    }
+   ],
+   "quality": "Code tests passed. One-shots did not render a usable scene.",
+   "caveat": "One run each. The trust-variant test 2 exposed 4 tools and passed 28 tests; that is a different case, not a failure of the 7-tool run."
+  },
+  {
+   "date": "2026-10-23",
+   "title": "Ornith 122B and Defiance pass tests 1 and 2",
+   "kind": "model",
+   "summary": "Ornith UD-Q4_K_XL scored 5 of 5 CLI checks and 48 tests at 13.4 tok/s, then a 7-tool server with 43 tests and 0 failures at 12.9 tok/s. Defiance IQ4_XS at 196608 context scored 5 of 5 checks and 82 tests at 32.5 tok/s, then 7 tools, 46 tests and 0 failures at 22.6 tok/s.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Ornith test 1 decode",
+     "before": null,
+     "after": 13.4,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Ornith test 2 tests passed",
+     "before": null,
+     "after": 43,
+     "unit": "tests"
+    },
+    {
+     "label": "Defiance test 1 decode",
+     "before": null,
+     "after": 32.5,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Defiance test 2 tests passed",
+     "before": null,
+     "after": 46,
+     "unit": "tests"
+    }
+   ],
+   "quality": "Both protocol suites passed. No new one-shot grade for either model in this window.",
+   "caveat": "One run each. Ornith has no spec snapshot, so context and KV are unknown. Defiance one-shots finished later and are not graded."
+  },
+  {
+   "date": "2026-10-23",
+   "title": "Orca uncensored passes test 4; its trust tests did not compile",
+   "kind": "model",
+   "summary": "Test 1 scored 5 of 5 checks and 41 tests. The plain test 2 built, initialized, exposed 9 tools and passed 42 tests. Three test-4 tickets passed (4, 13 and 11 hidden checks). The trust run also built, initialized and called tools (9 tools), but cargo test exited 101 while compiling. The parsed 0 and 0 counts are not a suite pass.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Test 1 tests passed",
+     "before": null,
+     "after": 41,
+     "unit": "tests"
+    },
+    {
+     "label": "Plain test 2 tests passed",
+     "before": null,
+     "after": 42,
+     "unit": "tests"
+    },
+    {
+     "label": "Trust-run cargo test exit",
+     "before": null,
+     "after": 101,
+     "unit": "exit code"
+    }
+   ],
+   "quality": "Coding tickets passed. Trust-run test quality is incomplete, not a pass.",
+   "caveat": "The plain test-2 grade is in the prerequisite regrade file, not the main grade table. Test 3 for this model is not in the canonical grade table."
+  },
+  {
+   "date": "2026-10-23",
+   "title": "Heretic 2 judges a known-good server right and its own server wrong",
+   "kind": "test",
+   "summary": "On the known-good server, MCP and REST were both 14 of 14 and the judgement was right (rubric 12). On its own server, REST was 14 of 14 and MCP 13 of 14. The fixed server builds, initializes, exposes 7 tools and passes 34 tests, but the missing fact is temperature and the final judgement is wrong (rubric 9).",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Known-good rubric",
+     "before": null,
+     "after": 12,
+     "unit": "of 12"
+    },
+    {
+     "label": "Own-server rubric",
+     "before": null,
+     "after": 9,
+     "unit": "of 12"
+    },
+    {
+     "label": "Own-server MCP facts",
+     "before": null,
+     "after": 13,
+     "unit": "of 14"
+    }
+   ],
+   "quality": "Fact match was high. The own-server trust decision was wrong.",
+   "caveat": "One run of each flavor. Minutes use the run duration without model-load time."
+  },
+  {
    "date": "2026-10-22",
-   "title": "An expert cache doubles Flash-Next on one 3090",
+   "title": "An expert cache makes Flash-Next 1.5x faster on one 3090",
    "kind": "tuning",
    "summary": "Qwen3.8 Flash-Next (125B, 6B active) does not fit in 24 GB, so llama.cpp keeps experts in system RAM. Keeping all of them there (-cmoe) and giving the GPU a cache of hot experts (--moe-cache-mib), with q8 KV to make room, beat the old split of 40 layers on CPU on every GGUF tried, at 262k context.",
    "settings": "-cmoe --moe-cache-mib 12800 -ctk q8_0 -ctv q8_0 -b 2048 -ub 1024 -t 16",
    "metrics": [
     {
-     "label": "Decode, orca IQ4_XS",
+     "label": "Decode, orca IQ4_XS (streamed, live config)",
      "before": 13,
-     "after": 24,
+     "after": 19,
      "unit": "tok/s"
     },
     {
@@ -146,7 +327,7 @@
     }
    ],
    "quality": "Against the old f16 KV config: mean KL 0.0011 and 98 % top-1 agreement over 100k tokens of real code; two loads of the same config differ by KL 0.0002. Needles found at 100k, 190k and 250k.",
-   "caveat": "Lazy tensor reads (llama.cpp's default) make the first pass over unseen text slow when the page cache is cold; -lzm off fixes it but costs about 28 GB of extra RAM. The 13 to 24 tok/s for orca is the best arm of the sweep. With the shipped config the streamed figure is about 19 tok/s (25 to 37 raw). The tqLLM control run measured the same GGUF at about 40 tok/s on short outputs; that measure is higher than the streamed one."
+   "caveat": "Lazy tensor reads (llama.cpp's default) make the first pass over unseen text slow when the page cache is cold; -lzm off fixes it but costs about 28 GB of extra RAM. Raw decode with short outputs is higher (25-37 tok/s on orca). The tqLLM control run measured the same GGUF at about 40 tok/s on short outputs; that measure is higher than the streamed one."
   },
   {
    "date": "2026-10-22",
@@ -216,7 +397,7 @@
    "date": "2026-10-22",
    "title": "tqLLM serves Flash-Next fast but not for agents",
    "kind": "engine",
-   "summary": "tqLLM 1.2.3 loaded the Flash-Next IQ3_S GGUF and decoded faster than llama.cpp on short benchmarks, but long prompts and several sessions failed.",
+   "summary": "tqLLM 1.2.3 decodes Flash-Next about 2.5x faster than llama.cpp on the same GGUF, but one prefill out-of-memory leaves every later request failing until a restart.",
    "settings": null,
    "metrics": [
     {
@@ -244,8 +425,8 @@
      "unit": "of 11"
     }
    ],
-   "quality": "Tool calls and a 30k needle passed at 32k; the 262k arm answered long prompts with HTTP 500.",
-   "caveat": "Short outputs with thinking off flatter the speed; the best 262k arm streamed 54 tok/s and passed 4 of 11 sessions. First load took 23 minutes cold."
+   "quality": "Tool calls and a 30k needle passed at 32k; at 262k with 8k prefill chunks it found a needle in 248k tokens. At 131072 context it failed on a 289-token prompt, and every later request failed until a restart.",
+   "caveat": "Short replies with thinking off; any prompt of 256+ tokens can trigger the failure. First load took 23 minutes cold."
   },
   {
    "date": "2026-10-21",
@@ -991,6 +1172,34 @@
    "title": "Expert cache, Strata 0.2.2, Flint and tqLLM",
    "what": "Flash-Next sped up on llama.cpp and Strata; a new MoE and a new engine were tried.",
    "why": "Make the 125B model usable on one card."
+  },
+  {
+   "date": "2026-10-23",
+   "era": "Models",
+   "title": "Ornith 122B and Defiance pass tests 1 and 2",
+   "what": "Ornith at 13.4 tok/s and Defiance at 32.5 tok/s both cleared the CLI checks and the Rust server tests.",
+   "why": "Do the new large and uncensored quants finish a real task?"
+  },
+  {
+   "date": "2026-10-23",
+   "era": "Flash-Next",
+   "title": "Heretic 2 passes the code tests",
+   "what": "Five CLI checks, a 7-tool server with 34 passing tests, and three maintenance tickets. Both one-shots scored 0.",
+   "why": "An abliterated Flash-Next quant had not been graded on this matrix."
+  },
+  {
+   "date": "2026-10-23",
+   "era": "Harness",
+   "title": "A trust run whose tests did not compile",
+   "what": "Orca uncensored passed test 1, plain test 2, and three test-4 tickets. Its trust run's tests failed to compile, so 0 and 0 is not a pass.",
+   "why": "A green protocol line can hide a broken test build."
+  },
+  {
+   "date": "2026-10-24",
+   "era": "Engines",
+   "title": "GPU unlock speeds long prefill",
+   "what": "On Titan, vLLM Qwen3.8-27B long-prompt prefill rose from 736 to about 1050 tok/s. Short decode stayed near 127 tok/s.",
+   "why": "Does unlocking the GPU clock help a model that already fits on the card?"
   }
  ],
  "events": [],
@@ -2481,6 +2690,38 @@
    "vision": {
     "label": "no",
     "status": "none"
+   }
+  },
+  "lcpp6-ornith-122b-q4kxl": {
+   "id": "lcpp6-ornith-122b-q4kxl",
+   "family": "Ornith 1.5",
+   "label": "Ornith 1.5 122B-A10B UD-Q4_K_XL · llama.cpp 0.7, experts partly in RAM",
+   "base": "ornith-ai/Ornith-1.5-122B",
+   "arch": "MoE 122B-A10B",
+   "engine": "llama.cpp 0.7",
+   "quant": "UD-Q4_K_XL",
+   "kind": "tune",
+   "uncensored": false,
+   "note": "MIT. Fine-tune of Qwen3.5-122B-A10B. Thinking on. An offload sweep on 2026-10-20 with 41 expert layers in RAM and 2048-token batches recorded 16.1 tok/s decode and 392.1 tok/s prefill. The agent runs above are slower; context and KV for those runs were not in a spec snapshot.",
+   "vision": {
+    "label": "not surveyed",
+    "status": null
+   }
+  },
+  "lcpp6-q38-defiance-192k-author": {
+   "id": "lcpp6-q38-defiance-192k-author",
+   "family": "Qwen3.8 27B",
+   "label": "Defiance IQ4_XS · llama.cpp 0.7, 196608 context, q8 KV, author sampler",
+   "base": "Qwen/Qwen3.8-27B",
+   "arch": "dense 27B",
+   "engine": "llama.cpp 0.7",
+   "quant": "IQ4_XS",
+   "kind": "uncensored-tune",
+   "uncensored": true,
+   "note": "Uncensored tune. Author sampler, no draft weights. This run served 196608 tokens with q8 KV.",
+   "vision": {
+    "label": "not surveyed",
+    "status": null
    }
   }
  },
@@ -7428,6 +7669,390 @@
     "loc": 9497,
     "errors_per_kloc": 0.4
    }
+  },
+  {
+   "case": "mx22-orcarouter-fn-uncensored-t1-cli-r1",
+   "model": "lcpp6-orcarouter-fn-uncensored",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 41,
+   "tests_fail": 0,
+   "subcmds": 10,
+   "tps": 19.9,
+   "minutes": 29,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-22 21:40",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 861,
+    "errors_per_kloc": 0.0
+   }
+  },
+  {
+   "case": "mx22-orcarouter-fn-uncensored-t2t-rust-mcp-r1",
+   "model": "lcpp6-orcarouter-fn-uncensored",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": null,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 13.9,
+   "minutes": 166,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "partial",
+   "finished": "2026-10-23 00:28",
+   "struggle": {
+    "compiles": 17,
+    "failed_compiles": 14,
+    "rust_errors": 60,
+    "loc": 2340,
+    "errors_per_kloc": 25.6
+   }
+  },
+  {
+   "case": "mx22-orcarouter-fn-uncensored-setupretry1-t4-bugfix-targets-r1",
+   "model": "lcpp6-orcarouter-fn-uncensored",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 4,
+   "tests_pass": 156,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 17.2,
+   "minutes": 12,
+   "compactions": 0,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 00:41",
+   "struggle": {
+    "compiles": 5,
+    "failed_compiles": 2,
+    "rust_errors": 2,
+    "loc": 9483,
+    "errors_per_kloc": 0.3
+   }
+  },
+  {
+   "case": "mx22-orcarouter-fn-uncensored-setupretry1-t4-config-timeouts-r1",
+   "model": "lcpp6-orcarouter-fn-uncensored",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 13,
+   "tests_pass": 170,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 17.4,
+   "minutes": 28,
+   "compactions": 0,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 01:10",
+   "struggle": {
+    "compiles": 9,
+    "failed_compiles": 5,
+    "rust_errors": 9,
+    "loc": 9888,
+    "errors_per_kloc": 0.9
+   }
+  },
+  {
+   "case": "mx22-orcarouter-fn-uncensored-setupretry1-t4-feature-filter-r1",
+   "model": "lcpp6-orcarouter-fn-uncensored",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 11,
+   "tests_pass": 159,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 14.9,
+   "minutes": 12,
+   "compactions": 0,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 01:23",
+   "struggle": {
+    "compiles": 2,
+    "failed_compiles": 1,
+    "rust_errors": 1,
+    "loc": 9613,
+    "errors_per_kloc": 0.1
+   }
+  },
+  {
+   "case": "mx22-flashnext-heretic2-t1-cli-r1",
+   "model": "lcpp6-flashnext-heretic2",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 36,
+   "tests_fail": 0,
+   "subcmds": 11,
+   "tps": 18.2,
+   "minutes": 86,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 02:52",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 1436,
+    "errors_per_kloc": 0.7
+   }
+  },
+  {
+   "case": "mx22-flashnext-heretic2-t2-rust-mcp-r1",
+   "model": "lcpp6-flashnext-heretic2",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 34,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 17.1,
+   "minutes": 91,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 04:28",
+   "struggle": {
+    "compiles": 23,
+    "failed_compiles": 9,
+    "rust_errors": 33,
+    "loc": 1752,
+    "errors_per_kloc": 18.8
+   }
+  },
+  {
+   "case": "mx22-flashnext-heretic2-t4-bugfix-targets-r1",
+   "model": "lcpp6-flashnext-heretic2",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 4,
+   "tests_pass": 156,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 13.9,
+   "minutes": 10,
+   "compactions": 0,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 05:27",
+   "struggle": {
+    "compiles": 4,
+    "failed_compiles": 1,
+    "rust_errors": 1,
+    "loc": 9440,
+    "errors_per_kloc": 0.1
+   }
+  },
+  {
+   "case": "mx22-flashnext-heretic2-t4-config-timeouts-r1",
+   "model": "lcpp6-flashnext-heretic2",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 13,
+   "tests_pass": 166,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 17.2,
+   "minutes": 32,
+   "compactions": 0,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 06:00",
+   "struggle": {
+    "compiles": 3,
+    "failed_compiles": 1,
+    "rust_errors": 1,
+    "loc": 9748,
+    "errors_per_kloc": 0.1
+   }
+  },
+  {
+   "case": "mx22-flashnext-heretic2-t4-feature-filter-r1",
+   "model": "lcpp6-flashnext-heretic2",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 11,
+   "tests_pass": 159,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 12.0,
+   "minutes": 15,
+   "compactions": 0,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 06:15",
+   "struggle": {
+    "compiles": 3,
+    "failed_compiles": 1,
+    "rust_errors": 1,
+    "loc": 9535,
+    "errors_per_kloc": 0.1
+   }
+  },
+  {
+   "case": "mx22-flashnext-heretic2-t2t-rust-mcp-r1",
+   "model": "lcpp6-flashnext-heretic2",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 28,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 19.8,
+   "minutes": 51,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 07:10",
+   "struggle": {
+    "compiles": 13,
+    "failed_compiles": 4,
+    "rust_errors": 10,
+    "loc": 1818,
+    "errors_per_kloc": 5.5
+   }
+  },
+  {
+   "case": "mx22-orcarouter-fn-uncensored-t2setupretry1-t2-rust-mcp-r1",
+   "model": "lcpp6-orcarouter-fn-uncensored",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 42,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 14.1,
+   "minutes": 152,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 09:44",
+   "struggle": {
+    "compiles": 44,
+    "failed_compiles": 20,
+    "rust_errors": 53,
+    "loc": 3337,
+    "errors_per_kloc": 15.9
+   }
+  },
+  {
+   "case": "mx22-ornith-122b-q4kxl-t1-cli-r1",
+   "model": "lcpp6-ornith-122b-q4kxl",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 48,
+   "tests_fail": 0,
+   "subcmds": 9,
+   "tps": 13.4,
+   "minutes": 90,
+   "compactions": null,
+   "ctx": null,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-10-23 13:49",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 1502,
+    "errors_per_kloc": 0.0
+   }
+  },
+  {
+   "case": "mx22-ornith-122b-q4kxl-t2-rust-mcp-r1",
+   "model": "lcpp6-ornith-122b-q4kxl",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 43,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 12.9,
+   "minutes": 82,
+   "compactions": null,
+   "ctx": null,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-10-23 18:18",
+   "struggle": {
+    "compiles": 14,
+    "failed_compiles": 6,
+    "rust_errors": 12,
+    "loc": 1648,
+    "errors_per_kloc": 7.3
+   }
+  },
+  {
+   "case": "mx22-q38-defiance-192k-author-t1-cli-r1",
+   "model": "lcpp6-q38-defiance-192k-author",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 82,
+   "tests_fail": 0,
+   "subcmds": 13,
+   "tps": 32.5,
+   "minutes": 34,
+   "compactions": null,
+   "ctx": 196608,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 18:53",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 1944,
+    "errors_per_kloc": 0.0
+   }
+  },
+  {
+   "case": "mx22-q38-defiance-192k-author-t2-rust-mcp-r1",
+   "model": "lcpp6-q38-defiance-192k-author",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 46,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 22.6,
+   "minutes": 65,
+   "compactions": null,
+   "ctx": 196608,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 23:00",
+   "struggle": {
+    "compiles": 27,
+    "failed_compiles": 6,
+    "rust_errors": 15,
+    "loc": 2415,
+    "errors_per_kloc": 6.6
+   }
   }
  ],
  "test3": [
@@ -8093,6 +8718,32 @@
    "tps": 7.1,
    "minutes": 9,
    "finished": "2026-10-17 20:13"
+  },
+  {
+   "case": "mx22-flashnext-heretic2-setupretry1-t3g-known-good-mcp-r1",
+   "model": "lcpp6-flashnext-heretic2",
+   "flavor": "3G",
+   "mcp_facts": "14/14",
+   "api_facts": "14/14",
+   "judgement_right": true,
+   "rubric": 12,
+   "note": "Known-good server. One probe, 12 calls. REST and MCP both 14 of 14. It left the server unchanged and the judgement is right. Rubric 12.",
+   "tps": 9.5,
+   "minutes": 15,
+   "finished": "2026-10-23 11:39"
+  },
+  {
+   "case": "mx22-flashnext-heretic2-setupretry1-t3o-own-mcp-r1",
+   "model": "lcpp6-flashnext-heretic2",
+   "flavor": "3O",
+   "mcp_facts": "13/14",
+   "api_facts": "14/14",
+   "judgement_right": false,
+   "rubric": 9,
+   "note": "Own server. MCP 13 of 14, REST 14 of 14. The fixed server builds, initializes, exposes 7 tools and passes 34 tests, but temperature was still missed and the final judgement is wrong. Rubric 9.",
+   "tps": 11.8,
+   "minutes": 32,
+   "finished": "2026-10-23 12:11"
   }
  ],
  "ab": [
@@ -8455,6 +9106,1911 @@
    "prefill": 2539.8,
    "vram": 23862,
    "error": ""
+  },
+  {
+   "model": "qwen3.8-27b-vllm",
+   "engine": "vLLM (HyperQwen)",
+   "variant": "Titan, GPU unlock off, 400-token code prompt",
+   "decode": 126.4,
+   "quote": null,
+   "prefill": null,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "qwen3.8-27b-vllm",
+   "engine": "vLLM (HyperQwen)",
+   "variant": "Titan, GPU unlock off, 140826-token prompt, seed 41",
+   "decode": 85.3,
+   "quote": null,
+   "prefill": 736,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "qwen3.8-27b-vllm",
+   "engine": "vLLM (HyperQwen)",
+   "variant": "Titan, GPU unlock off, 140826-token prompt, seed 42",
+   "decode": 79.1,
+   "quote": null,
+   "prefill": 736,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "qwen3.8-27b-vllm",
+   "engine": "vLLM (HyperQwen)",
+   "variant": "Titan, GPU unlock on, round 1, 400-token code prompt",
+   "decode": 127.9,
+   "quote": null,
+   "prefill": null,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "qwen3.8-27b-vllm",
+   "engine": "vLLM (HyperQwen)",
+   "variant": "Titan, GPU unlock on, round 1, 140826-token prompt, seed 41",
+   "decode": 94.5,
+   "quote": null,
+   "prefill": 1053,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "qwen3.8-27b-vllm",
+   "engine": "vLLM (HyperQwen)",
+   "variant": "Titan, GPU unlock on, round 1, 140826-token prompt, seed 42",
+   "decode": 87.9,
+   "quote": null,
+   "prefill": 1053,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "qwen3.8-27b-vllm",
+   "engine": "vLLM (HyperQwen)",
+   "variant": "Titan, GPU unlock on, round 2, 400-token code prompt",
+   "decode": 127.5,
+   "quote": null,
+   "prefill": null,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "qwen3.8-27b-vllm",
+   "engine": "vLLM (HyperQwen)",
+   "variant": "Titan, GPU unlock on, round 2, 140826-token prompt, seed 41",
+   "decode": 94.4,
+   "quote": null,
+   "prefill": 1056,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "qwen3.8-27b-vllm",
+   "engine": "vLLM (HyperQwen)",
+   "variant": "Titan, GPU unlock on, round 2, 140826-token prompt, seed 42",
+   "decode": 87.7,
+   "quote": null,
+   "prefill": 1055,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "lcpp6-tiel-coder-35b-t06",
+   "engine": "llama.cpp 0.7",
+   "variant": "Titan, GPU unlock off, 400-token code prompt",
+   "decode": 149.1,
+   "quote": null,
+   "prefill": null,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "lcpp6-tiel-coder-35b-t06",
+   "engine": "llama.cpp 0.7",
+   "variant": "Titan, GPU unlock off, 141004-token prompt, seed 41",
+   "decode": 97.7,
+   "quote": null,
+   "prefill": 2201,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "lcpp6-tiel-coder-35b-t06",
+   "engine": "llama.cpp 0.7",
+   "variant": "Titan, GPU unlock off, 141004-token prompt, seed 42",
+   "decode": 97.6,
+   "quote": null,
+   "prefill": 1549,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "lcpp6-tiel-coder-35b-t06",
+   "engine": "llama.cpp 0.7",
+   "variant": "Titan, GPU unlock on, round 1, 400-token code prompt",
+   "decode": 148.6,
+   "quote": null,
+   "prefill": null,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "lcpp6-tiel-coder-35b-t06",
+   "engine": "llama.cpp 0.7",
+   "variant": "Titan, GPU unlock on, round 1, 141004-token prompt, seed 41",
+   "decode": 97.7,
+   "quote": null,
+   "prefill": 2397,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "lcpp6-tiel-coder-35b-t06",
+   "engine": "llama.cpp 0.7",
+   "variant": "Titan, GPU unlock on, round 1, 141004-token prompt, seed 42",
+   "decode": 97.9,
+   "quote": null,
+   "prefill": 1746,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "lcpp6-tiel-coder-35b-t06",
+   "engine": "llama.cpp 0.7",
+   "variant": "Titan, GPU unlock on, round 2, 400-token code prompt",
+   "decode": 148.8,
+   "quote": null,
+   "prefill": null,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "lcpp6-tiel-coder-35b-t06",
+   "engine": "llama.cpp 0.7",
+   "variant": "Titan, GPU unlock on, round 2, 141004-token prompt, seed 41",
+   "decode": 97.7,
+   "quote": null,
+   "prefill": 2396,
+   "vram": null,
+   "error": ""
+  },
+  {
+   "model": "lcpp6-tiel-coder-35b-t06",
+   "engine": "llama.cpp 0.7",
+   "variant": "Titan, GPU unlock on, round 2, 141004-token prompt, seed 42",
+   "decode": 97.5,
+   "quote": null,
+   "prefill": 1745,
+   "vram": null,
+   "error": ""
+  }
+ ],
+ "engines": [
+  {
+   "id": "llama-cpp",
+   "name": "llama.cpp",
+   "kind": "GGUF server; dense models and MoE with experts in RAM",
+   "versions": [
+    {
+     "version": "0.4.1-dev (commit 4260903)",
+     "date": "2026-09-23 to 2026-10-18",
+     "note": "Bundled build used by the native entries; Flash-Next with experts in RAM: 2.2 tok/s on the probe; long agent runs on it ran out of time."
+    },
+    {
+     "version": "0.6.0 (official image, build 11429)",
+     "date": "2026-10-05",
+     "note": "2.5-4x faster than 0.4 on Flash-Next with experts in RAM; MTP and n-gram drafting fixes."
+    },
+    {
+     "version": "0.7.0",
+     "date": "2026-10-18",
+     "note": "Released 2026-10-15. Adds a GPU cache for experts kept in RAM (--moe-cache-mib); in the router since 2026-10-18."
+    },
+    {
+     "version": "Newer official builds",
+     "date": "2026-10-21",
+     "note": "Flint needs b11803 or later; Carbon-X needs b11742 or later; trials ran by hand, not in the router."
+    }
+   ],
+   "good_at": "Any GGUF, including MoE models with experts in system RAM",
+   "watch_out": "Check the build supports the model's architecture before reading any result",
+   "multi_session": {
+    "ok": true,
+    "note": "11 of 11 probe checks on Flash-Next entries"
+   },
+   "speeds": [
+    {
+     "model": "Tiel Coder 35B IQ4_XS",
+     "config": "0.7.0, all on GPU",
+     "decode": 151,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "262k",
+     "date": "2026-10-18"
+    },
+    {
+     "model": "Flint 40B-A2.5B Q3_K_XL",
+     "config": "newer build, all on GPU, q8 KV, short prompt",
+     "decode": 129,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "262k",
+     "date": "2026-10-22"
+    },
+    {
+     "model": "Flint 40B-A2.5B Q3_K_XL",
+     "config": "newer build, all on GPU, q8 KV, 11.7k depth",
+     "decode": 106,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "262k",
+     "date": "2026-10-22"
+    },
+    {
+     "model": "Flint Q4_K_XL",
+     "config": "10 expert layers in RAM",
+     "decode": 95,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "150k",
+     "date": "2026-10"
+    },
+    {
+     "model": "Flint Q4_K_XL",
+     "config": "15 expert layers in RAM; prefill of an 11.7k prompt",
+     "decode": 81.4,
+     "prefill": 2208,
+     "unit": "tok/s",
+     "context": null,
+     "date": "2026-10-22"
+    },
+    {
+     "model": "Flint Q4_K_XL",
+     "config": "19 expert layers in RAM",
+     "decode": 73.1,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": null,
+     "date": "2026-10-22"
+    },
+    {
+     "model": "Flint Q4_K_XL",
+     "config": "24 expert layers in RAM; prefill of an 11.7k prompt",
+     "decode": 64.2,
+     "prefill": 1624,
+     "unit": "tok/s",
+     "context": "262k",
+     "date": "2026-10-22"
+    },
+    {
+     "model": "Ornith-1.5-122B UD-Q4_K_XL",
+     "config": "40 expert layers on CPU",
+     "decode": 16.3,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": null,
+     "date": "2026-10-20"
+    },
+    {
+     "model": "Carbon-X 14.8B Q8_0",
+     "config": "all on GPU",
+     "decode": 52,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "40k",
+     "date": "2026-10-22"
+    },
+    {
+     "model": "Qwen3.8-27B",
+     "config": "MTP drafting, all on GPU, code",
+     "decode": 93,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": null,
+     "date": "2026-10-13"
+    },
+    {
+     "model": "Qwen3.8-27B",
+     "config": "DFlash2 drafter (GGUF), code; 47 % of drafts accepted",
+     "decode": 95,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": null,
+     "date": "2026-10-13"
+    },
+    {
+     "model": "Qwen3.8-27B",
+     "config": "DFlash2 drafter (GGUF), prose",
+     "decode": 43,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": null,
+     "date": "2026-10-13"
+    },
+    {
+     "model": "Qwen3.8-27B",
+     "config": "DFlash2 drafter (GGUF), structured output",
+     "decode": 108,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": null,
+     "date": "2026-10-13"
+    },
+    {
+     "model": "Flash-Next Orcarouter IQ4_XS",
+     "config": "0.7.0, -cmoe, cache 12800 MiB, q8 KV, streamed (about)",
+     "decode": 19,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "262k",
+     "date": "2026-10-22"
+    },
+    {
+     "model": "Flash-Next Heretic2 IQ4XS-NGQ4",
+     "config": "0.7.0, -cmoe, cache 12800 MiB, q8 KV, streamed (about)",
+     "decode": 18,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "262k",
+     "date": "2026-10-22"
+    },
+    {
+     "model": "Flash-Next Abliterated s1.5 IQ4_XS",
+     "config": "0.7.0, -cmoe, cache 13824 MiB, q8 KV, streamed",
+     "decode": "19-21",
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "262k",
+     "date": "2026-10-22"
+    },
+    {
+     "model": "Flash-Next Swift 1.5 IQ3_XXS (pruned)",
+     "config": "0.7.0, -cmoe, cache 9216 MiB, q8 KV, streamed",
+     "decode": "23-26",
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "262k",
+     "date": "2026-10-22"
+    },
+    {
+     "model": "Flash-Next unpruned IQ3_S",
+     "config": "0.7.0, -cmoe, cache 9216 MiB, q8 KV, streamed",
+     "decode": "21-23",
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "262k",
+     "date": "2026-10-22"
+    },
+    {
+     "model": "Flash-Next GGUFs (fresh loads)",
+     "config": "0.7.0 expert cache; prefill about 250 before",
+     "decode": null,
+     "prefill": "415-427",
+     "unit": "tok/s",
+     "context": "16k and 48k",
+     "date": "2026-10-22"
+    },
+    {
+     "model": "Flash-Next unpruned IQ3_S",
+     "config": "0.7.0, raw short outputs, thinking off, code; prose 41.3, structured 41.0",
+     "decode": 40.3,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "32k",
+     "date": "2026-10-22"
+    },
+    {
+     "model": "Qwen3.8-Flash-Next",
+     "config": "0.4.1-dev, experts in RAM, short probe",
+     "decode": 2.2,
+     "prefill": 136,
+     "unit": "tok/s",
+     "context": "49k",
+     "date": "2026-10-05"
+    },
+    {
+     "model": "Qwen3.8-Flash-Next",
+     "config": "0.6, experts in RAM, short probe",
+     "decode": 8.9,
+     "prefill": 569,
+     "unit": "tok/s",
+     "context": "49k",
+     "date": "2026-10-05"
+    },
+    {
+     "model": "Orcarouter Flash-Next Uncensored",
+     "config": "0.4.1-dev, experts in RAM, short probe",
+     "decode": 5.3,
+     "prefill": 295,
+     "unit": "tok/s",
+     "context": "49k",
+     "date": "2026-10-05"
+    },
+    {
+     "model": "Orcarouter Flash-Next Uncensored",
+     "config": "0.6, experts in RAM, short probe",
+     "decode": 13.1,
+     "prefill": 486,
+     "unit": "tok/s",
+     "context": "49k",
+     "date": "2026-10-05"
+    },
+    {
+     "model": "Qwen3.8-27B Cyber",
+     "config": "0.6, all on GPU, no drafting",
+     "decode": 45.1,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "49k",
+     "date": "2026-10-05"
+    },
+    {
+     "model": "Qwen3.8-27B Cyber",
+     "config": "0.6, all on GPU, with MTP",
+     "decode": 82.2,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "49k",
+     "date": "2026-10-05"
+    },
+    {
+     "model": "OrcaSAQ-2-Cyber-27B",
+     "config": "0.6, all on GPU, no drafting",
+     "decode": 83.2,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "49k",
+     "date": "2026-10-05"
+    },
+    {
+     "model": "OrcaSAQ-2-Cyber-27B",
+     "config": "0.6, n-gram drafts, copy-heavy output",
+     "decode": 412,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "49k",
+     "date": "2026-10-05"
+    },
+    {
+     "model": "Cyber-Tiel-Coder-35B",
+     "config": "0.6, 20 expert layers in RAM, short probe",
+     "decode": 50.5,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "49k",
+     "date": "2026-10-05"
+    }
+   ],
+   "bugs": [
+    {
+     "text": "0.4.1-dev ran Flash-Next with experts in RAM 2.5-4x slower than 0.6",
+     "status": "fixed",
+     "date": "2026-10-05"
+    },
+    {
+     "text": "0.6: automatic -fit aborts when -ngl is set by hand",
+     "status": "worked around",
+     "date": null
+    },
+    {
+     "text": "0.6: offloaded models stall on the first request without -lm none",
+     "status": "worked around",
+     "date": "2026-09-30"
+    },
+    {
+     "text": "0.7.0: OrcaSAQ-2 with DFlash2 drafts failed every request on 580 MiB buffer",
+     "status": "worked around",
+     "date": "2026-10-18"
+    },
+    {
+     "text": "Qwen3.8-27B Cyber on 0.7.0: empty 32,000-token replies once, unrepeated",
+     "status": "open",
+     "date": null
+    },
+    {
+     "text": "Lazy tensor reads slow the first pass over unseen text when cache is cold",
+     "status": "open",
+     "date": null
+    },
+    {
+     "text": "Newer-architecture GGUFs load on older builds, then fail or tokenize wrongly",
+     "status": "worked around",
+     "date": "2026-10-21"
+    }
+   ],
+   "doc": "https://github.com/alexderz/agentic-model-testing/blob/main/docs/model-research/engines.md#llamacpp"
+  },
+  {
+   "id": "vllm",
+   "name": "vLLM (HyperQwen)",
+   "kind": "dense model server with prefix caching",
+   "versions": [
+    {
+     "version": "HyperQwen 0.30",
+     "date": null,
+     "note": "In use; 2-4x faster than llama.cpp over whole agent runs on Qwen3.8-27B."
+    },
+    {
+     "version": "0.31",
+     "date": "2026-10-14",
+     "note": "Same speed rounds, slightly slower deep (79.5 against 84.5 tok/s at 141k); not adopted."
+    },
+    {
+     "version": "0.32",
+     "date": null,
+     "note": "Image built and staged; not in use."
+    }
+   ],
+   "good_at": "Dense models on the GPU; long agent runs with prefix caching",
+   "watch_out": "Needs per-request thinking budget; images only with VISION=1",
+   "multi_session": {
+    "ok": true,
+    "note": "Main agent plus sub-agents ran cleanly, tests 3 and 8"
+   },
+   "speeds": [
+    {
+     "model": "Qwen3.8-27B",
+     "config": "MTP drafts, FP8 KV, average over a run (about)",
+     "decode": 70,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "150k",
+     "date": null
+    },
+    {
+     "model": "Qwen3.8-27B",
+     "config": "MTP drafts, FP8 KV, short code",
+     "decode": 127,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "150k",
+     "date": null
+    },
+    {
+     "model": "Qwen3.8-27B",
+     "config": "MTP drafts, FP8 KV, 141k of history",
+     "decode": 85,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "141k history",
+     "date": null
+    },
+    {
+     "model": "Qwen3.8-27B",
+     "config": "DFlash2 drafts, 4/2-bit KV, about half the speed under load",
+     "decode": null,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "240k",
+     "date": null
+    },
+    {
+     "model": "Qwen3.8-27B",
+     "config": "DFlash2 drafts (about)",
+     "decode": 97,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "64k",
+     "date": "2026-10-06"
+    },
+    {
+     "model": "Qwen3.8-27B",
+     "config": "DFlash2 15-token drafts (about)",
+     "decode": 95,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "57k",
+     "date": "2026-10-06"
+    }
+   ],
+   "bugs": [
+    {
+     "text": "With thinking on, Qwen3.8-27B finished no one-shot pagoda in seven tries",
+     "status": "open",
+     "date": "2026-10-14"
+    },
+    {
+     "text": "Gemma 4 26B's server passed the grader; a real client could not connect",
+     "status": "open",
+     "date": "2026-10-10"
+    },
+    {
+     "text": "DFlash2 15-token drafts at 57k: one test compacted 55 times",
+     "status": "worked around",
+     "date": "2026-10-06"
+    },
+    {
+     "text": "DFlash2 at 64k: agent compacts constantly; one test overflowed the context",
+     "status": "worked around",
+     "date": "2026-10-06"
+    }
+   ],
+   "doc": "https://github.com/alexderz/agentic-model-testing/blob/main/docs/model-research/engines.md#vllm"
+  },
+  {
+   "id": "sglang",
+   "name": "SGLang (EXL3)",
+   "kind": "MoE server with GPU expert cache, EXL3 weights",
+   "versions": [
+    {
+     "version": "Original fork build",
+     "date": "2026-10-01 to 2026-10-04",
+     "note": "200k, fp8 KV; built the best test-2 server of all runs: 12 tools, 155 tests, 124 minutes."
+    },
+    {
+     "version": "Newer fork build (phase D)",
+     "date": "2026-10-11",
+     "note": "11 of 11 multi-session checks; test 2 cut off and never graded; dropped 2026-10-21."
+    },
+    {
+     "version": "Three stock builds",
+     "date": "2026-10-21",
+     "note": "204,800 context, two slots, EXL3 3.05 bpw, 20.8-21.4 GB, load 252-262 s; needles at 100k, 150k, 190k passed on two of three builds (8-bit KV build not run)."
+    }
+   ],
+   "good_at": "Most capable Flash-Next setup tested: images, 200k window",
+   "watch_out": "Slower than the 27B stacks; no agent test rerun on stock builds",
+   "multi_session": {
+    "ok": true,
+    "note": "Stock builds: 11 of 11 checks, two slots"
+   },
+   "speeds": [
+    {
+     "model": "Qwen3.8-Flash-Next (EXL3 3.05 bpw)",
+     "config": "original fork build, fp8 KV, average over the test-2 run",
+     "decode": 36,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "200k",
+     "date": "2026-10-04"
+    },
+    {
+     "model": "Qwen3.8-Flash-Next (EXL3 3.05 bpw)",
+     "config": "original fork build, test 1",
+     "decode": 44.3,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "200k",
+     "date": "2026-10-04"
+    },
+    {
+     "model": "Qwen3.8-Flash-Next (EXL3 3.05 bpw)",
+     "config": "newer fork build, test 1, earlier settings",
+     "decode": 25.3,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": null,
+     "date": "2026-10-11"
+    },
+    {
+     "model": "Qwen3.8-Flash-Next (EXL3 3.05 bpw)",
+     "config": "stock build 1, two slots, prefill at 190k",
+     "decode": 24.1,
+     "prefill": 2600,
+     "unit": "tok/s",
+     "context": "204,800",
+     "date": "2026-10-21"
+    },
+    {
+     "model": "Qwen3.8-Flash-Next (EXL3 3.05 bpw)",
+     "config": "stock build 2, two slots, prefill at 190k",
+     "decode": 24.6,
+     "prefill": 2600,
+     "unit": "tok/s",
+     "context": "204,800",
+     "date": "2026-10-21"
+    },
+    {
+     "model": "Qwen3.8-Flash-Next (EXL3 3.05 bpw)",
+     "config": "stock build 3, two slots, prefill at 190k",
+     "decode": 25.1,
+     "prefill": 2600,
+     "unit": "tok/s",
+     "context": "204,800",
+     "date": "2026-10-21"
+    }
+   ],
+   "bugs": [
+    {
+     "text": "Original build served one session at a time and crashed under several",
+     "status": "fixed",
+     "date": "2026-10-03"
+    },
+    {
+     "text": "A test-3 run on the original build needed Strata instead",
+     "status": "worked around",
+     "date": null
+    }
+   ],
+   "doc": "https://github.com/alexderz/agentic-model-testing/blob/main/docs/model-research/engines.md#sglang"
+  },
+  {
+   "id": "strata",
+   "name": "Strata",
+   "kind": "MoE server with hot-expert VRAM cache and built-in MTP",
+   "versions": [
+    {
+     "version": "0.1.39 / 0.1.40.3",
+     "date": "2026-10-04 to 2026-10-09",
+     "note": "30-45 tok/s decode, 21-30 over a whole run; test 2 full passes with Flash-Next and Swift 1.5."
+    },
+    {
+     "version": "0.1.42",
+     "date": "2026-10-10 to 2026-10-12",
+     "note": "Release defaults slower; the old PCIe share doubled long-answer decode."
+    },
+    {
+     "version": "0.1.44.1",
+     "date": "2026-10-15",
+     "note": "Load 60 s against 214 s; decode 44.9 against 18.3 on 0.1.42 (mean of two rounds: cold 13.1, warm 23.5)."
+    },
+    {
+     "version": "0.1.45",
+     "date": "2026-10-20",
+     "note": "IQ3_S with MTP, code prompt: 29.4 tok/s."
+    },
+    {
+     "version": "0.2.0-beta",
+     "date": "2026-10-20",
+     "note": "Gyro-S with MTP: test 2 full pass in 24 minutes, 89.8 tok/s over the run; agent pagoda 9 of 10."
+    },
+    {
+     "version": "0.2.2",
+     "date": "2026-10-22",
+     "note": "Gyro-S: code 121.6 to 144.1 tok/s on the same-day control, load 23 s; no agent run yet."
+    }
+   ],
+   "good_at": "Fastest Flash-Next decode measured; made 1-bit-class Gyro-S usable",
+   "watch_out": "0.2 is beta; warm up before timing; set reasoning budget",
+   "multi_session": {
+    "ok": true,
+    "note": "Works with parallel 2 and --batch-mtp; Gyro build unprobed"
+   },
+   "speeds": [
+    {
+     "model": "Qwen3.8-Flash-Next (GSQ-RCO quants)",
+     "config": "0.1.39 / 0.1.40.3, decode; 21-30 over a whole run",
+     "decode": "30-45",
+     "prefill": null,
+     "unit": "tok/s",
+     "context": null,
+     "date": "2026-10-09"
+    },
+    {
+     "model": "Qwen3.8-Flash-Next",
+     "config": "0.1.42 release-default PCIe share, long answers",
+     "decode": 48,
+     "prefill": 1177,
+     "unit": "tok/s",
+     "context": null,
+     "date": "2026-10-11"
+    },
+    {
+     "model": "Qwen3.8-Flash-Next",
+     "config": "0.1.42 old PCIe share, long answers",
+     "decode": 95,
+     "prefill": 1983,
+     "unit": "tok/s",
+     "context": null,
+     "date": "2026-10-11"
+    },
+    {
+     "model": "Qwen3.8-Flash-Next",
+     "config": "0.1.42, first round, cold",
+     "decode": 13.1,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": null,
+     "date": "2026-10-15"
+    },
+    {
+     "model": "Qwen3.8-Flash-Next",
+     "config": "0.1.42, warm round",
+     "decode": 23.5,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": null,
+     "date": "2026-10-15"
+    },
+    {
+     "model": "Qwen3.8-Flash-Next",
+     "config": "0.1.44.1",
+     "decode": 44.9,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": null,
+     "date": "2026-10-15"
+    },
+    {
+     "model": "Flash-Next IQ3_S",
+     "config": "0.1.45, MTP, code prompt",
+     "decode": 29.4,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": null,
+     "date": "2026-10-20"
+    },
+    {
+     "model": "Flash-Next IQ3_S",
+     "config": "0.2.0-beta, MTP, code prompt",
+     "decode": 35.4,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": null,
+     "date": "2026-10-20"
+    },
+    {
+     "model": "Flash-Next Gyro-S (TQ1_0)",
+     "config": "0.2.0-beta, MTP draft, code, text only",
+     "decode": 118.6,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": null,
+     "date": "2026-10-20"
+    },
+    {
+     "model": "Flash-Next Gyro-S (TQ1_0)",
+     "config": "0.2.0-beta, MTP, average over test-2 run",
+     "decode": 89.8,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": null,
+     "date": "2026-10-20"
+    },
+    {
+     "model": "Flash-Next Gyro-S (TQ1_0)",
+     "config": "0.2.2, MTP, code",
+     "decode": 144.1,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": null,
+     "date": "2026-10-22"
+    },
+    {
+     "model": "Flash-Next Gyro-S (TQ1_0)",
+     "config": "0.2.2, MTP, prose",
+     "decode": 123.4,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": null,
+     "date": "2026-10-22"
+    },
+    {
+     "model": "Flash-Next Gyro-S (TQ1_0)",
+     "config": "0.2.2, MTP, JSON",
+     "decode": 157.7,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": null,
+     "date": "2026-10-22"
+    }
+   ],
+   "bugs": [
+    {
+     "text": "0.1.42 release-default PCIe share halved decode",
+     "status": "worked around",
+     "date": "2026-10-11"
+    },
+    {
+     "text": "0.1.42 test 2T first start failed: engine exits locking about 40 GB host RAM",
+     "status": "open",
+     "date": null
+    },
+    {
+     "text": "Gyro no-MTP arms fail to start; native pack requires speculative decoding",
+     "status": "open",
+     "date": null
+    },
+    {
+     "text": "1.6-bit coder looped until reasoning_budget_tokens was set",
+     "status": "worked around",
+     "date": null
+    },
+    {
+     "text": "DNS-rebinding guard returns 403 to any host name not in allowed_hosts",
+     "status": "worked around",
+     "date": null
+    }
+   ],
+   "doc": "https://github.com/alexderz/agentic-model-testing/blob/main/docs/model-research/engines.md#strata"
+  },
+  {
+   "id": "maya",
+   "name": "Maya",
+   "kind": "tiered-expert MoE server (VRAM, RAM, SSD)",
+   "versions": [
+    {
+     "version": "1.0.4 with three patches",
+     "date": "2026-10-08",
+     "note": "About 4 tok/s out of the box; 17-19 with patches once weights were on local disk. Test 1 pass (44 tests), test 2 pass (7 tools, 66 tests, 322 minutes)."
+    },
+    {
+     "version": "1.1.11",
+     "date": "2026-10-16",
+     "note": "Patches upstream; 17.0 against 14.6 tok/s, first token 18 s against 92 s, 12 of 12 digit strings."
+    },
+    {
+     "version": "1.1.13",
+     "date": "2026-10-17",
+     "note": "Maya-S and Maya-M IQ2_S: 12 of 12 digits, 2 of 2 needles; test 3 rubric 12 of 12 on both."
+    }
+   ],
+   "good_at": "Runs a 321B MoE on one card and passed both tests",
+   "watch_out": "Slowest model to pass both tests; first load reads 100 GB",
+   "multi_session": {
+    "ok": null,
+    "note": "Not measured; treated as one request at a time"
+   },
+   "speeds": [
+    {
+     "model": "GLM-5.3-Flash Maya-S IQ2_XXS",
+     "config": "1.0.4 out of the box",
+     "decode": 4,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": null,
+     "date": "2026-10-08"
+    },
+    {
+     "model": "GLM-5.3-Flash Maya-S IQ2_XXS",
+     "config": "1.0.4 with three patches, weights on local disk",
+     "decode": "17-19",
+     "prefill": null,
+     "unit": "tok/s",
+     "context": null,
+     "date": "2026-10-08"
+    },
+    {
+     "model": "GLM-5.3-Flash Maya-S IQ2_XXS",
+     "config": "1.1.11, two probe rounds (1.0.x: 14.6 on the same 3.5 bpw pack)",
+     "decode": 17.0,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": null,
+     "date": "2026-10-16"
+    },
+    {
+     "model": "GLM-5.3-Flash Maya-S / Maya-M",
+     "config": "1.1.13, test 3 runs, both flavors",
+     "decode": "5.4-6.9",
+     "prefill": null,
+     "unit": "tok/s",
+     "context": null,
+     "date": "2026-10-17"
+    },
+    {
+     "model": "GLM-5.3-Flash Maya-M IQ2_S",
+     "config": "default PCIe share 0.36 (0.25 gave 17.9)",
+     "decode": 16.0,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": null,
+     "date": "2026-10-17"
+    },
+    {
+     "model": "GLM-5.3-Flash Maya-M IQ2_S",
+     "config": "PCIe share 0.25 (candidate, not applied)",
+     "decode": 17.9,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": null,
+     "date": "2026-10-17"
+    },
+    {
+     "model": "GLM-5.3-Flash Maya-M IQ2_S",
+     "config": "no DFlash2 draft head",
+     "decode": 15.35,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": null,
+     "date": "2026-10-17"
+    },
+    {
+     "model": "GLM-5.3-Flash Maya-M IQ2_S",
+     "config": "with DFlash2 draft head, 91 % of drafts accepted",
+     "decode": 10.7,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": null,
+     "date": "2026-10-17"
+    }
+   ],
+   "bugs": [
+    {
+     "text": "1.0.4 decoded about 4 tok/s; every VRAM eviction re-read from the network",
+     "status": "fixed",
+     "date": "2026-10-08"
+    },
+    {
+     "text": "On 1.0.x, GLM split multi-digit tool-argument numbers with spaces",
+     "status": "fixed",
+     "date": "2026-10-16"
+    },
+    {
+     "text": "DFlash2 draft on Maya-M slowed decode to 10.7 from 15.35 tok/s",
+     "status": "worked around",
+     "date": "2026-10-17"
+    },
+    {
+     "text": "1-bit Huihui variant failed both tests with repetition",
+     "status": "open",
+     "date": null
+    }
+   ],
+   "doc": "https://github.com/alexderz/agentic-model-testing/blob/main/docs/model-research/engines.md#maya"
+  },
+  {
+   "id": "exllamav3",
+   "name": "ExLlamaV3 (TabbyAPI)",
+   "kind": "dense model server, EXL3 weights",
+   "versions": [
+    {
+     "version": "1.6.1",
+     "date": "2026-10-13",
+     "note": "Runs Qwen3.8-27B from EXL3 4.00 bpw, unpatched, with its MTP head or the DFlash2 drafter."
+    },
+    {
+     "version": "1.6.2",
+     "date": "2026-10-16",
+     "note": "140.1 against 138.6 tok/s on 1.6.1 with DFlash2, within noise."
+    },
+    {
+     "version": "1.6.3",
+     "date": null,
+     "note": "Image built and staged; not in use."
+    }
+   ],
+   "good_at": "Larger window than vLLM for the 27B; DFlash2 without a patch",
+   "watch_out": "Slower than vLLM with MTP; drafting alters temperature-0 replies",
+   "multi_session": {
+    "ok": null,
+    "note": "Not measured"
+   },
+   "speeds": [
+    {
+     "model": "Qwen3.8-27B (EXL3 4.00 bpw)",
+     "config": "DFlash2 drafter, code; 98k window fits with 8-bit cache",
+     "decode": 158,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "16k",
+     "date": "2026-10-13"
+    },
+    {
+     "model": "Qwen3.8-27B (EXL3 4.00 bpw)",
+     "config": "DFlash2 drafter, prose",
+     "decode": 73,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "16k",
+     "date": "2026-10-13"
+    },
+    {
+     "model": "Qwen3.8-27B (EXL3 4.00 bpw)",
+     "config": "DFlash2 drafter, structured output",
+     "decode": 181,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "16k",
+     "date": "2026-10-13"
+    },
+    {
+     "model": "Qwen3.8-27B (EXL3 4.00 bpw)",
+     "config": "own MTP head, code; 196k window fits with 8-bit cache",
+     "decode": 116,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "16k",
+     "date": "2026-10-13"
+    },
+    {
+     "model": "Qwen3.8-27B (EXL3 4.00 bpw)",
+     "config": "own MTP head, prose",
+     "decode": 70,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "16k",
+     "date": "2026-10-13"
+    },
+    {
+     "model": "Qwen3.8-27B (EXL3 4.00 bpw)",
+     "config": "own MTP head, structured output",
+     "decode": 128,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "16k",
+     "date": "2026-10-13"
+    },
+    {
+     "model": "Qwen3.8-27B (EXL3 4.00 bpw)",
+     "config": "no drafting, one round",
+     "decode": 42,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "16k",
+     "date": "2026-10-13"
+    },
+    {
+     "model": "Qwen3.8-27B (EXL3 4.00 bpw)",
+     "config": "1.6.2, DFlash2, thinking off",
+     "decode": 140.1,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": null,
+     "date": "2026-10-16"
+    },
+    {
+     "model": "Qwen3.8-27B (EXL3 4.00 bpw)",
+     "config": "MTP served at 196k, short code; prompts read at 650-740",
+     "decode": 115,
+     "prefill": "650-740",
+     "unit": "tok/s",
+     "context": "196k",
+     "date": null
+    },
+    {
+     "model": "Qwen3.8-27B (EXL3 4.00 bpw)",
+     "config": "MTP served at 196k, 141k of context",
+     "decode": 72,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "141k history",
+     "date": null
+    }
+   ],
+   "bugs": [
+    {
+     "text": "At temperature 0, drafting changed 7 of 15 DFlash2 replies",
+     "status": "open",
+     "date": "2026-10-13"
+    },
+    {
+     "text": "At temperature 0, drafting changed 10 of 15 MTP replies",
+     "status": "open",
+     "date": "2026-10-13"
+    },
+    {
+     "text": "MTP setup scored 0 in five of six one-shot pagoda tries",
+     "status": "open",
+     "date": "2026-10-14"
+    }
+   ],
+   "doc": "https://github.com/alexderz/agentic-model-testing/blob/main/docs/model-research/engines.md#exllamav3-tabbyapi"
+  },
+  {
+   "id": "tensorfold",
+   "name": "TensorFold",
+   "kind": "dense model server with DFlash2 drafting",
+   "versions": [
+    {
+     "version": "0.6.6 (Python engine)",
+     "date": "2026-10-13",
+     "note": "Fastest writer measured for Qwen3.8-27B on the 3090; Python line frozen upstream."
+    },
+    {
+     "version": "1.1.0 (upstream)",
+     "date": "2026-10-18",
+     "note": "Reports native RTX 30 support; we have not built or run it."
+    }
+   ],
+   "good_at": "Raw decode speed; exact replies at temperature 0",
+   "watch_out": "Needs a local patch below compute capability 8.9; bf16 cache only",
+   "multi_session": {
+    "ok": null,
+    "note": "Not measured"
+   },
+   "speeds": [
+    {
+     "model": "Qwen3.8-27B",
+     "config": "DFlash2 drafter, short code (167-170 across runs)",
+     "decode": 170,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": null,
+     "date": "2026-10-13"
+    },
+    {
+     "model": "Qwen3.8-27B",
+     "config": "DFlash2 drafter, prose (81-84 across runs)",
+     "decode": 84,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": null,
+     "date": "2026-10-13"
+    },
+    {
+     "model": "Qwen3.8-27B",
+     "config": "DFlash2 drafter, structured output (209-211 across runs)",
+     "decode": 211,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": null,
+     "date": "2026-10-13"
+    }
+   ],
+   "bugs": [
+    {
+     "text": "Needed a local patch to run below compute capability 8.9",
+     "status": "worked around",
+     "date": null
+    },
+    {
+     "text": "Cache is bf16 only: 42k window by default, 73k at the edge",
+     "status": "open",
+     "date": null
+    },
+    {
+     "text": "Python line is frozen upstream; engine parked, not in the router",
+     "status": "open",
+     "date": null
+    }
+   ],
+   "doc": "https://github.com/alexderz/agentic-model-testing/blob/main/docs/model-research/engines.md#tensorfold"
+  },
+  {
+   "id": "tqllm",
+   "name": "tqLLM",
+   "kind": "Flash-Next GGUF server (trial)",
+   "versions": [
+    {
+     "version": "1.2.3",
+     "date": "2026-10-22",
+     "note": "Trial with the Flash-Next IQ3_S GGUF and its MTP head against the live llama.cpp entry; first load 23 minutes cold, then 2-3."
+    }
+   ],
+   "good_at": "Fast short replies: about 2.5 times llama.cpp on the same GGUF",
+   "watch_out": "Fails after one out-of-memory prefill; health check still says ok",
+   "multi_session": {
+    "ok": false,
+    "note": "Failed: 4 of 11 at best; llama.cpp passed 11"
+   },
+   "speeds": [
+    {
+     "model": "Flash-Next IQ3_S + MTP head",
+     "config": "short outputs, thinking off, code; prefill about 2,000 on a 30k prompt",
+     "decode": 101.7,
+     "prefill": 2000,
+     "unit": "tok/s",
+     "context": "32k",
+     "date": "2026-10-22"
+    },
+    {
+     "model": "Flash-Next IQ3_S + MTP head",
+     "config": "short outputs, thinking off, prose",
+     "decode": 79.9,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "32k",
+     "date": "2026-10-22"
+    },
+    {
+     "model": "Flash-Next IQ3_S + MTP head",
+     "config": "short outputs, thinking off, structured output",
+     "decode": 111.8,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "32k",
+     "date": "2026-10-22"
+    },
+    {
+     "model": "Flash-Next IQ3_S + MTP head",
+     "config": "default 262k window, same bench, code",
+     "decode": 105.2,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "262k",
+     "date": "2026-10-22"
+    },
+    {
+     "model": "Flash-Next IQ3_S + MTP head",
+     "config": "default 262k window, same bench, prose",
+     "decode": 83.5,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "262k",
+     "date": "2026-10-22"
+    },
+    {
+     "model": "Flash-Next IQ3_S + MTP head",
+     "config": "default 262k window, same bench, structured output",
+     "decode": 107.1,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "262k",
+     "date": "2026-10-22"
+    },
+    {
+     "model": "Flash-Next IQ3_S + MTP head",
+     "config": "smoke decode of a 37-token prompt, best 262k arm (not a bench)",
+     "decode": 53.9,
+     "prefill": null,
+     "unit": "tok/s",
+     "context": "262k",
+     "date": "2026-10-22"
+    }
+   ],
+   "bugs": [
+    {
+     "text": "First prompt short on VRAM for prefill fails; every later request fails",
+     "status": "open",
+     "date": "2026-10-22"
+    },
+    {
+     "text": "At 131072 the first failure came on a 289-token prompt",
+     "status": "open",
+     "date": "2026-10-22"
+    },
+    {
+     "text": "Health check keeps answering ok after failure, so a router never notices",
+     "status": "open",
+     "date": "2026-10-22"
+    },
+    {
+     "text": "Default 262k arm answered long prompts with HTTP 500",
+     "status": "open",
+     "date": "2026-10-22"
+    },
+    {
+     "text": "Expert-cache flag had no visible effect on Flash-Next",
+     "status": "open",
+     "date": "2026-10-22"
+    }
+   ],
+   "doc": "https://github.com/alexderz/agentic-model-testing/blob/main/docs/model-research/engines.md#tqllm"
+  }
+ ],
+ "tuning": [
+  {
+   "id": "vram-tiers",
+   "title": "Pick the VRAM tier first",
+   "rule": "Choose how much of the model sits in VRAM first, then the model.",
+   "metrics": [
+    {
+     "label": "Everything on the GPU, typical decode",
+     "before": null,
+     "after": "45-175",
+     "unit": "tok/s"
+    },
+    {
+     "label": "A few expert layers in RAM, typical decode",
+     "before": null,
+     "after": "60-95",
+     "unit": "tok/s"
+    },
+    {
+     "label": "Experts mostly in RAM, typical decode",
+     "before": null,
+     "after": "3-26",
+     "unit": "tok/s"
+    },
+    {
+     "label": "Flint Q4_K_XL decode, 15 to 24 expert layers in RAM",
+     "before": 81.4,
+     "after": 64.2,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Flint Q4_K_XL prefill of 11.7k prompt, 15 to 24 layers",
+     "before": 2208,
+     "after": 1624,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Ornith-1.5-122B decode, 42 to 40 expert layers on CPU",
+     "before": 13.7,
+     "after": 16.3,
+     "unit": "tok/s"
+    }
+   ],
+   "chart": "tiers",
+   "evidence": "Flint Q4_K_XL, 2026-10-21/22: 81.4, 73.1, 64.2 tok/s at 15, 19, 24 expert layers in RAM.",
+   "caveat": "The expert cache moved the bottom tier up, not out.",
+   "doc": "https://github.com/alexderz/agentic-model-testing/blob/main/docs/model-research/tuning.md#1-vram-tiers-pick-the-tier-first"
+  },
+  {
+   "id": "expert-cache",
+   "title": "Cache hot experts on Flash-Next",
+   "rule": "For Flash-Next, keep all experts in RAM and cache the hot ones on the GPU.",
+   "metrics": [
+    {
+     "label": "Orcarouter IQ4_XS streamed decode",
+     "before": "12-14",
+     "after": 19,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Heretic2 IQ4XS-NGQ4 streamed decode",
+     "before": "11-14",
+     "after": 18,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Abliterated s1.5 IQ4_XS streamed decode",
+     "before": "11.5-14.6",
+     "after": "19-21",
+     "unit": "tok/s"
+    },
+    {
+     "label": "Swift 1.5 IQ3_XXS streamed decode",
+     "before": "13-17",
+     "after": "23-26",
+     "unit": "tok/s"
+    },
+    {
+     "label": "Unpruned IQ3_S streamed decode",
+     "before": "12.5-15",
+     "after": "21-23",
+     "unit": "tok/s"
+    },
+    {
+     "label": "Prefill on fresh loads, 16k and 48k",
+     "before": 250,
+     "after": "415-427",
+     "unit": "tok/s"
+    }
+   ],
+   "chart": "bars",
+   "evidence": "2026-10-22, Flash-Next only, five GGUFs at 262k: cache beat layer split on all; live on 12 entries.",
+   "caveat": "Untested for Ornith and Flint; not yet run through tests 1 and 2.",
+   "doc": "https://github.com/alexderz/agentic-model-testing/blob/main/docs/model-research/tuning.md#2-expert-placement--ncmoe-against--cmoe-plus-the-expert-cache"
+  },
+  {
+   "id": "kv-precision",
+   "title": "Use 8-bit KV when it buys room",
+   "rule": "Use 8-bit KV when it buys context, expert cache or batch; else f16.",
+   "metrics": [
+    {
+     "label": "Mean KL, f16 KV against 8-bit KV plus cache",
+     "before": null,
+     "after": 0.0011,
+     "unit": "KL"
+    },
+    {
+     "label": "Mean KL between two loads of the new config (noise floor)",
+     "before": null,
+     "after": 0.0002,
+     "unit": "KL"
+    },
+    {
+     "label": "Top-1 agreement, old against new config",
+     "before": null,
+     "after": 98.2,
+     "unit": "%"
+    },
+    {
+     "label": "Top-1 agreement between two loads (noise floor)",
+     "before": null,
+     "after": 99.6,
+     "unit": "%"
+    },
+    {
+     "label": "Needles found in both configs",
+     "before": null,
+     "after": 8,
+     "unit": "of 8"
+    },
+    {
+     "label": "vLLM window, FP8 KV against 4/2-bit KV",
+     "before": 150,
+     "after": 240,
+     "unit": "k tokens"
+    }
+   ],
+   "chart": "bars",
+   "evidence": "2026-10-22, Orcarouter GGUF: f16 KV against 8-bit KV plus cache gives mean KL 0.0011, top-1 98.2 %.",
+   "caveat": "KV type and cache could not be separated on 24 GB.",
+   "doc": "https://github.com/alexderz/agentic-model-testing/blob/main/docs/model-research/tuning.md#3-kv-precision"
+  },
+  {
+   "id": "batch-ubatch",
+   "title": "Raise ubatch until it stops loading",
+   "rule": "Take the largest -ub that still loads with everything else in place.",
+   "metrics": [
+    {
+     "label": "Ornith prefill, 41 expert layers on CPU, -ub 2048",
+     "before": 116,
+     "after": 392,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Ornith decode, same change",
+     "before": 16.0,
+     "after": 16.1,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Flint prefill of 11.7k prompt at -ub 2048",
+     "before": null,
+     "after": 5357,
+     "unit": "tok/s"
+    }
+   ],
+   "chart": "slope",
+   "evidence": "Ornith, 41 expert layers on CPU, 2026-10-20: -ub 2048 lifted prefill from 116 to 392 tok/s.",
+   "caveat": "Too large fails: OrcaSAQ-2 needed -ub 256 at 22.7 of 24 GiB.",
+   "doc": "https://github.com/alexderz/agentic-model-testing/blob/main/docs/model-research/tuning.md#4-batch-and-ubatch"
+  },
+  {
+   "id": "context-margin",
+   "title": "Tell the agent a smaller context",
+   "rule": "Give the agent a context window smaller than the server's by max(10%, 16k).",
+   "metrics": [
+    {
+     "label": "Compaction point on a 150k vLLM server",
+     "before": 71000,
+     "after": 89328,
+     "unit": "tokens"
+    },
+    {
+     "label": "Share of window at compaction",
+     "before": 47,
+     "after": 60,
+     "unit": "%"
+    },
+    {
+     "label": "Compactions in one 57k vLLM test",
+     "before": null,
+     "after": 55,
+     "unit": "times"
+    },
+    {
+     "label": "Compactions with the Pi agent on the 57k setup",
+     "before": null,
+     "after": 8,
+     "unit": "times"
+    }
+   ],
+   "chart": "slope",
+   "evidence": "2026-10-04: a 240k vLLM case died at 213,761 prompt plus 32,000 reply against a 245,760 window.",
+   "caveat": "Runs before 2026-10-14, all of test 2, used the old window.",
+   "doc": "https://github.com/alexderz/agentic-model-testing/blob/main/docs/model-research/tuning.md#5-context-margin-and-thinking-budget"
+  },
+  {
+   "id": "thinking-budget",
+   "title": "Cap thinking inside the reply cap",
+   "rule": "Set the thinking budget to min(24000, reply cap minus 6000).",
+   "metrics": [
+    {
+     "label": "Round 1 endpoints rescued, reasoning off",
+     "before": null,
+     "after": 6,
+     "unit": "of 9"
+    },
+    {
+     "label": "Round 1 endpoints rescued, budget 4096",
+     "before": null,
+     "after": 8,
+     "unit": "of 9"
+    },
+    {
+     "label": "Round 1 endpoints rescued, budget 16384",
+     "before": null,
+     "after": 4,
+     "unit": "of 9"
+    },
+    {
+     "label": "Length of the one runaway think (OrcaSAQ-2)",
+     "before": null,
+     "after": 87000,
+     "unit": "characters"
+    }
+   ],
+   "chart": "bars",
+   "evidence": "2026-10-04: a cap of 23,961 under a flat 24,000 budget let one 87,000-character think eat the reply.",
+   "caveat": "A budget stops runaway thinking, not output loops.",
+   "doc": "https://github.com/alexderz/agentic-model-testing/blob/main/docs/model-research/tuning.md#5-context-margin-and-thinking-budget"
+  },
+  {
+   "id": "maker-sampling",
+   "title": "Serve the maker's sampling",
+   "rule": "Serve the maker's recommended sampling on the server; coding agents usually send none.",
+   "metrics": [
+    {
+     "label": "Ternary Bonsai 2 test 1 score, with the makers' agent settings",
+     "before": 2,
+     "after": 5,
+     "unit": "of 5"
+    },
+    {
+     "label": "Tiel Coder Q4_K_XL test 2 decode, makers' temperature 0.6",
+     "before": null,
+     "after": 78.6,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Tiel Coder Q4_K_XL test 2 duration",
+     "before": null,
+     "after": 27,
+     "unit": "minutes"
+    }
+   ],
+   "chart": "slope",
+   "evidence": "Adopted for every entry 2026-10-09 after loops ruined several runs; Bonsai 2 test 1 rose 2/5 to 5/5.",
+   "caveat": "Not a cure-all: Devstral Small 2, Qwen3.6-35B, GLM-4.7-Flash still failed.",
+   "doc": "https://github.com/alexderz/agentic-model-testing/blob/main/docs/model-research/tuning.md#6-maker-sampling"
+  },
+  {
+   "id": "speculative-decoding",
+   "title": "Draft only when the model fits",
+   "rule": "Use speculative decoding when the model is on the GPU; check answers stay unchanged.",
+   "metrics": [
+    {
+     "label": "Qwen3.8-27B code, plain against llama.cpp MTP",
+     "before": 42,
+     "after": 93,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Qwen3.8-27B code, plain against ExLlamaV3 MTP",
+     "before": 42,
+     "after": 116,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Qwen3.8-27B code, plain against ExLlamaV3 DFlash2",
+     "before": 42,
+     "after": 158,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Qwen3.8-27B code, plain against TensorFold DFlash2",
+     "before": 42,
+     "after": 170,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Gemma 4 26B-A4B with MTP drafter, short code against 141k of history",
+     "before": 267,
+     "after": 123,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Ornith-1.5-122B experts in RAM, no draft against MTP with two drafts",
+     "before": 16.3,
+     "after": 16.7,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Ornith-1.5-122B, no draft against a DFlash drafter",
+     "before": 16.3,
+     "after": 11.5,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Maya-M IQ2_S, no draft against DFlash2 draft",
+     "before": 15.35,
+     "after": 10.7,
+     "unit": "tok/s"
+    }
+   ],
+   "chart": "bars",
+   "evidence": "2026-10-13, Qwen3.8-27B code, one card: 42 tok/s plain, 170 with TensorFold DFlash2; Ornith in RAM gained nothing.",
+   "caveat": "At temperature 0 drafting changed 7 of 15 DFlash2 replies; TensorFold none.",
+   "doc": "https://github.com/alexderz/agentic-model-testing/blob/main/docs/model-research/tuning.md#7-speculative-decoding-when-it-pays"
+  },
+  {
+   "id": "warm-cache",
+   "title": "Warm up and measure twice",
+   "rule": "Warm up before timing; run each setting twice in opposite orders; never rank on one run.",
+   "metrics": [
+    {
+     "label": "Strata 0.1.42 prompt reading, cold against warm",
+     "before": 44,
+     "after": 1269,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Strata 0.1.42 decode, cold against warm round",
+     "before": 13.1,
+     "after": 23.5,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Unpruned Flash-Next GGUF, raw benchmark against streamed",
+     "before": 40,
+     "after": "21-23",
+     "unit": "tok/s"
+    },
+    {
+     "label": "Prefill, quality-script runs (not reproduced) → fresh load",
+     "before": "85-100",
+     "after": 415,
+     "unit": "tok/s"
+    }
+   ],
+   "chart": "slope",
+   "evidence": "Strata 0.1.42, 2026-10-11: the same prompt read at 44 tok/s cold and 1,269 warm.",
+   "caveat": "Differences smaller than the second-round speedup were treated as noise.",
+   "doc": "https://github.com/alexderz/agentic-model-testing/blob/main/docs/model-research/tuning.md#8-cold-against-warm-page-cache-and-measuring-twice"
+  },
+  {
+   "id": "pcie-share",
+   "title": "Measure the PCIe share setting",
+   "rule": "Measure an engine's GPU-CPU transfer share on your own card; release defaults can be wrong.",
+   "metrics": [
+    {
+     "label": "Strata 0.1.42 long-answer decode, default against old share",
+     "before": 48,
+     "after": 95,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Strata 0.1.42 big-prompt reading",
+     "before": 1177,
+     "after": 1983,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Test 1 duration",
+     "before": 94,
+     "after": 51,
+     "unit": "minutes"
+    },
+    {
+     "label": "Test 2 duration",
+     "before": 98,
+     "after": 61,
+     "unit": "minutes"
+    },
+    {
+     "label": "Test 2 tests passed",
+     "before": 72,
+     "after": 77,
+     "unit": "tests"
+    },
+    {
+     "label": "Maya-M decode, share 0.36 against 0.25 (not applied)",
+     "before": 16.0,
+     "after": 17.9,
+     "unit": "tok/s"
+    }
+   ],
+   "chart": "slope",
+   "evidence": "Strata 0.1.42 on Flash-Next, 2026-10-11: older PCIe share doubled long-answer decode, 48 to 95 tok/s.",
+   "caveat": "Maya-M's +12 % candidate was measured 2026-10-17 and not applied.",
+   "doc": "https://github.com/alexderz/agentic-model-testing/blob/main/docs/model-research/tuning.md#9-pcie-share-and-other-engine-internal-knobs"
+  },
+  {
+   "id": "engine-choice",
+   "title": "Choose the engine for the model",
+   "rule": "Choose the engine for the model class, then tune; short-request speed is not agent readiness.",
+   "metrics": [
+    {
+     "label": "Flash-Next, experts in RAM: llama.cpp 0.4 (2026-10-05)",
+     "before": null,
+     "after": 2.2,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Flash-Next, experts in RAM: llama.cpp 0.6 (2026-10-05)",
+     "before": null,
+     "after": 8.9,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Flash-Next: Strata (2026-10-04)",
+     "before": null,
+     "after": "30-45",
+     "unit": "tok/s"
+    },
+    {
+     "label": "Flash-Next: llama.cpp 0.7.0 with cache, streamed (2026-10-22)",
+     "before": null,
+     "after": "19-26",
+     "unit": "tok/s"
+    },
+    {
+     "label": "Flash-Next Gyro-S on Strata 0.2.2, code (2026-10-22)",
+     "before": null,
+     "after": 144,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Multi-session checks passed: tqLLM (best) against stock SGLang",
+     "before": 4,
+     "after": 11,
+     "unit": "of 11"
+    }
+   ],
+   "chart": "timeline",
+   "evidence": "Flash-Next with experts in RAM: 2.2 tok/s on llama.cpp 0.4, 30-45 on Strata 0.1 (2026-10-04); Gyro-S on Strata 0.2.2 reached 144 on code (2026-10-22).",
+   "caveat": "Quants differ across rows; Strata's 144 is Gyro-S on code.",
+   "doc": "https://github.com/alexderz/agentic-model-testing/blob/main/docs/model-research/tuning.md#10-engine-choice"
+  },
+  {
+   "id": "quality-checks",
+   "title": "Check a setup before trusting speed",
+   "rule": "Run quality and multi-session checks on every new engine or settings change before ranking speed.",
+   "metrics": [
+    {
+     "label": "Code decode on the same GGUF, llama.cpp → tqLLM",
+     "before": 40.3,
+     "after": 101.7,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Multi-session checks passed, tqLLM (best) → llama.cpp live",
+     "before": 4,
+     "after": 11,
+     "unit": "of 11"
+    },
+    {
+     "label": "Multi-session checks passed, Carbon-X at one slot",
+     "before": null,
+     "after": 10,
+     "unit": "of 11"
+    },
+    {
+     "label": "Old runs regraded, 2026-10-10",
+     "before": null,
+     "after": 125,
+     "unit": "runs"
+    },
+    {
+     "label": "Verdicts changed by the regrade",
+     "before": null,
+     "after": 4,
+     "unit": "verdicts"
+    }
+   ],
+   "chart": "bars",
+   "evidence": "2026-10-22: tqLLM decoded about 2.5 times faster than llama.cpp yet passed at best 4 of 11 multi-session checks.",
+   "caveat": "A speed result without the probe next to it is a lead, not a pick.",
+   "doc": "https://github.com/alexderz/agentic-model-testing/blob/main/docs/model-research/tuning.md#11-the-quality-checks-we-use"
+  }
+ ],
+ "quality_checks": [
+  {
+   "id": "kl-top1",
+   "name": "KL and top-1 agreement",
+   "what": "Greedy logprobs old against new config, same GGUF, cuts of 2k-100k tokens",
+   "threshold": "Compare with the noise floor: KL 0.0002, top-1 99.6 %",
+   "example": "Expert cache, 2026-10-22: KL 0.0011, top-1 98.2 %"
+  },
+  {
+   "id": "needle",
+   "name": "Needle in a haystack",
+   "what": "Planted code in filler text, 16k to 250k tokens, room left for thinking",
+   "threshold": null,
+   "example": "Stock SGLang needles at 100k, 150k, 190k on two of three builds"
+  },
+  {
+   "id": "digit-copy",
+   "name": "Digit-copy probe",
+   "what": "Copies digit strings in long prompts and finds two needles",
+   "threshold": "12 of 12 strings and both needles",
+   "example": "Maya 1.0.4 split one string; 1.1.11 copied 12 of 12"
+  },
+  {
+   "id": "tool-call",
+   "name": "Tool-call probe",
+   "what": "One function call with arguments, parsed",
+   "threshold": null,
+   "example": "Passed on every engine until tqLLM's first failure"
+  },
+  {
+   "id": "multi-session",
+   "name": "Multi-session probe",
+   "what": "11 checks: parallel answers, two decoding together, tool calls, long plus short, five concurrent",
+   "threshold": "11 of 11 (10 of 11 at one slot, by design)",
+   "example": "llama.cpp live 11 of 11; tqLLM 3, 0 and 4 of 11"
+  },
+  {
+   "id": "agent-tests",
+   "name": "Real agent tests",
+   "what": "Tests 1 to 8; the only check that sees what an agent does",
+   "threshold": null,
+   "example": "Gyro-S + MTP test 2: full pass in 24 minutes"
+  },
+  {
+   "id": "grader-audits",
+   "name": "Grader audits",
+   "what": "Regrade old runs when a grader changes",
+   "threshold": null,
+   "example": "125 runs regraded 2026-10-10; four verdicts changed"
   }
  ],
  "oneshots": {
@@ -9146,6 +11702,78 @@
     "note": "no SVG: length stop at 32,000 tokens, all thinking (five identical replies)",
     "frames": [],
     "live": null
+   },
+   {
+    "case": "mx22-flashnext-heretic2-t5-oneshot-orrery-r1",
+    "entry": "lcpp6-flashnext-heretic2",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 33547.0,
+    "wall_s": 1513.4,
+    "tok_s": 22.3,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "Final model-supplied standalone SVG is malformed (mismatched tag, line 77). The harness also greedily concatenated two SVG blocks/prose: that packaging error was separated by extracting the final original codeblock verbatim, which still fails XML parsing. Initial valid background-only fragment is not substituted or graded.",
+    "frames": [
+     "frames/orrery/mx22-flashnext-heretic2-t5-oneshot-orrery-r1/frame-1500.webp",
+     "frames/orrery/mx22-flashnext-heretic2-t5-oneshot-orrery-r1/frame-5000.webp",
+     "frames/orrery/mx22-flashnext-heretic2-t5-oneshot-orrery-r1/frame-10000.webp"
+    ],
+    "live": null
+   },
+   {
+    "case": "t5nm1-lcpp6-ornith-122b-q4kxl",
+    "entry": "lcpp6-ornith-122b-q4kxl",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 29646.0,
+    "wall_s": 1940.1,
+    "tok_s": 15.3,
+    "points": {
+     "A": 1.0,
+     "B": 1.0,
+     "C": 0.0,
+     "D": 1.0,
+     "E": 0.0
+    },
+    "total": 3.0,
+    "note": "Parses and draws, but planets are left at the central origin instead of translated to arm ends. Only gears visibly move; outer markers stay fixed across sealed frames. Nominal period parameters are not functioning planetary orbits. Toothed wheels turn without credible meshing; no visible planetary day/night.",
+    "frames": [
+     "frames/orrery/t5nm1-lcpp6-ornith-122b-q4kxl/frame-1500.webp",
+     "frames/orrery/t5nm1-lcpp6-ornith-122b-q4kxl/frame-5000.webp",
+     "frames/orrery/t5nm1-lcpp6-ornith-122b-q4kxl/frame-10000.webp"
+    ],
+    "live": "live/orrery/t5nm1-lcpp6-ornith-122b-q4kxl/orrery.svg"
+   },
+   {
+    "case": "t5nm1-lcpp-flint-40b-q3kxl",
+    "entry": "lcpp-flint-40b-q3kxl",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 30402.0,
+    "wall_s": 299.0,
+    "tok_s": 101.8,
+    "points": {
+     "A": 1.0,
+     "B": 2.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 1.0
+    },
+    "total": 4.0,
+    "note": "Renders with detached teeth and shadow halos; motion present; orbital periods 80/38/20/40/160/300s incorrectly order inner planets; no credible meshing pairs; offset black shadows rotate incorrectly. Independent original-source/frame review.",
+    "frames": [
+     "frames/orrery/t5nm1-lcpp-flint-40b-q3kxl/frame-1500.webp",
+     "frames/orrery/t5nm1-lcpp-flint-40b-q3kxl/frame-5000.webp",
+     "frames/orrery/t5nm1-lcpp-flint-40b-q3kxl/frame-10000.webp"
+    ],
+    "live": "live/orrery/t5nm1-lcpp-flint-40b-q3kxl/orrery.svg"
    }
   ],
   "pagoda": [
@@ -10256,6 +12884,78 @@
      "frames/pagoda/t6unc1-qwen3.8-27b-uncensored-vllm/frame-10000.webp"
     ],
     "live": "live/pagoda/t6unc1-qwen3.8-27b-uncensored-vllm/page.html"
+   },
+   {
+    "case": "mx22-flashnext-heretic2-t6-oneshot-pagoda-r1",
+    "entry": "lcpp6-flashnext-heretic2",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 29545.0,
+    "wall_s": 1359.9,
+    "tok_s": 21.8,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "Original animation throws ReferenceError: clock is not defined before scene rendering; all sealed frames contain only the clear-color background. Offline three.js dependency packaging succeeds. Blank-page rule scores every dimension zero; no diagnostic model-code fix was scored.",
+    "frames": [
+     "frames/pagoda/mx22-flashnext-heretic2-t6-oneshot-pagoda-r1/frame-1500.webp",
+     "frames/pagoda/mx22-flashnext-heretic2-t6-oneshot-pagoda-r1/frame-5000.webp",
+     "frames/pagoda/mx22-flashnext-heretic2-t6-oneshot-pagoda-r1/frame-10000.webp"
+    ],
+    "live": null
+   },
+   {
+    "case": "t6nm1-lcpp6-ornith-122b-q4kxl",
+    "entry": "lcpp6-ornith-122b-q4kxl",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 6653.0,
+    "wall_s": 523.0,
+    "tok_s": 15.4,
+    "points": {
+     "A": 1.0,
+     "B": 2.0,
+     "C": 1.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 8.0,
+    "note": "Draws consistently from boxes; five tiers/upturned eaves but full spire is cropped in every frame. Platform, cherry trees, pond and torii visible. Falling petals, shadows and frame-based camera orbit present.",
+    "frames": [
+     "frames/pagoda/t6nm1-lcpp6-ornith-122b-q4kxl/frame-1500.webp",
+     "frames/pagoda/t6nm1-lcpp6-ornith-122b-q4kxl/frame-5000.webp",
+     "frames/pagoda/t6nm1-lcpp6-ornith-122b-q4kxl/frame-10000.webp"
+    ],
+    "live": "live/pagoda/t6nm1-lcpp6-ornith-122b-q4kxl/page.html"
+   },
+   {
+    "case": "t6nm1-lcpp-flint-40b-q3kxl",
+    "entry": "lcpp-flint-40b-q3kxl",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 15958.0,
+    "wall_s": 145.2,
+    "tok_s": 110.1,
+    "points": {
+     "A": 1.0,
+     "B": 2.0,
+     "C": 1.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 8.0,
+    "note": "Draws consistently from boxes; five tiers but complete spire cropped in all three frames; platform pond cherry tree and partly occluded torii visible; petals shadows and frame-based camera orbit present. Offline CDN rewrite is packaging only; no model fix.",
+    "frames": [
+     "frames/pagoda/t6nm1-lcpp-flint-40b-q3kxl/frame-1500.webp",
+     "frames/pagoda/t6nm1-lcpp-flint-40b-q3kxl/frame-5000.webp",
+     "frames/pagoda/t6nm1-lcpp-flint-40b-q3kxl/frame-10000.webp"
+    ],
+    "live": "live/pagoda/t6nm1-lcpp-flint-40b-q3kxl/page.html"
    }
   ],
   "agent-orrery": [
@@ -10768,12 +13468,12 @@
   ]
  },
  "counts": {
-  "models": 93,
-  "runs": 206,
-  "test3": 51,
-  "oneshots": 100,
-  "frames": 225,
-  "pass": 133,
-  "live": 74
+  "models": 95,
+  "runs": 222,
+  "test3": 53,
+  "oneshots": 106,
+  "frames": 243,
+  "pass": 148,
+  "live": 78
  }
 }

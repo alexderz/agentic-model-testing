@@ -245,7 +245,7 @@ engine for the model class, then tune.
   runs; ExLlamaV3 and TensorFold are faster on short code and hold a smaller
   window (section 7).
 - Speed on one short request is not agent readiness. tqLLM decoded about 2.5x
-  faster than llama.cpp on the same GGUF and failed 8 of 11 multi-session checks
+  faster than llama.cpp on the same GGUF and passed at most 4 of 11 multi-session checks
   (section 11); stock SGLang at 25 tok/s passed 11 of 11.
 - The engine table is in [Engines](engines.md).
 

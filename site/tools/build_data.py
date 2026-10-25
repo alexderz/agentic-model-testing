@@ -23,6 +23,13 @@ dash = sys.argv[sys.argv.index("--dashboard") + 1] if "--dashboard" in sys.argv 
 D = json.load(open(dash))
 C = json.load(open(os.path.join(SITE, "data/curated.json")))
 H = json.load(open(os.path.join(SITE, "data/history.json")))
+# Engines and tuning deep dives, distilled from docs/model-research/{engines,tuning}.md (site/data/deep.json).
+DEEP = json.load(open(os.path.join(SITE, "data/deep.json")))
+REPO = "https://github.com/alexderz/agentic-model-testing/blob/main/"
+for grp in ("engines", "tuning"):
+    for e in DEEP.get(grp, []):
+        if e.get("doc") and not e["doc"].startswith("https://"):
+            e["doc"] = REPO + e["doc"]
 for k, m in H.get("models_new", {}).items():
     D["models"].setdefault(k, m)
 D["runs"] = D["runs"] + H.get("runs_new", [])
@@ -118,7 +125,8 @@ hw = dict(D.get("hardware", {}))
 hw["weights"] = "read over the network from a NAS, ~180-280 MB/s first load"
 out = {
     "schema": "bakeoff-site/1",
-    "generated": D.get("generated"),
+    # The newest source: history.json is mined after the dashboard, so its time wins when present.
+    "generated": H.get("generated") or D.get("generated"),
     "built": __import__("datetime").datetime.now().astimezone().strftime("%Y-%m-%d %H:%M %Z"),
     "title": C["title"], "tagline": C["tagline"], "links": C["links"],
     "hardware": hw, "caveats": D.get("caveats", []),
@@ -126,6 +134,7 @@ out = {
     "picks": picks, "timeline": D.get("timeline", []),
     "events": events,
     "models": models, "runs": runs, "test3": test3, "ab": ab,
+    "engines": DEEP.get("engines", []), "tuning": DEEP.get("tuning", []), "quality_checks": DEEP.get("quality_checks", []),
     "oneshots": {"orrery": oneshots(5, "orrery"), "pagoda": oneshots(6, "pagoda"),
                  "agent-orrery": oneshots(8, "agent-orrery"), "agent-pagoda": oneshots(8, "agent-pagoda")},
 }

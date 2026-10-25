@@ -1,0 +1,44 @@
+{
+ "case": "t5nm1-lcpp-flint-40b-q3kxl",
+ "finish_reason": "stop",
+ "first_token_s": 0.2,
+ "max_tokens": 258048,
+ "model": "lcpp-flint-40b-q3kxl",
+ "reasoning_chars": 97785,
+ "reply_chars": 14723,
+ "started": "2026-10-22T01:08:14-0500",
+ "static": {
+  "svg_found": true,
+  "parses": true,
+  "bytes": 14242,
+  "animateTransform": 13,
+  "animate": 2,
+  "animateMotion": 0,
+  "keyframes": 0,
+  "script": 0,
+  "prose_chars_outside_svg": 481
+ },
+ "status": "ok",
+ "test": "test5-orrery",
+ "timings": {
+  "cache_n": 0,
+  "prompt_n": 51,
+  "prompt_ms": 67.447,
+  "prompt_per_token_ms": 1.3224901960784314,
+  "prompt_per_second": 756.1492727623171,
+  "predicted_n": 30402,
+  "predicted_ms": 298794.899,
+  "predicted_per_token_ms": 9.828456267885924,
+  "predicted_per_second": 101.7453781900072
+ },
+ "tok_s": 101.8,
+ "usage": {
+  "completion_tokens": 30402,
+  "prompt_tokens": 51,
+  "total_tokens": 30453,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  }
+ },
+ "wall_s": 299.0
+}
