@@ -1482,7 +1482,7 @@
      "unit": "of 11"
     }
    ],
-   "quality": "Tool calls and a 30k needle passed at 32k; at 262k with 8k prefill chunks it found a needle in 248k tokens, then failed on a 292-token prompt.",
+   "quality": "Tool calls and a 30k needle passed at 32k; at 262k with 8k prefill chunks it found a needle in 248k tokens. At 131072 context it failed on a 289-token prompt, and every later request failed until a restart.",
    "caveat": "Short replies with thinking off; any prompt of 256+ tokens can trigger the failure. First load took 23 minutes cold."
   },
   {
@@ -1958,7 +1958,7 @@
     }
    ],
    "quality": "The needle check passed in every unlock phase, on and off.",
-   "caveat": "One off-round and two on-rounds, one card. Short decode barely moved. Tiel deep decode stayed 97.7 tok/s on seed 41. The llama.cpp version is from the same day's entry spec, not from a spec file inside the probe directory."
+   "caveat": "One off-round and two on-rounds, one card. Short decode barely moved. Tiel long-prompt prefill rose less (2201 to 2397 tok/s on seed 41, 1549 to 1746 on seed 42) and its deep decode stayed 97.7 tok/s on seed 41. The llama.cpp version is from the same day's entry spec, not from a spec file inside the probe directory."
   },
   {
    "date": "2026-10-23",
