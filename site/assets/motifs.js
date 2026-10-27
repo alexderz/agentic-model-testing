@@ -139,6 +139,13 @@ const DRAW = {
     m.forEach((k, i) => { const h = 8 + 90 * k.h; s.appendChild(svg('rect', { x: 6 + i * w + 2, y: H - 4 - h, width: Math.max(2, w - 4), height: h, rx: 2, fill: k.color, class: 'logbar' })); });
     return s;
   },
+  // 11 compare: one dot per setup, rightward is a larger recorded context, upward is faster
+  compare(m) {
+    if (!m.length) return null;
+    const s = root('m-compare');
+    m.forEach((p) => s.appendChild(svg('circle', { cx: (12 + (Number(p.x) || 0) * 176).toFixed(1), cy: (100 - (Number(p.y) || 0) * 86).toFixed(1), r: 2.2, class: 'cmp-dot' })));
+    return s;
+  },
   // 12 caveats: warning rings, one per caveat
   caveats(m) {
     if (!m.length) return null;

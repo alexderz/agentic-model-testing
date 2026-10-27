@@ -19,6 +19,7 @@
     <a href="#tests">Tests</a>
     <a href="#picks">Picks</a>
     <a href="#runs">Runs</a>
+    <a href="#compare">Compare</a>
     <a href="#struggle">Struggle</a>
     <a href="#test3">Test 3</a>
     <a href="#ab">Engines</a>
@@ -133,9 +134,37 @@
   <div id="findings-list" class="findings"></div>
 </section>
 
+
 <section id="timeline" class="chapter" aria-labelledby="h-timeline">
   <div class="chapter-head"><span class="num">10</span><h2 id="h-timeline">How the work evolved</h2></div>
   <ol id="timeline-list" class="river"></ol>
+</section>
+
+<section id="compare" class="chapter" aria-labelledby="h-compare">
+  <div class="chapter-head"><span class="num">11</span><h2 id="h-compare">Compare setups</h2>
+  <p class="lede">One row per setup. Blank means not recorded.</p></div>
+  <form class="filters" id="compare-filters" aria-label="Filter setups">
+    <label>Family <select id="c-family"><option value="all">all</option></select></label>
+    <label>Context <select id="c-ctx">
+      <option value="all">all</option>
+      <option value="recorded">recorded only</option>
+      <option value="blank">not recorded</option>
+      <option value="32">at least 32,768</option>
+      <option value="128">at least 131,072</option>
+      <option value="200">at least 200,000</option>
+    </select></label>
+    <label>Sort <select id="c-sort">
+      <option value="speed">fastest decode</option>
+      <option value="ctx">largest context</option>
+      <option value="name">name</option>
+      <option value="kv">KV type</option>
+      <option value="t1">t1</option><option value="t2">t2</option><option value="t2t">t2T</option><option value="t3">t3</option>
+      <option value="t4">t4</option><option value="t5">t5</option><option value="t6">t6</option><option value="t7">t7</option><option value="t8">t8</option>
+    </select></label>
+    <label class="grow">Search <input type="search" id="c-q" placeholder="model, quant or engine"></label>
+    <output id="compare-count" class="count" aria-live="polite"></output>
+  </form>
+  <div class="compare-wrap" id="compare-table"></div>
 </section>
 
 </main>

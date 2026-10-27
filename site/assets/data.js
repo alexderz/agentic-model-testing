@@ -610,6 +610,18 @@ export function motifs(data) {
   const tl = arr(data.timeline).filter((t) => t.date);
   const t0 = tl.length ? Date.parse(tl[0].date) : 0, t1 = tl.length ? Date.parse(tl[tl.length - 1].date) : 1;
   out.timeline = tl.map((t) => { const ms = Date.parse(t.date); return { x: Number.isFinite(ms) && t1 > t0 ? (ms - t0) / (t1 - t0) : 0 }; });
+  const speedBy = new Map();
+  for (const r of runs) {
+    if (r.tps == null || !r.model) continue;
+    const g = speedBy.get(r.model) || { tps: [], ctx: 0 };
+    g.tps.push(r.tps);
+    if (r.ctx != null && r.ctx > g.ctx) g.ctx = r.ctx;
+    speedBy.set(r.model, g);
+  }
+  const pts = [...speedBy.values()];
+  const tmax = Math.max(1, ...pts.map((p) => p.tps.reduce((s, n) => s + n, 0) / p.tps.length));
+  const cmax = Math.max(1, ...pts.map((p) => p.ctx));
+  out.compare = pts.map((p) => ({ x: p.ctx / cmax, y: (p.tps.reduce((s, n) => s + n, 0) / p.tps.length) / tmax }));
   return out;
 }
 
