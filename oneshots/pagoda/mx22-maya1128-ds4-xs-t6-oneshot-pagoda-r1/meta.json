@@ -1,0 +1,35 @@
+{
+ "case": "mx22-maya1128-ds4-xs-t6-oneshot-pagoda-r1",
+ "finish_reason": "stop",
+ "first_token_s": 6.0,
+ "max_tokens": 126976,
+ "model": "maya1128-ds4-xs",
+ "reasoning_chars": 71616,
+ "reply_chars": 63338,
+ "started": "2026-10-26T03:11:15-0500",
+ "status": "ok",
+ "test": "6",
+ "timings": {
+  "cache_n": 0,
+  "prompt_n": 176,
+  "prompt_ms": 6025.4,
+  "prompt_per_token_ms": 34.235,
+  "prompt_per_second": 29.2,
+  "predicted_n": 45946,
+  "predicted_ms": 1644949.0,
+  "predicted_per_token_ms": 35.802,
+  "predicted_per_second": 27.9,
+  "draft_n": 39196,
+  "draft_n_accepted": 30514
+ },
+ "tok_s": 27.9,
+ "usage": {
+  "prompt_tokens": 176,
+  "completion_tokens": 45946,
+  "total_tokens": 46122,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  }
+ },
+ "wall_s": 1651.0
+}
