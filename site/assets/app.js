@@ -7,6 +7,7 @@ import { el, clear, $, familyChip, verdictChip, kindChip, revealList, repoLink, 
 import { speedLadder, struggleStrip, abDumbbell, pairDumbbell, petalScore, pips, beforeAfter, bigNumeral, runLine, ofMax } from './charts.js';
 import { renderHero } from './hero.js';
 import { chapterMotif } from './motifs.js';
+import { renderCompare } from './compare.js';
 import { openViewer } from './viewer.js';
 
 const { fmt, fmtMinutes, fmtDate } = D;
@@ -29,6 +30,7 @@ async function main() {
   section('tests', () => renderTests(data));
   section('picks', () => renderPicks(data));
   section('runs', () => renderRuns(data));
+  section('compare', () => renderCompare(data));
   section('struggle', () => renderStruggle(data));
   section('test3', () => renderTest3(data));
   section('ab', () => renderAB(data));

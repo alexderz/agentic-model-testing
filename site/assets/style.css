@@ -93,7 +93,7 @@ h1 { font-size: clamp(2.8rem, 7vw, 5.4rem); line-height: 0.98; background: linea
   background: repeating-linear-gradient(135deg, transparent 0 7px, rgba(233, 237, 245, 0.012) 7px 8px); }
 #machine { --accent: var(--teal); } #tests { --accent: var(--violet); } #picks { --accent: var(--gold); } #runs { --accent: var(--sapphire); }
 #struggle { --accent: var(--magenta); } #test3 { --accent: var(--gold); } #ab { --accent: var(--violet); } #oneshots { --accent: var(--magenta); }
-#findings { --accent: var(--teal); } #timeline { --accent: var(--sapphire); }
+#findings { --accent: var(--teal); } #timeline { --accent: var(--sapphire); } #compare { --accent: var(--gold); }
 .chapter-head { display: grid; grid-template-columns: auto 1fr auto; gap: 8px 20px; align-items: baseline; margin-bottom: 26px; }
 .chapter-head .num { font-family: var(--serif); font-size: 1rem; color: var(--accent); letter-spacing: 0.1em; grid-row: span 2; align-self: start; padding-top: 0.7em; border-top: 2px solid var(--accent); }
 .chapter-head .lede { grid-column: 2; color: var(--muted); max-width: 72ch; font-size: 0.95rem; margin: 0; }
@@ -483,3 +483,17 @@ dialog.viewer::backdrop { background: rgba(5, 8, 16, 0.85); }
 
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition: none !important; animation: none !important; } }
 @media print { body { background: #fff; color: #000; } .hero-art, .filters, .more, .shot .play, dialog.viewer { display: none; } }
+
+.compare-wrap { overflow: auto; max-height: 72vh; border: 1px solid var(--line); border-radius: 12px; background: var(--card); }
+table.compare { width: max-content; min-width: 100%; border-collapse: separate; border-spacing: 0; font-size: 0.8rem; }
+table.compare th, table.compare td { padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; text-align: left; }
+table.compare thead th { position: sticky; top: 0; background: #111a2f; z-index: 2; }
+table.compare button.sort { background: none; border: 0; color: var(--faint); font: inherit; font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 0; cursor: pointer; }
+table.compare button.sort[aria-sort="descending"], table.compare button.sort[aria-sort="ascending"] { color: var(--gold); }
+table.compare td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+table.compare .name { display: block; font-family: var(--serif); font-size: 1rem; color: var(--text); margin-top: 4px; }
+table.compare .meta, table.compare .line { display: block; color: var(--muted); }
+table.compare .line { margin-top: 4px; max-width: 280px; }
+table.compare tbody th { min-width: 220px; font-weight: 400; position: sticky; left: 0; background: #141d33; z-index: 1; }
+table.compare thead th:first-child { left: 0; z-index: 3; }
+.cmp-dot { fill: var(--sapphire); }
