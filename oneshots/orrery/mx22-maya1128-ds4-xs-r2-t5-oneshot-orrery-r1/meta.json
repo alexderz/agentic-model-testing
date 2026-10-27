@@ -1,0 +1,46 @@
+{
+ "case": "mx22-maya1128-ds4-xs-r2-t5-oneshot-orrery-r1",
+ "finish_reason": "stop",
+ "first_token_s": 4.1,
+ "max_tokens": 126976,
+ "model": "maya1128-ds4-xs",
+ "reasoning_chars": 100796,
+ "reply_chars": 23352,
+ "started": "2026-10-26T18:51:46-0500",
+ "static": {
+  "svg_found": true,
+  "parses": true,
+  "bytes": 21587,
+  "animateTransform": 19,
+  "animate": 7,
+  "animateMotion": 0,
+  "keyframes": 0,
+  "script": 0,
+  "prose_chars_outside_svg": 1765
+ },
+ "status": "ok",
+ "test": "5",
+ "timings": {
+  "cache_n": 0,
+  "prompt_n": 80,
+  "prompt_ms": 4070.9,
+  "prompt_per_token_ms": 50.886,
+  "prompt_per_second": 19.7,
+  "predicted_n": 31986,
+  "predicted_ms": 1230218.8,
+  "predicted_per_token_ms": 38.461,
+  "predicted_per_second": 26.0,
+  "draft_n": 25569,
+  "draft_n_accepted": 16433
+ },
+ "tok_s": 26.0,
+ "usage": {
+  "prompt_tokens": 80,
+  "completion_tokens": 31986,
+  "total_tokens": 32066,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  }
+ },
+ "wall_s": 1234.3
+}

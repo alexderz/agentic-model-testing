@@ -1,0 +1,49 @@
+{
+ "case": "mx22-maya1128-ds4-xs-r2-t6-oneshot-pagoda-r1",
+ "finish_reason": "stop",
+ "first_token_s": 6.4,
+ "max_tokens": 126976,
+ "model": "maya1128-ds4-xs",
+ "reasoning_chars": 75521,
+ "reply_chars": 18024,
+ "started": "2026-10-26T19:12:25-0500",
+ "static": {
+  "html_found": true,
+  "bytes": 17262,
+  "complete": true,
+  "three_module": true,
+  "importmap": true,
+  "umd_three": false,
+  "external_urls": [
+   "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js"
+  ],
+  "boxes": 4,
+  "instanced": true,
+  "prose_chars_outside_html": 764
+ },
+ "status": "ok",
+ "test": "6",
+ "timings": {
+  "cache_n": 0,
+  "prompt_n": 176,
+  "prompt_ms": 6377.9,
+  "prompt_per_token_ms": 36.238,
+  "prompt_per_second": 27.6,
+  "predicted_n": 30338,
+  "predicted_ms": 1157992.8,
+  "predicted_per_token_ms": 38.17,
+  "predicted_per_second": 26.2,
+  "draft_n": 25196,
+  "draft_n_accepted": 17644
+ },
+ "tok_s": 26.2,
+ "usage": {
+  "prompt_tokens": 176,
+  "completion_tokens": 30338,
+  "total_tokens": 30514,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  }
+ },
+ "wall_s": 1164.4
+}

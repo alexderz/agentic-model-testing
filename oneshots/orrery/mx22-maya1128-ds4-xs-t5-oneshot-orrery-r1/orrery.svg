@@ -1,0 +1,416 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1000 1000"
+     role="img" aria-label="Animated brass clockwork orrery with meshing gears and sweeping planet shadows">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="65%">
+      <stop offset="0%" stop-color="#132030"/>
+      <stop offset="55%" stop-color="#05080e"/>
+      <stop offset="100%" stop-color="#010208"/>
+    </radialGradient>
+
+    <radialGradient id="baseGrad" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#5b3a18"/>
+      <stop offset="35%" stop-color="#2e1c0b"/>
+      <stop offset="72%" stop-color="#120a05"/>
+      <stop offset="100%" stop-color="#4a2f14"/>
+    </radialGradient>
+
+    <radialGradient id="hubGrad" cx="50%" cy="50%" r="52%">
+      <stop offset="0%" stop-color="#f6d98e"/>
+      <stop offset="32%" stop-color="#8a5828"/>
+      <stop offset="70%" stop-color="#251408"/>
+      <stop offset="100%" stop-color="#b97a37"/>
+    </radialGradient>
+
+    <linearGradient id="brass" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fce8a6"/>
+      <stop offset="24%" stop-color="#c78634"/>
+      <stop offset="50%" stop-color="#704018"/>
+      <stop offset="76%" stop-color="#e9b862"/>
+      <stop offset="100%" stop-color="#3d210c"/>
+    </linearGradient>
+
+    <linearGradient id="brassStroke" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffe9b1"/>
+      <stop offset="30%" stop-color="#a8642b"/>
+      <stop offset="60%" stop-color="#f2c66f"/>
+      <stop offset="100%" stop-color="#5a3214"/>
+    </linearGradient>
+
+    <radialGradient id="sunCore" cx="40%" cy="35%" r="72%">
+      <stop offset="0%" stop-color="#fffbe0"/>
+      <stop offset="40%" stop-color="#ffe17a"/>
+      <stop offset="74%" stop-color="#ffad25"/>
+      <stop offset="100%" stop-color="#8e3c00"/>
+    </radialGradient>
+
+    <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffe9a0" stop-opacity="0.9"/>
+      <stop offset="45%" stop-color="#ffbb40" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#ff6f00" stop-opacity="0"/>
+    </radialGradient>
+
+    <radialGradient id="mercuryGrad" cx="30%" cy="30%" r="80%">
+      <stop offset="0%" stop-color="#f5f0e4"/>
+      <stop offset="48%" stop-color="#918976"/>
+      <stop offset="100%" stop-color="#3c392f"/>
+    </radialGradient>
+
+    <radialGradient id="venusGrad" cx="30%" cy="30%" r="80%">
+      <stop offset="0%" stop-color="#fff1c7"/>
+      <stop offset="45%" stop-color="#d9a85f"/>
+      <stop offset="100%" stop-color="#77501d"/>
+    </radialGradient>
+
+    <radialGradient id="earthGrad" cx="30%" cy="30%" r="80%">
+      <stop offset="0%" stop-color="#c6ecff"/>
+      <stop offset="32%" stop-color="#2d7fbd"/>
+      <stop offset="100%" stop-color="#071e33"/>
+    </radialGradient>
+
+    <radialGradient id="marsGrad" cx="30%" cy="30%" r="80%">
+      <stop offset="0%" stop-color="#f5b08a"/>
+      <stop offset="45%" stop-color="#b45b38"/>
+      <stop offset="100%" stop-color="#552014"/>
+    </radialGradient>
+
+    <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="10"/>
+    </filter>
+    <filter id="glowSmall" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="4"/>
+    </filter>
+
+    <clipPath id="clipMercury"><circle cx="0" cy="0" r="9"/></clipPath>
+    <clipPath id="clipVenus"><circle cx="0" cy="0" r="12"/></clipPath>
+    <clipPath id="clipEarth"><circle cx="0" cy="0" r="14"/></clipPath>
+    <clipPath id="clipMars"><circle cx="0" cy="0" r="11"/></clipPath>
+
+    <g id="pinionGear">
+      <circle r="14" fill="none" stroke="url(#brassStroke)" stroke-width="5.5"
+              stroke-dasharray="3.4 2.3" stroke-linecap="butt"/>
+      <circle r="14" fill="none" stroke="#5a3616" stroke-width="1.1"/>
+      <circle r="9.4" fill="url(#brass)" stroke="#5a3616" stroke-width="1"/>
+      <circle r="4.2" fill="#1a0e06" stroke="#e9c778" stroke-width="1"/>
+      <path d="M-9 0 H9 M0 -9 V9" stroke="#e8bb68" stroke-width="1.2" opacity="0.85"/>
+      <circle r="2" fill="#ffe9b1"/>
+    </g>
+  </defs>
+
+  <rect x="0" y="0" width="1000" height="1000" fill="url(#bg)"/>
+
+  <g fill="#ead49c" opacity="0.68">
+    <circle cx="46" cy="76" r="1.2"/>
+    <circle cx="82" cy="940" r="1.0"/>
+    <circle cx="958" cy="88" r="1.3"/>
+    <circle cx="920" cy="956" r="1.1"/>
+    <circle cx="20" cy="330" r="1.0"/>
+    <circle cx="978" cy="310" r="1.2"/>
+    <circle cx="120" cy="18" r="0.9"/>
+    <circle cx="860" cy="22" r="1.0"/>
+    <circle cx="18" cy="620" r="1.1"/>
+    <circle cx="982" cy="640" r="1.0"/>
+    <circle cx="60" cy="490" r="0.8"/>
+    <circle cx="940" cy="490" r="0.8"/>
+    <circle cx="240" cy="970" r="1.2"/>
+    <circle cx="760" cy="970" r="0.9"/>
+    <circle cx="240" cy="24" r="0.9"/>
+    <circle cx="760" cy="24" r="1.1"/>
+  </g>
+
+  <g id="orrery">
+    <g id="base">
+      <circle cx="500" cy="500" r="470" fill="url(#baseGrad)"
+              stroke="url(#brassStroke)" stroke-width="14"/>
+      <circle cx="500" cy="500" r="470" fill="none"
+              stroke="#a16c36" stroke-width="22" stroke-dasharray="18 12" opacity="0.38"/>
+      <circle cx="500" cy="500" r="452" fill="none"
+              stroke="#754d23" stroke-width="3" opacity="0.9"/>
+      <circle cx="500" cy="500" r="438" fill="none"
+              stroke="#d9a85a" stroke-width="3" stroke-dasharray="2 16" opacity="0.72"/>
+      <circle cx="500" cy="500" r="418" fill="none"
+              stroke="#5b3916" stroke-width="2" opacity="0.8"/>
+      <circle cx="500" cy="500" r="380" fill="none"
+              stroke="#d2a05a" stroke-width="1.2" stroke-dasharray="1 22" opacity="0.45"/>
+
+      <g fill="none" stroke="#7b5129" opacity="0.55">
+        <circle cx="500" cy="500" r="430" stroke-width="2"/>
+        <circle cx="500" cy="500" r="390" stroke-width="1.3"/>
+        <circle cx="500" cy="500" r="350" stroke-width="1.3"/>
+        <circle cx="500" cy="500" r="310" stroke-width="1.2"/>
+        <circle cx="500" cy="500" r="270" stroke-width="1.2"/>
+        <circle cx="500" cy="500" r="230" stroke-width="1.2"/>
+        <circle cx="500" cy="500" r="190" stroke-width="1.1"/>
+        <circle cx="500" cy="500" r="150" stroke-width="1.1"/>
+        <circle cx="500" cy="500" r="110" stroke-width="1.1"/>
+      </g>
+
+      <g fill="url(#brass)" stroke="#3b210d" stroke-width="1.5">
+        <g transform="translate(500 500)">
+          <circle cx="0" cy="-430" r="7"/>
+          <circle cx="0" cy="430" r="7"/>
+          <circle cx="-430" cy="0" r="7"/>
+          <circle cx="430" cy="0" r="7"/>
+          <circle cx="304" cy="304" r="7"/>
+          <circle cx="-304" cy="304" r="7"/>
+          <circle cx="304" cy="-304" r="7"/>
+          <circle cx="-304" cy="-304" r="7"/>
+        </g>
+      </g>
+    </g>
+
+    <g id="orbit-rings" fill="none" stroke="url(#brassStroke)" opacity="0.88">
+      <circle cx="500" cy="500" r="170" stroke-width="1.45" stroke-dasharray="6 4"/>
+      <circle cx="500" cy="500" r="250" stroke-width="1.55" stroke-dasharray="7 5"/>
+      <circle cx="500" cy="500" r="335" stroke-width="1.65" stroke-dasharray="8 6"/>
+      <circle cx="500" cy="500" r="420" stroke-width="1.75" stroke-dasharray="9 7"/>
+      <circle cx="500" cy="500" r="170" stroke="#2a1708" stroke-width="2" stroke-dasharray="1 14" opacity="0.65"/>
+      <circle cx="500" cy="500" r="250" stroke="#2a1708" stroke-width="2" stroke-dasharray="1 16" opacity="0.65"/>
+      <circle cx="500" cy="500" r="335" stroke="#2a1708" stroke-width="2" stroke-dasharray="1 18" opacity="0.65"/>
+      <circle cx="500" cy="500" r="420" stroke="#2a1708" stroke-width="2" stroke-dasharray="1 20" opacity="0.65"/>
+    </g>
+
+    <g id="central-hub" transform="translate(500 500)">
+      <circle r="128" fill="url(#hubGrad)" stroke="#e5b45e" stroke-width="3"/>
+      <circle r="118" fill="none" stroke="#3b210c" stroke-width="2"/>
+      <circle r="110" fill="none" stroke="#e9b95f" stroke-width="1" opacity="0.6"/>
+      <circle r="100" fill="none" stroke="#5a3616" stroke-width="1.4" stroke-dasharray="3 5" opacity="0.65"/>
+
+      <!-- Mercury drive ring gear: 0.241 year -->
+      <g>
+        <animateTransform attributeName="transform" type="rotate"
+                          from="0" to="360" dur="12s" repeatCount="indefinite"/>
+        <circle r="50" fill="none" stroke="url(#brassStroke)"
+                stroke-width="10" stroke-dasharray="6.6 4.6" stroke-linecap="butt"/>
+        <circle r="50" fill="none" stroke="#5b3816" stroke-width="1.2"/>
+        <circle r="44" fill="none" stroke="#e1b05a" stroke-width="1" opacity="0.7"/>
+        <circle r="38" fill="none" stroke="#241408" stroke-width="2" opacity="0.8"/>
+      </g>
+
+      <!-- Venus drive ring gear: 0.615 year -->
+      <g>
+        <animateTransform attributeName="transform" type="rotate"
+                          from="0" to="-360" dur="16s" repeatCount="indefinite"/>
+        <circle r="66" fill="none" stroke="url(#brassStroke)"
+                stroke-width="11" stroke-dasharray="7.2 5.2" stroke-linecap="butt"/>
+        <circle r="66" fill="none" stroke="#5b3816" stroke-width="1.2"/>
+        <circle r="59" fill="none" stroke="#e1b05a" stroke-width="1" opacity="0.7"/>
+        <circle r="53" fill="none" stroke="#241408" stroke-width="2" opacity="0.8"/>
+      </g>
+
+      <!-- Earth drive ring gear: 1.000 year -->
+      <g>
+        <animateTransform attributeName="transform" type="rotate"
+                          from="0" to="360" dur="20s" repeatCount="indefinite"/>
+        <circle r="82" fill="none" stroke="url(#brassStroke)"
+                stroke-width="12" stroke-dasharray="8.2 5.8" stroke-linecap="butt"/>
+        <circle r="82" fill="none" stroke="#5b3816" stroke-width="1.2"/>
+        <circle r="75" fill="none" stroke="#e1b05a" stroke-width="1" opacity="0.7"/>
+        <circle r="69" fill="none" stroke="#241408" stroke-width="2" opacity="0.8"/>
+      </g>
+
+      <!-- Mars drive ring gear: 1.881 years -->
+      <g>
+        <animateTransform attributeName="transform" type="rotate"
+                          from="0" to="-360" dur="26s" repeatCount="indefinite"/>
+        <circle r="98" fill="none" stroke="url(#brassStroke)"
+                stroke-width="13" stroke-dasharray="9.2 6.4" stroke-linecap="butt"/>
+        <circle r="98" fill="none" stroke="#5b3816" stroke-width="1.2"/>
+        <circle r="91" fill="none" stroke="#e1b05a" stroke-width="1" opacity="0.7"/>
+        <circle r="85" fill="none" stroke="#241408" stroke-width="2" opacity="0.8"/>
+      </g>
+
+      <!-- central sun gear rim -->
+      <g>
+        <animateTransform attributeName="transform" type="rotate"
+                          from="0" to="360" dur="4.2s" repeatCount="indefinite"/>
+        <circle r="32" fill="none" stroke="url(#brassStroke)"
+                stroke-width="7" stroke-dasharray="4 3" stroke-linecap="butt"/>
+        <circle r="32" fill="none" stroke="#e5b45e" stroke-width="1"/>
+      </g>
+    </g>
+
+    <g id="arms" transform="translate(500 500)">
+      <!-- MERCURY: orbit duration = Earth-year scaled × 0.2408 -->
+      <g>
+        <animateTransform attributeName="transform" type="rotate"
+                          from="40" to="400" dur="5.7792s" repeatCount="indefinite"/>
+        <line x1="34" y1="0" x2="170" y2="0" stroke="#1f1208" stroke-width="6" opacity="0.82"/>
+        <line x1="34" y1="0" x2="170" y2="0" stroke="url(#brassStroke)" stroke-width="2.4"/>
+        <g transform="translate(64 0)">
+          <g>
+            <animateTransform attributeName="transform" type="rotate"
+                              from="0" to="-360" dur="2.8s" repeatCount="indefinite"/>
+            <use href="#pinionGear"/>
+          </g>
+        </g>
+        <g transform="translate(170 0)">
+          <circle r="9" fill="url(#mercuryGrad)" stroke="#403b32" stroke-width="1"/>
+          <g clip-path="url(#clipMercury)">
+            <g>
+              <animateTransform attributeName="transform" type="rotate"
+                                from="0" to="360" dur="2.4s" repeatCount="indefinite"/>
+              <circle cx="-3" cy="-4" r="1.3" fill="#4d4a42" opacity="0.76"/>
+              <circle cx="4" cy="3" r="1.7" fill="#b7b0a2" opacity="0.35"/>
+              <circle cx="-6" cy="4" r="1" fill="#2e2c27" opacity="0.65"/>
+              <path d="M -7 -6 L 7 5" stroke="#88816f" stroke-width="0.7" opacity="0.4"/>
+            </g>
+            <g>
+              <animateTransform attributeName="transform" type="rotate"
+                                from="0" to="360" dur="5.0s" repeatCount="indefinite"/>
+              <path d="M 0 -9 A 9 9 0 0 0 0 9 Z" fill="#01040a" opacity="0.64"/>
+              <path d="M 0 -9 A 9 9 0 0 0 0 9" fill="none" stroke="#02060c" stroke-width="1.1" opacity="0.85"/>
+            </g>
+          </g>
+          <circle r="9" fill="none" stroke="#e6bb5f" stroke-width="1"/>
+          <ellipse cx="-2.8" cy="-2.8" rx="3" ry="1.5" fill="#ffffff" opacity="0.18"/>
+        </g>
+      </g>
+
+      <!-- VENUS: orbit duration = Earth-year scaled × 0.6152 -->
+      <g>
+        <animateTransform attributeName="transform" type="rotate"
+                          from="120" to="480" dur="14.7648s" repeatCount="indefinite"/>
+        <line x1="34" y1="0" x2="250" y2="0" stroke="#1f1208" stroke-width="6" opacity="0.82"/>
+        <line x1="34" y1="0" x2="250" y2="0" stroke="url(#brassStroke)" stroke-width="2.4"/>
+        <g transform="translate(80 0)">
+          <g>
+            <animateTransform attributeName="transform" type="rotate"
+                              from="0" to="-360" dur="3.4s" repeatCount="indefinite"/>
+            <use href="#pinionGear"/>
+          </g>
+        </g>
+        <g transform="translate(250 0)">
+          <circle r="12" fill="url(#venusGrad)" stroke="#6b4219" stroke-width="1"/>
+          <g clip-path="url(#clipVenus)">
+            <g>
+              <animateTransform attributeName="transform" type="rotate"
+                                from="0" to="360" dur="3.6s" repeatCount="indefinite"/>
+              <path d="M -11 -4 Q -5 -8 1 -4 T 11 2" stroke="#f6ddb0" stroke-width="1.2"
+                    fill="none" opacity="0.62"/>
+              <path d="M -10 4 Q -4 7 2 4 T 10 0" stroke="#fff0cf" stroke-width="1"
+                    fill="none" opacity="0.45"/>
+              <circle cx="-3" cy="-6" r="1.6" fill="#fff9e7" opacity="0.45"/>
+              <circle cx="5" cy="2" r="2.1" fill="#a76d2d" opacity="0.35"/>
+            </g>
+            <g>
+              <animateTransform attributeName="transform" type="rotate"
+                                from="0" to="360" dur="7.2s" repeatCount="indefinite"/>
+              <path d="M 0 -12 A 12 12 0 0 0 0 12 Z" fill="#01040a" opacity="0.63"/>
+              <path d="M 0 -12 A 12 12 0 0 0 0 12" fill="none" stroke="#02060c" stroke-width="1.2" opacity="0.85"/>
+            </g>
+          </g>
+          <circle r="12" fill="none" stroke="#e6bb5f" stroke-width="1.2"/>
+          <ellipse cx="-4" cy="-4" rx="4" ry="2" fill="#ffffff" opacity="0.18"/>
+        </g>
+      </g>
+
+      <!-- EARTH: orbit duration = 24s reference -->
+      <g>
+        <animateTransform attributeName="transform" type="rotate"
+                          from="210" to="570" dur="24s" repeatCount="indefinite"/>
+        <line x1="34" y1="0" x2="335" y2="0" stroke="#1f1208" stroke-width="6" opacity="0.82"/>
+        <line x1="34" y1="0" x2="335" y2="0" stroke="url(#brassStroke)" stroke-width="2.4"/>
+        <g transform="translate(96 0)">
+          <g>
+            <animateTransform attributeName="transform" type="rotate"
+                              from="0" to="-360" dur="4.0s" repeatCount="indefinite"/>
+            <use href="#pinionGear"/>
+          </g>
+        </g>
+        <g transform="translate(335 0)">
+          <circle r="14" fill="url(#earthGrad)" stroke="#16324d" stroke-width="1"/>
+          <g clip-path="url(#clipEarth)">
+            <g>
+              <animateTransform attributeName="transform" type="rotate"
+                                from="0" to="360" dur="4.2s" repeatCount="indefinite"/>
+              <path d="M -12 -3 C -8 -10 -2 -11 3 -8 C 6 -5 3 2 -2 4 C -6 5 -10 2 -10 -1 Z"
+                    fill="#4da54b"/>
+              <path d="M 4 -7 C 9 -8 12 -4 11 0 C 9 3 5 4 2 1 Z" fill="#58b85d"/>
+              <path d="M -4 -9 C -1 -10 2 -9 4 -7" stroke="#d5f4ff" stroke-width="1.2"
+                    fill="none" opacity="0.62"/>
+              <path d="M -9 3 C -5 6 0 7 4 5" stroke="#eef9ff" stroke-width="1"
+                    fill="none" opacity="0.48"/>
+              <circle cx="7" cy="-4" r="1.5" fill="#f4fbff" opacity="0.45"/>
+            </g>
+            <g>
+              <animateTransform attributeName="transform" type="rotate"
+                                from="0" to="360" dur="9.5s" repeatCount="indefinite"/>
+              <path d="M 0 -14 A 14 14 0 0 0 0 14 Z" fill="#01040a" opacity="0.62"/>
+              <path d="M 0 -14 A 14 14 0 0 0 0 14" fill="none" stroke="#02060c" stroke-width="1.3" opacity="0.85"/>
+            </g>
+          </g>
+          <circle r="14" fill="none" stroke="#e6bb5f" stroke-width="1.2"/>
+          <ellipse cx="-4.8" cy="-4.8" rx="4.4" ry="2.2" fill="#ffffff" opacity="0.18"/>
+        </g>
+      </g>
+
+      <!-- MARS: orbit duration = Earth-year scaled × 1.8808 -->
+      <g>
+        <animateTransform attributeName="transform" type="rotate"
+                          from="300" to="660" dur="45.1392s" repeatCount="indefinite"/>
+        <line x1="34" y1="0" x2="420" y2="0" stroke="#1f1208" stroke-width="6" opacity="0.82"/>
+        <line x1="34" y1="0" x2="420" y2="0" stroke="url(#brassStroke)" stroke-width="2.4"/>
+        <g transform="translate(112 0)">
+          <g>
+            <animateTransform attributeName="transform" type="rotate"
+                              from="0" to="-360" dur="4.6s" repeatCount="indefinite"/>
+            <use href="#pinionGear"/>
+          </g>
+        </g>
+        <g transform="translate(420 0)">
+          <circle r="11" fill="url(#marsGrad)" stroke="#3b160d" stroke-width="1"/>
+          <g clip-path="url(#clipMars)">
+            <g>
+              <animateTransform attributeName="transform" type="rotate"
+                                from="0" to="360" dur="5.0s" repeatCount="indefinite"/>
+              <circle cx="0" cy="-9.5" r="3" fill="#f7d7c0" opacity="0.42"/>
+              <path d="M -8 -1 C -4 -6 1 -3 3 1 C 5 5 1 7 -3 5 C -6 3 -8 1 -8 -1 Z"
+                    fill="#5f2417" opacity="0.45"/>
+              <circle cx="5" cy="4" r="1.5" fill="#f0aa7d" opacity="0.35"/>
+              <path d="M -6 3 L 6 -3" stroke="#2e0e08" stroke-width="0.8" opacity="0.5"/>
+            </g>
+            <g>
+              <animateTransform attributeName="transform" type="rotate"
+                                from="0" to="360" dur="12.0s" repeatCount="indefinite"/>
+              <path d="M 0 -11 A 11 11 0 0 0 0 11 Z" fill="#01040a" opacity="0.65"/>
+              <path d="M 0 -11 A 11 11 0 0 0 0 11" fill="none" stroke="#02060c" stroke-width="1.1" opacity="0.85"/>
+            </g>
+          </g>
+          <circle r="11" fill="none" stroke="#e6bb5f" stroke-width="1.1"/>
+          <ellipse cx="-3.4" cy="-3.4" rx="3.4" ry="1.7" fill="#ffffff" opacity="0.17"/>
+        </g>
+      </g>
+    </g>
+
+    <g id="sun" transform="translate(500 500)">
+      <circle r="66" fill="url(#sunGlow)" filter="url(#glow)" opacity="0.92"/>
+      <g stroke="#ffce7a" stroke-width="1.5" stroke-linecap="round" opacity="0.62">
+        <animateTransform attributeName="transform" type="rotate"
+                          from="0" to="360" dur="36s" repeatCount="indefinite"/>
+        <line x1="0" y1="-38" x2="0" y2="-64"/>
+        <line x1="0" y1="-38" x2="0" y2="-64" transform="rotate(30)"/>
+        <line x1="0" y1="-38" x2="0" y2="-64" transform="rotate(60)"/>
+        <line x1="0" y1="-38" x2="0" y2="-64" transform="rotate(90)"/>
+        <line x1="0" y1="-38" x2="0" y2="-64" transform="rotate(120)"/>
+        <line x1="0" y1="-38" x2="0" y2="-64" transform="rotate(150)"/>
+        <line x1="0" y1="-38" x2="0" y2="-64" transform="rotate(180)"/>
+        <line x1="0" y1="-38" x2="0" y2="-64" transform="rotate(210)"/>
+        <line x1="0" y1="-38" x2="0" y2="-64" transform="rotate(240)"/>
+        <line x1="0" y1="-38" x2="0" y2="-64" transform="rotate(270)"/>
+        <line x1="0" y1="-38" x2="0" y2="-64" transform="rotate(300)"/>
+        <line x1="0" y1="-38" x2="0" y2="-64" transform="rotate(330)"/>
+      </g>
+      <circle r="30" fill="url(#sunCore)" stroke="#fff6c9" stroke-width="2"/>
+      <circle r="18" fill="#fffbe6" opacity="0.42" filter="url(#glowSmall)"/>
+      <circle r="4" fill="#ffffff" opacity="0.88"/>
+    </g>
+
+    <g font-family="Georgia, 'Times New Roman', serif" text-anchor="middle" pointer-events="none">
+      <text x="500" y="60" fill="#e7b85e" font-size="25" letter-spacing="8" opacity="0.95">CLOCKWORK ORRERY</text>
+      <text x="500" y="82" fill="#9a6a35" font-size="10" letter-spacing="4">REAL RELATIVE PLANETARY SPEEDS</text>
+      <text x="500" y="946" fill="#b68444" font-size="10" letter-spacing="2">
+        ORBIT PERIODS: MERCURY 0.241 · VENUS 0.615 · EARTH 1.000 · MARS 1.881
+      </text>
+    </g>
+  </g>
+</svg>

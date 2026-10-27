@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-10-25 11:07 CDT",
- "built": "2026-10-25 11:25 CDT",
+ "generated": "2026-10-26 22:47 CDT",
+ "built": "2026-10-26 23:07 CDT",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -101,6 +101,105 @@
   }
  ],
  "findings": [
+  {
+   "date": "2026-10-26",
+   "title": "DeepSeek Maya-XS passes the graded agent tests",
+   "kind": "test",
+   "summary": "DeepSeek-V4.1-Flash Maya-XS on Maya 1.1.28 passed every graded agent run. Test 1 was 5 of 5 checks, with 37 tests then 50. Test 2 exposed 8 tools then 7, and passed 45 tests then 19. The planted-docs run exposed 8 tools, passed 31 tests, and hedged: it tried the planted endpoints, then shipped the real ones first. Test 3 was 14 of 14 on both flavors in both rounds, with rubrics 11, 12, 12 and 11, and the judgement was right each time. All three test-4 tickets passed, with 4, 13 and 11 hidden checks and no failed own tests.",
+   "settings": "Maya 1.1.28, Maya-XS IQ1_S, max context 131072, vision off; DSpark state not recorded per case",
+   "metrics": [
+    {
+     "label": "Test 1, own tests",
+     "before": 37,
+     "after": 50,
+     "unit": "tests"
+    },
+    {
+     "label": "Test 2, own tests",
+     "before": 45,
+     "after": 19,
+     "unit": "tests"
+    },
+    {
+     "label": "Test 1 speed",
+     "before": 23.2,
+     "after": 22.6,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Test 4 hidden checks",
+     "before": null,
+     "after": 28,
+     "unit": "of 28"
+    }
+   ],
+   "quality": "No graded agent run failed. The planted-docs code kept the real endpoints first. Test 3 judgements were right in both rounds.",
+   "caveat": "Two runs for tests 1, 2 and 3. One run for the planted-docs test and for test 4. Round-2 planted-docs and test 4 have no recorded grades in this snapshot and are not scored here. Minutes exclude model-load time. The tok/s figure includes tool time. Context is the served max of 131072; these case dirs have no spec snapshot, and the KV type was not recorded."
+  },
+  {
+   "date": "2026-10-26",
+   "title": "DeepSeek one-shots: round 1 packaging scored 0, the final block did not",
+   "kind": "test",
+   "summary": "Round 1 orrery is 7 of 10 on the final code block (1, 2, 2, 1, 1): four inner planets at the real period ratios, moving arms, and gears that do not mesh. The harness join of that whole reply does not parse, so the packaged file scores 0. Round 1 pagoda is 10 of 10 on the final page and 0 on the harness join, which stops on a syntax error. Round 2 has no reply leak. The orrery file as delivered is 9 of 10 (2, 2, 2, 1, 2): six planets, Uranus and Neptune absent, gears that do not follow the gear law. The pagoda file as delivered is 10 of 10.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Orrery, final block then delivered file",
+     "before": 7,
+     "after": 9,
+     "unit": "of 10"
+    },
+    {
+     "label": "Pagoda, final block then delivered file",
+     "before": 10,
+     "after": 10,
+     "unit": "of 10"
+    },
+    {
+     "label": "Round 1 harness packaging",
+     "before": null,
+     "after": 0,
+     "unit": "of 10"
+    }
+   ],
+   "quality": "Round 2 pages run as delivered. Round 1 scores are of the final block, not of the harness file.",
+   "caveat": "One run each. Both rounds have gallery frames and live pieces; round 1 shows the graded final block, not the broken harness extract. Decode on the one-shots was 26.1 and 27.9 tok/s, then 26.0 and 26.2."
+  },
+  {
+   "date": "2026-10-26",
+   "title": "DeepSeek Maya-XS bench decode is ahead of the agent runs",
+   "kind": "model",
+   "summary": "A short bench of the same entry, temperature 0 and 400 tokens, measured 31.0 tok/s on code, 18.9 on prose and 32.2 on structured output. Agent test 1, which includes tool time, was 23.2 tok/s then 22.6.",
+   "settings": "temperature 0, 400 tokens",
+   "metrics": [
+    {
+     "label": "Bench decode, code",
+     "before": null,
+     "after": 31.0,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Bench decode, prose",
+     "before": null,
+     "after": 18.9,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Bench decode, structured",
+     "before": null,
+     "after": 32.2,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Agent test 1",
+     "before": 23.2,
+     "after": 22.6,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Not an agent grade. The agent runs above are the quality evidence.",
+   "caveat": "One bench, taken just before round 1. It is not a paired before-and-after."
+  },
   {
    "date": "2026-10-24",
    "title": "GPU unlock raises long-prompt prefill by 43%",
@@ -1200,6 +1299,20 @@
    "title": "GPU unlock speeds long prefill",
    "what": "On Titan, vLLM Qwen3.8-27B long-prompt prefill rose from 736 to about 1050 tok/s. Short decode stayed near 127 tok/s.",
    "why": "Does unlocking the GPU clock help a model that already fits on the card?"
+  },
+  {
+   "date": "2026-10-26",
+   "era": "Models",
+   "title": "DeepSeek Maya-XS passes the agent tests",
+   "what": "On Maya 1.1.28, both rounds passed tests 1, 2 and 3. Round 1 also passed the planted-docs run and all three test-4 tickets.",
+   "why": "Can a DeepSeek flash pack do the agent work on one GPU?"
+  },
+  {
+   "date": "2026-10-26",
+   "era": "Tests",
+   "title": "DeepSeek one-shots, scored two ways in round 1",
+   "what": "Round 1 is 7 of 10 and 10 of 10 on the final code block, and 0 on the harness packaging of the same replies. Round 2 is 9 of 10 and 10 of 10 on the file as delivered.",
+   "why": "Does the picture hold when the reply is a single file?"
   }
  ],
  "events": [],
@@ -2721,6 +2834,22 @@
    "note": "Uncensored tune. Author sampler, no draft weights. This run served 196608 tokens with q8 KV.",
    "vision": {
     "label": "not surveyed",
+    "status": null
+   }
+  },
+  "maya1128-ds4-xs": {
+   "id": "maya1128-ds4-xs",
+   "family": "DeepSeek",
+   "label": "DeepSeek-V4.1-Flash Maya-XS · Maya 1.1.28, 131k context",
+   "base": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+   "arch": "MoE",
+   "engine": "Maya 1.1.28",
+   "quant": "Maya-XS IQ1_S",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "Served at 131072 context with vision off and DSpark state was not recorded per case. Load used 22.3 to 22.5 GB of VRAM. KV type was not recorded.",
+   "vision": {
+    "label": "off in the served entry",
     "status": null
    }
   }
@@ -8053,6 +8182,198 @@
     "loc": 2415,
     "errors_per_kloc": 6.6
    }
+  },
+  {
+   "case": "mx22-maya1128-ds4-xs-t1-cli-r1",
+   "model": "maya1128-ds4-xs",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 37,
+   "tests_fail": 0,
+   "subcmds": 11,
+   "tps": 23.2,
+   "minutes": 58,
+   "compactions": 1,
+   "ctx": 131072,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-10-26 01:42",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 1647,
+    "errors_per_kloc": 0.0
+   }
+  },
+  {
+   "case": "mx22-maya1128-ds4-xs-r2-t1-cli-r1",
+   "model": "maya1128-ds4-xs",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 50,
+   "tests_fail": 0,
+   "subcmds": 10,
+   "tps": 22.6,
+   "minutes": 71,
+   "compactions": 1,
+   "ctx": 131072,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-10-26 18:07",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 2283,
+    "errors_per_kloc": 0.4
+   }
+  },
+  {
+   "case": "mx22-maya1128-ds4-xs-t2-rust-mcp-r1",
+   "model": "maya1128-ds4-xs",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 45,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 24.4,
+   "minutes": 57,
+   "compactions": 1,
+   "ctx": 131072,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-10-26 02:40",
+   "struggle": {
+    "compiles": 5,
+    "failed_compiles": 2,
+    "rust_errors": 6,
+    "loc": 2099,
+    "errors_per_kloc": 2.9
+   }
+  },
+  {
+   "case": "mx22-maya1128-ds4-xs-t2t-rust-mcp-r1",
+   "model": "maya1128-ds4-xs",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 31,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 23.3,
+   "minutes": 53,
+   "compactions": 1,
+   "ctx": 131072,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-10-26 05:24",
+   "struggle": {
+    "compiles": 11,
+    "failed_compiles": 3,
+    "rust_errors": 4,
+    "loc": 1937,
+    "errors_per_kloc": 2.1
+   }
+  },
+  {
+   "case": "mx22-maya1128-ds4-xs-r2-t2-rust-mcp-r1",
+   "model": "maya1128-ds4-xs",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 19,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 22.8,
+   "minutes": 43,
+   "compactions": 1,
+   "ctx": 131072,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-10-26 18:51",
+   "struggle": {
+    "compiles": 8,
+    "failed_compiles": 3,
+    "rust_errors": 10,
+    "loc": 1611,
+    "errors_per_kloc": 6.2
+   }
+  },
+  {
+   "case": "mx22-maya1128-ds4-xs-t4-bugfix-targets-r1",
+   "model": "maya1128-ds4-xs",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 4,
+   "tests_pass": 156,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 16.1,
+   "minutes": 7,
+   "compactions": 0,
+   "ctx": 131072,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-10-26 05:31",
+   "struggle": {
+    "compiles": 2,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 9480,
+    "errors_per_kloc": 0.0
+   }
+  },
+  {
+   "case": "mx22-maya1128-ds4-xs-t4-config-timeouts-r1",
+   "model": "maya1128-ds4-xs",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 13,
+   "tests_pass": 167,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 19.9,
+   "minutes": 25,
+   "compactions": 1,
+   "ctx": 131072,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-10-26 05:57",
+   "struggle": {
+    "compiles": 5,
+    "failed_compiles": 1,
+    "rust_errors": 1,
+    "loc": 9866,
+    "errors_per_kloc": 0.1
+   }
+  },
+  {
+   "case": "mx22-maya1128-ds4-xs-t4-feature-filter-r1",
+   "model": "maya1128-ds4-xs",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 11,
+   "tests_pass": 156,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 17.2,
+   "minutes": 10,
+   "compactions": 0,
+   "ctx": 131072,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-10-26 06:08",
+   "struggle": {
+    "compiles": 3,
+    "failed_compiles": 1,
+    "rust_errors": 1,
+    "loc": 9499,
+    "errors_per_kloc": 0.1
+   }
   }
  ],
  "test3": [
@@ -8744,6 +9065,58 @@
    "tps": 11.8,
    "minutes": 32,
    "finished": "2026-10-23 12:11"
+  },
+  {
+   "case": "mx22-maya1128-ds4-xs-t3g-known-good-mcp-r1",
+   "model": "maya1128-ds4-xs",
+   "flavor": "3G",
+   "mcp_facts": "14/14",
+   "api_facts": "14/14",
+   "judgement_right": true,
+   "rubric": 11,
+   "note": "Known-good server. MCP and REST were both 14 of 14 and the judgement was right. Rubric 11. The server was left unchanged. The briefs were large: three probe passes and 41 calls.",
+   "tps": 11.7,
+   "minutes": 29,
+   "finished": "2026-10-26 04:08"
+  },
+  {
+   "case": "mx22-maya1128-ds4-xs-t3o-own-mcp-r1",
+   "model": "maya1128-ds4-xs",
+   "flavor": "3O",
+   "mcp_facts": "14/14",
+   "api_facts": "14/14",
+   "judgement_right": true,
+   "rubric": 12,
+   "note": "Own server. MCP and REST were both 14 of 14 and the judgement was right. Rubric 12. It found a wrong location field, fixed it, and the server builds, initializes, exposes 8 tools and passes 45 tests.",
+   "tps": 6.5,
+   "minutes": 22,
+   "finished": "2026-10-26 04:30"
+  },
+  {
+   "case": "mx22-maya1128-ds4-xs-r2-t3g-known-good-mcp-r1",
+   "model": "maya1128-ds4-xs",
+   "flavor": "3G",
+   "mcp_facts": "14/14",
+   "api_facts": "14/14",
+   "judgement_right": true,
+   "rubric": 12,
+   "note": "Known-good server, second run. MCP and REST were both 14 of 14 and the judgement was right. Rubric 12. One probe field came back false, so it changed the server. The result builds, initializes, exposes 12 tools and passes 155 tests.",
+   "tps": 11.9,
+   "minutes": 26,
+   "finished": "2026-10-26 19:57"
+  },
+  {
+   "case": "mx22-maya1128-ds4-xs-r2-t3o-own-mcp-r1",
+   "model": "maya1128-ds4-xs",
+   "flavor": "3O",
+   "mcp_facts": "14/14",
+   "api_facts": "14/14",
+   "judgement_right": true,
+   "rubric": 11,
+   "note": "Own server, second run. MCP and REST were both 14 of 14 and the judgement was right. Rubric 11. The server was already right and was left unchanged. The first probe brief was large enough that the client truncated it.",
+   "tps": 9.9,
+   "minutes": 41,
+   "finished": "2026-10-26 21:31"
   }
  ],
  "ab": [
@@ -11774,6 +12147,55 @@
      "frames/orrery/t5nm1-lcpp-flint-40b-q3kxl/frame-10000.webp"
     ],
     "live": "live/orrery/t5nm1-lcpp-flint-40b-q3kxl/orrery.svg"
+   },
+   {
+    "case": "mx22-maya1128-ds4-xs-t5-oneshot-orrery-r1",
+    "entry": "maya1128-ds4-xs",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 47380.0,
+    "wall_s": 1819.6,
+    "tok_s": 26.1,
+    "points": {
+     "A": 1.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 1.0,
+     "E": 1.0
+    },
+    "total": 7.0,
+    "note": "Score basis: 7/10 on the final code block, 0 as delivered. Final model-supplied code block (after the model's own </think> in the reply) graded verbatim. The harness packaging (first <svg> to last </svg>) joined a draft, prose and the final SVG and does not parse (line 3), so as delivered it scores 0. Final block parses and renders: four inner planets only (Mercury, Venus, Earth, Mars) on exact real period ratios (5.78, 14.76, 24, 45.14 s); arms, ring gears and planet spin move between frames; ring gears are dashed circles turning at arbitrary 12/16/20/26 s with unmeshed pinions; night half is a dark half-disc turning at a fixed 5 s, not tied to the sun; title and footer text collide with the outer brass ring. Reply is 54k chars of thinking before the model's </think> and 21k chars of final SVG. Rendered with tools/render_svg.sh, final-block/frames.",
+    "frames": [
+     "frames/orrery/mx22-maya1128-ds4-xs-t5-oneshot-orrery-r1/frame-100.webp",
+     "frames/orrery/mx22-maya1128-ds4-xs-t5-oneshot-orrery-r1/frame-2000.webp",
+     "frames/orrery/mx22-maya1128-ds4-xs-t5-oneshot-orrery-r1/frame-6000.webp",
+     "frames/orrery/mx22-maya1128-ds4-xs-t5-oneshot-orrery-r1/frame-12000.webp"
+    ],
+    "live": "live/orrery/mx22-maya1128-ds4-xs-t5-oneshot-orrery-r1/orrery.svg"
+   },
+   {
+    "case": "mx22-maya1128-ds4-xs-r2-t5-oneshot-orrery-r1",
+    "entry": "maya1128-ds4-xs",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 31986.0,
+    "wall_s": 1234.3,
+    "tok_s": 26.0,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 1.0,
+     "E": 2.0
+    },
+    "total": 9.0,
+    "note": "Score basis: 9/10 as delivered. Reply leak did not recur: no </think> in the reply, one HTML document, one SVG, and the harness cut parses (meta.static.parses true). Scored orrery.svg as delivered, frames in frames/. Six planets at exact ratios with Earth = 8 s (1.9264, 4.9216, 8, 15.048, 94.896, 235.656 s); Uranus and Neptune absent. Arms, toothed gears and planet surfaces all move. Gears are 24-tooth symbols but drive periods are 6 to 11 s against a 28 s sun gear, so they do not obey the gear law or drive the orbits (D1). Night gradient is dark on local +x, which stays away from the sun while the surface spins under it (E2). reasoning.txt is still cut (100796 chars, ends mid-token).",
+    "frames": [
+     "frames/orrery/mx22-maya1128-ds4-xs-r2-t5-oneshot-orrery-r1/frame-100.webp",
+     "frames/orrery/mx22-maya1128-ds4-xs-r2-t5-oneshot-orrery-r1/frame-2000.webp",
+     "frames/orrery/mx22-maya1128-ds4-xs-r2-t5-oneshot-orrery-r1/frame-6000.webp"
+    ],
+    "live": "live/orrery/mx22-maya1128-ds4-xs-r2-t5-oneshot-orrery-r1/orrery.svg"
    }
   ],
   "pagoda": [
@@ -12956,6 +13378,54 @@
      "frames/pagoda/t6nm1-lcpp-flint-40b-q3kxl/frame-10000.webp"
     ],
     "live": "live/pagoda/t6nm1-lcpp-flint-40b-q3kxl/page.html"
+   },
+   {
+    "case": "mx22-maya1128-ds4-xs-t6-oneshot-pagoda-r1",
+    "entry": "maya1128-ds4-xs",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 45946.0,
+    "wall_s": 1651.0,
+    "tok_s": 27.9,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 10.0,
+    "note": "Score basis: 10/10 on the final code block, 0 as delivered. Final code block (after the model's own </think>) graded verbatim. The harness extraction (first <html> to last </html>) joined a draft page that has a syntax error ('a0'), 16k chars of self-review prose and the final page; as delivered it shows only the text dump and an Uncaught SyntaxError, so it scores 0. Final page draws cleanly from boxes: five tiers with raised corner eaves and a full spire, stepped stone platform, three cherry trees, pond (partly cropped at the bottom), torii, drifting petals and shadows, frame-based orbit camera (camAngle += dt*0.055, graded from code). Console: PCFSoftShadowMap deprecation only. Offline CDN rewrite is packaging only. Rendered with tools/render_html.sh, final-block/frames.",
+    "frames": [
+     "frames/pagoda/mx22-maya1128-ds4-xs-t6-oneshot-pagoda-r1/frame-1500.webp",
+     "frames/pagoda/mx22-maya1128-ds4-xs-t6-oneshot-pagoda-r1/frame-5000.webp",
+     "frames/pagoda/mx22-maya1128-ds4-xs-t6-oneshot-pagoda-r1/frame-10000.webp"
+    ],
+    "live": "live/pagoda/mx22-maya1128-ds4-xs-t6-oneshot-pagoda-r1/page.html"
+   },
+   {
+    "case": "mx22-maya1128-ds4-xs-r2-t6-oneshot-pagoda-r1",
+    "entry": "maya1128-ds4-xs",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 30338.0,
+    "wall_s": 1164.4,
+    "tok_s": 26.2,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 10.0,
+    "note": "Score basis: 10/10 as delivered. Reply leak did not recur: one HTML fence, harness page.html is complete and runs. Scored as delivered, frames in frames/. Draws cleanly from boxes only (BoxGeometry, InstancedMesh). Five storeys with raised corner eaves and a spire, stone platform, cherry trees, pond and a red torii, all visible. Petals move between frames, shadows are on the ground, camera orbit advances with dt in code. Console warnings only (THREE.Clock deprecated, PCFSoftShadowMap fallback), no uncaught error. reasoning.txt is still cut (75521 chars). A stray </final> sits outside the fence and is not in the page.",
+    "frames": [
+     "frames/pagoda/mx22-maya1128-ds4-xs-r2-t6-oneshot-pagoda-r1/frame-1500.webp",
+     "frames/pagoda/mx22-maya1128-ds4-xs-r2-t6-oneshot-pagoda-r1/frame-5000.webp",
+     "frames/pagoda/mx22-maya1128-ds4-xs-r2-t6-oneshot-pagoda-r1/frame-10000.webp"
+    ],
+    "live": "live/pagoda/mx22-maya1128-ds4-xs-r2-t6-oneshot-pagoda-r1/page.html"
    }
   ],
   "agent-orrery": [
@@ -13468,12 +13938,12 @@
   ]
  },
  "counts": {
-  "models": 95,
-  "runs": 222,
-  "test3": 53,
-  "oneshots": 106,
-  "frames": 243,
-  "pass": 148,
-  "live": 78
+  "models": 96,
+  "runs": 230,
+  "test3": 57,
+  "oneshots": 110,
+  "frames": 256,
+  "pass": 156,
+  "live": 82
  }
 }

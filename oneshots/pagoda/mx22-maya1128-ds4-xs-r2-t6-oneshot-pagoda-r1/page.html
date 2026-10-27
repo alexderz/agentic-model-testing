@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Voxel Pagoda — Cherry Blossom Scene</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: radial-gradient(circle at 30% 20%, #cfeaff 0%, #9fd2ec 45%, #dff2fb 100%);
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+
+/* -----------------------------------------------
+   Renderer / Scene / Camera
+----------------------------------------------- */
+const renderer = new THREE.WebGLRenderer({
+  antialias: true,
+  alpha: true
+});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.08;
+renderer.setClearAlpha(0);
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.Fog(0xcce6f7, 90, 160);
+
+const camera = new THREE.PerspectiveCamera(
+  45,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  300
+);
+camera.position.set(46, 26, 22);
+
+/* -----------------------------------------------
+   Seeded random / color helpers
+----------------------------------------------- */
+let seed = 1337;
+function rand() {
+  seed |= 0;
+  seed = seed + 0x6D2B79F5 | 0;
+  let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+  t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+  return ((t ^ t >>> 14) >>> 0) / 4294967296;
+}
+
+function col(hex, variation = 0.08) {
+  const c = new THREE.Color(hex);
+  const f = 1 + (rand() * 2 - 1) * variation;
+  c.multiplyScalar(f);
+  return c.getHex();
+}
+
+/* -----------------------------------------------
+   Voxel collector
+----------------------------------------------- */
+const voxels = [];
+
+function addCube(x, y, z, sx = 1, sy = 1, sz = 1, colorHex = 0xffffff) {
+  voxels.push({ x, y, z, sx, sy, sz, colorHex });
+}
+
+/* -----------------------------------------------
+   Lighting
+----------------------------------------------- */
+const hemi = new THREE.HemisphereLight(0xe8f5ff, 0x8c7d6a, 1.15);
+scene.add(hemi);
+
+const sun = new THREE.DirectionalLight(0xfff1d6, 2.55);
+sun.position.set(42, 60, 32);
+sun.target.position.set(0, 4, 0);
+sun.castShadow = true;
+sun.shadow.mapSize.width = 2048;
+sun.shadow.mapSize.height = 2048;
+sun.shadow.camera.near = 1;
+sun.shadow.camera.far = 220;
+sun.shadow.camera.left = -48;
+sun.shadow.camera.right = 48;
+sun.shadow.camera.top = 48;
+sun.shadow.camera.bottom = -48;
+sun.shadow.bias = -0.0006;
+sun.shadow.normalBias = 0.035;
+scene.add(sun);
+scene.add(sun.target);
+
+const fill = new THREE.DirectionalLight(0xa9d8ff, 0.55);
+fill.position.set(-35, 28, -45);
+scene.add(fill);
+
+/* -----------------------------------------------
+   World layout constants
+----------------------------------------------- */
+const PAGODA_X = 0;
+const PAGODA_Z = -6;
+const TORII_Z = 18;
+
+const pondMinX = 8;
+const pondMaxX = 20;
+const pondMinZ = -4;
+const pondMaxZ = 8;
+
+function inPond(x, z) {
+  return x > pondMinX && x < pondMaxX && z > pondMinZ && z < pondMaxZ;
+}
+
+/* -----------------------------------------------
+   Ground, path, pond rim
+----------------------------------------------- */
+for (let i = -26; i < 26; i++) {
+  for (let j = -26; j < 26; j++) {
+    const cx = i + 0.5;
+    const cz = j + 0.5;
+
+    if (inPond(cx, cz)) continue;
+
+    let hex = 0x7fa650;
+
+    // grassy variation
+    if (rand() < 0.18) hex = 0x74994c;
+    if (rand() < 0.08) hex = 0x8db764;
+
+    // stone path from pagoda toward the torii gate
+    if (Math.abs(cx) <= 1.6 && cz > 2 && cz < 18) {
+      hex = rand() < 0.5 ? 0xc2ad86 : 0xb9a47e;
+    }
+
+    addCube(cx, 0.5, cz, 1, 1, 1, col(hex, 0.11));
+  }
+}
+
+/* Raised stone rim around pond */
+for (let i = 7; i <= 20; i++) {
+  for (let j = -5; j <= 8; j++) {
+    const cx = i + 0.5;
+    const cz = j + 0.5;
+
+    if (cx < pondMinX - 1 || cx > pondMaxX + 1) continue;
+    if (cz < pondMinZ - 1 || cz > pondMaxZ + 1) continue;
+    if (inPond(cx, cz)) continue;
+
+    const edge =
+      cx < pondMinX + 0.2 || cx > pondMaxX - 0.2 ||
+      cz < pondMinZ + 0.2 || cz > pondMaxZ - 0.2;
+
+    if (edge) {
+      addCube(cx, 1.5, cz, 1, 1, 1, col(0x8d877b, 0.1));
+    }
+  }
+}
+
+/* A few floating petals on pond surface */
+for (let i = 0; i < 7; i++) {
+  const x = 9.2 + rand() * 9.5;
+  const z = -3.2 + rand() * 10.5;
+  addCube(x, 0.97, z, 0.38, 0.14, 0.38, col(0xffb7cc, 0.08));
+}
+
+/* -----------------------------------------------
+   Pagoda platform
+----------------------------------------------- */
+const platformW = 16;
+
+for (let l = 0; l < 2; l++) {
+  for (let i = 0; i < platformW; i++) {
+    for (let j = 0; j < platformW; j++) {
+      const x = PAGODA_X - (platformW - 1) / 2 + i;
+      const z = PAGODA_Z - (platformW - 1) / 2 + j;
+      const y = 1 + l + 0.5;
+
+      let hex = 0x9b9488;
+      if (l === 1 && (i === 0 || i === platformW - 1 || j === 0 || j === platformW - 1)) {
+        hex = 0x867f74;
+      }
+
+      addCube(x, y, z, 1, 1, 1, col(hex, 0.08));
+    }
+  }
+}
+
+/* -----------------------------------------------
+   Pagoda eaves helper
+----------------------------------------------- */
+function addEave(cx, cz, layer, width, roofHex, cornerHex) {
+  const half = (width - 1) / 2;
+
+  // main broad slab
+  for (let i = 0; i < width; i++) {
+    for (let j = 0; j < width; j++) {
+      const x = cx - half + i;
+      const z = cz - half + j;
+      addCube(x, layer + 0.5, z, 1, 1, 1, col(roofHex, 0.1));
+    }
+  }
+
+  // raised corner lip, creating upturned eaves
+  for (const sx of [-1, 1]) {
+    for (const sz of [-1, 1]) {
+      const cornerX = cx + sx * half;
+      const cornerZ = cz + sz * half;
+
+      addCube(cornerX, layer + 1.5, cornerZ, 1, 1, 1, col(cornerHex, 0.08));
+      addCube(cornerX, layer + 1.5, cornerZ - sz, 1, 1, 1, col(cornerHex, 0.08));
+      addCube(cornerX - sx, layer + 1.5, cornerZ, 1, 1, 1, col(cornerHex, 0.08));
+    }
+  }
+}
+
+/* -----------------------------------------------
+   Five-story pagoda
+----------------------------------------------- */
+const storyWidths = [8, 7, 6, 5, 4];
+const storyBodyHeights = [3, 2, 2, 2, 2];
+
+let baseY = 3;
+const wallHex = 0xe2d4b7;
+const pillarHex = 0x7c3224;
+const beamHex = 0x5a4031;
+const roofHex = 0x49362b;
+const roofEdgeHex = 0x5c4535;
+
+for (let s = 0; s < 5; s++) {
+  const w = storyWidths[s];
+  const bh = storyBodyHeights[s];
+  const half = (w - 1) / 2;
+
+  for (let l = 0; l < bh; l++) {
+    for (let i = 0; i < w; i++) {
+      for (let j = 0; j < w; j++) {
+        const x = PAGODA_X - half + i;
+        const z = PAGODA_Z - half + j;
+        const y = baseY + l + 0.5;
+
+        const edge = i === 0 || i === w - 1 || j === 0 || j === w - 1;
+        const corner = (i === 0 || i === w - 1) && (j === 0 || j === w - 1);
+
+        let hex = wallHex;
+        if (edge && l === bh - 1) hex = beamHex;
+        if (corner) hex = pillarHex;
+
+        addCube(x, y, z, 1, 1, 1, col(hex, 0.07));
+      }
+    }
+  }
+
+  const eaveLayer = baseY + bh;
+  addEave(PAGODA_X, PAGODA_Z, eaveLayer, w + 4, roofHex, roofEdgeHex);
+
+  baseY = eaveLayer + 1;
+}
+
+/* -----------------------------------------------
+   Spire on top
+----------------------------------------------- */
+const spireBaseLayer = baseY; // 19
+
+// square base for spire
+addCube(PAGODA_X, spireBaseLayer + 0.5, PAGODA_Z, 2, 1, 2, col(0x7a5a2d, 0.08));
+
+// pole
+for (let y = spireBaseLayer + 1; y <= spireBaseLayer + 5; y++) {
+  addCube(PAGODA_X, y + 0.5, PAGODA_Z, 0.9, 1, 0.9, col(0x6d4f2a, 0.08));
+}
+
+// stacked rings
+for (let ring = 0; ring < 4; ring++) {
+  const ringY = spireBaseLayer + 2 + ring * 1.0 + 0.5;
+
+  for (const [dx, dz] of [
+    [-1, 0], [1, 0], [0, -1], [0, 1],
+    [-1, -1], [1, -1], [-1, 1], [1, 1]
+  ]) {
+    addCube(
+      PAGODA_X + dx,
+      ringY,
+      PAGODA_Z + dz,
+      1, 0.45, 1,
+      col(0xd1a84f, 0.08)
+    );
+  }
+}
+
+// finial
+addCube(PAGODA_X, spireBaseLayer + 6.7, PAGODA_Z, 0.8, 0.8, 0.8, col(0xe6c169, 0.06));
+addCube(PAGODA_X, spireBaseLayer + 7.4, PAGODA_Z, 0.45, 0.45, 0.45, col(0xf0d27f, 0.06));
+
+/* -----------------------------------------------
+   Torii gate
+----------------------------------------------- */
+const toriiRed = 0xc6412f;
+const toriiDark = 0xa23324;
+
+// pillars
+for (const side of [-1, 1]) {
+  for (const dz of [-0.5, 0.5]) {
+    for (const dx of [-0.5, 0.5]) {
+      for (let h = 0; h < 8; h++) {
+        const x = side * 5 + dx;
+        const z = TORII_Z + dz;
+        const y = 1 + h + 0.5;
+        addCube(x, y, z, 1, 1, 1, col(toriiRed, 0.06));
+      }
+    }
+  }
+}
+
+// lower crossbeam
+for (let i = -7; i <= 7; i++) {
+  addCube(i, 7.5, TORII_Z, 1, 1, 2, col(toriiDark, 0.06));
+}
+
+// central strut
+addCube(0, 8.5, TORII_Z, 1, 1, 2, col(toriiDark, 0.06));
+
+// upper lintel
+for (let i = -8.5; i <= 8.5; i++) {
+  addCube(i, 9.5, TORII_Z, 1, 1, 2, col(toriiRed, 0.07));
+}
+
+// raised, upturned ends
+for (const sx of [-1, 1]) {
+  addCube(sx * 8.5, 10.5, TORII_Z, 1, 1, 2, col(toriiRed, 0.06));
+  addCube(sx * 7.5, 10.5, TORII_Z, 1, 1, 2, col(toriiRed, 0.06));
+}
+
+// small stone bases
+for (const side of [-1, 1]) {
+  addCube(side * 5, 1.5, TORII_Z - 1.6, 2.2, 0.6, 0.6, col(0x8d877b, 0.08));
+  addCube(side * 5, 1.5, TORII_Z + 1.6, 2.2, 0.6, 0.6, col(0x8d877b, 0.08));
+}
+
+/* -----------------------------------------------
+   Cherry blossom trees
+----------------------------------------------- */
+const blossomColors = [
+  0xffc6d9,
+  0xffadcc,
+  0xf48fb8,
+  0xffe3ec,
+  0xec86ab,
+  0xffd8e4
+];
+
+function addCherryTree(tx, tz, size = 1) {
+  const trunkHeight = Math.floor(4 + rand() * 3);
+  const groundTop = 1;
+
+  // trunk
+  for (let h = 0; h < trunkHeight; h++) {
+    addCube(
+      tx,
+      groundTop + h + 0.5,
+      tz,
+      1, 1, 1,
+      col(0x5b3a2a, 0.12)
+    );
+  }
+
+  // little branches
+  const branchY = groundTop + trunkHeight - 1.5;
+  addCube(tx + 1, branchY, tz, 1, 1, 1, col(0x5b3a2a, 0.12));
+  addCube(tx - 1, branchY - 0.7, tz, 1, 1, 1, col(0x5b3a2a, 0.12));
+  addCube(tx, branchY - 0.4, tz + 1, 1, 1, 1, col(0x5b3a2a, 0.12));
+
+  // canopy
+  const canopyY = groundTop + trunkHeight + 2.4;
+  const radius = 3.2 + rand() * 1.8;
+
+  const rInt = Math.ceil(radius);
+
+  for (let dx = -rInt; dx <= rInt; dx++) {
+    for (let dy = -rInt; dy <= rInt; dy++) {
+      for (let dz = -rInt; dz <= rInt; dz++) {
+        const dist = Math.sqrt(dx * dx + dy * dy * 0.75 + dz * dz * 0.9);
+        if (dist > radius * size) continue;
+        if (rand() < 0.16) continue;
+
+        const x = tx + dx;
+        const y = canopyY + dy * 0.85;
+        const z = tz + dz;
+
+        // lower canopy is slightly darker / more saturated
+        let hex = blossomColors[Math.floor(rand() * blossomColors.length)];
+        if (dy < 0 && rand() < 0.45) hex = 0xef86b0;
+
+        addCube(x, y, z, 1, 1, 1, col(hex, 0.09));
+      }
+    }
+  }
+
+  // fallen petals around tree
+  for (let i = 0; i < 7; i++) {
+    const px = tx + (rand() - 0.5) * 7;
+    const pz = tz + (rand() - 0.5) * 7;
+    if (inPond(px, pz)) continue;
+    addCube(
+      px,
+      groundTop + 0.08,
+      pz,
+      0.45 + rand() * 0.25,
+      0.12,
+      0.45 + rand() * 0.25,
+      col(rand() < 0.5 ? 0xffb7cc : 0xf28cb0, 0.08)
+    );
+  }
+}
+
+// tree positions around the scene
+addCherryTree(-15, -5);
+addCherryTree(-20, 13);
+addCherryTree(-7, 23);
+addCherryTree(19, -18);
+addCherryTree(23, 8);
+addCherryTree(12, 23);
+
+/* -----------------------------------------------
+   Build all opaque voxels as one InstancedMesh
+----------------------------------------------- */
+const voxelGeometry = new THREE.BoxGeometry(1, 1, 1);
+const voxelMaterial = new THREE.MeshStandardMaterial({
+  roughness: 0.88,
+  metalness: 0.0
+});
+
+const voxelMesh = new THREE.InstancedMesh(voxelGeometry, voxelMaterial, voxels.length);
+voxelMesh.castShadow = true;
+voxelMesh.receiveShadow = true;
+
+const dummy = new THREE.Object3D();
+const tempColor = new THREE.Color();
+
+for (let i = 0; i < voxels.length; i++) {
+  const v = voxels[i];
+
+  dummy.position.set(v.x, v.y, v.z);
+  dummy.rotation.set(0, 0, 0);
+  dummy.scale.set(v.sx, v.sy, v.sz);
+  dummy.updateMatrix();
+
+  voxelMesh.setMatrixAt(i, dummy.matrix);
+  voxelMesh.setColorAt(i, tempColor.set(v.colorHex));
+}
+
+voxelMesh.instanceMatrix.needsUpdate = true;
+if (voxelMesh.instanceColor) voxelMesh.instanceColor.needsUpdate = true;
+
+scene.add(voxelMesh);
+
+/* -----------------------------------------------
+   Pond water
+----------------------------------------------- */
+const waterGeometry = new THREE.BoxGeometry(12, 0.4, 12);
+const waterMaterial = new THREE.MeshStandardMaterial({
+  color: 0x4899c9,
+  roughness: 0.18,
+  metalness: 0.12,
+  transparent: true,
+  opacity: 0.82,
+  depthWrite: false
+});
+
+const water = new THREE.Mesh(waterGeometry, waterMaterial);
+water.position.set(14, 0.7, 2);
+water.receiveShadow = true;
+scene.add(water);
+
+/* Optional second thin highlight layer */
+const waterShine = new THREE.Mesh(
+  new THREE.BoxGeometry(11.4, 0.08, 11.4),
+  new THREE.MeshStandardMaterial({
+    color: 0xbceaff,
+    roughness: 0.05,
+    metalness: 0.4,
+    transparent: true,
+    opacity: 0.25,
+    depthWrite: false
+  })
+);
+waterShine.position.set(14, 0.92, 2);
+scene.add(waterShine);
+
+/* -----------------------------------------------
+   Drifting blossom petals (instanced)
+----------------------------------------------- */
+const PETAL_COUNT = 140;
+
+const petalGeometry = new THREE.BoxGeometry(0.32, 0.16, 0.32);
+const petalMaterial = new THREE.MeshStandardMaterial({
+  roughness: 0.7,
+  metalness: 0.0,
+  transparent: true,
+  opacity: 0.95
+});
+
+const petalMesh = new THREE.InstancedMesh(petalGeometry, petalMaterial, PETAL_COUNT);
+petalMesh.castShadow = false;
+petalMesh.receiveShadow = false;
+
+const petals = [];
+
+for (let i = 0; i < PETAL_COUNT; i++) {
+  petals.push({
+    x: (rand() - 0.5) * 58,
+    y: 2 + rand() * 32,
+    z: (rand() - 0.5) * 58,
+    sway: rand() * Math.PI * 2,
+    swayAmp: 0.4 + rand() * 1.4,
+    fall: 0.5 + rand() * 1.1,
+    rot: rand() * Math.PI * 2,
+    rotSpeed: (rand() - 0.5) * 2.2,
+    spin: (rand() - 0.5) * 2.2,
+    scale: 0.7 + rand() * 0.7
+  });
+}
+
+for (let i = 0; i < PETAL_COUNT; i++) {
+  const p = petals[i];
+  dummy.position.set(p.x, p.y, p.z);
+  dummy.rotation.set(p.rot, p.rot, p.rot);
+  dummy.scale.setScalar(p.scale);
+  dummy.updateMatrix();
+
+  petalMesh.setMatrixAt(i, dummy.matrix);
+  petalMesh.setColorAt(
+    i,
+    tempColor.set(rand() < 0.3 ? 0xffdcea : 0xffb7cc)
+  );
+}
+
+petalMesh.instanceMatrix.needsUpdate = true;
+if (petalMesh.instanceColor) petalMesh.instanceColor.needsUpdate = true;
+
+scene.add(petalMesh);
+
+/* -----------------------------------------------
+   Camera orbit
+----------------------------------------------- */
+const ORBIT_RADIUS = 46;
+const ORBIT_HEIGHT = 24;
+const LOOK_TARGET = new THREE.Vector3(0, 7.5, 0);
+
+let orbitAngle = 0.55;
+
+function updateCamera(dt) {
+  orbitAngle += dt * 0.075;
+
+  const x = Math.cos(orbitAngle) * ORBIT_RADIUS;
+  const z = Math.sin(orbitAngle) * ORBIT_RADIUS;
+
+  camera.position.set(x, ORBIT_HEIGHT, z);
+  camera.lookAt(LOOK_TARGET);
+}
+
+/* -----------------------------------------------
+   Animation
+----------------------------------------------- */
+const clock = new THREE.Clock();
+
+function animate() {
+  const dt = Math.min(clock.getDelta(), 0.05);
+  const elapsed = clock.elapsedTime;
+
+  updateCamera(dt);
+
+  // drift petals
+  for (let i = 0; i < PETAL_COUNT; i++) {
+    const p = petals[i];
+
+    p.y -= p.fall * dt;
+
+    const swayX = Math.sin(elapsed * 1.15 + p.sway) * p.swayAmp;
+    const swayZ = Math.cos(elapsed * 0.9 + p.sway * 1.3) * p.swayAmp * 0.55;
+
+    const x = p.x + swayX;
+    const z = p.z + swayZ;
+
+    p.rot += p.rotSpeed * dt;
+    p.spin += p.rotSpeed * 0.7 * dt;
+
+    if (p.y < 0.35) {
+      p.y = 22 + rand() * 14;
+      p.x = (rand() - 0.5) * 58;
+      p.z = (rand() - 0.5) * 58;
+      p.sway = rand() * Math.PI * 2;
+      p.swayAmp = 0.4 + rand() * 1.4;
+      p.fall = 0.5 + rand() * 1.1;
+      p.rot = rand() * Math.PI * 2;
+      p.rotSpeed = (rand() - 0.5) * 2.2;
+      p.spin = (rand() - 0.5) * 2.2;
+      p.scale = 0.7 + rand() * 0.7;
+    }
+
+    dummy.position.set(x, p.y, z);
+    dummy.rotation.set(p.rot, p.spin, p.rot * 0.6);
+    dummy.scale.setScalar(p.scale);
+    dummy.updateMatrix();
+
+    petalMesh.setMatrixAt(i, dummy.matrix);
+  }
+
+  petalMesh.instanceMatrix.needsUpdate = true;
+
+  // gentle water shimmer
+  waterShine.position.y = 0.92 + Math.sin(elapsed * 1.1) * 0.015;
+
+  renderer.render(scene, camera);
+  requestAnimationFrame(animate);
+}
+
+updateCamera(0);
+requestAnimationFrame(animate);
+
+/* -----------------------------------------------
+   Resize
+----------------------------------------------- */
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+});
+</script>
+</body>
+</html>

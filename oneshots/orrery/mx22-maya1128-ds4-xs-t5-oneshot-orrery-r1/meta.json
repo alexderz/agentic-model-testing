@@ -1,0 +1,35 @@
+{
+ "case": "mx22-maya1128-ds4-xs-t5-oneshot-orrery-r1",
+ "finish_reason": "stop",
+ "first_token_s": 4.1,
+ "max_tokens": 126976,
+ "model": "maya1128-ds4-xs",
+ "reasoning_chars": 98010,
+ "reply_chars": 75809,
+ "started": "2026-10-26T02:40:50-0500",
+ "status": "ok",
+ "test": "5",
+ "timings": {
+  "cache_n": 0,
+  "prompt_n": 80,
+  "prompt_ms": 4076.9,
+  "prompt_per_token_ms": 50.961,
+  "prompt_per_second": 19.6,
+  "predicted_n": 47380,
+  "predicted_ms": 1815553.4,
+  "predicted_per_token_ms": 38.319,
+  "predicted_per_second": 26.1,
+  "draft_n": 39271,
+  "draft_n_accepted": 25900
+ },
+ "tok_s": 26.1,
+ "usage": {
+  "prompt_tokens": 80,
+  "completion_tokens": 47380,
+  "total_tokens": 47460,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  }
+ },
+ "wall_s": 1819.6
+}
