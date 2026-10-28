@@ -2,8 +2,8 @@
 import { el, clear, $, familyChip } from './dom.js';
 import { checksMax, rubricMax, pointMax, familyColors, colorOf, modelOf, shortLabel, fmt } from './data.js';
 
-const GRADE = ['t1', 't2', 't2t', 't3', 't4', 't5', 't6', 't7', 't8'];
-const COLS = [['name', 'Setup'], ['ctx', 'Context'], ['kv', 'KV'], ['speed', 'Speed'], ['t1', 't1'], ['t2', 't2'], ['t2t', 't2T'], ['t3', 't3'], ['t4', 't4'], ['t5', 't5 orrery'], ['t6', 't6 pagoda'], ['t7', 't7'], ['t8', 't8 agent']];
+const GRADE = ['t1', 't2', 't2t', 't3', 't4', 't5', 't6', 't7', 't8', 't10'];
+const COLS = [['name', 'Setup'], ['ctx', 'Context'], ['kv', 'KV'], ['speed', 'Speed'], ['t1', 't1'], ['t2', 't2'], ['t2t', 't2T'], ['t3', 't3'], ['t4', 't4'], ['t5', 't5 orrery'], ['t6', 't6 pagoda'], ['t7', 't7'], ['t8', 't8 agent'], ['t10', 't10']];
 const median = (xs) => {
   const a = xs.filter((x) => x != null && Number.isFinite(x)).sort((p, q) => p - q);
   if (!a.length) return null;
@@ -15,7 +15,7 @@ const nfmt = (n, d = 0) => (n == null || !Number.isFinite(+n) ? '' : fmt(n, d));
 const isTrust = (r) => r.flavor === '2T' || /^wt-/.test(r.case || '') || /(^|[-_])t2t([-_]|$)/.test(r.case || '');
 function family(r) {
   if (isTrust(r)) return 't2t';
-  if (r.test === '1' || r.test === '2' || r.test === '4' || r.test === '7') return 't' + r.test;
+  if (r.test === '1' || r.test === '2' || r.test === '4' || r.test === '7' || r.test === '10') return 't' + r.test;
   return '';
 }
 function shotFamily(set, test) {

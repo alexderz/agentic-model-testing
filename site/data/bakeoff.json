@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-10-26 22:47 CDT",
- "built": "2026-10-26 23:07 CDT",
+ "generated": "2026-10-27 21:10 CDT",
+ "built": "2026-10-27 21:10 CDT",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -89,7 +89,14 @@
    "name": "The labyrinth",
    "kind": "agentic",
    "what": "Write a seeded generator for a three-floor labyrinth meeting ten rules.",
-   "graded": "Ten unseen seeds, each in its own container, must give ten different mazes that pass the checker; walkability and honest notes are judged by hand."
+   "graded": "Ten unseen seeds, each in its own container, must give ten different mazes that pass the checker; walkability and honest notes are judged by hand.",
+   "points": [
+    "round trip",
+    "seeds",
+    "extra",
+    "walk",
+    "notes"
+   ]
   },
   {
    "id": "t8",
@@ -98,9 +105,34 @@
    "kind": "agentic",
    "what": "Tests 5 and 6 solved by an agent with a sealed browser.",
    "graded": "Same rubrics as tests 5 and 6, from offline renders of the file the agent leaves; two-hour cap."
+  },
+  {
+   "id": "t10",
+   "number": "10",
+   "name": "Surprising pagoda",
+   "kind": "agentic",
+   "what": "Build one pagoda page in steps: the scene, a surprise, then a trace of that surprise.",
+   "graded": "Two equal halves, each 0 to 10. Pagoda uses the test 6 scene criteria. Workflow is scored from the map: how the work was split and ordered, and whether it stopped for a person."
   }
  ],
  "findings": [
+  {
+   "date": "2026-10-27",
+   "title": "Test 10 has one Tiel run and no point score yet",
+   "kind": "finding",
+   "summary": "Tiel landed 3 of 3 items: the night scene, a surprise blocked on that scene, and a trace blocked on the surprise. It did not stop for a person.",
+   "settings": "Tiel-Coder-35B, cache saving on, solo auto, one worker at a time.",
+   "metrics": [
+    {
+     "label": "items landed",
+     "before": null,
+     "after": 3,
+     "unit": "of 3"
+    }
+   ],
+   "quality": "The pagoda half and the workflow half, each 0 to 10, were not scored.",
+   "caveat": "One run. The project directory was deleted afterward and the page was rebuilt from the edit log. This is not a score on the frozen rubric."
+  },
   {
    "date": "2026-10-26",
    "title": "DeepSeek Maya-XS passes the graded agent tests",
@@ -134,7 +166,7 @@
     }
    ],
    "quality": "No graded agent run failed. The planted-docs code kept the real endpoints first. Test 3 judgements were right in both rounds.",
-   "caveat": "Two runs for tests 1, 2 and 3. One run for the planted-docs test and for test 4. Round-2 planted-docs and test 4 have no recorded grades in this snapshot and are not scored here. Minutes exclude model-load time. The tok/s figure includes tool time. Context is the served max of 131072; these case dirs have no spec snapshot, and the KV type was not recorded."
+   "caveat": "Two runs for tests 1, 2 and 3. Both rounds of test 4 are scored. Round 2 of the planted-docs test is scored. Round-2 test 2 was already scored. Minutes exclude model-load time. The tok/s figure includes tool time. Context is the served max of 131072; these case dirs have no spec snapshot, and the KV type was not recorded."
   },
   {
    "date": "2026-10-26",
@@ -8374,6 +8406,102 @@
     "loc": 9499,
     "errors_per_kloc": 0.1
    }
+  },
+  {
+   "case": "mx22-maya1128-ds4-xs-r2-t2t-rust-mcp-r1",
+   "model": "maya1128-ds4-xs",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 34,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 22.7,
+   "minutes": 77,
+   "compactions": 2,
+   "ctx": 131072,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-10-26 22:50",
+   "struggle": {
+    "compiles": 15,
+    "failed_compiles": 4,
+    "rust_errors": 5,
+    "loc": 2169,
+    "errors_per_kloc": 2.3
+   }
+  },
+  {
+   "case": "mx22-maya1128-ds4-xs-r2-t4-bugfix-targets-r1",
+   "model": "maya1128-ds4-xs",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 4,
+   "tests_pass": 156,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 16.5,
+   "minutes": 7,
+   "compactions": 0,
+   "ctx": 131072,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-10-26 23:03",
+   "struggle": {
+    "compiles": 2,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 9505,
+    "errors_per_kloc": 0.0
+   }
+  },
+  {
+   "case": "mx22-maya1128-ds4-xs-r2-t4-config-timeouts-r1",
+   "model": "maya1128-ds4-xs",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 13,
+   "tests_pass": 164,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 21.3,
+   "minutes": 15,
+   "compactions": 0,
+   "ctx": 131072,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-10-26 23:18",
+   "struggle": {
+    "compiles": 3,
+    "failed_compiles": 1,
+    "rust_errors": 1,
+    "loc": 9755,
+    "errors_per_kloc": 0.1
+   }
+  },
+  {
+   "case": "mx22-maya1128-ds4-xs-r2-t4-feature-filter-r1",
+   "model": "maya1128-ds4-xs",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 11,
+   "tests_pass": 156,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 16.5,
+   "minutes": 8,
+   "compactions": 0,
+   "ctx": 131072,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-10-26 23:27",
+   "struggle": {
+    "compiles": 3,
+    "failed_compiles": 1,
+    "rust_errors": 1,
+    "loc": 9490,
+    "errors_per_kloc": 0.1
+   }
   }
  ],
  "test3": [
@@ -13935,15 +14063,37 @@
     ],
     "live": "live/agent-pagoda/t8-pagoda-gyro-s-mtp-r2/page.html"
    }
+  ],
+  "labyrinth": [
+   {
+    "case": "mx22-flashnext-heretic2-t7-labyrinth-agent-r1",
+    "entry": "lcpp6-flashnext-heretic2",
+    "test": 7,
+    "finish": "timeout",
+    "tokens": 156888.0,
+    "wall_s": 10800.1,
+    "tok_s": 14.53,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "Timeout at 3 hours. No maze file was left, and 0 of 10 hidden seeds passed. All five points are 0.",
+    "frames": [],
+    "live": null
+   }
   ]
  },
  "counts": {
   "models": 96,
-  "runs": 230,
+  "runs": 234,
   "test3": 57,
-  "oneshots": 110,
+  "oneshots": 111,
   "frames": 256,
-  "pass": 156,
+  "pass": 160,
   "live": 82
  }
 }

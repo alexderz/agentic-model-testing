@@ -136,7 +136,8 @@ out = {
     "models": models, "runs": runs, "test3": test3, "ab": ab,
     "engines": DEEP.get("engines", []), "tuning": DEEP.get("tuning", []), "quality_checks": DEEP.get("quality_checks", []),
     "oneshots": {"orrery": oneshots(5, "orrery"), "pagoda": oneshots(6, "pagoda"),
-                 "agent-orrery": oneshots(8, "agent-orrery"), "agent-pagoda": oneshots(8, "agent-pagoda")},
+                 "agent-orrery": oneshots(8, "agent-orrery"), "agent-pagoda": oneshots(8, "agent-pagoda"),
+                 "labyrinth": oneshots(7, "labyrinth")},
 }
 c = out["counts"] = {"models": len(models), "runs": len(runs), "test3": len(test3),
                      "oneshots": sum(len(v) for v in out["oneshots"].values()),

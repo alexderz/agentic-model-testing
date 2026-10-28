@@ -1,7 +1,7 @@
 {
  "schema": "history/1",
- "generated_from": "private bake-off tree, 2026-10-07 to 2026-10-26",
- "generated": "2026-10-26 22:47 CDT",
+ "generated_from": "private bake-off tree, 2026-10-07 to 2026-10-27",
+ "generated": "2026-10-27 21:10 CDT",
  "runs_new": [
   {
    "case": "wa-saluki-27b-iq2",
@@ -938,6 +938,102 @@
     "loc": 9499,
     "errors_per_kloc": 0.1
    }
+  },
+  {
+   "case": "mx22-maya1128-ds4-xs-r2-t2t-rust-mcp-r1",
+   "model": "maya1128-ds4-xs",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 34,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 22.7,
+   "minutes": 77,
+   "compactions": 2,
+   "ctx": 131072,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-10-26 22:50",
+   "struggle": {
+    "compiles": 15,
+    "failed_compiles": 4,
+    "rust_errors": 5,
+    "loc": 2169,
+    "errors_per_kloc": 2.3
+   }
+  },
+  {
+   "case": "mx22-maya1128-ds4-xs-r2-t4-bugfix-targets-r1",
+   "model": "maya1128-ds4-xs",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 4,
+   "tests_pass": 156,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 16.5,
+   "minutes": 7,
+   "compactions": 0,
+   "ctx": 131072,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-10-26 23:03",
+   "struggle": {
+    "compiles": 2,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 9505,
+    "errors_per_kloc": 0.0
+   }
+  },
+  {
+   "case": "mx22-maya1128-ds4-xs-r2-t4-config-timeouts-r1",
+   "model": "maya1128-ds4-xs",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 13,
+   "tests_pass": 164,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 21.3,
+   "minutes": 15,
+   "compactions": 0,
+   "ctx": 131072,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-10-26 23:18",
+   "struggle": {
+    "compiles": 3,
+    "failed_compiles": 1,
+    "rust_errors": 1,
+    "loc": 9755,
+    "errors_per_kloc": 0.1
+   }
+  },
+  {
+   "case": "mx22-maya1128-ds4-xs-r2-t4-feature-filter-r1",
+   "model": "maya1128-ds4-xs",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 11,
+   "tests_pass": 156,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 16.5,
+   "minutes": 8,
+   "compactions": 0,
+   "ctx": 131072,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-10-26 23:27",
+   "struggle": {
+    "compiles": 3,
+    "failed_compiles": 1,
+    "rust_errors": 1,
+    "loc": 9490,
+    "errors_per_kloc": 0.1
+   }
   }
  ],
  "test3_new": [
@@ -1050,7 +1146,7 @@
   "exl3-qwen3.8-27b-dflash2-162": {
    "id": "exl3-qwen3.8-27b-dflash2-162",
    "family": "Qwen3.8 27B",
-   "label": "Qwen3.8-27B EXL3 4-bit · exllamav3 1.6.2, DFlash2 drafts, 98k, 8-bit cache",
+   "label": "Qwen3.8-27B EXL3 4-bit \u00b7 exllamav3 1.6.2, DFlash2 drafts, 98k, 8-bit cache",
    "base": "Qwen/Qwen3.8-27B",
    "arch": "dense 27B",
    "engine": "exllamav3 tabbyapi-d6e62270-exl3-1.6.2",
@@ -1066,7 +1162,7 @@
   "lcpp6-saluki-27b-iq2": {
    "id": "lcpp6-saluki-27b-iq2",
    "family": "Qwen3.8 27B",
-   "label": "Underdog Saluki 27B IQ2-mix · llama.cpp 0.6",
+   "label": "Underdog Saluki 27B IQ2-mix \u00b7 llama.cpp 0.6",
    "base": "Qwen/Qwen3.8-27B",
    "arch": "dense 27B",
    "engine": "llama.cpp 0.6",
@@ -1082,7 +1178,7 @@
   "maya1111-glm-5.3-flash": {
    "id": "maya1111-glm-5.3-flash",
    "family": "GLM",
-   "label": "GLM-5.3-Flash · Maya v1.1.11, 131k context",
+   "label": "GLM-5.3-Flash \u00b7 Maya v1.1.11, 131k context",
    "base": "zai-org/GLM-5.3-Flash",
    "arch": "MoE 321B / 18B active",
    "engine": "maya maya-1.1.11",
@@ -1098,7 +1194,7 @@
   "maya1113m-glm-5.3-flash": {
    "id": "maya1113m-glm-5.3-flash",
    "family": "GLM",
-   "label": "GLM-5.3-Flash · Maya-M IQ2_S, Maya v1.1.13, 131k context",
+   "label": "GLM-5.3-Flash \u00b7 Maya-M IQ2_S, Maya v1.1.13, 131k context",
    "base": "zai-org/GLM-5.3-Flash",
    "arch": "MoE 321B / 18B active",
    "engine": "maya maya-1.1.13",
@@ -1114,7 +1210,7 @@
   "strata44-flash-next-pcie": {
    "id": "strata44-flash-next-pcie",
    "family": "Qwen3.8 Flash-Next",
-   "label": "Flash-Next · Strata 0.1.44.1, old PCIe share, 262k context",
+   "label": "Flash-Next \u00b7 Strata 0.1.44.1, old PCIe share, 262k context",
    "base": "Qwen/Qwen3.8-Flash-Next",
    "arch": "MoE 125B / 6B active",
    "engine": "strata strata-0.1.44.1",
@@ -1130,7 +1226,7 @@
   "strata020-gyro-s-mtp-test": {
    "id": "strata020-gyro-s-mtp-test",
    "family": "Qwen3.8 Flash-Next",
-   "label": "Flash-Next Gyro-S TQ1_0 + MTP draft · Strata 0.2.0-beta, 262k context, int8 KV",
+   "label": "Flash-Next Gyro-S TQ1_0 + MTP draft \u00b7 Strata 0.2.0-beta, 262k context, int8 KV",
    "base": "Qwen/Qwen3.8-Flash-Next",
    "arch": "MoE 125B / 6B active",
    "engine": "Strata 0.2.0-beta",
@@ -1146,7 +1242,7 @@
   "lcpp6-ornith-122b-q4kxl": {
    "id": "lcpp6-ornith-122b-q4kxl",
    "family": "Ornith 1.5",
-   "label": "Ornith 1.5 122B-A10B UD-Q4_K_XL · llama.cpp 0.7, experts partly in RAM",
+   "label": "Ornith 1.5 122B-A10B UD-Q4_K_XL \u00b7 llama.cpp 0.7, experts partly in RAM",
    "base": "ornith-ai/Ornith-1.5-122B",
    "arch": "MoE 122B-A10B",
    "engine": "llama.cpp 0.7",
@@ -1162,7 +1258,7 @@
   "lcpp6-q38-defiance-192k-author": {
    "id": "lcpp6-q38-defiance-192k-author",
    "family": "Qwen3.8 27B",
-   "label": "Defiance IQ4_XS · llama.cpp 0.7, 196608 context, q8 KV, author sampler",
+   "label": "Defiance IQ4_XS \u00b7 llama.cpp 0.7, 196608 context, q8 KV, author sampler",
    "base": "Qwen/Qwen3.8-27B",
    "arch": "dense 27B",
    "engine": "llama.cpp 0.7",
@@ -1178,7 +1274,7 @@
   "maya1128-ds4-xs": {
    "id": "maya1128-ds4-xs",
    "family": "DeepSeek",
-   "label": "DeepSeek-V4.1-Flash Maya-XS · Maya 1.1.28, 131k context",
+   "label": "DeepSeek-V4.1-Flash Maya-XS \u00b7 Maya 1.1.28, 131k context",
    "base": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
    "arch": "MoE",
    "engine": "Maya 1.1.28",
@@ -1499,7 +1595,14 @@
    "name": "The labyrinth",
    "kind": "agentic",
    "what": "Write a seeded generator for a three-floor labyrinth meeting ten rules.",
-   "graded": "Ten unseen seeds, each in its own container, must give ten different mazes that pass the checker; walkability and honest notes are judged by hand."
+   "graded": "Ten unseen seeds, each in its own container, must give ten different mazes that pass the checker; walkability and honest notes are judged by hand.",
+   "points": [
+    "round trip",
+    "seeds",
+    "extra",
+    "walk",
+    "notes"
+   ]
   },
   {
    "id": "t8",
@@ -1508,6 +1611,14 @@
    "kind": "agentic",
    "what": "Tests 5 and 6 solved by an agent with a sealed browser.",
    "graded": "Same rubrics as tests 5 and 6, from offline renders of the file the agent leaves; two-hour cap."
+  },
+  {
+   "id": "t10",
+   "number": "10",
+   "name": "Surprising pagoda",
+   "kind": "agentic",
+   "what": "Build one pagoda page in steps: the scene, a surprise, then a trace of that surprise.",
+   "graded": "Two equal halves, each 0 to 10. Pagoda uses the test 6 scene criteria. Workflow is scored from the map: how the work was split and ordered, and whether it stopped for a person."
   }
  ],
  "timeline": [
@@ -2395,7 +2506,7 @@
     }
    ],
    "quality": "No graded agent run failed. The planted-docs code kept the real endpoints first. Test 3 judgements were right in both rounds.",
-   "caveat": "Two runs for tests 1, 2 and 3. One run for the planted-docs test and for test 4. Round-2 planted-docs and test 4 have no recorded grades in this snapshot and are not scored here. Minutes exclude model-load time. The tok/s figure includes tool time. Context is the served max of 131072; these case dirs have no spec snapshot, and the KV type was not recorded."
+   "caveat": "Two runs for tests 1, 2 and 3. Both rounds of test 4 are scored. Round 2 of the planted-docs test is scored. Round-2 test 2 was already scored. Minutes exclude model-load time. The tok/s figure includes tool time. Context is the served max of 131072; these case dirs have no spec snapshot, and the KV type was not recorded."
   },
   {
    "date": "2026-10-26",
@@ -2460,6 +2571,23 @@
    ],
    "quality": "Not an agent grade. The agent runs above are the quality evidence.",
    "caveat": "One bench, taken just before round 1. It is not a paired before-and-after."
+  },
+  {
+   "date": "2026-10-27",
+   "title": "Test 10 has one Tiel run and no point score yet",
+   "kind": "finding",
+   "summary": "Tiel landed 3 of 3 items: the night scene, a surprise blocked on that scene, and a trace blocked on the surprise. It did not stop for a person.",
+   "settings": "Tiel-Coder-35B, cache saving on, solo auto, one worker at a time.",
+   "metrics": [
+    {
+     "label": "items landed",
+     "before": null,
+     "after": 3,
+     "unit": "of 3"
+    }
+   ],
+   "quality": "The pagoda half and the workflow half, each 0 to 10, were not scored.",
+   "caveat": "One run. The project directory was deleted afterward and the page was rebuilt from the edit log. This is not a score on the frozen rubric."
   }
  ],
  "amend": [
