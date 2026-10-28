@@ -1,0 +1,2 @@
+case	entry	cap	finish	tokens	wall_s	tok_s	A	B	C	D	E	total	note
+mx22-flashnext-heretic2-t7-labyrinth-agent-r1	lcpp6-flashnext-heretic2	10800 s	timeout	156888	10800.1	14.53	0	0	0	0	0	0	Timeout at 3 hours. No maze file was left, and 0 of 10 hidden seeds passed. All five points are 0.
