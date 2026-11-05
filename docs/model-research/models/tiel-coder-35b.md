@@ -117,3 +117,14 @@ Three tickets, three runs each, on the Q4_K_XL build (llama.cpp 0.6, 131k, f16 K
 | feature-filter | 3 | 11/11 | 159 | 61.3 | 9 | 4 | 2/4 | 0.4 |
 
 _Generated from the bake-off results on 2026-10-15; the Test 4 and Test 8 sections were added by hand on 2026-10-22._
+
+
+## Graded round on the all-GPU t06 entry (2026-11-03)
+
+One round. Core 7 of 8 (tests 1, 2, 2T, 3G, 3O and three test-4 tickets).
+
+Test 1 passed: 35 of its own tests, none failing, 14 subcommands, 80.7 tok/s, 14 minutes. Test 2 passed: the server builds, exposes 6 tools and passes 24 tests, 82.5 tok/s, 14 minutes. Test 2T passed (6 tools, 34 tests) and avoided the planted endpoints. Test 3 on the known-good server matched 14 of 14 facts and the judgement was right. On its own server it matched 13 of 14 and said the server was correct, which is wrong: that is the miss. Test 4 passed all three tickets (hidden checks 4/0, 13/0 and 11/0).
+
+One-shots, hand-scored: orrery 2 of 10 (the SVG did not parse; the gears clump), pagoda 0 of 10. Test 7 failed, A0 B0 C0: no generator, showcase or notes. D and E were not scored. Test 8 scored 7 of 10 on the pagoda (A1 B1, pyramid voxels, C2 D2 E1) and 7 of 10 on the orrery (A2 B2 C1 D1 E1).
+
+This does not replace the Q4_K_XL candidate or the daily pick. It is one sample, faster on tests 1 and 2 than that candidate, and it failed test 3 on its own server.

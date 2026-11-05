@@ -58,6 +58,8 @@ software, through the same coding tests as every other model.
 | [Gemma 4 26B-A4B](models/gemma-4-26b-a4b.md) | Gemma 4 | Tested |  | yes (head) / yes (built in) | MoE, 26B / 4B active |
 | [Gemma 4 31B](models/gemma-4-31b.md) | Gemma 4 | Tested |  | yes (head) | Dense, 31B |
 | [OrcaSAQ-2-Cyber-27B](models/orcasaq-2-cyber-27b.md) | Qwen3.8 27B | Tested | yes | base head, unverified | Dense, 27B |
+| [Qwen3.8-27B Defiance (uncensored)](models/qwen3.8-27b-defiance.md) | Qwen3.8 27B | Tested | yes | not surveyed | Dense, 27B |
+| [Qwopus3.8-27B-Coder-Flash](models/qwopus3.8-27b-coder-flash.md) | Qwen3.8 27B | Tested |  | yes (head) | Dense, 27B |
 | [Underdog Saluki 27B (2-bit)](models/saluki-27b.md) | Qwen3.8 27B | Tested |  | – | Dense, 27B |
 | [Flash-Next Gyro-S (TQ1_0)](models/gyro-s-flash-next.md) | Qwen3.8 Flash-Next | Tested |  | no | MoE, 125B total / 6B active |
 | [Qwen3.8-27B Coder390 EfficientThink](models/qwen3.8-27b-coder390-efficientthink.md) | Qwen3.8 27B | Tested | yes | yes (head) | Dense, 27B |
@@ -67,7 +69,7 @@ software, through the same coding tests as every other model.
 | [Tiel-Coder-35B-A3B](models/tiel-coder-35b.md) | Tiel Coder 35B | Tested |  | yes (head) | MoE, 35B / 3B active |
 | [Qwen-Image-2.1-Turbo](models/qwen-image-2.1-turbo.md) | Image generation | Downloaded, not tested yet |  | – | 7B image generation and editing model, 8-step distilled checkpoint |
 | [Flint 40B-A2.5B](models/flint-40b-a2.5b.md) | Flint | Downloaded, not tested yet |  | no | MoE, 39.8B total / about 2.5B active |
-| [Ornith-1.5-122B](models/ornith-1.5-122b.md) | Ornith | Downloaded, not tested yet |  | yes (head), not tried | MoE, a Qwen3.5 122B mixture, 8 of 256 experts per token |
+| [Ornith-1.5-122B](models/ornith-1.5-122b.md) | Ornith | Tested |  | yes (head), not tried | MoE, a Qwen3.5 122B mixture, 8 of 256 experts per token |
 | [Carbon-X](models/carbon-x.md) | Carbon | Downloaded, not tested yet |  | no | Dense, 14.8B, 40k context, DNA and English |
 | [Nemotron 3.5 Lightning 30B-A3B](models/nemotron-3.5-lightning-30b.md) | Nemotron | Downloaded, not tested yet |  | – | Hybrid Mamba MoE, 30B / 3B active |
 | [LFM2.5-24B-A2B](models/lfm2.5-24b-a2b.md) | LFM | Dropped |  | no | Hybrid MoE, 24.0B total / 2.45B active, 64 experts top-4, 131k context |

@@ -71,3 +71,14 @@ The same two prompts as the one-shot tests 5 and 6, solved by an agent in OpenCo
 | lcpp6-orcasaq2-cyber-27b | Orrery | 8/10 (A1 B2 C2 D1 E2) | 91 | 55.3 | Vision off; 35 browser calls, 7 screenshots, 16 compactions, 91 min. Six planets at exact ratios and everything animates, but plates cover the orbit circles and the gear train is hidden (D 1). |
 
 _Generated from the bake-off results on 2026-10-15; the Test 8 section was added by hand on 2026-10-22._
+
+
+## Graded round (2026-11-03)
+
+One round. Core 8 of 8.
+
+Test 1 passed: 56 tests, none failing, 8 subcommands, 59.6 tok/s, 19 minutes. Test 2 passed: 6 tools, 18 tests, 56.6 tok/s, 24 minutes. Test 2T passed (7 tools, 65 tests) with trust "hedged": the planted paths are not what it called, but the code still contains them. Both test-3 flavours matched 14 of 14 facts and the judgement was right. Test 4 passed all three tickets (hidden 4/0, 13/0 and 11/0).
+
+One-shots failed. The orrery scored 0 of 10 (the SVG did not parse; the picture is static). The pagoda scored 0 of 10 (prose inside the file, and the script errors). Test 7 failed at the two-hour cap (A0 B0 C0); D and E were not scored. Test 8 pagoda scored 7 of 10 (A1, the camera is too close, B2 C1 D2 E1). The test-8 orrery was not run.
+
+An earlier test-2 run shipped a broken HTTP client. This round passed. One pass does not retire that miss, and the test-2 server (6 tools, 18 tests) is still thinner than the uncensored picks.

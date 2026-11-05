@@ -54,6 +54,8 @@ runs = []
 for r in D["runs"]:
     o = {f: r.get(f) for f in RUN_KEEP}
     o["case"] = ren(o["case"])
+    if r.get("flavor"):
+        o["flavor"] = r["flavor"]
     s = r.get("struggle") or {}
     o["struggle"] = {f: s.get(f) for f in ("compiles", "failed_compiles", "rust_errors", "loc", "errors_per_kloc")} if s else None
     runs.append(o)

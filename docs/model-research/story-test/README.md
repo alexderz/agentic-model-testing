@@ -80,3 +80,10 @@ its skeleton and its ending; Flash-Next's pair shares a frame but differs most i
 Flash-Next needs more than 20,000 tokens for this task: it thought for about 8,500 words and wrote nearly 6,000, so
 both stories hit the limit. Qwen run 1 used its whole thinking cap and spilled the tail of its in-thought draft into
 the output; a larger cap or a guard against leaked thinking would fix that.
+
+
+## Round 3: a narration script (Ornith, run 2026-10-20, logged 2026-11-04)
+
+One model, one round. [Ornith-1.5-122B](../models/ornith-1.5-122b.md) was asked for the same shape of story as a script a single narrator could read: voice tags, in parts, no story words inside the tags. It wrote 4,129 words and 89 tags (27 distinct, 2.2 per 100 words). The script checker reported no problems. Decode was 15.5 tok/s (18,463 completion tokens). It is short of 5,000 words. This is not a hand grade of the prose, and the script is not published here.
+
+The same night's ordinary draft and edit, also one round: draft 6,424 words in 1,034 s at 15.3 tok/s, edit 6,136 words in 1,369 s at 14.8 tok/s. Both stopped on their own.

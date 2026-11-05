@@ -48,3 +48,12 @@ Test 1 builds a Python CLI and is graded by running it (5 checks). Test 2 builds
 | 2 | fail | 0 tools | – | 6.9 | 151 | 8/8 | 9.6 | – | – | llama.cpp 0.4 | does not build (Cargo.toml lib path missing); hit 3h cap while still writing the project after long spec/fixture study; no runaway, 6.9 tok/s |
 
 _Generated from the bake-off results on 2026-10-15._
+
+
+## Graded round on llama.cpp 0.7.0 (2026-11-03)
+
+One round. Pruned IQ3_XXS, all experts in RAM, a 9,216 MiB GPU expert cache, 262,144 context and 8-bit KV. Core 6 of 8.
+
+Test 1 passed: 112 tests, none failing, 21 subcommands, 13.7 tok/s, 104 minutes. Test 2 failed at the cap. The server builds and exposes 9 tools, but `cargo test` did not finish, and a parsed count of zero tests is not a pass. Test 2T passed (10 tools, 112 tests) and avoided the planted endpoints. Test 3 on the known-good server was 14 of 14 with the right judgement. On its own server the probe recorded no facts and made no judgement; the server's own tests were 108 passing and 2 failing. Test 4 passed all three tickets (hidden 4/0, 13/0 and 11/0).
+
+One-shots: orrery 2 of 10 (the SVG did not parse; the arms move and the gears are toothed). Pagoda 8 of 10 (A1, the storeys float apart, B2 C1 D2 E2). Test 7 failed at the cap (A0 B0 C0, nothing generated). D and E were not scored. Test 8 is held and has no grade.
