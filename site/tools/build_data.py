@@ -56,6 +56,8 @@ for r in D["runs"]:
     o["case"] = ren(o["case"])
     if r.get("flavor"):
         o["flavor"] = r["flavor"]
+    elif re.search(r"mx22-.*-t2t-", o["case"] or ""):
+        o["flavor"] = "2T"
     s = r.get("struggle") or {}
     o["struggle"] = {f: s.get(f) for f in ("compiles", "failed_compiles", "rust_errors", "loc", "errors_per_kloc")} if s else None
     runs.append(o)

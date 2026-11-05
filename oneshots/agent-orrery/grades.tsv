@@ -9,5 +9,5 @@ t8-orrery-cybertiel-r1	cyber-tiel-coder-35b		agent done	92519.0	2199.6	42.1	2.0	
 t8-orrery-heretic2-r1	lcpp6-flashnext-heretic2		agent done	44616.0	3179.0	14.0	1.0	2.0	2.0	1.0	1.0	7.0	Vision off; 5 browser calls, 53 min. Eight planets at exact ratios and the arms orbit, but the gear paths are drawn at the corner and cover the title, so no pair meshes (D 1); fixed crescent shade (E 1).
 t8-orrery-abl15-r1	lcpp6-flashnext-abliterated-s15		agent done	14879.0	1091.8	13.6	1.0	1.0	0.0	1.0	0.0	3.0	Vision off; 9 browser calls, 1 screenshot, 18 min. Planet gears pile up at the top-left corner and nothing orbits (C 0); the planets are flat discs with no night side (E 0).
 t8-orrery-orcarouter-r1	lcpp6-orcarouter-fn-uncensored		agent done	75472.0	5243.4	14.4	2.0	2.0	2.0	2.0	2.0	10.0	Vision off; 19 browser calls, 87 min. Eight planets at exact ratios; each arm's toothed pinion meshes with the sun gear and obeys the planetary-gear law; the night gradient faces away from the sun while the surface turns.
-t8-orrery-tiel-r5	lcpp6-tiel-coder-35b-t06		agent done		7200	42.6	2	2	1	1	1	7	One scored run.
-t8-orrery-gemma-r5	gemma-4-26b-a4b		agent done		120	165.3	2	2	0	1	0	5	One scored run.
+t8-orrery-tiel-r5	lcpp6-tiel-coder-35b-t06		time cap	306983	7200.1	42.6	2	2	1	1	1	7	Stopped at the two-hour cap (7,200 s). One scored run.
+t8-orrery-gemma-r5	gemma-4-26b-a4b		agent done	16795	101.6	165.3	2	2	0	1	0	5	One scored run.

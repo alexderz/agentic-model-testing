@@ -67,9 +67,9 @@ software, through the same coding tests as every other model.
 | [Flash-Next Abliterated s1.5](models/flash-next-abliterated-s15.md) | Qwen3.8 Flash-Next | Tested | yes | yes (head) | MoE, 125B total / 6B active |
 | [Cyber-Tiel-Coder-35B-A3B](models/cyber-tiel-coder-35b.md) | Tiel Coder 35B | Tested | yes | yes (head) | MoE, 35B / 3B active |
 | [Tiel-Coder-35B-A3B](models/tiel-coder-35b.md) | Tiel Coder 35B | Tested |  | yes (head) | MoE, 35B / 3B active |
+| [Ornith-1.5-122B](models/ornith-1.5-122b.md) | Ornith | Tested |  | yes (head), not tried | MoE, a Qwen3.5 122B mixture, 8 of 256 experts per token |
 | [Qwen-Image-2.1-Turbo](models/qwen-image-2.1-turbo.md) | Image generation | Downloaded, not tested yet |  | – | 7B image generation and editing model, 8-step distilled checkpoint |
 | [Flint 40B-A2.5B](models/flint-40b-a2.5b.md) | Flint | Downloaded, not tested yet |  | no | MoE, 39.8B total / about 2.5B active |
-| [Ornith-1.5-122B](models/ornith-1.5-122b.md) | Ornith | Tested |  | yes (head), not tried | MoE, a Qwen3.5 122B mixture, 8 of 256 experts per token |
 | [Carbon-X](models/carbon-x.md) | Carbon | Downloaded, not tested yet |  | no | Dense, 14.8B, 40k context, DNA and English |
 | [Nemotron 3.5 Lightning 30B-A3B](models/nemotron-3.5-lightning-30b.md) | Nemotron | Downloaded, not tested yet |  | – | Hybrid Mamba MoE, 30B / 3B active |
 | [LFM2.5-24B-A2B](models/lfm2.5-24b-a2b.md) | LFM | Dropped |  | no | Hybrid MoE, 24.0B total / 2.45B active, 64 experts top-4, 131k context |

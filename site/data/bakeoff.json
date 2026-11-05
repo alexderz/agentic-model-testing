@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
  "generated": "2026-11-04 22:20 CST",
- "built": "2026-11-04 21:58 CST",
+ "built": "2026-11-04 22:20 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -120,7 +120,7 @@
    "date": "2026-11-04",
    "title": "Flash-Next quant drafts, one partial round",
    "kind": "model",
-   "summary": "Six quants of Qwen3.8-Flash-Next on Strata 0.2.10 ran the story draft and edit. Draft decode was 104.2 tok/s (GSQ-RCO IQ3_XXS), 93.8 (UD-Q2_K_XL), 81.9 (UD-IQ3_XXS), 74.2 (UD-IQ1_M), 48.1 (GSQ-RCO IQ3_S) and 28.8 (UD-Q3_K_XL). Acceptance on the draft leg was 47.0% to 56.6%. The edit leg is faster because it copies the draft (56% to 99% of paragraphs kept verbatim) and is not the comparison. IQ3_S and Q3_K_XL look anomalous. A round 2 is queued. No hand grade.",
+   "summary": "Six quants of Qwen3.8-Flash-Next on Strata 0.2.10 ran the story draft and edit. Draft decode was 104.2 tok/s (GSQ-RCO IQ3_XXS), 93.8 (UD-Q2_K_XL), 81.9 (UD-IQ3_XXS), 74.2 (UD-IQ1_M), 48.1 (GSQ-RCO IQ3_S) and 28.8 (UD-Q3_K_XL). Acceptance on the draft leg was 47.0% to 56.6%. The edit leg is faster because it copies the draft (56% to 99% of paragraphs kept verbatim) and is not the comparison. IQ3_S and Q3_K_XL look anomalous. The UD-IQ3_XXS and UD-Q2_K_XL edits stopped at the output cap. A second story round is queued for all six quants; rank none before it. No hand grade. Other tests from this run are in progress and are not in this refresh.",
    "settings": "Strata 0.2.10, 131072 context",
    "metrics": [
     {
@@ -178,7 +178,7 @@
    "date": "2026-11-01",
    "title": "DeepSeek at 256k, and two sessions at once",
    "kind": "engine",
-   "summary": "DeepSeek-V4.1-Flash, UD-IQ1_S, 8-bit KV. Six expert layers on the GPU instead of seven: a strict 128-token decode on a 251,590-token prompt rose from 2.71 to 3.09 tok/s and the text matched. A planted nonce at about 256k tokens was found. Restoring the saved cache returned the same reply, including a vision answer. Two sessions near 96k tokens: 3.70 tok/s alone, 2.74 each together (5.58 combined), and neither reply contained the other session's nonce.",
+   "summary": "DeepSeek-V4.1-Flash, UD-IQ1_S, 8-bit KV. Six GPU layers instead of seven: a strict 128-token decode on a 251,590-token prompt rose from 2.71 to 3.09 tok/s and the text matched. A planted nonce was found in 4,735 new tokens on top of 251,717 restored tokens; that prefill was 50.3 tok/s. Nonce isolation was measured at about 8.8k tokens per session: each session answered only its own nonce. The 96k figure is decode depth only: 3.70 tok/s alone, 2.74 each when both ran (5.58 combined). Restoring the saved cache returned the same reply, including a vision answer.",
    "settings": "q8_0 KV, 6 GPU layers",
    "metrics": [
     {
@@ -188,7 +188,7 @@
      "unit": "tok/s"
     },
     {
-     "label": "Decode per session, both resident",
+     "label": "Decode per session at ~96k, both resident",
      "before": 3.7,
      "after": 2.74,
      "unit": "tok/s"
@@ -1431,7 +1431,7 @@
    "date": "2026-11-01",
    "era": "Engines",
    "title": "DeepSeek keeps two sessions apart",
-   "what": "UD-IQ1_S at 6 GPU layers decodes a 252k prompt at 3.09 tok/s, and two 96k sessions answer only their own nonce.",
+   "what": "UD-IQ1_S at 6 GPU layers decodes a 252k prompt at 3.09 tok/s. Nonce isolation was at about 8.8k tokens per session; 96k is the decode depth only.",
    "why": "A long cache has to survive a reload, and a second session must not leak into the first."
   },
   {
@@ -1445,7 +1445,7 @@
    "date": "2026-11-04",
    "era": "Flash-Next",
    "title": "Six Flash-Next quants, story draft only",
-   "what": "Partial, one round, no hand grade. Draft decode runs from 28.8 to 104.2 tok/s. Two draft legs look anomalous, so a second round is queued.",
+   "what": "Partial, one round, no hand grade. Draft decode runs from 28.8 to 104.2 tok/s. Two draft legs look anomalous. A second story round is queued for all six; rank none before it.",
    "why": "The edit speed is inflated by copying the draft."
   }
  ],
@@ -2997,7 +2997,7 @@
    "quant": "EXL3 5.0 bpw (head 6 bits, MTP head 4 bits)",
    "kind": "tune",
    "uncensored": false,
-   "note": "Round 1 only. Fine-tune of Qwen3.8-27B (Jackrong/Qwopus3.8-27B-Coder-Flash, Apache-2.0). The bench that chose this arm, thinking off, was 98.2 / 60.3 / 111.5 tok/s with 58.7% of drafts accepted. The graded round turned vision on and did not record a per-run tok/s.",
+   "note": "Round 1 only. Fine-tune of Qwen3.8-27B (Jackrong/Qwopus3.8-27B-Coder-Flash, Apache-2.0). The fit bench, thinking off, was 98.2 / 60.3 / 111.5 tok/s with 58.7% of drafts accepted. Agent test 1 ran at 62.1 tok/s and test 2 at 63.3 tok/s, about 22 minutes each.",
    "vision": {
     "label": "on in this setup",
     "status": "native"
@@ -8005,6 +8005,7 @@
    "kv": "q8_0",
    "verdict": "partial",
    "finished": "2026-10-23 00:28",
+   "flavor": "2T",
    "struggle": {
     "compiles": 17,
     "failed_compiles": 14,
@@ -8221,6 +8222,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-23 07:10",
+   "flavor": "2T",
    "struggle": {
     "compiles": 13,
     "failed_compiles": 4,
@@ -8437,6 +8439,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-26 05:24",
+   "flavor": "2T",
    "struggle": {
     "compiles": 11,
     "failed_compiles": 3,
@@ -8557,6 +8560,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-26 22:50",
+   "flavor": "2T",
    "struggle": {
     "compiles": 15,
     "failed_compiles": 4,
@@ -9256,7 +9260,7 @@
    "struggle": null
   },
   {
-   "case": "qwopus-e98v-t1-r1",
+   "case": "qw38f-e98v-t1-cli-r1",
    "model": "qwopus38-exl3-5bpw-mtp-98k",
    "test": 1,
    "agent": "OpenCode",
@@ -9264,8 +9268,8 @@
    "tests_pass": 52,
    "tests_fail": 0,
    "subcmds": null,
-   "tps": null,
-   "minutes": null,
+   "tps": 62.1,
+   "minutes": 22,
    "compactions": null,
    "ctx": 98304,
    "kv": "8-bit",
@@ -9274,7 +9278,7 @@
    "struggle": null
   },
   {
-   "case": "qwopus-e98v-t2-r1",
+   "case": "qw38f-e98v-t2-rust-mcp-r1",
    "model": "qwopus38-exl3-5bpw-mtp-98k",
    "test": 2,
    "agent": "OpenCode",
@@ -9282,8 +9286,8 @@
    "tests_pass": 27,
    "tests_fail": 0,
    "subcmds": null,
-   "tps": null,
-   "minutes": null,
+   "tps": 63.3,
+   "minutes": 22,
    "compactions": null,
    "ctx": 98304,
    "kv": "8-bit",
@@ -9292,7 +9296,7 @@
    "struggle": null
   },
   {
-   "case": "qwopus-e98v-t2t-r1",
+   "case": "qw38f-e98v-t2t-rust-mcp-r1",
    "model": "qwopus38-exl3-5bpw-mtp-98k",
    "test": 2,
    "agent": "OpenCode",
@@ -9300,8 +9304,8 @@
    "tests_pass": 40,
    "tests_fail": 0,
    "subcmds": null,
-   "tps": null,
-   "minutes": null,
+   "tps": 67.7,
+   "minutes": 22,
    "compactions": null,
    "ctx": 98304,
    "kv": "8-bit",
@@ -9311,7 +9315,7 @@
    "struggle": null
   },
   {
-   "case": "qwopus-e98v-t4a-r1",
+   "case": "qw38f-e98v-t4-bugfix-targets-r1",
    "model": "qwopus38-exl3-5bpw-mtp-98k",
    "test": 4,
    "agent": "OpenCode",
@@ -9319,8 +9323,8 @@
    "tests_pass": null,
    "tests_fail": null,
    "subcmds": null,
-   "tps": null,
-   "minutes": null,
+   "tps": 46.1,
+   "minutes": 6,
    "compactions": null,
    "ctx": 98304,
    "kv": "8-bit",
@@ -9329,7 +9333,7 @@
    "struggle": null
   },
   {
-   "case": "qwopus-e98v-t4b-r1",
+   "case": "qw38f-e98v-t4-config-timeouts-r1",
    "model": "qwopus38-exl3-5bpw-mtp-98k",
    "test": 4,
    "agent": "OpenCode",
@@ -9337,8 +9341,8 @@
    "tests_pass": null,
    "tests_fail": null,
    "subcmds": null,
-   "tps": null,
-   "minutes": null,
+   "tps": 60.4,
+   "minutes": 25,
    "compactions": null,
    "ctx": 98304,
    "kv": "8-bit",
@@ -9347,7 +9351,7 @@
    "struggle": null
   },
   {
-   "case": "qwopus-e98v-t4c-r1",
+   "case": "qw38f-e98v-t4-feature-filter-r1",
    "model": "qwopus38-exl3-5bpw-mtp-98k",
    "test": 4,
    "agent": "OpenCode",
@@ -9355,8 +9359,8 @@
    "tests_pass": null,
    "tests_fail": null,
    "subcmds": null,
-   "tps": null,
-   "minutes": null,
+   "tps": 50.5,
+   "minutes": 11,
    "compactions": null,
    "ctx": 98304,
    "kv": "8-bit",
@@ -9365,7 +9369,7 @@
    "struggle": null
   },
   {
-   "case": "qwopus-q4g-t1-r1",
+   "case": "qw38f-q4g-t1-cli-r1",
    "model": "qwopus38-q4km-98k",
    "test": 1,
    "agent": "OpenCode",
@@ -9373,7 +9377,7 @@
    "tests_pass": 55,
    "tests_fail": 0,
    "subcmds": null,
-   "tps": null,
+   "tps": 32.5,
    "minutes": 28,
    "compactions": null,
    "ctx": 98304,
@@ -9383,7 +9387,7 @@
    "struggle": null
   },
   {
-   "case": "qwopus-q4g-t2-r1",
+   "case": "qw38f-q4g-t2-rust-mcp-r1",
    "model": "qwopus38-q4km-98k",
    "test": 2,
    "agent": "OpenCode",
@@ -9391,8 +9395,8 @@
    "tests_pass": 55,
    "tests_fail": 0,
    "subcmds": null,
-   "tps": null,
-   "minutes": 63,
+   "tps": 30.6,
+   "minutes": 62,
    "compactions": null,
    "ctx": 98304,
    "kv": "q8_0",
@@ -9401,7 +9405,7 @@
    "struggle": null
   },
   {
-   "case": "qwopus-q4g-t2t-r1",
+   "case": "qw38f-q4g-t2t-rust-mcp-r1",
    "model": "qwopus38-q4km-98k",
    "test": 2,
    "agent": "OpenCode",
@@ -9409,7 +9413,7 @@
    "tests_pass": 41,
    "tests_fail": 0,
    "subcmds": null,
-   "tps": null,
+   "tps": 29.6,
    "minutes": 33,
    "compactions": null,
    "ctx": 98304,
@@ -9420,7 +9424,7 @@
    "struggle": null
   },
   {
-   "case": "qwopus-q4g-t4a-r1",
+   "case": "qw38f-q4g-t4-bugfix-targets-r1",
    "model": "qwopus38-q4km-98k",
    "test": 4,
    "agent": "OpenCode",
@@ -9428,8 +9432,8 @@
    "tests_pass": null,
    "tests_fail": null,
    "subcmds": null,
-   "tps": null,
-   "minutes": 8,
+   "tps": 31.4,
+   "minutes": 7,
    "compactions": null,
    "ctx": 98304,
    "kv": "q8_0",
@@ -9438,7 +9442,7 @@
    "struggle": null
   },
   {
-   "case": "qwopus-q4g-t4b-r1",
+   "case": "qw38f-q4g-t4-config-timeouts-r1",
    "model": "qwopus38-q4km-98k",
    "test": 4,
    "agent": "OpenCode",
@@ -9446,8 +9450,8 @@
    "tests_pass": null,
    "tests_fail": null,
    "subcmds": null,
-   "tps": null,
-   "minutes": 37,
+   "tps": 29.3,
+   "minutes": 36,
    "compactions": null,
    "ctx": 98304,
    "kv": "q8_0",
@@ -9456,7 +9460,7 @@
    "struggle": null
   },
   {
-   "case": "qwopus-q4g-t4c-r1",
+   "case": "qw38f-q4g-t4-feature-filter-r1",
    "model": "qwopus38-q4km-98k",
    "test": 4,
    "agent": "OpenCode",
@@ -9464,8 +9468,8 @@
    "tests_pass": null,
    "tests_fail": null,
    "subcmds": null,
-   "tps": null,
-   "minutes": 13,
+   "tps": 25.5,
+   "minutes": 12,
    "compactions": null,
    "ctx": 98304,
    "kv": "q8_0",
@@ -10373,7 +10377,7 @@
    "finished": "2026-10-28 01:27"
   },
   {
-   "case": "qwopus-e98v-t3g-r1",
+   "case": "qw38f-e98v-t3g-known-good-mcp-r1",
    "model": "qwopus38-exl3-5bpw-mtp-98k",
    "flavor": "3G",
    "mcp_facts": "14/14",
@@ -10381,12 +10385,12 @@
    "judgement_right": true,
    "rubric": null,
    "note": "Round 1. Known-good server. Per-run tok/s was not in the grade table.",
-   "tps": null,
-   "minutes": null,
+   "tps": 20.5,
+   "minutes": 21,
    "finished": null
   },
   {
-   "case": "qwopus-e98v-t3o-r1",
+   "case": "qw38f-e98v-t3o-own-mcp-r1",
    "model": "qwopus38-exl3-5bpw-mtp-98k",
    "flavor": "3O",
    "mcp_facts": "14/14",
@@ -10394,12 +10398,12 @@
    "judgement_right": true,
    "rubric": null,
    "note": "Round 1. Own server, 14 of 14. The server's tests were 27 passing.",
-   "tps": null,
-   "minutes": null,
+   "tps": 15.3,
+   "minutes": 67,
    "finished": null
   },
   {
-   "case": "qwopus-q4g-t3g-r1",
+   "case": "qw38f-q4g-t3g-known-good-mcp-r1",
    "model": "qwopus38-q4km-98k",
    "flavor": "3G",
    "mcp_facts": "14/14",
@@ -10407,12 +10411,12 @@
    "judgement_right": true,
    "rubric": null,
    "note": "Round 1. Known-good server.",
-   "tps": null,
+   "tps": 24.6,
    "minutes": 14,
    "finished": null
   },
   {
-   "case": "qwopus-q4g-t3o-r1",
+   "case": "qw38f-q4g-t3o-own-mcp-r1",
    "model": "qwopus38-q4km-98k",
    "flavor": "3O",
    "mcp_facts": "14/14",
@@ -10420,7 +10424,7 @@
    "judgement_right": true,
    "rubric": null,
    "note": "Round 1. Own server, 8 tools and 56 tests.",
-   "tps": null,
+   "tps": 7.0,
    "minutes": 62,
    "finished": null
   }
@@ -14869,7 +14873,7 @@
      "E": null
     },
     "total": 0.0,
-    "note": "0 of 10. Letter scores were not recorded. One round.",
+    "note": "0 of 10. three.js API error, blank page. Letter scores were not recorded. One round.",
     "frames": [],
     "live": null
    },
@@ -15195,9 +15199,9 @@
     "case": "t8-orrery-tiel-r5",
     "entry": "lcpp6-tiel-coder-35b-t06",
     "test": 8,
-    "finish": "agent done",
-    "tokens": null,
-    "wall_s": 7200.0,
+    "finish": "time cap",
+    "tokens": 306983.0,
+    "wall_s": 7200.1,
     "tok_s": 42.6,
     "points": {
      "A": 2.0,
@@ -15207,7 +15211,7 @@
      "E": 1.0
     },
     "total": 7.0,
-    "note": "One scored run.",
+    "note": "Stopped at the two-hour cap (7,200 s). One scored run.",
     "frames": [],
     "live": null
    },
@@ -15216,8 +15220,8 @@
     "entry": "gemma-4-26b-a4b",
     "test": 8,
     "finish": "agent done",
-    "tokens": null,
-    "wall_s": 120.0,
+    "tokens": 16795.0,
+    "wall_s": 101.6,
     "tok_s": 165.3,
     "points": {
      "A": 2.0,
@@ -15526,8 +15530,8 @@
     "entry": "lcpp6-tiel-coder-35b-t06",
     "test": 8,
     "finish": "agent done",
-    "tokens": null,
-    "wall_s": 2040.0,
+    "tokens": 200692.0,
+    "wall_s": 2051.0,
     "tok_s": 97.8,
     "points": {
      "A": 1.0,
@@ -15546,8 +15550,8 @@
     "entry": "gemma-4-26b-a4b",
     "test": 8,
     "finish": "agent done",
-    "tokens": null,
-    "wall_s": 60.0,
+    "tokens": 6670.0,
+    "wall_s": 41.6,
     "tok_s": 160.3,
     "points": {
      "A": 2.0,
@@ -15566,8 +15570,8 @@
     "entry": "lcpp6-orcasaq2-cyber-27b",
     "test": 8,
     "finish": "agent done",
-    "tokens": null,
-    "wall_s": 1200.0,
+    "tokens": 64853.0,
+    "wall_s": 1210.0,
     "tok_s": 53.6,
     "points": {
      "A": 1.0,
@@ -15608,8 +15612,8 @@
     "entry": "lcpp6-tiel-coder-35b-t06",
     "test": 7,
     "finish": "agent done",
-    "tokens": null,
-    "wall_s": 4620.0,
+    "tokens": 282835.0,
+    "wall_s": 4599.5,
     "tok_s": 61.5,
     "points": {
      "A": 0.0,
@@ -15628,8 +15632,8 @@
     "entry": "gemma-4-26b-a4b",
     "test": 7,
     "finish": "agent done",
-    "tokens": null,
-    "wall_s": 2880.0,
+    "tokens": 30741.0,
+    "wall_s": 2873.7,
     "tok_s": 10.7,
     "points": {
      "A": 1.0,
@@ -15648,8 +15652,8 @@
     "entry": "lcpp6-orcasaq2-cyber-27b",
     "test": 7,
     "finish": "time cap",
-    "tokens": null,
-    "wall_s": 10800.0,
+    "tokens": 614412.0,
+    "wall_s": 10800.5,
     "tok_s": 56.9,
     "points": {
      "A": 0.0,
@@ -15659,7 +15663,7 @@
      "E": null
     },
     "total": null,
-    "note": "Graded at the cap. D and E were not scored. One round.",
+    "note": "Graded at the three-hour cap (10,800 s). D and E were not scored. One round.",
     "frames": [],
     "live": null
    },
@@ -15668,8 +15672,8 @@
     "entry": "lcpp6-q38-defiance-192k-author",
     "test": 7,
     "finish": "agent done",
-    "tokens": null,
-    "wall_s": 6960.0,
+    "tokens": 123619.0,
+    "wall_s": 6946.7,
     "tok_s": 17.8,
     "points": {
      "A": 2.0,
@@ -15679,7 +15683,7 @@
      "E": 2.0
     },
     "total": 10.0,
-    "note": "D and E are from the map checker, not a walk in the game. One round.",
+    "note": "D is from the map checker only. E came from regenerating the showcase seed and diffing the notes against the verifier. One round.",
     "frames": [],
     "live": null
    },
@@ -15688,8 +15692,8 @@
     "entry": "qwen3.8-flash-next-unpruned",
     "test": 7,
     "finish": "agent done",
-    "tokens": null,
-    "wall_s": 8880.0,
+    "tokens": 97181.0,
+    "wall_s": 8867.8,
     "tok_s": 11.0,
     "points": {
      "A": 2.0,
@@ -15699,7 +15703,7 @@
      "E": 2.0
     },
     "total": 10.0,
-    "note": "Mossrock Way. D and E are from the map checker, not a walk in the game. One round.",
+    "note": "Mossrock Way. D is from the map checker only. E came from regenerating the showcase seed and diffing the notes against the verifier. One round.",
     "frames": [],
     "live": null
    },
@@ -15708,8 +15712,8 @@
     "entry": "swift15-flash-next",
     "test": 7,
     "finish": "time cap",
-    "tokens": null,
-    "wall_s": 10800.0,
+    "tokens": 193703.0,
+    "wall_s": 10800.7,
     "tok_s": 17.9,
     "points": {
      "A": 0.0,
