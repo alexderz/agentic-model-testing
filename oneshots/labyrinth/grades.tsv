@@ -1,2 +1,8 @@
 case	entry	cap	finish	tokens	wall_s	tok_s	A	B	C	D	E	total	note
 mx22-flashnext-heretic2-t7-labyrinth-agent-r1	lcpp6-flashnext-heretic2	10800 s	timeout	156888	10800.1	14.53	0	0	0	0	0	0	Timeout at 3 hours. No maze file was left, and 0 of 10 hidden seeds passed. All five points are 0.
+mx22-tiel-coder-35b-t06-t7-labyrinth-agent-r1	lcpp6-tiel-coder-35b-t06		agent done	282835	4599.5	61.5	0	0	0				No generator, showcase or notes. D and E were not scored. One round.
+mx22-gemma-4-26b-a4b-t7-labyrinth-agent-r1	gemma-4-26b-a4b		agent done	30741	2873.7	10.7	1	0	0				D and E were not scored. One round.
+mx22-orcasaq2-cyber-27b-t7-labyrinth-agent-r1	lcpp6-orcasaq2-cyber-27b		time cap	614412	10800.5	56.9	0	0	0				Graded at the three-hour cap (10,800 s). D and E were not scored. One round.
+mx22-q38-defiance-192k-author-t7-labyrinth-agent-r1	lcpp6-q38-defiance-192k-author		agent done	123619	6946.7	17.8	2	2	2	2	2	10	D is from the map checker only. E came from regenerating the showcase seed and diffing the notes against the verifier. One round.
+mx22-qwen3.8-flash-next-unpruned-t7-labyrinth-agent-r1	qwen3.8-flash-next-unpruned		agent done	97181	8867.8	11.0	2	2	2	2	2	10	Mossrock Way. D is from the map checker only. E came from regenerating the showcase seed and diffing the notes against the verifier. One round.
+mx22-swift15-flash-next-t7-labyrinth-agent-r1	swift15-flash-next		time cap	193703	10800.7	17.9	0	0	0				Nothing generated. D and E were not scored. One round.

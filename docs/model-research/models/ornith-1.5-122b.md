@@ -1,6 +1,6 @@
 # Ornith-1.5-122B
 
-**Status:** Downloaded, not tested yet
+**Status:** Tested
 
 | | |
 | --- | --- |
@@ -17,10 +17,10 @@ temperature 0.6, top-p 0.95, top-k 20.
 
 ## Verdict
 
-No agent test has run. On llama.cpp 0.7.0 with 262k context and an 8-bit cache
+Tests 1 and 2 have passed; see Results. On llama.cpp 0.7.0 with 262k context and an 8-bit cache
 the best offload decodes at 16.3 tok/s (40 expert layers on the CPU), 15.8 at
-depth; larger batches lift prefill from 116 to 392 tok/s (41 layers). The one-shot pagoda
-and orrery ran at about 15 tok/s and are not graded. The sweep (2026-10-20) is below.
+depth; larger batches lift prefill from 116 to 392 tok/s (41 layers). The one-shot
+orrery scored 3 of 10 and the pagoda 8 of 10; both are on the site. The sweep (2026-10-20) is below.
 
 ## Variants we ran
 
@@ -39,6 +39,8 @@ Speeds are tok/s. MTP buys back the VRAM of four layers but not speed.
 
 ## Results
 
-None graded. Tests 1 and 2 have not been run.
+Tests 1 and 2 passed on 2026-10-23, one run each, on llama.cpp 0.7 with experts partly in RAM. Test 1: 48 tests, none failing, 13.4 tok/s, 90 minutes. Test 2: the server builds, 43 tests, none failing, 12.9 tok/s, 82 minutes.
 
-_Written from the bake-off results on 2026-10-22._
+Story test, 2026-10-20, one round of each step. The draft finished at 6,424 words in 1,034 s (15.3 tok/s). The edit finished at 6,136 words in 1,369 s (14.8 tok/s). Both stopped on their own. Round 3 asked for the same shape of story as a narration script with voice tags, in parts. It wrote 4,129 words, 89 tags (27 distinct, 2.2 per 100 words), and the script checker reported no problems, at 15.5 tok/s. That is short of the 5,000-word ask. It is not a hand grade of the prose.
+
+_Agent results from the 2026-10-23 runs. Story results logged 2026-11-04 from the 2026-10-20 run._

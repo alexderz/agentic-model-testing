@@ -97,3 +97,29 @@ multi-session probe passed 4 of 11 checks at best, 3 of 11 at 32k (llama.cpp: 11
 in [Engines](../engines.md).
 
 _Generated from the bake-off results on 2026-10-15; the 2026-10-22 section was added by hand._
+
+
+## Unpruned GGUF on llama.cpp 0.7.0 (graded 2026-11-03)
+
+One round. The unpruned GSQ-RCO IQ3_S, all experts in RAM, a 9,216 MiB GPU expert cache, 211,968 context and 8-bit KV. Core 8 of 8.
+
+Test 1 passed: 92 tests, none failing, 16 subcommands, 18.1 tok/s over the run, 52 minutes. Test 2 passed: 8 tools, 56 tests, 19.1 tok/s, 68 minutes. Test 2T passed (9 tools, 38 tests) and avoided the planted endpoints. Both test-3 flavours matched 14 of 14 and the judgement was right; those runs are slower (6.5 and 9.8 tok/s) because the test puts sub-agents on one slot. Test 4 passed all three tickets (hidden 4/0, 13/0 and 11/0).
+
+One-shots, hand-scored: orrery 7 of 10 (A1, the title sits under the dial, B2, C2 with Venus and Earth at 11.56 s and 18.81 s, D1, the gears are not a provable train, E1, a fixed terminator). Pagoda 10 of 10 (A2 B2 C2 D2 E2). Test 7 scored 10 of 10 (A2 B2 C2 D2 E2), title "Mossrock Way". D is from the map checker only. E came from regenerating the showcase seed and diffing the notes against the verifier. Nobody walked it in the game. Test 8 is held and has no grade.
+
+The test-2 server is real and smaller than the SGLang pick (12 tools, 155 tests). The pick stays.
+
+## Quant comparison, story test, partial (2026-11-04)
+
+One round, partial. Six quants on Strata 0.2.10 at 131,072 context ran the story draft and the self-edit. There is no hand grade, so the only numbers are speed. Draft-leg decode and how many offered draft tokens were accepted:
+
+| Quant | Draft decode | Acceptance | Edit decode | Draft kept verbatim |
+| --- | ---: | ---: | ---: | ---: |
+| GSQ-RCO IQ3_S | 48.1 tok/s | 53.7% | 103.2 tok/s | 56% |
+| GSQ-RCO IQ3_XXS | 104.2 tok/s | 55.8% | 163.0 tok/s | 99% |
+| UD-IQ1_M | 74.2 tok/s | 54.6% | 112.5 tok/s | 95% |
+| UD-IQ3_XXS | 81.9 tok/s | 53.8% | 122.8 tok/s | 90% |
+| UD-Q2_K_XL | 93.8 tok/s | 56.6% | 145.9 tok/s | 68% |
+| UD-Q3_K_XL | 28.8 tok/s | 47.0% | 79.6 tok/s | 90% |
+
+The edit leg is inflated by copying. The edit request includes the draft, and every quant kept most of it, so the edit tok/s is not how fast it writes. The GSQ-RCO IQ3_S draft leg (48.1 tok/s, prefill 184 tok/s) and the UD-Q3_K_XL draft leg (28.8 tok/s, prefill 49 tok/s) look anomalous next to the other quants. The UD-IQ3_XXS and UD-Q2_K_XL edits stopped at the output cap; the other four edits stopped on their own. A second story round is queued for all six quants; rank none before it. Other tests from this run are in progress and are not in this refresh.

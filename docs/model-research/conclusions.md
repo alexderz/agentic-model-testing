@@ -21,7 +21,8 @@ server and how many passing tests it produced. For how the tests work, see
 
 [OrcaSAQ-2-Cyber-27B](models/orcasaq-2-cyber-27b.md) is faster than the
 uncensored pick (77-86 tok/s with a draft model) but less consistent: one of
-its two test-2 runs shipped a broken HTTP client.
+its two test-2 runs shipped a broken HTTP client. A 2026-11-03 round passed all eight core tests, with a thinner server (6 tools, 18 tests); one pass does not retire the broken run.
+
 [ThinkingCap-27B Heretic](models/thinkingcap-27b-heretic.md) built the most
 complete uncensored 27B server so far (8 tools, 56 tests, 52 minutes) at
 25-31 tok/s on llama.cpp: pick it when completeness matters more than speed.
@@ -30,7 +31,8 @@ complete uncensored 27B server so far (8 tools, 56 tests, 52 minutes) at
 fastest competent: with the author's coding sampling (temperature 0.6) it
 passed test 1 in 24 minutes and test 2 in 27 minutes (5 tools, 22 tests) at
 77-79 tok/s. That is one run each, with fewer tests than Qwen3.8-27B wrote,
-so it has not replaced the pick.
+so it has not replaced the pick. The all-GPU t06 entry, one round, passed test 1 and test 2
+(6 tools, 24 tests, 14 minutes, about 80 tok/s) and failed test 3 on its own server.
 
 **Candidate, not a pick:** [Gyro-S + MTP](models/gyro-s-flash-next.md) on Strata 0.2.0-beta
 (Flash-Next in a 1-bit-class quant) decodes 119 tok/s on code, passed test 2 in
@@ -39,9 +41,12 @@ Strata 0.2.2 raised decode to 144 tok/s on code in a same-day control. It is one
 run on a beta engine, so Qwen3.8-27B on vLLM stays the fastest competent pick
 until a repeat and a test 1 run support it.
 
-The picks above rest on graded test 1 and 2 runs. The new llama.cpp 0.7.0
-configurations and the Strata 0.2.2 build have not been through them; their
-speeds are in the tradeoff text and in [Engines](engines.md), not in the picks.
+The picks above rest on graded test 1 and 2 runs. Unpruned Flash-Next on llama.cpp 0.7.0
+with the expert cache now has one round through them (8 tools, 56 tests), which does not
+beat the SGLang server this pick rests on. Swift 1.5 on that stack passed 6 of 8. Qwopus
+passed all eight core tests in one round on two setups and tied stock Qwen3.8-27B on the
+short coding set, so it does not take the fastest-competent row. Strata 0.2.2 still has no
+agent rerun. Speeds for the ungraded stacks stay in [Engines](engines.md).
 
 **Test 8 (agent pagoda and orrery).** Six models whose one-shot pagoda was blank
 scored 7 to 10 as agents with a sealed browser (mean 8.3 of 10, 2026-10-17):
@@ -107,7 +112,7 @@ scored 10. See [Method](method.md) and the model cards.
     tok/s. Mean KL against the f16 config was 0.0011 and all needles were found.
     Size the cache to what is left in VRAM after the vision head and the slots
     (12800 MiB for Orcarouter and Heretic2, 13824 Abliterated s1.5, 9216 for
-    Swift and the unpruned GGUF). Not yet through tests 1 and 2. See
+    Swift and the unpruned GGUF). The unpruned GGUF has one graded round through tests 1 and 2 (8 tools, 56 tests, 2026-11-03). Swift 1.5 on the same flags passed 6 of 8. One round does not move the pick. See
     [Tuning](tuning.md).
 12. **A blank one-shot page does not predict the agent.** Six models that drew
     blank pagodas in one shot scored 7 to 10 once they could write, run and look

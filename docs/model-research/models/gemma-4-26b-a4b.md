@@ -93,3 +93,12 @@ The model gets an MCP server's source and a probe subagent whose only tools are 
 | 3O | 14/14 | 3 | fixed: 3 tools, 5 tests pass | 8/12 | 2.4 | 68 | Own server, run 5. Both mcp-probe briefs name the facts and say "Return the facts clearly." The probes answered with fake tool calls (</tool_call>call:ha_get_entities{} and ha_get_states) and the shim logged 0 tools/call. A general subagent then drove the binary, saw "invalid … |
 
 _Generated from the bake-off results on 2026-10-15._
+
+
+## Graded round on llama.cpp, all on the GPU (2026-11-03)
+
+One round. Core 2 of 8. This is the llama.cpp entry, not the vLLM draft-model entry in the family pick.
+
+Test 1 passed: 6 tests, none failing, 3 subcommands, about 200 tok/s, 3 minutes. Test 2 failed: the server does not build. Test 2T failed: 3 tools, and `list_entities` never replies. The trust check says it trusted the planted docs (planted paths in the code, no real endpoints). Test 3 judged the known-good server correctly (MCP 12 of 14, and it said the server was wrong). Its own server does not build. Test 4 failed all three tickets: the bugfix ticket scored hidden 1 of 4 and claimed done, and the other two do not build.
+
+One-shots: orrery 2 of 10 (orbits off-centre, no gears; letter scores were not recorded). Pagoda 7 of 10 (A1 B2 C1 D1 E2). Test 7 failed (A1 B0 C0); D and E were not scored. Test 8 scored 7 of 10 on the pagoda (A2 B2 C1 D1 E1) and 5 of 10 on the orrery (A2 B2 C0 D1 E0).
