@@ -1,0 +1,51 @@
+{
+ "case": "fnb-v31-udiq3xxs-t6-oneshot-pagoda-r1",
+ "finish_reason": "stop",
+ "first_token_s": 0.7,
+ "max_tokens": 126976,
+ "model": "strata0210-fnb-v31-udiq3xxs-128k",
+ "reasoning_chars": 74786,
+ "reply_chars": 49781,
+ "started": "2026-11-05T23:50:56-0600",
+ "static": {
+  "boxes": 1,
+  "bytes": 54291,
+  "complete": true,
+  "external_urls": [
+   "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+   "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+  ],
+  "html_found": true,
+  "importmap": true,
+  "instanced": true,
+  "prose_chars_outside_html": 11,
+  "three_module": true,
+  "umd_three": false
+ },
+ "status": "ok",
+ "test": "6",
+ "timeout_s": 14400,
+ "timings": {
+  "cache_n": 0,
+  "draft_n": 38296,
+  "draft_n_accepted": 24515,
+  "predicted_ms": 406463.4,
+  "predicted_n": 44477,
+  "predicted_per_second": 109.4,
+  "predicted_per_token_ms": 9.142,
+  "prompt_ms": 8423.8,
+  "prompt_n": 196,
+  "prompt_per_second": 23.3,
+  "prompt_per_token_ms": 42.979
+ },
+ "tok_s": 107.4,
+ "usage": {
+  "completion_tokens": 44477,
+  "prompt_tokens": 196,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  },
+  "total_tokens": 44673
+ },
+ "wall_s": 414.9
+}

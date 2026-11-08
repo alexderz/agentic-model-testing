@@ -1,0 +1,647 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence baseFrequency='.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)'/></svg>");
+  }
+  .stage{max-width:1320px;margin:0 auto;position:relative}
+  .kicker{
+    font-family:'Cinzel',serif;font-weight:700;font-size:11px;letter-spacing:.42em;
+    color:var(--brass);text-transform:uppercase;margin:0 0 12px 4px;
+    display:flex;align-items:center;gap:14px;
+  }
+  .kicker::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(217,177,104,.55),transparent)}
+  svg{width:100%;height:auto;display:block;filter:drop-shadow(0 30px 70px rgba(0,0,0,.75))}
+
+  /* ---------- interactive states inside the SVG ---------- */
+  .sys{cursor:pointer}
+  .sys .hi{opacity:0;transition:opacity .45s ease}
+  .sys .arm{filter:none;transition:filter .45s ease}
+  .sys .body{transition:transform .5s cubic-bezier(.2,.9,.2,1)}
+  .sys .rowBg{opacity:0;transition:opacity .3s ease}
+  .sys .rowName{transition:fill .3s ease, transform .3s ease}
+  .sys:hover .hi,.sys.hot .hi{opacity:.9}
+  .sys:hover .arm,.sys.hot .arm{filter:url(#glow)}
+  .sys:hover .body,.sys.hot .body{transform:scale(1.22)}
+  .sys:hover .rowBg,.sys.hot .rowBg{opacity:.11}
+  .sys:hover .rowName,.sys.hot .rowName{fill:#fff6e0}
+  .planet{transform-box:fill-box;transform-origin:50% 50%}
+  .btns{display:flex;gap:10px;flex-wrap:wrap;margin:16px 2px 0}
+  button{
+    appearance:none;background:linear-gradient(180deg,#1a1a1d,#111215);
+    border:1px solid #3b3223;color:#cdbf9e;
+    font:600 10px/1 'IBM Plex Sans',sans-serif;letter-spacing:.18em;text-transform:uppercase;
+    padding:11px 15px;cursor:pointer;transition:all .22s ease;
+  }
+  button:hover{border-color:var(--brass);color:#fff2cf;box-shadow:0 0 22px rgba(217,177,104,.22) inset,0 6px 18px rgba(0,0,0,.5);transform:translateY(-1px)}
+  button:active{transform:translateY(0)}
+  .note{font:400 11.5px/1.7 'IBM Plex Mono',monospace;color:#7d7768;max-width:70ch;margin:16px 2px 0}
+  .note b{color:#b9ae94;font-weight:500}
+  .blink{animation:blink 1.9s steps(2,start) infinite}
+  @keyframes blink{50%{opacity:.25}}
+</style>
+</head>
+<body>
+<div class="stage">
+  <p class="kicker">Clockwork No. 1 &nbsp;·&nbsp; Brass, steel &amp; ivory &nbsp;·&nbsp;驱动力 shown in plane</p>
+
+<svg id="orrery" viewBox="0 0 1280 860" xmlns="http://www.w3.org/2000/svg" role="img"
+     aria-label="An animated brass clockwork orrery with eight toothed orbit wheels, meshing pinions, and planets carrying day and night terminators.">
+<defs>
+  <!-- ============ MATERIALS ============ -->
+  <linearGradient id="brass" x1="0" y1="0" x2="0.85" y2="1">
+    <stop offset="0" stop-color="#fbeec4"/><stop offset=".16" stop-color="#dfc280"/>
+    <stop offset=".44" stop-color="#b28d4b"/><stop offset=".7" stop-color="#8a6b37"/>
+    <stop offset="1" stop-color="#e6c98f"/>
+  </linearGradient>
+  <linearGradient id="brassB" x1="0.1" y1="0" x2="0.9" y2="1">
+    <stop offset="0" stop-color="#8c6f3e"/><stop offset=".35" stop-color="#e2c88f"/>
+    <stop offset=".62" stop-color="#9c7b42"/><stop offset="1" stop-color="#6b5229"/>
+  </linearGradient>
+  <radialGradient id="hub" cx="34%" cy="28%" r="76%">
+    <stop offset="0" stop-color="#f3e0ab"/><stop offset=".42" stop-color="#c4a05f"/>
+    <stop offset=".82" stop-color="#8b6a37"/><stop offset="1" stop-color="#5d4626"/>
+  </radialGradient>
+  <radialGradient id="sunG" cx="42%" cy="36%" r="66%">
+    <stop offset="0" stop-color="#fffdf0"/><stop offset=".26" stop-color="#ffe89b"/>
+    <stop offset=".64" stop-color="#f9ab36"/><stop offset="1" stop-color="#d4611a"/>
+  </radialGradient>
+  <radialGradient id="sunHaze" cx="50%" cy="50%" r="50%">
+    <stop offset="0" stop-color="#ffbf5e" stop-opacity=".62"/>
+    <stop offset=".46" stop-color="#ff9636" stop-opacity=".2"/>
+    <stop offset="1" stop-color="#ff7a1f" stop-opacity="0"/>
+  </radialGradient>
+  <radialGradient id="vign" cx="50%" cy="50%" r="52%">
+    <stop offset=".5" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".5"/>
+  </radialGradient>
+  <radialGradient id="bgv" cx="52%" cy="46%" r="62%">
+    <stop offset="0" stop-color="#161b26"/><stop offset=".55" stop-color="#0c0e14"/><stop offset="1" stop-color="#050609"/>
+  </radialGradient>
+  <!-- terminator shared by every planet (objectBoundingBox) -->
+  <linearGradient id="shade" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#000" stop-opacity="0"/>
+    <stop offset=".44" stop-color="#000" stop-opacity=".04"/>
+    <stop offset=".57" stop-color="#02030a" stop-opacity=".42"/>
+    <stop offset=".72" stop-color="#02030a" stop-opacity=".74"/>
+    <stop offset=".9" stop-color="#01020a" stop-opacity=".91"/>
+    <stop offset="1" stop-color="#000106" stop-opacity=".96"/>
+  </linearGradient>
+  <radialGradient id="spec" cx="30%" cy="31%" r="60%">
+    <stop offset="0" stop-color="#fff" stop-opacity=".38"/><stop offset=".5" stop-color="#fff" stop-opacity=".05"/>
+    <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+  </radialGradient>
+
+  <!-- ============ FILTERS ============ -->
+  <filter id="soft" x="-40%" y="-40%" width="180%" height="180%">
+    <feDropShadow dx="0" dy="7" stdDeviation="9" flood-color="#000" flood-opacity=".62"/>
+  </filter>
+  <filter id="soft2" x="-30%" y="-30%" width="160%" height="160%">
+    <feDropShadow dx="-3" dy="5" stdDeviation="5" flood-color="#000" flood-opacity=".55"/>
+  </filter>
+  <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+    <feGaussianBlur stdDeviation="3.4" result="b"/>
+    <feFlood flood-color="#ffe6a8" flood-opacity=".85"/><feComposite in2="b" operator="in" result="g"/>
+    <feMerge><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <filter id="rough"><feTurbulence type="fractalNoise" baseFrequency=".04 .7" numOctaves="3" seed="8"/>
+    <feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope=".08"/></feComponentTransfer>
+    <feComposite in2="SourceGraphic" operator="atop"/></filter>
+  <filter id="blur3"><feGaussianBlur stdDeviation="3"/></filter>
+
+  <!-- ============ GEAR TOOTH PATTERNS (pitch = 6.0 units, mesh-locked) ============ -->
+  <path id="t51" pathLength="306" stroke-dasharray="3 3"/><path id="t79" pathLength="474" stroke-dasharray="3 3"/>
+  <path id="t107" pathLength="642" stroke-dasharray="3 3"/><path id="t145" pathLength="870" stroke-dasharray="3 3"/>
+  <path id="t191" pathLength="1146" stroke-dasharray="3 3"/><path id="t233" pathLength="1398" stroke-dasharray="3 3"/>
+  <path id="t271" pathLength="1626" stroke-dasharray="3 3"/><path id="t303" pathLength="1818" stroke-dasharray="3 3"/>
+  <path id="t5" pathLength="30" stroke-dasharray="3 3"/><path id="t6" pathLength="36" stroke-dasharray="3 3"/>
+  <path id="t7" pathLength="42" stroke-dasharray="3 3"/><path id="t9" pathLength="54" stroke-dasharray="3 3"/>
+  <path id="t11" pathLength="66" stroke-dasharray="3 3"/><path id="t13" pathLength="78" stroke-dasharray="3 3"/>
+  <path id="t15" pathLength="90" stroke-dasharray="3 3"/><path id="t17" pathLength="102" stroke-dasharray="3 3"/>
+  <path id="t19" pathLength="114" stroke-dasharray="3 3"/><path id="t21" pathLength="126" stroke-dasharray="3 3"/>
+  <path id="t22" pathLength="132" stroke-dasharray="3 3"/>
+
+  <!-- ============ PLANET GLOWS ============ -->
+  <radialGradient id="gMer"><stop offset="0" stop-color="#b7ada0" stop-opacity=".5"/><stop offset="1" stop-color="#b7ada0" stop-opacity="0"/></radialGradient>
+  <radialGradient id="gVen"><stop offset="0" stop-color="#f3d7a4" stop-opacity=".5"/><stop offset="1" stop-color="#f3d7a4" stop-opacity="0"/></radialGradient>
+  <radialGradient id="gEar"><stop offset="0" stop-color="#8fc6e8" stop-opacity=".55"/><stop offset="1" stop-color="#8fc6e8" stop-opacity="0"/></radialGradient>
+  <radialGradient id="gMar"><stop offset="0" stop-color="#e08b5a" stop-opacity=".5"/><stop offset="1" stop-color="#e08b5a" stop-opacity="0"/></radialGradient>
+  <radialGradient id="gJup"><stop offset="0" stop-color="#e6bd8c" stop-opacity=".45"/><stop offset="1" stop-color="#e6bd8c" stop-opacity="0"/></radialGradient>
+  <radialGradient id="gSat"><stop offset="0" stop-color="#ecd6a6" stop-opacity=".45"/><stop offset="1" stop-color="#ecd6a6" stop-opacity="0"/></radialGradient>
+  <radialGradient id="gUra"><stop offset="0" stop-color="#a5e0e6" stop-opacity=".5"/><stop offset="1" stop-color="#a5e0e6" stop-opacity="0"/></radialGradient>
+  <radialGradient id="gNep"><stop offset="0" stop-color="#7aa6ea" stop-opacity=".5"/><stop offset="1" stop-color="#7aa6ea" stop-opacity="0"/></radialGradient>
+
+  <!-- ============ SURFACE CLIPS ============ -->
+  <clipPath id="cMer"><circle r="3.6"/></clipPath><clipPath id="cVen"><circle r="5.1"/></clipPath>
+  <clipPath id="cEar"><circle r="5.3"/></clipPath><clipPath id="cMar"><circle r="4.1"/></clipPath>
+  <clipPath id="cJup"><circle r="11.2"/></clipPath><clipPath id="cSat"><circle r="9.3"/></clipPath>
+  <clipPath id="cUra"><circle r="7.1"/></clipPath><clipPath id="cNep"><circle r="6.8"/></clipPath>
+
+  <!-- ============ REUSABLE PARTS ============ -->
+  <g id="screw">
+    <circle r="5.6" fill="#3a3026"/><circle r="4.4" fill="url(#brassB)"/>
+    <line x1="-3.1" y1="0" x2="3.1" y2="0" stroke="#40331f" stroke-width="1.3" stroke-linecap="round"/>
+    <circle r="4.4" fill="none" stroke="#f6e6bb" stroke-opacity=".35" stroke-width=".6"/>
+  </g>
+  <g id="armProfile">
+    <path d="M14,-2.3 L-14,-4.6 A5.4 5.4 0 1 0 -14,4.6 Z" fill="url(#brassB)" stroke="#4b3a1f" stroke-width=".5" stroke-opacity=".7"/>
+    <circle r="2.1" fill="#f2e0ac"/>
+  </g>
+
+  <!-- ============ TEXTURES (period 4R; scroll one period per sidereal day) ============ -->
+  <g id="texMer">
+    <circle cx="-15.2" cy="-2.2" r="1.5" fill="#8f857a" opacity=".75"/><circle cx="-6.4" cy="3.4" r="1.1" fill="#9c9284" opacity=".7"/>
+    <circle cx="-11" cy="6.8" r=".8" fill="#7d736a"/><circle cx="-18.4" cy="4.4" r="1.2" fill="#968c7e" opacity=".6"/>
+  </g>
+  <g id="texVen">
+    <ellipse cx="-4.5" cy="-2.6" rx="7" ry="1.3" fill="#fdf3d6" opacity=".38" transform="rotate(-8 -4.5 -2.6)"/>
+    <ellipse cx="-14" cy="2.4" rx="8" ry="1.5" fill="#e6c994" opacity=".45" transform="rotate(6 -14 2.4)"/>
+    <ellipse cx="-19" cy="-4.2" rx="5" ry="1.1" fill="#fff8e6" opacity=".3"/>
+  </g>
+  <g id="texEar">
+    <ellipse cx="-4" cy="1.4" rx="3.2" ry="1.9" fill="#4e834c" transform="rotate(18 -4 1.4)"/>
+    <ellipse cx="-6" cy="-2.8" rx="2" ry="1.3" fill="#5b8f52"/>
+    <ellipse cx="-13.4" cy="1" rx="2.5" ry="1.6" fill="#457a46"/>
+    <ellipse cx="-15" cy="-3.2" rx="2.9" ry="1.4" fill="#537f4b" transform="rotate(-14 -15 -3.2)"/>
+    <ellipse cx="-22" cy="1.6" rx="1.9" ry="1.2" fill="#4e834c"/><ellipse cx="-10.5" cy="4.4" rx="1.5" ry=".8" fill="#4a7d4a"/>
+    <ellipse cx="-3.5" cy="-2.5" rx="4.2" ry="1" fill="#fff" opacity=".5" transform="rotate(-10 -3.5 -2.5)"/>
+    <ellipse cx="-16" cy="3" rx="4.8" ry="1.1" fill="#fff" opacity=".42" transform="rotate(7 -16 3)"/>
+  </g>
+  <g id="texMar">
+    <ellipse cx="-5" cy="2" rx="4.2" ry="1.5" fill="#6d2f1a" opacity=".55" transform="rotate(-10 -5 2)"/>
+    <ellipse cx="-14" cy="-1.6" rx="3.4" ry="1.3" fill="#7a3a1e" opacity=".5"/>
+    <circle cx="-19.5" cy="4.2" r="1.2" fill="#e6c69c" opacity=".4"/>
+    <ellipse cx="-9" cy="-3.4" rx="2.4" ry=".9" fill="#fff" opacity=".38"/>
+  </g>
+  <g id="texJup">
+    <ellipse cx="-22.4" cy="0" rx="22.4" ry="1.5" fill="#c68c57" opacity=".55"/>
+    <ellipse cx="-22.4" cy="4.6" rx="22.4" ry="1.6" fill="#efd3a6" opacity=".5"/>
+    <ellipse cx="-22.4" cy="-5" rx="22.4" ry="1.7" fill="#b07a4c" opacity=".45"/>
+    <ellipse cx="-22.4" cy="8" rx="22.4" ry="1.4" fill="#fdf0d2" opacity=".38"/>
+    <ellipse cx="-8.4" cy="4.2" rx="3.3" ry="2" fill="#b8533a" opacity=".85"/>
+    <ellipse cx="-17" cy="-2.2" rx="4.6" ry=".9" fill="#fff4dd" opacity=".3"/>
+    <ellipse cx="-28" cy="1.2" rx="3.2" ry=".8" fill="#fff4dd" opacity=".22"/>
+  </g>
+  <g id="texSat">
+    <ellipse cx="-18.8" cy="0" rx="18.8" ry="1.6" fill="#cbae76" opacity=".5"/>
+    <ellipse cx="-18.8" cy="4.4" rx="18.8" ry="1.5" fill="#f6e7c4" opacity=".45"/>
+    <ellipse cx="-18.8" cy="-4.6" rx="18.8" ry="1.6" fill="#bda06b" opacity=".42"/>
+    <ellipse cx="-18.8" cy="7.6" rx="18.8" ry="1.2" fill="#fff6e0" opacity=".3"/>
+  </g>
+  <g id="texUra">
+    <ellipse cx="-14.2" cy="2.2" rx="14.2" ry="2.1" fill="#ffffff" opacity=".13"/>
+    <ellipse cx="-14.2" cy="-3.6" rx="14.2" ry="1.5" fill="#0b4f57" opacity=".22"/>
+  </g>
+  <g id="texNep">
+    <ellipse cx="-13.6" cy="1.2" rx="13.6" ry="1.5" fill="#ffffff" opacity=".16"/>
+    <ellipse cx="-13.6" cy="-3.2" rx="13.6" ry="1.1" fill="#cfe1ff" opacity=".14"/>
+    <ellipse cx="-6.6" cy="3.6" rx="2.7" ry="1.5" fill="#08214a" opacity=".7"/>
+    <ellipse cx="-18.4" cy="-1.4" rx="3.4" ry=".8" fill="#e8f1ff" opacity=".3"/>
+  </g>
+
+  <path id="panelPath" d="M26,26 H402 V834 H26 Z"/>
+</defs>
+
+<!-- ================= BACKDROP ================= -->
+<rect width="1280" height="860" fill="url(#bgv)"/>
+<g stroke="#d9b168" stroke-opacity=".05">
+  <line x1="0" y1="80" x2="1280" y2="80"/><line x1="0" y1="780" x2="1280" y2="780"/>
+</g>
+
+<!-- ================= THE PLATE ================= -->
+<g id="plate">
+  <circle cx="790" cy="430" r="392" fill="url(#hub)"/>
+  <circle cx="790" cy="430" r="392" fill="#0b0d13" opacity=".82" filter="url(#rough)"/>
+  <!-- engraved concentric hairlines -->
+  <g fill="none" stroke="#d9b168" stroke-opacity=".07">
+    <circle r="368" cx="790" cy="430"/><circle r="330" cx="790" cy="430"/><circle r="265" cx="790" cy="430"/>
+    <circle r="180" cx="790" cy="430"/><circle r="95" cx="790" cy="430"/>
+  </g>
+  <g fill="none" stroke="#d9b168" stroke-opacity=".05" stroke-width=".7">
+    <circle r="352" cx="790" cy="430"/><circle r="300" cx="790" cy="430"/><circle r="230" cx="790" cy="430"/>
+    <circle r="135" cx="790" cy="430"/><circle r="55" cx="790" cy="430"/>
+  </g>
+  <!-- vignette + sun wash -->
+  <circle cx="790" cy="430" r="392" fill="url(#vign)"/>
+  <circle cx="790" cy="430" r="240" fill="url(#sunHaze)" opacity=".4"/>
+
+  <!-- ===== ECLIPTIC LONGITUDE SCALE ===== -->
+  <g>
+    <circle cx="790" cy="430" r="374.4" fill="none" stroke="#d9b168" stroke-opacity=".3" stroke-width="6"
+            pathLength="360" stroke-dasharray="0.5 2.5" transform="rotate(-0.0764 790 430)"/>
+    <circle cx="790" cy="430" r="331.4" fill="none" stroke="#d9b168" stroke-opacity=".5" stroke-width="13"
+            pathLength="36" stroke-dasharray=".35 .65"/>
+    <circle cx="790" cy="430" r="349" fill="none" stroke="#d9b168" stroke-opacity=".28" stroke-width="1.2"/>
+    <circle cx="790" cy="430" r="382" fill="none" stroke="#d9b168" stroke-opacity=".22" stroke-width="1"/>
+    <g font-family="'IBM Plex Sans',sans-serif" font-size="10" font-weight="300" letter-spacing="1.6"
+       fill="#c9b78e" fill-opacity=".62" text-anchor="middle">
+      <text transform="translate(790,152.4) rotate(0)">♈</text><text transform="translate(1031.2,227.8) rotate(30)">♉</text>
+      <text transform="translate(1196.6,430) rotate(60)">♊</text><text transform="translate(1031.2,632.2) rotate(90)">♋</text>
+      <text transform="translate(790,707.6) rotate(120)">♌</text><text transform="translate(548.8,632.2) rotate(150)">♍</text>
+      <text transform="translate(383.4,430) rotate(180)">♎</text><text transform="translate(548.8,227.8) rotate(210)">♏</text>
+      <text transform="translate(590,109.1) rotate(15)"></text>
+      <text transform="translate(590,109.1) rotate(15)"></text>
+      <text transform="translate(590,109.1) rotate(15)"></text>
+      <text transform="translate(990.5,112.1) rotate(45)"></text>
+      <text transform="translate(990.5,112.1) rotate(45)"></text>
+      <text transform="translate(990.5,112.1) rotate(45)"></text>
+      <text transform="translate(1022.8,724.5) rotate(135)"></text>
+      <text transform="translate(1022.8,724.5) rotate(135)"></text>
+      <text transform="translate(1022.8,724.5) rotate(135)"></text>
+      <text transform="translate(612.2,751.2) rotate(165)"></text>
+      <text transform="translate(612.2,751.2) rotate(165)"></text>
+      <text transform="translate(612.2,751.2) rotate(165)"></text>
+    </g>
+    <g font-family="'IBM Plex Sans',sans-serif" font-size="11" font-weight="300" letter-spacing="2"
+       fill="#c9b78e" fill-opacity=".55" text-anchor="middle">
+      <text transform="translate(661.5,154.4) rotate(15)">0°</text><text transform="translate(1110.4,580) rotate(75)">90°</text>
+      <text transform="translate(918.5,705.6) rotate(135)">180°</text><text transform="translate(469.6,280) rotate(195)">270°</text>
+    </g>
+  </g>
+  <!-- rim + screws -->
+  <circle cx="790" cy="430" r="387" fill="none" stroke="url(#brass)" stroke-width="9"/>
+  <circle cx="790" cy="430" r="391.6" fill="none" stroke="#f7e9bd" stroke-opacity=".3" stroke-width="1"/>
+  <circle cx="790" cy="430" r="382.2" fill="none" stroke="#4a3720" stroke-opacity=".8" stroke-width="1.4"/>
+  <g><use href="#screw" transform="translate(790,64)"/><use href="#screw" transform="translate(1091.8,157.2)"/>
+     <use href="#screw" transform="translate(1252.8,430)"/><use href="#screw" transform="translate(1091.8,702.8)"/>
+     <use href="#screw" transform="translate(790,796)"/><use href="#screw" transform="translate(488.2,702.8)"/>
+     <use href="#screw" transform="translate(327.2,430)"/><use href="#screw" transform="translate(488.2,157.2)"/></g>
+</g>
+
+<!-- ================= DRIVE ARBOR COLLARS (behind the gear train) ================= -->
+<g fill="none" stroke="#8f7443" stroke-opacity=".45" stroke-width="3">
+  <circle cx="790" cy="430" r="55"/><circle cx="790" cy="430" r="84"/><circle cx="790" cy="430" r="114"/>
+  <circle cx="790" cy="430" r="154"/><circle cx="790" cy="430" r="203"/><circle cx="790" cy="430" r="247"/>
+  <circle cx="790" cy="430" r="287"/><circle cx="790" cy="430" r="321"/>
+</g>
+
+<!-- ================= FIXED BRIDGE BAR + PINION ARBORS ================= -->
+<g id="bridges" filter="url(#soft2)">
+  <g stroke="url(#brassB)" stroke-width="7" stroke-linecap="round" opacity=".95">
+    <line x1="790" y1="430" x2="767.5" y2="469"/><line x1="790" y1="430" x2="718.5" y2="449.2"/>
+    <line x1="790" y1="430" x2="701.7" y2="379"/><line x1="790" y1="430" x2="754.5" y2="297.7"/>
+    <line x1="790" y1="430" x2="882.5" y2="269.8"/><line x1="790" y1="430" x2="1014.1" y2="370"/>
+    <line x1="790" y1="430" x2="1026.4" y2="566.5"/><line x1="790" y1="430" x2="869.9" y2="728.5"/>
+  </g>
+  <g stroke="#5a462a" stroke-width="1" stroke-linecap="round" opacity=".6">
+    <line x1="790" y1="430" x2="767.5" y2="469"/><line x1="790" y1="430" x2="882.5" y2="269.8"/>
+    <line x1="790" y1="430" x2="1026.4" y2="566.5"/><line x1="790" y1="430" x2="869.9" y2="728.5"/>
+  </g>
+</g>
+
+<!-- ================= PINIONS (mesh with the toothed orbit wheels above) ================= -->
+<g id="pinions" filter="url(#soft2)">
+  <!-- Mercury  r10  z5  · one-fifth of the wheel's pitch -->
+  <g><animateTransform attributeName="transform" type="rotate" values="0 767.5 469;360 767.5 469" dur=".4378s" repeatCount="indefinite"/>
+    <circle cx="767.5" cy="469" r="7.6" fill="url(#hub)"/><use href="#t5" transform="translate(767.5 469)" fill="none" stroke="url(#brass)" stroke-width="8.5"/>
+    <g stroke="#3e3123" stroke-width="1.8"><line x1="767.5" y1="463" x2="767.5" y2="475"/><line x1="761.5" y1="469" x2="773.5" y2="469"/></g>
+    <circle cx="767.5" cy="469" r="2.6" fill="#241d14"/></g>
+  <!-- Venus  r10 z5 -->
+  <g><animateTransform attributeName="transform" type="rotate" values="-25.2 718.5 449.2;334.8 718.5 449.2" dur=".7324s" repeatCount="indefinite"/>
+    <circle cx="718.5" cy="449.2" r="7.6" fill="url(#hub)"/><use href="#t5" transform="translate(718.5 449.2)" fill="none" stroke="url(#brass)" stroke-width="8.5"/>
+    <g stroke="#3e3123" stroke-width="1.8"><line x1="718.5" y1="443.2" x2="718.5" y2="455.2"/><line x1="712.5" y1="449.2" x2="724.5" y2="449.2"/></g>
+    <circle cx="718.5" cy="449.2" r="2.6" fill="#241d14"/></g>
+  <!-- Earth  r12 z6 -->
+  <g><animateTransform attributeName="transform" type="rotate" values="-52.9 701.7 379;307.1 701.7 379" dur="1.0526s" repeatCount="indefinite"/>
+    <circle cx="701.7" cy="379" r="9.2" fill="url(#hub)"/><use href="#t6" transform="translate(701.7 379)" fill="none" stroke="url(#brass)" stroke-width="8.5"/>
+    <g stroke="#3e3123" stroke-width="2"><line x1="701.7" y1="372.2" x2="701.7" y2="385.8"/><line x1="694.9" y1="379" x2="708.5" y2="379"/></g>
+    <circle cx="701.7" cy="379" r="2.8" fill="#241d14"/></g>
+  <!-- Mars  r17 z17  (counter-meshed so teeth drop into the wheel's gaps) -->
+  <g><animateTransform attributeName="transform" type="rotate" values="10.59 754.5 297.7;370.59 754.5 297.7" dur="2.0781s" repeatCount="indefinite"/>
+    <circle cx="754.5" cy="297.7" r="13.5" fill="url(#hub)" fill-opacity=".35"/><circle cx="754.5" cy="297.7" r="4.2" fill="url(#hub)"/>
+    <g stroke="url(#brassB)" stroke-width="3.4"><line x1="754.5" y1="297.7" x2="754.5" y2="284.4"/><line x1="754.5" y1="297.7" x2="766.0" y2="304.3"/><line x1="754.5" y1="297.7" x2="743.0" y2="304.3"/></g>
+    <use href="#t17" transform="translate(754.5 297.7)" fill="none" stroke="url(#brass)" stroke-width="8.5"/>
+    <circle cx="754.5" cy="297.7" r="2.9" fill="#241d14"/></g>
+  <!-- Jupiter  r18 z18 -->
+  <g><animateTransform attributeName="transform" type="rotate" values="10 882.5 269.8;370 882.5 269.8" dur="10.519s" repeatCount="indefinite"/>
+    <circle cx="882.5" cy="269.8" r="14.4" fill="url(#hub)" fill-opacity=".3"/><circle cx="882.5" cy="269.8" r="4.4" fill="url(#hub)"/>
+    <g stroke="url(#brassB)" stroke-width="3.6"><line x1="882.5" y1="269.8" x2="882.5" y2="255.7"/><line x1="882.5" y1="269.8" x2="894.7" y2="276.8"/><line x1="882.5" y1="269.8" x2="870.3" y2="276.8"/></g>
+    <use href="#t18" pathLength="108" stroke-dasharray="3 3" transform="translate(882.5 269.8)" fill="none" stroke="url(#brass)" stroke-width="8.5"/>
+    <circle cx="882.5" cy="269.8" r="3" fill="#241d14"/><circle cx="882.5" cy="258.8" r="1.6" fill="#c9452e"/></g>
+  <!-- Saturn  r15 z15 -->
+  <g><animateTransform attributeName="transform" type="rotate" values="12 1014.1 370;372 1014.1 370" dur="17.886s" repeatCount="indefinite"/>
+    <circle cx="1014.1" cy="370" r="11.6" fill="url(#hub)" fill-opacity=".35"/><circle cx="1014.1" cy="370" r="3.8" fill="url(#hub)"/>
+    <g stroke="url(#brassB)" stroke-width="3.2"><line x1="1014.1" y1="370" x2="1014.1" y2="358.6"/><line x1="1014.1" y1="370" x2="1024" y2="375.7"/><line x1="1014.1" y1="370" x2="1004.2" y2="375.7"/></g>
+    <use href="#t15" transform="translate(1014.1 370)" fill="none" stroke="url(#brass)" stroke-width="8.5"/>
+    <circle cx="1014.1" cy="370" r="2.7" fill="#241d14"/><circle cx="1014.1" cy="360.6" r="1.5" fill="#c9452e"/></g>
+  <!-- Uranus  r14 z14 -->
+  <g><animateTransform attributeName="transform" type="rotate" values="-12.86 1026.4 566.5;347.14 1026.4 566.5" dur="41.01s" repeatCount="indefinite"/>
+    <circle cx="1026.4" cy="566.5" r="10.7" fill="url(#hub)" fill-opacity=".35"/><circle cx="1026.4" cy="566.5" r="3.6" fill="url(#hub)"/>
+    <g stroke="url(#brassB)" stroke-width="3"><line x1="1026.4" y1="566.5" x2="1026.4" y2="556.1"/><line x1="1026.4" y1="566.5" x2="1035.5" y2="571.7"/><line x1="1026.4" y1="566.5" x2="1017.3" y2="571.7"/></g>
+    <use href="#t14" pathLength="84" stroke-dasharray="3 3" transform="translate(1026.4 566.5)" fill="none" stroke="url(#brass)" stroke-width="8.5"/>
+    <circle cx="1026.4" cy="566.5" r="2.6" fill="#241d14"/><circle cx="1026.4" cy="558.3" r="1.4" fill="#c9452e"/></g>
+  <!-- Neptune  r12 z12 -->
+  <g><animateTransform attributeName="transform" type="rotate" values="15 869.9 728.5;375 869.9 728.5" dur="61.57s" repeatCount="indefinite"/>
+    <circle cx="869.9" cy="728.5" r="9.2" fill="url(#hub)" fill-opacity=".35"/><circle cx="869.9" cy="728.5" r="3.2" fill="url(#hub)"/>
+    <g stroke="url(#brassB)" stroke-width="2.8"><line x1="869.9" y1="728.5" x2="869.9" y2="719.6"/><line x1="869.9" y1="728.5" x2="877.6" y2="733"/><line x1="869.9" y1="728.5" x2="862.2" y2="733"/></g>
+    <use href="#t12" pathLength="72" stroke-dasharray="3 3" transform="translate(869.9 728.5)" fill="none" stroke="url(#brass)" stroke-width="8.5"/>
+    <circle cx="869.9" cy="728.5" r="2.4" fill="#241d14"/><circle cx="869.9" cy="721.4" r="1.3" fill="#c9452e"/></g>
+</g>
+
+<!-- ============ ANCHOR & ESCAPEMENT (rocking pallet over a fast escape wheel) ============ -->
+<g id="escapement" filter="url(#soft2)">
+  <g><animateTransform attributeName="transform" type="rotate" values="13 700 545;-13 700 545;13 700 545" dur=".8978s"
+      keyTimes="0;.5;1" calcMode="spline" keySplines=".4 0 .6 1;.4 0 .6 1" repeatCount="indefinite"/>
+    <path d="M700,545 L706,521 A6 6 0 0 0 694,519 Z" fill="url(#brassB)" stroke="#4b3a1f" stroke-width=".6"/>
+    <path d="M700,545 L726,558 A7 7 0 0 1 722,568 Z" fill="url(#brassB)" stroke="#4b3a1f" stroke-width=".6"/>
+    <rect x="697" y="545" width="6" height="34" rx="3" fill="url(#brass)" stroke="#4b3a1f" stroke-width=".5"/>
+    <circle cx="700" cy="582" r="6" fill="url(#hub)"/></g>
+  <g><animateTransform attributeName="transform" type="rotate" values="0 742 577;360 742 577" dur=".4489s" repeatCount="indefinite"/>
+    <circle cx="742" cy="577" r="15" fill="url(#hub)" fill-opacity=".4"/>
+    <g stroke="url(#brassB)" stroke-width="3"><line x1="742" y1="577" x2="742" y2="562.5"/><line x1="742" y1="577" x2="754.5" y2="584.2"/><line x1="742" y1="577" x2="729.5" y2="584.2"/></g>
+    <use href="#t19" transform="translate(742 577)" fill="none" stroke="url(#brass)" stroke-width="8.5"/>
+    <circle cx="742" cy="577" r="3" fill="#241d14"/></g>
+  <use href="#screw" transform="translate(700 545) scale(.7)"/>
+</g>
+
+<!-- ================= EIGHT ORBIT SYSTEMS ================= -->
+
+<!-- ---------- MERCURY ---------- -->
+<g class="sys" id="sys-mercury">
+  <circle class="hit" cx="790" cy="430" r="55" fill="none" stroke="#fff" stroke-opacity="0" stroke-width="20" pointer-events="stroke"/>
+  <g class="hi"><circle cx="790" cy="430" r="55" fill="none" stroke="#ffe4a8" stroke-opacity=".5" stroke-width="1.6" filter="url(#glow)"/></g>
+  <g><animateTransform attributeName="transform" type="rotate" values="-252.25 790 430;-612.25 790 430" dur="2.408s" repeatCount="indefinite"/>
+    <g class="wheel"><circle cx="790" cy="430" r="57" fill="none" stroke="url(#brassB)" stroke-width="7"/>
+      <use href="#t51" transform="translate(790 430)" fill="none" stroke="url(#brass)" stroke-width="8.5" filter="url(#soft2)"/></g>
+    <use href="#armProfile" transform="translate(790 430) scale(1.4911)" class="arm" filter="url(#soft)"/>
+    <g transform="translate(845,430)">
+      <circle class="body" r="13" fill="url(#gMer)"/>
+      <circle r="3.6" fill="#9b9186"/>
+      <g clip-path="url(#cMer)"><g><animateTransform attributeName="transform" type="translate" values="0 0;-14.4 0" dur="38.74s" repeatCount="indefinite"/><use href="#texMer"/></g></g>
+      <circle r="3.6" fill="url(#shade)"/><circle r="3.6" fill="url(#spec)"/>
+      <circle r="3.6" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width=".4"/>
+    </g></g>
+  <g class="row" transform="translate(52,240)">
+    <rect class="rowBg" x="-10" y="-14" width="344" height="28" fill="#d9b168"/>
+    <circle cx="0" cy="-4" r="3.4" fill="#b7ada0"/><circle cx="0" cy="-4" r="6.4" fill="url(#gMer)"/>
+    <text class="rowName" x="18" y="0" font-family="Cinzel,serif" font-size="15" font-weight="700" letter-spacing=".12em" fill="#ddd4c0">MERCURY</text>
+    <text x="150" y="0" font-family="'IBM Plex Mono',monospace" font-size="11.5" fill="#9d947f" letter-spacing=".04em">87.97 d</text>
+    <text x="204" y="0" font-family="'IBM Plex Mono',monospace" font-size="11.5" fill="#7d7768">0.241 y</text>
+    <text x="322" y="0" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="11" fill="#8f7a52">58.6 d rot</text>
+  </g>
+</g>
+
+<!-- ---------- VENUS ---------- -->
+<g class="sys" id="sys-venus">
+  <circle class="hit" cx="790" cy="430" r="84" fill="none" stroke="#fff" stroke-opacity="0" stroke-width="20" pointer-events="stroke"/>
+  <g class="hi"><circle cx="790" cy="430" r="84" fill="none" stroke="#ffe4a8" stroke-opacity=".5" stroke-width="1.6" filter="url(#glow)"/></g>
+  <g><animateTransform attributeName="transform" type="rotate" values="-181.98 790 430;-541.98 790 430" dur="6.152s" repeatCount="indefinite"/>
+    <g class="wheel"><circle cx="790" cy="430" r="86" fill="none" stroke="url(#brassB)" stroke-width="7"/>
+      <use href="#t79" transform="translate(790 430)" fill="none" stroke="url(#brass)" stroke-width="8.5" filter="url(#soft2)"/></g>
+    <use href="#armProfile" transform="translate(790 430) scale(2.2582)" class="arm" filter="url(#soft)"/>
+    <g transform="translate(874,430)">
+      <circle class="body" r="17" fill="url(#gVen)"/>
+      <circle r="5.1" fill="#dcb87e"/>
+      <g clip-path="url(#cVen)"><g><animateTransform attributeName="transform" type="translate" values="0 0;20.4 0" dur="160.75s" repeatCount="indefinite"/><use href="#texVen"/></g></g>
+      <circle r="5.1" fill="url(#shade)"/><circle r="5.1" fill="url(#spec)"/>
+      <circle r="5.1" fill="none" stroke="#fff" stroke-opacity=".24" stroke-width=".4"/>
+    </g></g>
+  <g class="row" transform="translate(52,277)">
+    <rect class="rowBg" x="-10" y="-14" width="344" height="28" fill="#d9b168"/>
+    <circle cx="0" cy="-4" r="4.6" fill="#f0d19c"/><circle cx="0" cy="-4" r="8" fill="url(#gVen)"/>
+    <text class="rowName" x="18" y="0" font-family="Cinzel,serif" font-size="15" font-weight="700" letter-spacing=".12em" fill="#ddd4c0">VENUS</text>
+    <text x="150" y="0" font-family="'IBM Plex Mono',monospace" font-size="11.5" fill="#9d947f">224.70 d</text>
+    <text x="204" y="0" font-family="'IBM Plex Mono',monospace" font-size="11.5" fill="#7d7768">0.615 y</text>
+    <text x="322" y="0" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="11" fill="#c9452e">243.0 d ↺</text>
+  </g>
+</g>
+
+<!-- ---------- EARTH (with Moon, 27.32 d) ---------- -->
+<g class="sys" id="sys-earth">
+  <circle class="hit" cx="790" cy="430" r="114" fill="none" stroke="#fff" stroke-opacity="0" stroke-width="20" pointer-events="stroke"/>
+  <g class="hi"><circle cx="790" cy="430" r="114" fill="none" stroke="#ffe4a8" stroke-opacity=".55" stroke-width="1.8" filter="url(#glow)"/></g>
+  <g><animateTransform attributeName="transform" type="rotate" values="-280.46 790 430;-640.46 790 430" dur="10s" repeatCount="indefinite"/>
+    <g class="wheel"><circle cx="790" cy="430" r="116" fill="none" stroke="url(#brassB)" stroke-width="7"/>
+      <use href="#t107" transform="translate(790 430)" fill="none" stroke="url(#brass)" stroke-width="8.5" filter="url(#soft2)"/></g>
+    <use href="#armProfile" transform="translate(790 430) scale(3.0438)" class="arm" filter="url(#soft)"/>
+    <g transform="translate(904,430)">
+      <circle class="body" r="17" fill="url(#gEar)"/>
+      <g><animateTransform attributeName="transform" type="rotate" values="0 0 0;360 0 0" dur=".748s" repeatCount="indefinite"/>
+        <circle cx="11" cy="0" r="1.5" fill="#b8b2a6"/><circle cx="11" cy="0" r="1.5" fill="url(#shade)"/></g>
+      <circle r="5.3" fill="#2f6f94"/>
+      <g clip-path="url(#cEar)"><g><animateTransform attributeName="transform" type="translate" values="0 0;-21.2 0" dur="1s" repeatCount="indefinite"/><use href="#texEar"/></g></g>
+      <ellipse cy="-5.3" rx="2.6" ry="1.1" fill="#fff" opacity=".75"/><ellipse cy="5.3" rx="2.4" ry=".9" fill="#fff" opacity=".6"/>
+      <circle r="5.3" fill="url(#shade)"/><circle r="5.3" fill="url(#spec)"/>
+      <circle r="5.3" fill="none" stroke="#fff" stroke-opacity=".26" stroke-width=".4"/>
+      <ellipse rx="9" ry="2.4" fill="none" stroke="#d9b168" stroke-opacity=".18" stroke-width=".5" transform="rotate(-6)"/>
+    </g></g>
+  <g class="row" transform="translate(52,314)">
+    <rect class="rowBg" x="-10" y="-14" width="344" height="28" fill="#d9b168"/>
+    <circle cx="0" cy="-4" r="4.8" fill="#4f93bd"/><circle cx="0" cy="-4" r="8.4" fill="url(#gEar)"/>
+    <text class="rowName" x="18" y="0" font-family="Cinzel,serif" font-size="15" font-weight="700" letter-spacing=".12em" fill="#f4ecd8">EARTH</text>
+    <text x="150" y="0" font-family="'IBM Plex Mono',monospace" font-size="11.5" fill="#c9b78e">365.26 d</text>
+    <text x="204" y="0" font-family="'IBM Plex Mono',monospace" font-size="11.5" fill="#a9a08c">1.000 y</text>
+    <text x="322" y="0" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="11" fill="#b9ae94">23.93 h</text>
+  </g>
+</g>
+
+<!-- ---------- MARS ---------- -->
+<g class="sys" id="sys-mars">
+  <circle class="hit" cx="790" cy="430" r="154" fill="none" stroke="#fff" stroke-opacity="0" stroke-width="20" pointer-events="stroke"/>
+  <g class="hi"><circle cx="790" cy="430" r="154" fill="none" stroke="#ffe4a8" stroke-opacity=".5" stroke-width="1.6" filter="url(#glow)"/></g>
+  <g><animateTransform attributeName="transform" type="rotate" values="-355.45 790 430;-715.45 790 430" dur="18.808s" repeatCount="indefinite"/>
+    <g class="wheel"><circle cx="790" cy="430" r="156" fill="none" stroke="url(#brassB)" stroke-width="7"/>
+      <use href="#t145" transform="translate(790 430)" fill="none" stroke="url(#brass)" stroke-width="8.5" filter="url(#soft2)"/></g>
+    <use href="#armProfile" transform="translate(790 430) scale(4.0832)" class="arm" filter="url(#soft)"/>
+    <g transform="translate(944,430)">
+      <circle class="body" r="15" fill="url(#gMar)"/>
+      <circle r="4.1" fill="#b4552f"/>
+      <g clip-path="url(#cMar)"><g><animateTransform attributeName="transform" type="translate" values="0 0;-16.4 0" dur="1.029s" repeatCount="indefinite"/><use href="#texMar"/></g></g>
+      <ellipse cy="-4.1" rx="1.9" ry=".8" fill="#fff" opacity=".8"/>
+      <circle r="4.1" fill="url(#shade)"/><circle r="4.1" fill="url(#spec)"/>
+      <circle r="4.1" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width=".4"/>
+    </g></g>
+  <g class="row" transform="translate(52,351)">
+    <rect class="rowBg" x="-10" y="-14" width="344" height="28" fill="#d9b168"/>
+    <circle cx="0" cy="-4" r="3.9" fill="#c9643c"/><circle cx="0" cy="-4" r="7.2" fill="url(#gMar)"/>
+    <text class="rowName" x="18" y="0" font-family="Cinzel,serif" font-size="15" font-weight="700" letter-spacing=".12em" fill="#ddd4c0">MARS</text>
+    <text x="150" y="0" font-family="'IBM Plex Mono',monospace" font-size="11.5" fill="#9d947f">686.98 d</text>
+    <text x="204" y="0" font-family="'IBM Plex Mono',monospace" font-size="11.5" fill="#7d7768">1.881 y</text>
+    <text x="322" y="0" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="11" fill="#8f7a52">24.62 h</text>
+  </g>
+</g>
+
+<!-- ---------- JUPITER (Galilean moons) ---------- -->
+<g class="sys" id="sys-jupiter">
+  <circle class="hit" cx="790" cy="430" r="203" fill="none" stroke="#fff" stroke-opacity="0" stroke-width="22" pointer-events="stroke"/>
+  <g class="hi"><circle cx="790" cy="430" r="203" fill="none" stroke="#ffe4a8" stroke-opacity=".5" stroke-width="1.6" filter="url(#glow)"/></g>
+  <g><animateTransform attributeName="transform" type="rotate" values="-34.4 790 430;-394.4 790 430" dur="118.62s" repeatCount="indefinite"/>
+    <g class="wheel"><circle cx="790" cy="430" r="205" fill="none" stroke="url(#brassB)" stroke-width="7"/>
+      <use href="#t191" transform="translate(790 430)" fill="none" stroke="url(#brass)" stroke-width="8.5" filter="url(#soft2)"/></g>
+    <use href="#armProfile" transform="translate(790 430) scale(5.3679)" class="arm" filter="url(#soft)"/>
+    <g transform="translate(993,430)">
+      <circle class="body" r="30" fill="url(#gJup)"/>
+      <g fill="#cfc6b6"><g><animateTransform attributeName="transform" type="rotate" values="0 0 0;360 0 0" dur=".0515s" repeatCount="indefinite"/><circle cx="14.5" cy="0" r=".8"/></g>
+         <g><animateTransform attributeName="transform" type="rotate" values="80 0 0;440 0 0" dur=".0817s" repeatCount="indefinite"/><circle cx="17.5" cy="0" r=".75"/></g>
+         <g><animateTransform attributeName="transform" type="rotate" values="200 0 0;560 0 0" dur=".1312s" repeatCount="indefinite"/><circle cx="20.5" cy="0" r=".8"/></g>
+         <g><animateTransform attributeName="transform" type="rotate" values="310 0 0;670 0 0" dur=".2306s" repeatCount="indefinite"/><circle cx="23.5" cy="0" r=".85"/></g></g>
+      <circle r="11.2" fill="#c69c6f"/>
+      <g clip-path="url(#cJup)"><g><animateTransform attributeName="transform" type="translate" values="0 0;-44.8 0" dur=".414s" repeatCount="indefinite"/><use href="#texJup"/></g></g>
+      <circle r="11.2" fill="url(#shade)"/><circle r="11.2" fill="url(#spec)"/>
+      <circle r="11.2" fill="none" stroke="#fff" stroke-opacity=".2" stroke-width=".5"/>
+    </g></g>
+  <g class="row" transform="translate(52,388)">
+    <rect class="rowBg" x="-10" y="-14" width="344" height="28" fill="#d9b168"/>
+    <circle cx="0" cy="-4" r="7" fill="#d8b184"/><circle cx="0" cy="-4" r="12" fill="url(#gJup)"/>
+    <text class="rowName" x="18" y="0" font-family="Cinzel,serif" font-size="15" font-weight="700" letter-spacing=".12em" fill="#ddd4c0">JUPITER</text>
+    <text x="150" y="0" font-family="'IBM Plex Mono',monospace" font-size="11.5" fill="#9d947f">4332.6 d</text>
+    <text x="204" y="0" font-family="'IBM Plex Mono',monospace" font-size="11.5" fill="#7d7768">11.862 y</text>
+    <text x="322" y="0" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="11" fill="#8f7a52">9.93 h</text>
+  </g>
+</g>
+
+<!-- ---------- SATURN ---------- -->
+<g class="sys" id="sys-saturn">
+  <circle class="hit" cx="790" cy="430" r="247" fill="none" stroke="#fff" stroke-opacity="0" stroke-width="22" pointer-events="stroke"/>
+  <g class="hi"><circle cx="790" cy="430" r="247" fill="none" stroke="#ffe4a8" stroke-opacity=".5" stroke-width="1.6" filter="url(#glow)"/></g>
+  <g><animateTransform attributeName="transform" type="rotate" values="-49.94 790 430;-409.94 790 430" dur="294.57s" repeatCount="indefinite"/>
+    <g class="wheel"><circle cx="790" cy="430" r="249" fill="none" stroke="url(#brassB)" stroke-width="7"/>
+      <use href="#t233" transform="translate(790 430)" fill="none" stroke="url(#brass)" stroke-width="8.5" filter="url(#soft2)"/></g>
+    <use href="#armProfile" transform="translate(790 430) scale(6.5051)" class="arm" filter="url(#soft)"/>
+    <g transform="translate(1037,430)" transform-origin="0 0">
+      <circle class="body" r="26" fill="url(#gSat)"/>
+      <g transform="rotate(-24)">
+        <path d="M-19,0 A19,7.2 0 0 1 19,0" fill="none" stroke="#e3cfa4" stroke-opacity=".5" stroke-width="3.4"/>
+        <circle r="9.3" fill="#d5bc86"/>
+        <g clip-path="url(#cSat)"><g><animateTransform attributeName="transform" type="translate" values="0 0;-37.2 0" dur=".445s" repeatCount="indefinite"/><use href="#texSat"/></g></g>
+        <circle r="9.3" fill="url(#shade)"/><circle r="9.3" fill="url(#spec)"/>
+        <circle r="9.3" fill="none" stroke="#fff" stroke-opacity=".2" stroke-width=".5"/>
+        <path d="M-19,0 A19,7.2 0 0 0 19,0" fill="none" stroke="#f0dcae" stroke-opacity=".62" stroke-width="3.4"/>
+        <path d="M-22.5,0 A22.5,8.6 0 0 0 22.5,0" fill="none" stroke="#c8ae7c" stroke-opacity=".28" stroke-width="1.2"/>
+      </g>
+    </g></g>
+  <g class="row" transform="translate(52,425)">
+    <rect class="rowBg" x="-10" y="-14" width="344" height="28" fill="#d9b168"/>
+    <circle cx="0" cy="-4" r="6" fill="#e6cfa1"/><ellipse cx="0" cy="-4" rx="10" ry="3.6" fill="none" stroke="#e6cfa1" stroke-opacity=".55" stroke-width="1.3" transform="rotate(-18)"/>
+    <text class="rowName" x="18" y="0" font-family="Cinzel,serif" font-size="15" font-weight="700" letter-spacing=".12em" fill="#ddd4c0">SATURN</text>
+    <text x="150" y="0" font-family="'IBM Plex Mono',monospace" font-size="11.5" fill="#9d947f">10759 d</text>
+    <text x="204" y="0" font-family="'IBM Plex Mono',monospace" font-size="11.5" fill="#7d7768">29.457 y</text>
+    <text x="322" y="0" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="11" fill="#8f7a52">10.66 h</text>
+  </g>
+</g>
+
+<!-- ---------- URANUS ---------- -->
+<g class="sys" id="sys-uranus">
+  <circle class="hit" cx="790" cy="430" r="287" fill="none" stroke="#fff" stroke-opacity="0" stroke-width="22" pointer-events="stroke"/>
+  <g class="hi"><circle cx="790" cy="430" r="287" fill="none" stroke="#ffe4a8" stroke-opacity=".5" stroke-width="1.6" filter="url(#glow)"/></g>
+  <g><animateTransform attributeName="transform" type="rotate" values="-313.23 790 430;-673.23 790 430" dur="840.2s" repeatCount="indefinite"/>
+    <g class="wheel"><circle cx="790" cy="430" r="289" fill="none" stroke="url(#brassB)" stroke-width="7"/>
+      <use href="#t271" transform="translate(790 430)" fill="none" stroke="url(#brass)" stroke-width="8.5" filter="url(#soft2)"/></g>
+    <use href="#armProfile" transform="translate(790 430) scale(7.5774)" class="arm" filter="url(#soft)"/>
+    <g transform="translate(1077,430)">
+      <circle class="body" r="20" fill="url(#gUra)"/>
+      <circle r="7.1" fill="#8fd4dc"/>
+      <g clip-path="url(#cUra)"><g><animateTransform attributeName="transform" type="translate" values="0 0;28.4 0" dur=".719s" repeatCount="indefinite"/><use href="#texUra"/></g></g>
+      <circle r="7.1" fill="url(#shade)"/><circle r="7.1" fill="url(#spec)"/>
+      <ellipse rx="11.6" ry="3.1" fill="none" stroke="#bff0f5" stroke-opacity=".4" stroke-width=".9" transform="rotate(74)"/>
+      <circle r="7.1" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width=".5"/>
+    </g></g>
+  <g class="row" transform="translate(52,462)">
+    <rect class="rowBg" x="-10" y="-14" width="344" height="28" fill="#d9b168"/>
+    <circle cx="0" cy="-4" r="5" fill="#9adfe6"/><circle cx="0" cy="-4" r="9" fill="url(#gUra)"/>
+    <text class="rowName" x="18" y="0" font-family="Cinzel,serif" font-size="15" font-weight="700" letter-spacing=".12em" fill="#ddd4c0">URANUS</text>
+    <text x="150" y="0" font-family="'IBM Plex Mono',monospace" font-size="11.5" fill="#9d947f">30689 d</text>
+    <text x="204" y="0" font-family="'IBM Plex Mono',monospace" font-size="11.5" fill="#7d7768">84.021 y</text>
+    <text x="322" y="0" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="11" fill="#c9452e">17.24 h ↺</text>
+  </g>
+</g>
+
+<!-- ---------- NEPTUNE ---------- -->
+<g class="sys" id="sys-neptune">
+  <circle class="hit" cx="790" cy="430" r="321" fill="none" stroke="#fff" stroke-opacity="0" stroke-width="22" pointer-events="stroke"/>
+  <g class="hi"><circle cx="790" cy="430" r="321" fill="none" stroke="#ffe4a8" stroke-opacity=".5" stroke-width="1.6" filter="url(#glow)"/></g>
+  <g><animateTransform attributeName="transform" type="rotate" values="-304.88 790 430;-664.88 790 430" dur="1647.7s" repeatCount="indefinite"/>
+    <g class="wheel"><circle cx="790" cy="430" r="323" fill="none" stroke="url(#brassB)" stroke-width="7"/>
+      <use href="#t303" transform="translate(790 430)" fill="none" stroke="url(#brass)" stroke-width="8.5" filter="url(#soft2)"/></g>
+    <use href="#armProfile" transform="translate(790 430) scale(8.4407)" class="arm" filter="url(#soft)"/>
+    <g transform="translate(1111,430)">
+      <circle class="body" r="19" fill="url(#gNep)"/>
+      <circle r="6.8" fill="#3d63b4"/>
+      <g clip-path="url(#cNep)"><g><animateTransform attributeName="transform" type="translate" values="0 0;-27.2 0" dur=".673s" repeatCount="indefinite"/><use href="#texNep"/></g></g>
+      <circle r="6.8" fill="url(#shade)"/><circle r="6.8" fill="url(#spec)"/>
+      <circle r="6.8" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width=".5"/>
+    </g></g>
+  <g class="row" transform="translate(52,499)">
+    <rect class="rowBg" x="-10" y="-14" width="344" height="28" fill="#d9b168"/>
+    <circle cx="0" cy="-4" r="4.7" fill="#4d78c9"/><circle cx="0" cy="-4" r="9" fill="url(#gNep)"/>
+    <text class="rowName" x="18" y="0" font-family="Cinzel,serif" font-size="15" font-weight="700" letter-spacing=".12em" fill="#ddd4c0">NEPTUNE</text>
+    <text x="150" y="0" font-family="'IBM Plex Mono',monospace" font-size="11.5" fill="#9d947f">60190 d</text>
+    <text x="204" y="0" font-family="'IBM Plex Mono',monospace" font-size="11.5" fill="#7d7768">164.79 y</text>
+    <text x="322" y="0" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="11" fill="#8f7a52">16.11 h</text>
+  </g>
+</g>
+
+<!-- ================= SUN (on the drive arbor; rotates every 25.39 d) ================= -->
+<g id="sun">
+  <circle cx="790" cy="430" r="96" fill="url(#sunHaze)"/>
+  <g><animateTransform attributeName="transform" type="rotate" values="0 790 430;360 790 430" dur="20.897s" repeatCount="indefinite"/>
+    <circle cx="790" cy="430" r="30" fill="#2a2018"/>
+    <circle cx="806" cy="420" r="2.6" fill="#7a4a18" opacity=".55"/><circle cx="778" cy="442" r="1.8" fill="#7a4a18" opacity=".5"/>
+    <circle cx="798" cy="447" r="1.2" fill="#8a5a20" opacity=".45"/></g>
+  <circle cx="790" cy="430" r="30" fill="url(#sunG)"/>
+  <circle cx="790" cy="430" r="30" fill="none" stroke="#ffe9a8" stroke-opacity=".55" stroke-width="1"/>
+  <g stroke="#ffcf72" stroke-opacity=".22" stroke-linecap="round">
+    <animateTransform attributeName="transform" type="rotate" values="0 790 430;360 790 430" dur="20.897s" repeatCount="indefinite"/>
+    <line x1="790" y1="402" x2="790" y2="396"/><line x1="812" y1="408" x2="817" y2="403"/><line x1="790" y1="458" x2="790" y2="464"/>
+    <line x1="768" y1="452" x2="763" y2="457"/><line x1="762" y1="430" x2="756" y2="430"/><line x1="818" y1="430" x2="824" y2="430"/>
+  </g>
+  <circle cx="790" cy="430" r="50" fill="none" stroke="#ffb457" stroke-opacity=".2" stroke-width=".8"/>
+  <circle cx="790" cy="430" r="66" fill="none" stroke="#ffb457" stroke-opacity=".1" stroke-width=".7"/>
+  <circle cx="783" cy="423" r="8" fill="#fff" opacity=".3" filter="url(#blur3)"/>
+</g>
+
+<!-- index mark at 0° Aries -->
+<g><path d="M1181,430 L1191,423 V437 Z" fill="#f7e9bd"/><use href="#screw" transform="translate(1200 430) scale(.6)"/></g>
+
+<!-- ================= ENGRAVED PANEL ================= -->
+<g id="panel">
+  <use href="#panelPath" fill="#0a0c11" fill-opacity=".88"/>
+  <use href="#panelPath" fill="none" stroke="url(#brass)" stroke-width="2.2"/>
+  <use href="#panelPath" transform="translate(7,7) scale(.9825)" fill="none" stroke="#d9b168" stroke-opacity=".22" stroke-width=".8"/>
+  <g><use href="#screw" transform="translate(44,44)"/><use href="#screw" transform="translate(384,44)"/>
+     <use href="#screw" transform="translate(44,816)"/><use href="#screw" transform="translate(384,816)"/></g>
+
+  <text x="52" y="92" font-family="Cinzel,serif" font-size="49" font-weight="900" letter-spacing=".06em" fill="#f4ecd8">THE</text>
+  <text x="52" y="148" font-family="Cinzel,serif" font-size="49" font-weight="900" letter-spacing=".06em" fill="url(#brass)">PLANARIUM</text>
+  <text x="52" y="176" font-family="'IBM Plex Sans',sans-serif" font-size="11" font-weight="300" letter-spacing=".3em" fill="#a9a08c">HOROLOGICAL SOLAR SYSTEM · EIGHT WHEELS · ONE ESCAPEMENT</text>
+  <text x="52" y="200" font-family="'IBM Plex Mono',monospace" font-size="11" fill="#7d7768">
+    <tspan fill="#c9b78e">RATE</tspan> 1.00 SEC = 36.525 DAYS · ONE YEAR = 10 SEC</text>
+  <text x="52" y="218" font-family="'IBM Plex Mono',monospace" font-size="11" fill="#7d7768">
+    <tspan fill="#c9b78e">EPOCH</tspan> J2000.0 · LONGITUDES TO SCALE, GLOVES NOT</text>
+  <line x1="52" y1="228" x2="370" y2="228" stroke="#d9b168" stroke-opacity=".3"/>
+  <text x="52" y="234" font-family="'IBM Plex Sans',sans-serif" font-size="9" font-weight="600" letter-spacing=".28em" fill="#8f7a52" dy="-16">BODY · SIDEREAL PERIOD · ROTATION</text>
+
+  <g font-family="'IBM Plex Mono',monospace" font-size="10" fill="#7d7768">
+    <text x="52" y="536">THE MOON IS GEARED TO 27.32 d · THE SUN TURNS ON</text>
+    <text x="52" y="550">ITS OWN AXIS IN 25.39 d · JUPITER CARRIES FOUR</text>
+    <text x="52" y="564">OF ITS MOONS AT THEIR TRUE PERIODS.</text>
+  </g>
+
+  <!-- pinion ratio table -->
+  <line x1="52" y1="592" x2="370" y2="592" stroke="#d9b168" stroke-opacity=".3"/>
+  <text x="52" y="612" font-family="Cinzel,serif" font-size="13" font-weight="700" letter-spacing=".22em" fill="#c9b78e">THE TRAIN</text>
+  <g font-family="'IBM Plex Mono',monospace" font-size="10.5" fill="#8f8877">
+    <text x="52" y="634">TOOTH PITCH (MODULE)</text><text x="370" y="634" text-anchor="end" fill="#ddd4c0">6.00 u</text>
+    <text x="52" y="652">WHEEL TEETH · MERCURY → NEPTUNE</text><text x="370" y="652" text-anchor="end" fill="#ddd4c0">51 · 79 · 107 · 145 · 191 · 233 · 271 · 303</text>
+    <text x="52" y="670">PINION TEETH</text><text x="370" y="670" text-anchor="end" fill="#ddd4c0">5 · 6 · 7 · 9 · 11 · 13 · 15 · 17</text>
+    <text x="52" y="688">PINION SPEED RATIO TO WHEEL</text><text x="370" y="688" text-anchor="end" fill="#ddd4c0">×5.5 → ×26.75 · same hand</text>
+    <text x="52" y="706">ESCAPE WHEEL</text><text x="370" y="706" text-anchor="end" fill="#ddd4c0">19 teeth · 1 turn / 0.4489 s</text>
+    <text x="52" y="724">ANCHOR BEATS</text><text x="370" y="724" text-anchor="end" fill="#ddd4c0">4.455 per second</text>
+  </g>
+  <text x="52" y="762" font-family="'IBM Plex Sans',sans-serif" font-size="10.5" letter-spacing=".02em" fill="#6f6a5e" id="rd">
+    <tspan fill="#8f7a52">HOVER</tspan> a wheel, an arm or a globe to light its train.
+  </text>
+  <text x="52" y="782" font-family="'IBM Plex Sans',sans-serif" font-size="10.5" letter-spacing=".02em" fill="#6f6a5e">
+    <tspan fill="#8f7a52">FAST-FORWARD</tspan> to see the outer wheels obey their true ratios.
+  </text>
+</g>
+
+<!-- ================= LIVE READOUTS ================= -->
+<g font-family="'IBM Plex Mono',monospace">
+  <text x="420" y="46" font-size="9.5" fill="#8f7a52" letter-spacing=".22em">SIMULATED EPOCH</text>
+  <text id="date" x="420" y="70" font-size="21" fill="#f4ecd8" letter-spacing=".02em">01 JAN 2000</text>
+  <text id="yrs" x="420" y="88" font-size="10.5" fill="#a9a08c">+ 0.00 years · t = 0.00 s</text>
+  <text id="state" class="blink" x="420" y="106" font-size="9.5" fill="#c9b78e" letter-spacing=".18em">RUNNING</text>
+</g>
+
+<g font-family="'Cinzel',serif" font-size="12" font-weight="700" letter-spacing=".3em" fill="#c9b78e">
+  <text x="52" y="852">PLATE I</text>
+  <text x="1230" y="852" text-anchor="end" font-family="'IBM Plex Mono',monospace" font-size="10" font-weight="400" letter-spacing=".12em" fill="#6f6a5e">
+    drawn in vector · 1280 × 860 · brass, gunmetal &amp; light</text>
+</g>
+</svg>

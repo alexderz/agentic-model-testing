@@ -1,0 +1,47 @@
+{
+ "case": "fnb-v31-udq2kxl-t5-oneshot-orrery-r1",
+ "finish_reason": "stop",
+ "first_token_s": 0.6,
+ "max_tokens": 126976,
+ "model": "strata0210-fnb-v31-udq2kxl-128k",
+ "reasoning_chars": 84185,
+ "reply_chars": 64995,
+ "started": "2026-11-06T05:12:49-0600",
+ "static": {
+  "animate": 0,
+  "animateMotion": 0,
+  "animateTransform": 0,
+  "bytes": 9963,
+  "keyframes": 0,
+  "parses": true,
+  "prose_chars_outside_svg": 55051,
+  "script": 0,
+  "svg_found": true
+ },
+ "status": "ok",
+ "test": "5",
+ "timeout_s": 14400,
+ "timings": {
+  "cache_n": 0,
+  "draft_n": 42039,
+  "draft_n_accepted": 27210,
+  "predicted_ms": 527953.6,
+  "predicted_n": 48937,
+  "predicted_per_second": 92.7,
+  "predicted_per_token_ms": 10.792,
+  "prompt_ms": 766.8,
+  "prompt_n": 101,
+  "prompt_per_second": 131.7,
+  "prompt_per_token_ms": 7.592
+ },
+ "tok_s": 92.7,
+ "usage": {
+  "completion_tokens": 48937,
+  "prompt_tokens": 101,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  },
+  "total_tokens": 49038
+ },
+ "wall_s": 528.7
+}

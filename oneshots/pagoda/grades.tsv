@@ -59,3 +59,7 @@ mx22-orcasaq2-cyber-27b-t6-oneshot-pagoda-r1	lcpp6-orcasaq2-cyber-27b											
 mx22-qwen3.8-flash-next-unpruned-t6-oneshot-pagoda-r1	qwen3.8-flash-next-unpruned						2	2	2	2	2	10	One round.
 mx22-swift15-flash-next-t6-oneshot-pagoda-r1	swift15-flash-next						1	2	1	2	2	8	The storeys float apart. One round.
 mx22-q38-defiance-192k-author-t6-oneshot-pagoda-r1	lcpp6-q38-defiance-192k-author						1	2	1	1	2	7	Camera inside the scene, top clipped, no visible spire or upturned eaves, no pond seen. One round.
+fnb-v31-udiq1m-t6-oneshot-pagoda-r1	strata0210-fnb-v31-udiq1m-128k	126976	stop	31006	306.6	101.3	0	0	0	0	0	0	0 of 10. Blank: the script calls a three.js function that does not exist (MathUtils.floor) and stops. First token 0.5 s. One round.
+fnb-v31-udiq3xxs-t6-oneshot-pagoda-r1	strata0210-fnb-v31-udiq3xxs-128k	126976	stop	44477	414.9	107.4	0	0	0	0	0	0	0 of 10. Blank: a syntax error stops the script. First token 0.7 s. One round.
+fnb-v31-udq2kxl-t6-oneshot-pagoda-r1	strata0210-fnb-v31-udq2kxl-128k	126976	stop	42992	452.1	95.2	0	0	0	0	0	0	0 of 10. Blank: a variable is used before it is set and the script stops. First token 0.7 s. One round.
+fnb-v31-udq3kxl-t6-oneshot-pagoda-r1	strata0210-fnb-v31-udq3kxl-128k	126976	stop	48120	489.9	98.4	0	0	0	0	0	0	0 of 10. Blank: a syntax error stops the script; only the loading screen shows. First token 0.8 s. One round.

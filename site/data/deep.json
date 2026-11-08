@@ -441,6 +441,21 @@
       "doc": "docs/model-research/tuning.md#10-engine-choice"
     },
     {
+      "id": "two-cards",
+      "title": "Two different cards: grow the expert cache, then ubatch",
+      "rule": "On a 3090 + V100 pair, spend the extra VRAM on the expert cache first, turn flash attention on, then raise ubatch while both cards keep 1.5 GiB free.",
+      "metrics": [
+        {"label": "DeepSeek-V4.1-Flash UD-IQ1_S decode, start to best (cache 20 to 34 GiB, flash attention, Q8 KV)", "before": 9.7, "after": 16.5, "unit": "tok/s"},
+        {"label": "Same, prefill of a 30k prompt, ubatch 512 to 2048", "before": 35.3, "after": 83.3, "unit": "tok/s"},
+        {"label": "Same, decode with flash attention off to on", "before": 13.3, "after": 15.5, "unit": "tok/s"},
+        {"label": "Qwopus 27B Q6_K decode on the V100 alone, 96k context", "before": null, "after": 27.0, "unit": "tok/s"}
+      ],
+      "chart": "bars",
+      "evidence": "2026-11-08, llama.cpp Clover 4838ffb, 3090 at 250 W, short-benchmark rates: a 90,230-token retrieval at 96k context was correct on DeepSeek (31 tok/s prefill, 48.5 min to first token); a 40 GiB cache does not load.",
+      "caveat": "Short-benchmark rates, not agent runs. Without flash attention, ubatch 512 left only 1.2 GiB on the 3090 and broke the fit rule.",
+      "doc": "docs/model-research/tuning.md#12-two-different-cards-a-3090-and-a-v100"
+    },
+    {
       "id": "quality-checks",
       "title": "Check a setup before trusting speed",
       "rule": "Run quality and multi-session checks on every new engine or settings change before ranking speed.",

@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-11-04 22:20 CST",
- "built": "2026-11-04 22:20 CST",
+ "generated": "2026-11-08 17:00 CST",
+ "built": "2026-11-08 15:39 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -116,6 +116,87 @@
   }
  ],
  "findings": [
+  {
+   "date": "2026-11-08",
+   "title": "DeepSeek-V4.1-Flash runs across a 3090 and a V100",
+   "kind": "tuning",
+   "summary": "DeepSeek-V4.1-Flash 1017 UD-IQ1_S now serves from two different cards, an RTX 3090 24 GB and a Tesla V100 32 GB, with the routed experts in RAM and a GPU expert cache. Short-benchmark decode rose from 9.7 tok/s on the starting config (20 GiB cache, F16 KV, flash attention off) to 16.5 tok/s with a 34 GiB cache, flash attention and Q8 KV at 96k context. A 90,230-token retrieval at 96k context was correct; it took 48.5 minutes to the first token (31 tok/s prefill). Raising ubatch from 512 to 1024 and 2048 cut the 30k-token first-token time from 14.3 to 9.3 and 6.1 minutes (35, 54 and 83 tok/s prefill; the 512 point used a 34 GiB cache, the others 28 GiB). A 40 GiB cache does not fit: the V100 runs out of memory at load.",
+   "settings": "llama.cpp Clover 4838ffb; --n-cpu-moe 40 --moe-cache-mib 34816 --tensor-split 1,1 --flash-attn on --cache-type-k q8_0 --cache-type-v q8_0 --ubatch-size 512; 3090 at 250 W",
+   "metrics": [
+    {
+     "label": "Decode, short benchmark",
+     "before": 9.7,
+     "after": 16.5,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Prefill on a 30k prompt, ubatch 512 to 2048",
+     "before": 35.3,
+     "after": 83.3,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Prefill on a 1.1k prompt, ubatch 128 to 512",
+     "before": 16.5,
+     "after": 33.0,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Decode, flash attention off to on",
+     "before": 13.3,
+     "after": 15.5,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Every run answered the oracle prompt correctly; the 30k and 90k retrieval prompts found their planted markers.",
+   "caveat": "Short-benchmark rates (two prompts of a few hundred output tokens), not agent-run rates. The 34 GiB cache plus ubatch 1024 or 2048 is still being measured. Fit rule: at least 1.5 GiB free on each card after the longest prefill; ubatch 512 without flash attention missed it (1.2 GiB on the 3090)."
+  },
+  {
+   "date": "2026-11-08",
+   "title": "Qwopus 27B Q6_K on the V100 alone: 27 tok/s at 96k",
+   "kind": "tuning",
+   "summary": "Qwopus3.8-27B-Coder-Flash Q6_K runs on the Tesla V100 32 GB alone with 96k context and Q8 KV. Short-benchmark decode is 27.0 tok/s with a 0.8 s first token. Retrieval at 30,125 and 90,105 tokens was correct, with first tokens at 43 s and 193 s (700 and 470 tok/s prefill). 8.0 GiB stayed free.",
+   "settings": "llama.cpp Clover 4838ffb; V100 only; --cache-type-k q8_0 --cache-type-v q8_0 --ubatch-size 512, 98,304 context",
+   "metrics": [
+    {
+     "label": "Decode, short benchmark",
+     "before": null,
+     "after": 27.0,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Prefill, 90k-token retrieval",
+     "before": null,
+     "after": 470,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Oracle and both retrieval prompts correct.",
+   "caveat": "Short-benchmark rates, not agent-run rates. No agent tests on this setup yet."
+  },
+  {
+   "date": "2026-11-08",
+   "title": "Flash-Next Unsloth v3.1: the smallest quant holds up",
+   "kind": "grading",
+   "summary": "Four Unsloth Dynamic v3.1 quants of Qwen3.8 Flash-Next (UD-IQ1_M 63 GiB, UD-Q2_K_XL 74 GiB, UD-IQ3_XXS 78 GiB, UD-Q3_K_XL 83 GiB) ran one round of the suite on Strata 0.2.10. All four pass test 3 (14 of 14 facts) and every test 4 ticket; failed compiles per run are about the same at every size. UD-IQ1_M was also the fastest (about 152 tok/s short-benchmark decode) and made the best art: 10 of 10 on the agent pagoda and 7 of 10 on the one-shot orrery. Every one-shot pagoda was blank from a script error, and three of four one-shot orreries scored 0.",
+   "settings": "Strata 0.2.10, 128k context, 8-bit KV, one RTX 3090",
+   "metrics": [
+    {
+     "label": "UD-IQ1_M decode, short benchmark",
+     "before": null,
+     "after": 152,
+     "unit": "tok/s"
+    },
+    {
+     "label": "UD-Q3_K_XL decode, short benchmark",
+     "before": null,
+     "after": 93,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Agent tests by the suite graders; art graded by hand from rendered frames, blind side by side. Stories passed a language check (no CJK, no misspellings); their craft scores are not in yet.",
+   "caveat": "One round each. Story rubric, labyrinth D and E, and test 3 rubric are not graded yet. UD-Q3_K_XL test 1 is left out: the grader could not run its CLI. UD-Q2_K_XL test 2T did not run."
+  },
   {
    "date": "2026-11-04",
    "title": "Flash-Next quant drafts, one partial round",
@@ -317,7 +398,7 @@
    "date": "2026-10-24",
    "title": "GPU unlock raises long-prompt prefill by 43%",
    "kind": "engine",
-   "summary": "On Titan, vLLM Qwen3.8-27B was measured with GPU unlock off, then on, then on again. A 140826-token prompt prefilled at 736 tok/s off. Unlock rounds were 1053 and 1056 tok/s on seed 41, and 1053 and 1055 tok/s on seed 42. The probe summary calls that a 43.3% and 43.2% gain. Short code decode moved from 126.4 to 127.9 and 127.5 tok/s. The same check on llama.cpp 0.7 with Tiel left short code decode at 149.1, 148.6 and 148.8 tok/s.",
+   "summary": "On our 3090 box, vLLM Qwen3.8-27B was measured with GPU unlock off, then on, then on again. A 140826-token prompt prefilled at 736 tok/s off. Unlock rounds were 1053 and 1056 tok/s on seed 41, and 1053 and 1055 tok/s on seed 42. The probe summary calls that a 43.3% and 43.2% gain. Short code decode moved from 126.4 to 127.9 and 127.5 tok/s. The same check on llama.cpp 0.7 with Tiel left short code decode at 149.1, 148.6 and 148.8 tok/s.",
    "settings": null,
    "metrics": [
     {
@@ -1410,7 +1491,7 @@
    "date": "2026-10-24",
    "era": "Engines",
    "title": "GPU unlock speeds long prefill",
-   "what": "On Titan, vLLM Qwen3.8-27B long-prompt prefill rose from 736 to about 1050 tok/s. Short decode stayed near 127 tok/s.",
+   "what": "On our 3090 box, vLLM Qwen3.8-27B long-prompt prefill rose from 736 to about 1050 tok/s. Short decode stayed near 127 tok/s.",
    "why": "Does unlocking the GPU clock help a model that already fits on the card?"
   },
   {
@@ -1447,6 +1528,20 @@
    "title": "Six Flash-Next quants, story draft only",
    "what": "Partial, one round, no hand grade. Draft decode runs from 28.8 to 104.2 tok/s. Two draft legs look anomalous. A second story round is queued for all six; rank none before it.",
    "why": "The edit speed is inflated by copying the draft."
+  },
+  {
+   "date": "2026-11-08",
+   "era": "Engines",
+   "title": "Two cards: a 3090 and a V100",
+   "what": "DeepSeek-V4.1-Flash UD-IQ1_S spans both cards: 9.7 to 16.5 tok/s short-benchmark decode, 90k retrieval correct at 96k. Qwopus 27B Q6_K runs on the V100 alone at 27 tok/s.",
+   "why": "A second, larger card makes room for the expert cache and long context."
+  },
+  {
+   "date": "2026-11-08",
+   "era": "Flash-Next",
+   "title": "Unsloth v3.1 quants graded",
+   "what": "Four quants, one round: all pass tests 3 and 4; UD-IQ1_M is fastest and draws best; one-shot pagodas all blank.",
+   "why": "Alex expected the small quants to brute-force code but draw worse; the code half held, the art half did not."
   }
  ],
  "events": [],
@@ -3014,6 +3109,164 @@
    "kind": "tune",
    "uncensored": false,
    "note": "Round 1 only. The gate row against stock Qwen3.8-27B. Short-prompt decode 41.6 tok/s.",
+   "vision": {
+    "label": "yes (head)",
+    "status": "head"
+   }
+  },
+  "strata0210-fnb-v31-udiq1m-128k": {
+   "id": "strata0210-fnb-v31-udiq1m-128k",
+   "family": "Qwen3.8 Flash-Next",
+   "label": "Flash-Next UD-IQ1_M (Unsloth Dynamic v3.1) · Strata 0.2.10, 128k, 8-bit KV",
+   "base": "Qwen/Qwen3.8-Flash-Next",
+   "arch": "MoE",
+   "engine": "strata strata-0.2.10",
+   "quant": "Unsloth UD-IQ1_M v3.1 (63.3 GiB)",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "Round 1 of the full suite on one RTX 3090. Short-benchmark decode about 152 tok/s, first token about 0.4 s.",
+   "vision": null
+  },
+  "strata0210-fnb-v31-udq2kxl-128k": {
+   "id": "strata0210-fnb-v31-udq2kxl-128k",
+   "family": "Qwen3.8 Flash-Next",
+   "label": "Flash-Next UD-Q2_K_XL (Unsloth Dynamic v3.1) · Strata 0.2.10, 128k, 8-bit KV",
+   "base": "Qwen/Qwen3.8-Flash-Next",
+   "arch": "MoE",
+   "engine": "strata strata-0.2.10",
+   "quant": "Unsloth UD-Q2_K_XL v3.1 (74.1 GiB)",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "Round 1 of the full suite on one RTX 3090. Short-benchmark decode about 93 tok/s, first token about 0.6 s.",
+   "vision": null
+  },
+  "strata0210-fnb-v31-udiq3xxs-128k": {
+   "id": "strata0210-fnb-v31-udiq3xxs-128k",
+   "family": "Qwen3.8 Flash-Next",
+   "label": "Flash-Next UD-IQ3_XXS (Unsloth Dynamic v3.1) · Strata 0.2.10, 128k, 8-bit KV",
+   "base": "Qwen/Qwen3.8-Flash-Next",
+   "arch": "MoE",
+   "engine": "strata strata-0.2.10",
+   "quant": "Unsloth UD-IQ3_XXS v3.1 (77.9 GiB)",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "Round 1 of the full suite on one RTX 3090. Short-benchmark decode about 106 tok/s, first token about 0.7 s.",
+   "vision": null
+  },
+  "strata0210-fnb-v31-udq3kxl-128k": {
+   "id": "strata0210-fnb-v31-udq3kxl-128k",
+   "family": "Qwen3.8 Flash-Next",
+   "label": "Flash-Next UD-Q3_K_XL (Unsloth Dynamic v3.1) · Strata 0.2.10, 128k, 8-bit KV",
+   "base": "Qwen/Qwen3.8-Flash-Next",
+   "arch": "MoE",
+   "engine": "strata strata-0.2.10",
+   "quant": "Unsloth UD-Q3_K_XL v3.1 (83.3 GiB)",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "Round 1 of the full suite on one RTX 3090. Short-benchmark decode about 93 tok/s, first token about 0.7 s.",
+   "vision": null
+  },
+  "lcpp-ds41-flash-iq1s-3090-v100": {
+   "id": "lcpp-ds41-flash-iq1s-3090-v100",
+   "family": "DeepSeek",
+   "label": "DeepSeek-V4.1-Flash 1017 UD-IQ1_S · llama.cpp (Clover 4838ffb), RTX 3090 + V100",
+   "base": "deepseek-ai/DeepSeek-V4.1-Flash",
+   "arch": "MoE",
+   "engine": "llama.cpp Clover 4838ffb",
+   "quant": "Unsloth UD-IQ1_S",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "Serving tuning only (no agent tests yet): attention and dense layers split over an RTX 3090 24 GB and a Tesla V100 32 GB, routed experts in RAM with a GPU expert cache. Short-benchmark rates.",
+   "vision": null
+  },
+  "lcpp-qwopus38-q6k-v100": {
+   "id": "lcpp-qwopus38-q6k-v100",
+   "family": "Qwen3.8 27B",
+   "label": "Qwopus3.8-27B-Coder-Flash Q6_K · llama.cpp (Clover 4838ffb), V100 alone, 96k, 8-bit KV",
+   "base": "Qwen/Qwen3.8-27B",
+   "arch": "dense 27B",
+   "engine": "llama.cpp Clover 4838ffb",
+   "quant": "Q6_K",
+   "kind": "tune",
+   "uncensored": false,
+   "note": "Serving tuning only: the whole model on the Tesla V100 32 GB. Short-benchmark rates.",
+   "vision": null
+  },
+  "exl3-qwopus38-27b-coder-flash-dflash2-162": {
+   "id": "exl3-qwopus38-27b-coder-flash-dflash2-162",
+   "family": "Qwen3.8 27B",
+   "label": "Qwopus3.8-27B-Coder-Flash EXL3 4.0bpw · exllamav3 1.6.2, DFlash2 drafts, 96k, 8-bit cache",
+   "base": "Qwen/Qwen3.8-27B",
+   "arch": "dense 27B",
+   "engine": "exllamav3 tabbyapi-d6e62270-exl3-1.6.2",
+   "quant": "EXL3 4.0bpw community quant by nathaninline (head 5, MTP 4, vision 6 bits)",
+   "kind": "tune",
+   "uncensored": false,
+   "note": "Side row. Round 1 only, partly run. Tests 7 and 8 did not run: the runners admit no new case ids. A HyperQwen side row is queued and has not run. Here the probe, both one-shots and test 1 ran; test 2 was interrupted before it finished.",
+   "vision": {
+    "label": "yes (built in)",
+    "status": "native"
+   }
+  },
+  "flashnext-uncensored": {
+   "id": "flashnext-uncensored",
+   "family": "Qwen3.8 Flash-Next",
+   "label": "Orcarouter Flash-Next Uncensored · SGLang, EXL3 3-bit, GPU expert cache",
+   "base": "orcarouter/Qwen3.8-Flash-Next-Uncensored",
+   "arch": "MoE 125B / 6B active",
+   "engine": "SGLang (EXL3 build)",
+   "quant": "EXL3, 3-bit class",
+   "kind": "uncensored-tune",
+   "uncensored": true,
+   "note": "Served at 204,800 context. KV type was not recorded.",
+   "vision": {
+    "label": "not surveyed",
+    "status": null
+   }
+  },
+  "lcpp6-nanbeige43-33b-gsq": {
+   "id": "lcpp6-nanbeige43-33b-gsq",
+   "family": "Other",
+   "label": "Nanbeige 4.3 33B · llama.cpp 0.7, GSQ IQ4_XS, 90k q5 KV, all on GPU",
+   "base": "",
+   "arch": "",
+   "engine": "llama.cpp 0.7",
+   "quant": "GSQ IQ4_XS",
+   "kind": "unknown",
+   "uncensored": false,
+   "note": "Served at 90,112 context with q5_0 KV.",
+   "vision": {
+    "label": "not surveyed",
+    "status": null
+   }
+  },
+  "maya1113-glm-5.3-flash": {
+   "id": "maya1113-glm-5.3-flash",
+   "family": "GLM",
+   "label": "GLM-5.3-Flash · Maya-S-v2 IQ2_XXS, Maya v1.1.13, 131k context",
+   "base": "zai-org/GLM-5.3-Flash",
+   "arch": "MoE 321B / 18B active",
+   "engine": "maya maya-1.1.13",
+   "quant": "Maya-S-v2 IQ2_XXS",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "",
+   "vision": {
+    "label": "yes (head)",
+    "status": "head"
+   }
+  },
+  "maya1128-glm-5.3-flash": {
+   "id": "maya1128-glm-5.3-flash",
+   "family": "GLM",
+   "label": "GLM-5.3-Flash · Maya-S-v2 IQ2_XXS, Maya v1.1.28, 131k context",
+   "base": "zai-org/GLM-5.3-Flash",
+   "arch": "MoE 321B / 18B active",
+   "engine": "maya 1.1.28",
+   "quant": "Maya-S-v2 IQ2_XXS",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "",
    "vision": {
     "label": "yes (head)",
     "status": "head"
@@ -9476,6 +9729,1261 @@
    "verdict": "pass",
    "finished": null,
    "struggle": null
+  },
+  {
+   "case": "fnb-v31-udiq1m-t1-cli-r1",
+   "model": "strata0210-fnb-v31-udiq1m-128k",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 139,
+   "tests_fail": 0,
+   "subcmds": 18,
+   "tps": 90.8,
+   "minutes": 23,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "8-bit",
+   "verdict": "pass",
+   "finished": "2026-11-06 04:20",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 2728,
+    "errors_per_kloc": 0.0
+   }
+  },
+  {
+   "case": "fnb-v31-udiq1m-t2-rust-mcp-r1",
+   "model": "strata0210-fnb-v31-udiq1m-128k",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 35,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 104.5,
+   "minutes": 22,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "8-bit",
+   "verdict": "pass",
+   "finished": "2026-11-06 04:44",
+   "struggle": {
+    "compiles": 16,
+    "failed_compiles": 9,
+    "rust_errors": 14,
+    "loc": 3066,
+    "errors_per_kloc": 4.9
+   }
+  },
+  {
+   "case": "fnb-v31-udiq1m-t2t-rust-mcp-r1",
+   "model": "strata0210-fnb-v31-udiq1m-128k",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 60,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 109.3,
+   "minutes": 27,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "8-bit",
+   "verdict": "pass",
+   "finished": "2026-11-06 15:49",
+   "flavor": "2T",
+   "struggle": {
+    "compiles": 14,
+    "failed_compiles": 5,
+    "rust_errors": 44,
+    "loc": 3984,
+    "errors_per_kloc": 11.5
+   }
+  },
+  {
+   "case": "fnb-v31-udiq1m-t4-bugfix-targets-r1",
+   "model": "strata0210-fnb-v31-udiq1m-128k",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": null,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 99.9,
+   "minutes": 3,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "8-bit",
+   "verdict": "pass",
+   "finished": "2026-11-06 13:41",
+   "struggle": {
+    "compiles": 6,
+    "failed_compiles": 3,
+    "rust_errors": 3,
+    "loc": 9484,
+    "errors_per_kloc": 0.4
+   }
+  },
+  {
+   "case": "fnb-v31-udiq1m-t4-config-timeouts-r1",
+   "model": "strata0210-fnb-v31-udiq1m-128k",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": null,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 98.2,
+   "minutes": 8,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "8-bit",
+   "verdict": "pass",
+   "finished": "2026-11-06 13:49",
+   "struggle": {
+    "compiles": 12,
+    "failed_compiles": 4,
+    "rust_errors": 4,
+    "loc": 9966,
+    "errors_per_kloc": 0.4
+   }
+  },
+  {
+   "case": "fnb-v31-udiq1m-t4-feature-filter-r1",
+   "model": "strata0210-fnb-v31-udiq1m-128k",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": null,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 102.8,
+   "minutes": 7,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "8-bit",
+   "verdict": "pass",
+   "finished": "2026-11-06 13:57",
+   "struggle": {
+    "compiles": 4,
+    "failed_compiles": 1,
+    "rust_errors": 1,
+    "loc": 9685,
+    "errors_per_kloc": 0.2
+   }
+  },
+  {
+   "case": "fnb-v31-udq2kxl-t1-cli-r1",
+   "model": "strata0210-fnb-v31-udq2kxl-128k",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 204,
+   "tests_fail": 0,
+   "subcmds": 14,
+   "tps": 94.5,
+   "minutes": 28,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "8-bit",
+   "verdict": "pass",
+   "finished": "2026-11-06 05:59",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 4446,
+    "errors_per_kloc": 0.9
+   }
+  },
+  {
+   "case": "fnb-v31-udq2kxl-t2-rust-mcp-r1",
+   "model": "strata0210-fnb-v31-udq2kxl-128k",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 159,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 90.7,
+   "minutes": 79,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "8-bit",
+   "verdict": "pass",
+   "finished": "2026-11-06 07:21",
+   "struggle": {
+    "compiles": 19,
+    "failed_compiles": 10,
+    "rust_errors": 63,
+    "loc": 7535,
+    "errors_per_kloc": 8.4
+   }
+  },
+  {
+   "case": "fnb-v31-udq2kxl-t4-bugfix-targets-r1",
+   "model": "strata0210-fnb-v31-udq2kxl-128k",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": null,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 63.7,
+   "minutes": 4,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "8-bit",
+   "verdict": "pass",
+   "finished": "2026-11-06 16:27",
+   "struggle": {
+    "compiles": 8,
+    "failed_compiles": 4,
+    "rust_errors": 4,
+    "loc": 9491,
+    "errors_per_kloc": 0.5
+   }
+  },
+  {
+   "case": "fnb-v31-udq2kxl-t4-config-timeouts-r1",
+   "model": "strata0210-fnb-v31-udq2kxl-128k",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": null,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 70.5,
+   "minutes": 10,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "8-bit",
+   "verdict": "pass",
+   "finished": "2026-11-06 16:38",
+   "struggle": {
+    "compiles": 12,
+    "failed_compiles": 4,
+    "rust_errors": 8,
+    "loc": 10091,
+    "errors_per_kloc": 0.8
+   }
+  },
+  {
+   "case": "fnb-v31-udq2kxl-t4-feature-filter-r1",
+   "model": "strata0210-fnb-v31-udq2kxl-128k",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": null,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 67.7,
+   "minutes": 4,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "8-bit",
+   "verdict": "pass",
+   "finished": "2026-11-06 16:42",
+   "struggle": {
+    "compiles": 4,
+    "failed_compiles": 1,
+    "rust_errors": 1,
+    "loc": 9595,
+    "errors_per_kloc": 0.1
+   }
+  },
+  {
+   "case": "fnb-v31-udiq3xxs-t1-cli-r1",
+   "model": "strata0210-fnb-v31-udiq3xxs-128k",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 89,
+   "tests_fail": 0,
+   "subcmds": 16,
+   "tps": 82.3,
+   "minutes": 31,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "8-bit",
+   "verdict": "pass",
+   "finished": "2026-11-06 00:31",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 4037,
+    "errors_per_kloc": 0.0
+   }
+  },
+  {
+   "case": "fnb-v31-udiq3xxs-t2-rust-mcp-r1",
+   "model": "strata0210-fnb-v31-udiq3xxs-128k",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 149,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 91.8,
+   "minutes": 45,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "8-bit",
+   "verdict": "pass",
+   "finished": "2026-11-06 01:21",
+   "struggle": {
+    "compiles": 14,
+    "failed_compiles": 9,
+    "rust_errors": 62,
+    "loc": 6215,
+    "errors_per_kloc": 10.0
+   }
+  },
+  {
+   "case": "fnb-v31-udiq3xxs-t2t-rust-mcp-r1",
+   "model": "strata0210-fnb-v31-udiq3xxs-128k",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 77,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 91.2,
+   "minutes": 34,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "8-bit",
+   "verdict": "pass",
+   "finished": "2026-11-06 10:49",
+   "flavor": "2T",
+   "struggle": {
+    "compiles": 14,
+    "failed_compiles": 9,
+    "rust_errors": 56,
+    "loc": 5660,
+    "errors_per_kloc": 9.9
+   }
+  },
+  {
+   "case": "fnb-v31-udiq3xxs-t4-bugfix-targets-r1",
+   "model": "strata0210-fnb-v31-udiq3xxs-128k",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": null,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 68.8,
+   "minutes": 3,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "8-bit",
+   "verdict": "pass",
+   "finished": "2026-11-06 09:16",
+   "struggle": {
+    "compiles": 5,
+    "failed_compiles": 3,
+    "rust_errors": 3,
+    "loc": 9517,
+    "errors_per_kloc": 0.3
+   }
+  },
+  {
+   "case": "fnb-v31-udiq3xxs-t4-config-timeouts-r1",
+   "model": "strata0210-fnb-v31-udiq3xxs-128k",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": null,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 82.3,
+   "minutes": 8,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "8-bit",
+   "verdict": "pass",
+   "finished": "2026-11-06 09:24",
+   "struggle": {
+    "compiles": 8,
+    "failed_compiles": 3,
+    "rust_errors": 4,
+    "loc": 10070,
+    "errors_per_kloc": 0.4
+   }
+  },
+  {
+   "case": "fnb-v31-udiq3xxs-t4-feature-filter-r1",
+   "model": "strata0210-fnb-v31-udiq3xxs-128k",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": null,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 75.2,
+   "minutes": 6,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "8-bit",
+   "verdict": "pass",
+   "finished": "2026-11-06 09:30",
+   "struggle": {
+    "compiles": 5,
+    "failed_compiles": 1,
+    "rust_errors": 1,
+    "loc": 9652,
+    "errors_per_kloc": 0.1
+   }
+  },
+  {
+   "case": "fnb-v31-udq3kxl-t2-rust-mcp-r1",
+   "model": "strata0210-fnb-v31-udq3kxl-128k",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 62,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 81.7,
+   "minutes": 37,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "8-bit",
+   "verdict": "pass",
+   "finished": "2026-11-06 03:26",
+   "struggle": {
+    "compiles": 24,
+    "failed_compiles": 10,
+    "rust_errors": 62,
+    "loc": 5315,
+    "errors_per_kloc": 11.7
+   }
+  },
+  {
+   "case": "fnb-v31-udq3kxl-t2t-rust-mcp-r1",
+   "model": "strata0210-fnb-v31-udq3kxl-128k",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": null,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 83.2,
+   "minutes": 37,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "8-bit",
+   "verdict": "fail",
+   "finished": "2026-11-06 13:12",
+   "flavor": "2T",
+   "struggle": {
+    "compiles": 22,
+    "failed_compiles": 11,
+    "rust_errors": 56,
+    "loc": 0,
+    "errors_per_kloc": null
+   }
+  },
+  {
+   "case": "fnb-v31-udq3kxl-t4-bugfix-targets-r1",
+   "model": "strata0210-fnb-v31-udq3kxl-128k",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": null,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 66.2,
+   "minutes": 2,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "8-bit",
+   "verdict": "pass",
+   "finished": "2026-11-06 11:34",
+   "struggle": {
+    "compiles": 4,
+    "failed_compiles": 2,
+    "rust_errors": 2,
+    "loc": 9489,
+    "errors_per_kloc": 0.2
+   }
+  },
+  {
+   "case": "fnb-v31-udq3kxl-t4-config-timeouts-r1",
+   "model": "strata0210-fnb-v31-udq3kxl-128k",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": null,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 69.3,
+   "minutes": 13,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "8-bit",
+   "verdict": "pass",
+   "finished": "2026-11-06 11:48",
+   "struggle": {
+    "compiles": 17,
+    "failed_compiles": 3,
+    "rust_errors": 3,
+    "loc": 10153,
+    "errors_per_kloc": 0.4
+   }
+  },
+  {
+   "case": "fnb-v31-udq3kxl-t4-feature-filter-r1",
+   "model": "strata0210-fnb-v31-udq3kxl-128k",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": null,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 66.8,
+   "minutes": 8,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "8-bit",
+   "verdict": "pass",
+   "finished": "2026-11-06 11:56",
+   "struggle": {
+    "compiles": 4,
+    "failed_compiles": 2,
+    "rust_errors": 2,
+    "loc": 9812,
+    "errors_per_kloc": 0.2
+   }
+  },
+  {
+   "case": "mx22-tiel-coder-35b-q4kxl-t1-cli-r1",
+   "model": "lcpp6-tiel-coder-35b-q4kxl",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 34,
+   "tests_fail": 0,
+   "subcmds": 8,
+   "tps": 76.7,
+   "minutes": 13,
+   "compactions": 1,
+   "ctx": 131072,
+   "kv": "f16",
+   "verdict": "pass",
+   "finished": "2026-10-25 04:01",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 1019,
+    "errors_per_kloc": 1.0
+   }
+  },
+  {
+   "case": "mx22-maya1113-glm-5.3-flash-t1-cli-r1",
+   "model": "maya1113-glm-5.3-flash",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 55,
+   "tests_fail": 0,
+   "subcmds": 15,
+   "tps": 15.0,
+   "minutes": 39,
+   "compactions": 0,
+   "ctx": 131072,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-10-25 05:06",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 1132,
+    "errors_per_kloc": 0.0
+   }
+  },
+  {
+   "case": "mx22-maya1128-glm-5.3-flash-t1-cli-r1",
+   "model": "maya1128-glm-5.3-flash",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 72,
+   "tests_fail": 0,
+   "subcmds": 11,
+   "tps": 13.8,
+   "minutes": 63,
+   "compactions": 1,
+   "ctx": 131072,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-10-27 00:38",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 1619,
+    "errors_per_kloc": 0.0
+   }
+  },
+  {
+   "case": "mx22-flashnext-abliterated-s15-t1-cli-r1",
+   "model": "lcpp6-flashnext-abliterated-s15",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 9,
+   "tests_fail": 0,
+   "subcmds": 9,
+   "tps": 20.0,
+   "minutes": 37,
+   "compactions": 0,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-10-23 23:46",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 734,
+    "errors_per_kloc": 0.0
+   }
+  },
+  {
+   "case": "mx22-qwen3.8-27b-uncensored-vllm-t1-cli-r1",
+   "model": "qwen3.8-27b-uncensored-vllm",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 137,
+   "tests_fail": 0,
+   "subcmds": 14,
+   "tps": 26.3,
+   "minutes": 36,
+   "compactions": 2,
+   "ctx": 150000,
+   "kv": "fp8",
+   "verdict": "pass",
+   "finished": "2026-10-25 02:57",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 2866,
+    "errors_per_kloc": 1.4
+   }
+  },
+  {
+   "case": "mx22-flashnext-t1-cli-r1",
+   "model": "flashnext",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 133,
+   "tests_fail": 0,
+   "subcmds": 19,
+   "tps": 24.4,
+   "minutes": 62,
+   "compactions": 0,
+   "ctx": 204800,
+   "kv": "fp8_e4m3",
+   "verdict": "pass",
+   "finished": "2026-10-25 00:26",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 2477,
+    "errors_per_kloc": 0.8
+   }
+  },
+  {
+   "case": "mx22-flashnext-uncensored-t1-cli-r1",
+   "model": "flashnext-uncensored",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 96,
+   "tests_fail": 0,
+   "subcmds": 21,
+   "tps": 24.4,
+   "minutes": 41,
+   "compactions": 0,
+   "ctx": 204800,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-10-25 08:27",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 2810,
+    "errors_per_kloc": 0.4
+   }
+  },
+  {
+   "case": "qw38f-exd2-t1-cli-r1",
+   "model": "exl3-qwopus38-27b-coder-flash-dflash2-162",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 62,
+   "tests_fail": 0,
+   "subcmds": 12,
+   "tps": 82.4,
+   "minutes": 12,
+   "compactions": 2,
+   "ctx": 98304,
+   "kv": "int8",
+   "verdict": "pass",
+   "finished": "2026-11-02 02:26",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 1397,
+    "errors_per_kloc": 0.7
+   }
+  },
+  {
+   "case": "mx22-ornith-122b-q4kxl-t2t-rust-mcp-r1",
+   "model": "lcpp6-ornith-122b-q4kxl",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 28,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 13.0,
+   "minutes": 109,
+   "compactions": 2,
+   "ctx": null,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-10-27 17:14",
+   "flavor": "2T",
+   "struggle": {
+    "compiles": 7,
+    "failed_compiles": 3,
+    "rust_errors": 15,
+    "loc": 1539,
+    "errors_per_kloc": 9.7
+   }
+  },
+  {
+   "case": "mx22-tiel-coder-35b-q4kxl-t2-rust-mcp-r1",
+   "model": "lcpp6-tiel-coder-35b-q4kxl",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 29,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 75.4,
+   "minutes": 18,
+   "compactions": 2,
+   "ctx": 131072,
+   "kv": "f16",
+   "verdict": "partial",
+   "finished": "2026-10-25 04:20",
+   "struggle": {
+    "compiles": 15,
+    "failed_compiles": 11,
+    "rust_errors": 69,
+    "loc": 1501,
+    "errors_per_kloc": 46.0
+   }
+  },
+  {
+   "case": "mx22-nanbeige43-33b-gsq-t2-rust-mcp-r1",
+   "model": "lcpp6-nanbeige43-33b-gsq",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": null,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 15.7,
+   "minutes": 238,
+   "compactions": 11,
+   "ctx": 90112,
+   "kv": "q5_0",
+   "verdict": "fail",
+   "finished": "2026-10-26 00:16",
+   "struggle": {
+    "compiles": 2,
+    "failed_compiles": 2,
+    "rust_errors": 28,
+    "loc": 1261,
+    "errors_per_kloc": 22.2
+   }
+  },
+  {
+   "case": "mx22-nanbeige43-33b-gsq-t2t-rust-mcp-r1",
+   "model": "lcpp6-nanbeige43-33b-gsq",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": null,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 16.4,
+   "minutes": 240,
+   "compactions": 13,
+   "ctx": 90112,
+   "kv": "q5_0",
+   "verdict": "fail",
+   "finished": "2026-10-26 15:08",
+   "flavor": "2T",
+   "struggle": {
+    "compiles": 4,
+    "failed_compiles": 3,
+    "rust_errors": 190,
+    "loc": 1866,
+    "errors_per_kloc": 101.8
+   }
+  },
+  {
+   "case": "mx22-maya1113-glm-5.3-flash-t2-rust-mcp-r1",
+   "model": "maya1113-glm-5.3-flash",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 38,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 14.9,
+   "minutes": 63,
+   "compactions": 1,
+   "ctx": 131072,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-10-25 07:18",
+   "struggle": {
+    "compiles": 15,
+    "failed_compiles": 9,
+    "rust_errors": 24,
+    "loc": 1804,
+    "errors_per_kloc": 13.3
+   }
+  },
+  {
+   "case": "mx22-maya1128-glm-5.3-flash-t2-rust-mcp-r1",
+   "model": "maya1128-glm-5.3-flash",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 36,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 14.1,
+   "minutes": 121,
+   "compactions": 2,
+   "ctx": 131072,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-10-27 02:48",
+   "struggle": {
+    "compiles": 25,
+    "failed_compiles": 11,
+    "rust_errors": 52,
+    "loc": 2021,
+    "errors_per_kloc": 25.7
+   }
+  },
+  {
+   "case": "mx22-qwen3.8-27b-uncensored-vllm-t2-rust-mcp-r1",
+   "model": "qwen3.8-27b-uncensored-vllm",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 77,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 30.6,
+   "minutes": 49,
+   "compactions": 4,
+   "ctx": 150000,
+   "kv": "fp8",
+   "verdict": "pass",
+   "finished": "2026-10-25 03:46",
+   "struggle": {
+    "compiles": 18,
+    "failed_compiles": 8,
+    "rust_errors": 28,
+    "loc": 4109,
+    "errors_per_kloc": 7.1
+   }
+  },
+  {
+   "case": "mx22-flashnext-t2-rust-mcp-r1",
+   "model": "flashnext",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 48,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 24.0,
+   "minutes": 59,
+   "compactions": 0,
+   "ctx": 204800,
+   "kv": "fp8_e4m3",
+   "verdict": "pass",
+   "finished": "2026-10-25 01:52",
+   "struggle": {
+    "compiles": 26,
+    "failed_compiles": 9,
+    "rust_errors": 20,
+    "loc": 2793,
+    "errors_per_kloc": 7.2
+   }
+  },
+  {
+   "case": "mx22-flashnext-uncensored-t2-rust-mcp-r1",
+   "model": "flashnext-uncensored",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 64,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 21.5,
+   "minutes": 58,
+   "compactions": 0,
+   "ctx": 204800,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-10-25 16:11",
+   "struggle": {
+    "compiles": 25,
+    "failed_compiles": 11,
+    "rust_errors": 48,
+    "loc": 2790,
+    "errors_per_kloc": 17.2
+   }
+  },
+  {
+   "case": "mx22-qwen3.8-27b-uncensored-vllm-t2t-rust-mcp-r1",
+   "model": "qwen3.8-27b-uncensored-vllm",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 59,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 30.6,
+   "minutes": 38,
+   "compactions": 3,
+   "ctx": 150000,
+   "kv": "fp8",
+   "verdict": "pass",
+   "finished": "2026-11-01 21:20",
+   "flavor": "2T",
+   "struggle": {
+    "compiles": 18,
+    "failed_compiles": 8,
+    "rust_errors": 21,
+    "loc": 3450,
+    "errors_per_kloc": 6.1
+   }
+  },
+  {
+   "case": "mx22-qwen3.8-27b-vllm-t2t-rust-mcp-r1",
+   "model": "qwen3.8-27b-vllm",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 42,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 33.1,
+   "minutes": 24,
+   "compactions": 2,
+   "ctx": 150000,
+   "kv": "fp8",
+   "verdict": "pass",
+   "finished": "2026-11-01 19:10",
+   "flavor": "2T",
+   "struggle": {
+    "compiles": 15,
+    "failed_compiles": 9,
+    "rust_errors": 21,
+    "loc": 2409,
+    "errors_per_kloc": 8.7
+   }
+  },
+  {
+   "case": "mx22-ornith-122b-q4kxl-t4-bugfix-targets-r1",
+   "model": "lcpp6-ornith-122b-q4kxl",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 4,
+   "tests_pass": 156,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 12.7,
+   "minutes": 15,
+   "compactions": 0,
+   "ctx": null,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-10-27 18:16",
+   "struggle": {
+    "compiles": 4,
+    "failed_compiles": 1,
+    "rust_errors": 1,
+    "loc": 9436,
+    "errors_per_kloc": 0.1
+   }
+  },
+  {
+   "case": "mx22-gemma-4-26b-a4b-vllm-t4-bugfix-targets-r1",
+   "model": "gemma-4-26b-a4b-vllm",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 0,
+   "tests_pass": 156,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 12.8,
+   "minutes": 12,
+   "compactions": 14,
+   "ctx": 73728,
+   "kv": "auto",
+   "verdict": "fail",
+   "finished": "2026-11-01 20:24",
+   "struggle": {
+    "compiles": 5,
+    "failed_compiles": 2,
+    "rust_errors": 2,
+    "loc": 9397,
+    "errors_per_kloc": 0.2
+   }
+  },
+  {
+   "case": "mx22-gemma-4-26b-a4b-vllm-t4-config-timeouts-r1",
+   "model": "gemma-4-26b-a4b-vllm",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 4,
+   "tests_pass": 155,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 60.1,
+   "minutes": 1,
+   "compactions": 2,
+   "ctx": 73728,
+   "kv": "auto",
+   "verdict": "fail",
+   "finished": "2026-11-01 20:26",
+   "struggle": {
+    "compiles": 1,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 9397,
+    "errors_per_kloc": 0.0
+   }
+  },
+  {
+   "case": "mx22-gemma-4-26b-a4b-vllm-t4-feature-filter-r1",
+   "model": "gemma-4-26b-a4b-vllm",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 11,
+   "tests_pass": 157,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 16.3,
+   "minutes": 14,
+   "compactions": 19,
+   "ctx": 73728,
+   "kv": "auto",
+   "verdict": "pass",
+   "finished": "2026-11-01 20:41",
+   "struggle": {
+    "compiles": 4,
+    "failed_compiles": 2,
+    "rust_errors": 2,
+    "loc": 9417,
+    "errors_per_kloc": 0.2
+   }
+  },
+  {
+   "case": "mx22-qwen3.8-27b-uncensored-vllm-t4-bugfix-targets-r1",
+   "model": "qwen3.8-27b-uncensored-vllm",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 4,
+   "tests_pass": 161,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 17.1,
+   "minutes": 22,
+   "compactions": 2,
+   "ctx": 150000,
+   "kv": "fp8",
+   "verdict": "pass",
+   "finished": "2026-11-01 19:33",
+   "struggle": {
+    "compiles": 10,
+    "failed_compiles": 2,
+    "rust_errors": 2,
+    "loc": 9612,
+    "errors_per_kloc": 0.3
+   }
+  },
+  {
+   "case": "mx22-qwen3.8-27b-uncensored-vllm-t4-config-timeouts-r1",
+   "model": "qwen3.8-27b-uncensored-vllm",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 13,
+   "tests_pass": 169,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 20.4,
+   "minutes": 20,
+   "compactions": 2,
+   "ctx": 150000,
+   "kv": "fp8",
+   "verdict": "pass",
+   "finished": "2026-11-01 19:53",
+   "struggle": {
+    "compiles": 12,
+    "failed_compiles": 2,
+    "rust_errors": 4,
+    "loc": 9882,
+    "errors_per_kloc": 0.4
+   }
+  },
+  {
+   "case": "mx22-qwen3.8-27b-uncensored-vllm-t4-feature-filter-r1",
+   "model": "qwen3.8-27b-uncensored-vllm",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 11,
+   "tests_pass": 159,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 25.9,
+   "minutes": 16,
+   "compactions": 2,
+   "ctx": 150000,
+   "kv": "fp8",
+   "verdict": "pass",
+   "finished": "2026-11-01 20:10",
+   "struggle": {
+    "compiles": 7,
+    "failed_compiles": 1,
+    "rust_errors": 1,
+    "loc": 9692,
+    "errors_per_kloc": 0.1
+   }
+  },
+  {
+   "case": "mx22-qwen3.8-27b-vllm-t4-bugfix-targets-r1",
+   "model": "qwen3.8-27b-vllm",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 4,
+   "tests_pass": 162,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 19.8,
+   "minutes": 9,
+   "compactions": 1,
+   "ctx": 150000,
+   "kv": "fp8",
+   "verdict": "pass",
+   "finished": "2026-11-01 18:06",
+   "struggle": {
+    "compiles": 2,
+    "failed_compiles": 1,
+    "rust_errors": 1,
+    "loc": 9604,
+    "errors_per_kloc": 0.2
+   }
+  },
+  {
+   "case": "mx22-qwen3.8-27b-vllm-t4-config-timeouts-r1",
+   "model": "qwen3.8-27b-vllm",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 13,
+   "tests_pass": 165,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 24.9,
+   "minutes": 11,
+   "compactions": 1,
+   "ctx": 150000,
+   "kv": "fp8",
+   "verdict": "pass",
+   "finished": "2026-11-01 18:18",
+   "struggle": {
+    "compiles": 8,
+    "failed_compiles": 2,
+    "rust_errors": 2,
+    "loc": 9830,
+    "errors_per_kloc": 0.2
+   }
+  },
+  {
+   "case": "mx22-qwen3.8-27b-vllm-t4-feature-filter-r1",
+   "model": "qwen3.8-27b-vllm",
+   "test": 4,
+   "agent": "OpenCode",
+   "checks": 11,
+   "tests_pass": 161,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 22.0,
+   "minutes": 11,
+   "compactions": 2,
+   "ctx": 150000,
+   "kv": "fp8",
+   "verdict": "pass",
+   "finished": "2026-11-01 18:30",
+   "struggle": {
+    "compiles": 6,
+    "failed_compiles": 2,
+    "rust_errors": 2,
+    "loc": 9776,
+    "errors_per_kloc": 0.2
+   }
+  },
+  {
+   "case": "mx22-nanbeige43-33b-gsq-t1-cli-r1",
+   "model": "lcpp6-nanbeige43-33b-gsq",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 0,
+   "tests_pass": null,
+   "tests_fail": null,
+   "subcmds": 0,
+   "tps": 16.9,
+   "minutes": 54,
+   "compactions": 1,
+   "ctx": 90112,
+   "kv": "q5_0",
+   "verdict": "fail",
+   "finished": "2026-10-25 20:15",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 0,
+    "errors_per_kloc": null
+   }
   }
  ],
  "test3": [
@@ -10427,6 +11935,175 @@
    "tps": 7.0,
    "minutes": 62,
    "finished": null
+  },
+  {
+   "case": "fnb-v31-udiq1m-t3g-known-good-mcp-r1",
+   "model": "strata0210-fnb-v31-udiq1m-128k",
+   "flavor": "3G",
+   "mcp_facts": "14/14",
+   "api_facts": "14/14",
+   "judgement_right": true,
+   "rubric": null,
+   "note": "Round 1. Known-good server.",
+   "tps": 61.4,
+   "minutes": 3,
+   "finished": "2026-11-06 13:28"
+  },
+  {
+   "case": "fnb-v31-udiq1m-t3o-own-mcp-r1",
+   "model": "strata0210-fnb-v31-udiq1m-128k",
+   "flavor": "3O",
+   "mcp_facts": "14/14",
+   "api_facts": "14/14",
+   "judgement_right": true,
+   "rubric": null,
+   "note": "Round 1. Own server from its test 2; fixed server 10 tools, tests 37/0.",
+   "tps": 76.4,
+   "minutes": 9,
+   "finished": "2026-11-06 13:38"
+  },
+  {
+   "case": "fnb-v31-udq2kxl-t3g-known-good-mcp-r1",
+   "model": "strata0210-fnb-v31-udq2kxl-128k",
+   "flavor": "3G",
+   "mcp_facts": "14/14",
+   "api_facts": "14/14",
+   "judgement_right": true,
+   "rubric": null,
+   "note": "Round 1. Known-good server.",
+   "tps": 46.3,
+   "minutes": 11,
+   "finished": "2026-11-06 16:14"
+  },
+  {
+   "case": "fnb-v31-udq2kxl-t3o-own-mcp-r1",
+   "model": "strata0210-fnb-v31-udq2kxl-128k",
+   "flavor": "3O",
+   "mcp_facts": "14/14",
+   "api_facts": "14/14",
+   "judgement_right": true,
+   "rubric": null,
+   "note": "Round 1. Own server from its test 2, judged right without changing it.",
+   "tps": 40.1,
+   "minutes": 8,
+   "finished": "2026-11-06 16:22"
+  },
+  {
+   "case": "fnb-v31-udiq3xxs-t3g-known-good-mcp-r1",
+   "model": "strata0210-fnb-v31-udiq3xxs-128k",
+   "flavor": "3G",
+   "mcp_facts": "14/14",
+   "api_facts": "14/14",
+   "judgement_right": true,
+   "rubric": null,
+   "note": "Round 1. Known-good server.",
+   "tps": 50.8,
+   "minutes": 6,
+   "finished": "2026-11-06 08:45"
+  },
+  {
+   "case": "fnb-v31-udiq3xxs-t3o-own-mcp-r1",
+   "model": "strata0210-fnb-v31-udiq3xxs-128k",
+   "flavor": "3O",
+   "mcp_facts": "14/14",
+   "api_facts": "14/14",
+   "judgement_right": true,
+   "rubric": null,
+   "note": "Round 1. Own server from its test 2; fixed server 9 tools, tests 150/0.",
+   "tps": 44.5,
+   "minutes": 27,
+   "finished": "2026-11-06 09:12"
+  },
+  {
+   "case": "fnb-v31-udq3kxl-t3g-known-good-mcp-r1",
+   "model": "strata0210-fnb-v31-udq3kxl-128k",
+   "flavor": "3G",
+   "mcp_facts": "14/14",
+   "api_facts": "14/14",
+   "judgement_right": true,
+   "rubric": null,
+   "note": "Round 1. Known-good server.",
+   "tps": 35.3,
+   "minutes": 20,
+   "finished": "2026-11-06 11:23"
+  },
+  {
+   "case": "fnb-v31-udq3kxl-t3o-own-mcp-r1",
+   "model": "strata0210-fnb-v31-udq3kxl-128k",
+   "flavor": "3O",
+   "mcp_facts": "14/14",
+   "api_facts": "14/14",
+   "judgement_right": true,
+   "rubric": null,
+   "note": "Round 1. Own server from its test 2, judged right without changing it.",
+   "tps": 42.7,
+   "minutes": 8,
+   "finished": "2026-11-06 11:31"
+  },
+  {
+   "case": "mx22-ornith-122b-q4kxl-t3g-known-good-mcp-r1",
+   "model": "lcpp6-ornith-122b-q4kxl",
+   "flavor": "3G",
+   "mcp_facts": "14/14",
+   "api_facts": "14/14",
+   "judgement_right": true,
+   "rubric": 12,
+   "note": "REST ground truth first, then one probe brief of ten numbered calls with exact arguments. All 14 facts matched, and it trusted the server unchanged, which is right. Its facts file used a nested layout, so only 8 of 14 match on the strict key check.",
+   "tps": 10.3,
+   "minutes": 36,
+   "finished": "2026-10-25 05:50"
+  },
+  {
+   "case": "mx22-nanbeige43-33b-gsq-t3g-known-good-mcp-r1",
+   "model": "lcpp6-nanbeige43-33b-gsq",
+   "flavor": "3G",
+   "mcp_facts": "13/14",
+   "api_facts": "13/14",
+   "judgement_right": false,
+   "rubric": 12,
+   "note": "Four probe briefs, one job each, all with exact arguments; no probe failed. Every fact matched REST except the HVAC mode, which it wrote as missing on both sides (it is the entity state, cool), so the judgement is marked wrong.",
+   "tps": 11.0,
+   "minutes": 81,
+   "finished": "2026-10-26 08:17"
+  },
+  {
+   "case": "mx22-nanbeige43-33b-gsq-t3o-own-mcp-r1",
+   "model": "lcpp6-nanbeige43-33b-gsq",
+   "flavor": "3O",
+   "mcp_facts": "13/14",
+   "api_facts": "14/14",
+   "judgement_right": false,
+   "rubric": 7,
+   "note": "Its own server did not build; it fixed eleven compile errors and rebuilt. Both probe sessions answered with fake text tool calls and no request reached the server. It gave up on the probe, took its values from its own stdio client and still marked the server correct. The fixed server builds and lists 4 tools; it has no tests.",
+   "tps": 15.4,
+   "minutes": 88,
+   "finished": "2026-10-26 11:07"
+  },
+  {
+   "case": "mx22-orcarouter-fn-uncensored-setupretry1-t3g-known-good-mcp-r1",
+   "model": "lcpp6-orcarouter-fn-uncensored",
+   "flavor": "3G",
+   "mcp_facts": "14/14",
+   "api_facts": "14/14",
+   "judgement_right": true,
+   "rubric": 12,
+   "note": "One probe brief of eight items; all facts matched REST. Over stdio it found that lock services wrongly reported no targets. It fixed the field, the fixture and the test (155 pass) and re-probed. The fixed server passes test 2 (12 tools).",
+   "tps": 14.7,
+   "minutes": 18,
+   "finished": "2026-10-23 11:04"
+  },
+  {
+   "case": "mx22-qwen3.8-27b-vllm-t3g-known-good-mcp-r1",
+   "model": "qwen3.8-27b-vllm",
+   "flavor": "3G",
+   "mcp_facts": "14/14",
+   "api_facts": "14/14",
+   "judgement_right": true,
+   "rubric": 12,
+   "note": "Read the source and REST first, then one probe brief of eleven calls asking for one JSON object and verbatim errors. All 14 facts matched, and it trusted the server unchanged, which is right.",
+   "tps": 16.7,
+   "minutes": 14,
+   "finished": "2026-11-01 18:44"
   }
  ],
  "ab": [
@@ -10793,7 +12470,7 @@
   {
    "model": "qwen3.8-27b-vllm",
    "engine": "vLLM (HyperQwen)",
-   "variant": "Titan, GPU unlock off, 400-token code prompt",
+   "variant": "3090 box, GPU unlock off, 400-token code prompt",
    "decode": 126.4,
    "quote": null,
    "prefill": null,
@@ -10803,7 +12480,7 @@
   {
    "model": "qwen3.8-27b-vllm",
    "engine": "vLLM (HyperQwen)",
-   "variant": "Titan, GPU unlock off, 140826-token prompt, seed 41",
+   "variant": "3090 box, GPU unlock off, 140826-token prompt, seed 41",
    "decode": 85.3,
    "quote": null,
    "prefill": 736,
@@ -10813,7 +12490,7 @@
   {
    "model": "qwen3.8-27b-vllm",
    "engine": "vLLM (HyperQwen)",
-   "variant": "Titan, GPU unlock off, 140826-token prompt, seed 42",
+   "variant": "3090 box, GPU unlock off, 140826-token prompt, seed 42",
    "decode": 79.1,
    "quote": null,
    "prefill": 736,
@@ -10823,7 +12500,7 @@
   {
    "model": "qwen3.8-27b-vllm",
    "engine": "vLLM (HyperQwen)",
-   "variant": "Titan, GPU unlock on, round 1, 400-token code prompt",
+   "variant": "3090 box, GPU unlock on, round 1, 400-token code prompt",
    "decode": 127.9,
    "quote": null,
    "prefill": null,
@@ -10833,7 +12510,7 @@
   {
    "model": "qwen3.8-27b-vllm",
    "engine": "vLLM (HyperQwen)",
-   "variant": "Titan, GPU unlock on, round 1, 140826-token prompt, seed 41",
+   "variant": "3090 box, GPU unlock on, round 1, 140826-token prompt, seed 41",
    "decode": 94.5,
    "quote": null,
    "prefill": 1053,
@@ -10843,7 +12520,7 @@
   {
    "model": "qwen3.8-27b-vllm",
    "engine": "vLLM (HyperQwen)",
-   "variant": "Titan, GPU unlock on, round 1, 140826-token prompt, seed 42",
+   "variant": "3090 box, GPU unlock on, round 1, 140826-token prompt, seed 42",
    "decode": 87.9,
    "quote": null,
    "prefill": 1053,
@@ -10853,7 +12530,7 @@
   {
    "model": "qwen3.8-27b-vllm",
    "engine": "vLLM (HyperQwen)",
-   "variant": "Titan, GPU unlock on, round 2, 400-token code prompt",
+   "variant": "3090 box, GPU unlock on, round 2, 400-token code prompt",
    "decode": 127.5,
    "quote": null,
    "prefill": null,
@@ -10863,7 +12540,7 @@
   {
    "model": "qwen3.8-27b-vllm",
    "engine": "vLLM (HyperQwen)",
-   "variant": "Titan, GPU unlock on, round 2, 140826-token prompt, seed 41",
+   "variant": "3090 box, GPU unlock on, round 2, 140826-token prompt, seed 41",
    "decode": 94.4,
    "quote": null,
    "prefill": 1056,
@@ -10873,7 +12550,7 @@
   {
    "model": "qwen3.8-27b-vllm",
    "engine": "vLLM (HyperQwen)",
-   "variant": "Titan, GPU unlock on, round 2, 140826-token prompt, seed 42",
+   "variant": "3090 box, GPU unlock on, round 2, 140826-token prompt, seed 42",
    "decode": 87.7,
    "quote": null,
    "prefill": 1055,
@@ -10883,7 +12560,7 @@
   {
    "model": "lcpp6-tiel-coder-35b-t06",
    "engine": "llama.cpp 0.7",
-   "variant": "Titan, GPU unlock off, 400-token code prompt",
+   "variant": "3090 box, GPU unlock off, 400-token code prompt",
    "decode": 149.1,
    "quote": null,
    "prefill": null,
@@ -10893,7 +12570,7 @@
   {
    "model": "lcpp6-tiel-coder-35b-t06",
    "engine": "llama.cpp 0.7",
-   "variant": "Titan, GPU unlock off, 141004-token prompt, seed 41",
+   "variant": "3090 box, GPU unlock off, 141004-token prompt, seed 41",
    "decode": 97.7,
    "quote": null,
    "prefill": 2201,
@@ -10903,7 +12580,7 @@
   {
    "model": "lcpp6-tiel-coder-35b-t06",
    "engine": "llama.cpp 0.7",
-   "variant": "Titan, GPU unlock off, 141004-token prompt, seed 42",
+   "variant": "3090 box, GPU unlock off, 141004-token prompt, seed 42",
    "decode": 97.6,
    "quote": null,
    "prefill": 1549,
@@ -10913,7 +12590,7 @@
   {
    "model": "lcpp6-tiel-coder-35b-t06",
    "engine": "llama.cpp 0.7",
-   "variant": "Titan, GPU unlock on, round 1, 400-token code prompt",
+   "variant": "3090 box, GPU unlock on, round 1, 400-token code prompt",
    "decode": 148.6,
    "quote": null,
    "prefill": null,
@@ -10923,7 +12600,7 @@
   {
    "model": "lcpp6-tiel-coder-35b-t06",
    "engine": "llama.cpp 0.7",
-   "variant": "Titan, GPU unlock on, round 1, 141004-token prompt, seed 41",
+   "variant": "3090 box, GPU unlock on, round 1, 141004-token prompt, seed 41",
    "decode": 97.7,
    "quote": null,
    "prefill": 2397,
@@ -10933,7 +12610,7 @@
   {
    "model": "lcpp6-tiel-coder-35b-t06",
    "engine": "llama.cpp 0.7",
-   "variant": "Titan, GPU unlock on, round 1, 141004-token prompt, seed 42",
+   "variant": "3090 box, GPU unlock on, round 1, 141004-token prompt, seed 42",
    "decode": 97.9,
    "quote": null,
    "prefill": 1746,
@@ -10943,7 +12620,7 @@
   {
    "model": "lcpp6-tiel-coder-35b-t06",
    "engine": "llama.cpp 0.7",
-   "variant": "Titan, GPU unlock on, round 2, 400-token code prompt",
+   "variant": "3090 box, GPU unlock on, round 2, 400-token code prompt",
    "decode": 148.8,
    "quote": null,
    "prefill": null,
@@ -10953,7 +12630,7 @@
   {
    "model": "lcpp6-tiel-coder-35b-t06",
    "engine": "llama.cpp 0.7",
-   "variant": "Titan, GPU unlock on, round 2, 141004-token prompt, seed 41",
+   "variant": "3090 box, GPU unlock on, round 2, 141004-token prompt, seed 41",
    "decode": 97.7,
    "quote": null,
    "prefill": 2396,
@@ -10963,11 +12640,181 @@
   {
    "model": "lcpp6-tiel-coder-35b-t06",
    "engine": "llama.cpp 0.7",
-   "variant": "Titan, GPU unlock on, round 2, 141004-token prompt, seed 42",
+   "variant": "3090 box, GPU unlock on, round 2, 141004-token prompt, seed 42",
    "decode": 97.5,
    "quote": null,
    "prefill": 1745,
    "vram": null,
+   "error": ""
+  },
+  {
+   "model": "lcpp-ds41-flash-iq1s-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "3090 + V100, expert cache 20 GiB, split 1:1, flash attention off, F16 KV, ubatch 128, 8k context; short benchmark; free 10.0 GiB (3090) / 15.9 GiB (V100)",
+   "decode": 9.68,
+   "quote": null,
+   "prefill": 16.7,
+   "vram": 16476,
+   "error": ""
+  },
+  {
+   "model": "lcpp-ds41-flash-iq1s-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "3090 + V100, expert cache 28 GiB, split 1:1, flash attention off, F16 KV, ubatch 128, 8k context; short benchmark; free 6.1 GiB (3090) / 11.9 GiB (V100)",
+   "decode": 12.53,
+   "quote": null,
+   "prefill": 17.2,
+   "vram": 20578,
+   "error": ""
+  },
+  {
+   "model": "lcpp-ds41-flash-iq1s-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "3090 + V100, expert cache 28 GiB, split 2:3 (more on the 3090), flash attention off, F16 KV, ubatch 128, 8k context; short benchmark; free 2.6 GiB (3090) / 15.3 GiB (V100)",
+   "decode": 13.34,
+   "quote": null,
+   "prefill": 16.5,
+   "vram": 21880,
+   "error": ""
+  },
+  {
+   "model": "lcpp-ds41-flash-iq1s-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "3090 + V100, expert cache 20 GiB, split 1:1, flash attention off, F16 KV, ubatch 128, 32k context; short benchmark; 30,250-token retrieval correct, first token 41 min (12 tok/s prefill); free 8.4 GiB (3090) / 15.7 GiB (V100)",
+   "decode": 9.83,
+   "quote": null,
+   "prefill": 16.7,
+   "vram": 16732,
+   "error": ""
+  },
+  {
+   "model": "lcpp-ds41-flash-iq1s-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "3090 + V100, expert cache 28 GiB, split 2:3 (more on the 3090), flash attention off, F16 KV, ubatch 128, 8k context, threads 16; short benchmark; free 2.6 GiB (3090) / 15.3 GiB (V100)",
+   "decode": 13.4,
+   "quote": null,
+   "prefill": 16.5,
+   "vram": 21880,
+   "error": ""
+  },
+  {
+   "model": "lcpp-ds41-flash-iq1s-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "3090 + V100, expert cache 28 GiB, split 2:3 (more on the 3090), flash attention on, F16 KV, ubatch 128, 8k context; short benchmark; free 3.2 GiB (3090) / 15.3 GiB (V100)",
+   "decode": 15.48,
+   "quote": null,
+   "prefill": 16.5,
+   "vram": 21342,
+   "error": ""
+  },
+  {
+   "model": "lcpp-ds41-flash-iq1s-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "3090 + V100, expert cache 28 GiB, split 2:3 (more on the 3090), flash attention off, F16 KV, ubatch 512, 8k context; short benchmark; free 1.2 GiB (3090) / 15.3 GiB (V100)",
+   "decode": 12.87,
+   "quote": null,
+   "prefill": 33.0,
+   "vram": 23342,
+   "error": "does not meet our fit rule: 1.2 GiB free on the 3090 (needs 1.5)"
+  },
+  {
+   "model": "lcpp-ds41-flash-iq1s-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "3090 + V100, expert cache 28 GiB, split 2:3 (more on the 3090), flash attention on, Q8 KV, ubatch 128, 8k context; short benchmark; free 3.2 GiB (3090) / 15.3 GiB (V100)",
+   "decode": 15.18,
+   "quote": null,
+   "prefill": 16.7,
+   "vram": 21346,
+   "error": ""
+  },
+  {
+   "model": "lcpp-ds41-flash-iq1s-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "3090 + V100, expert cache 28 GiB, split 2:3 (more on the 3090), flash attention on, Q8 KV, ubatch 512, 8k context; short benchmark; free 3.0 GiB (3090) / 15.3 GiB (V100)",
+   "decode": 14.95,
+   "quote": null,
+   "prefill": 33.4,
+   "vram": 21540,
+   "error": ""
+  },
+  {
+   "model": "lcpp-ds41-flash-iq1s-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "3090 + V100, expert cache 28 GiB, split 1:1, flash attention on, Q8 KV, ubatch 512, 8k context; short benchmark; free 6.4 GiB (3090) / 11.9 GiB (V100)",
+   "decode": 13.87,
+   "quote": null,
+   "prefill": 34.1,
+   "vram": 20586,
+   "error": ""
+  },
+  {
+   "model": "lcpp-ds41-flash-iq1s-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "3090 + V100, expert cache 28 GiB, split 1:1, flash attention on, Q8 KV, ubatch 512, 96k context; short benchmark; 90,230-token retrieval correct, first token 49 min (31 tok/s prefill); free 5.5 GiB (3090) / 11.8 GiB (V100)",
+   "decode": 13.96,
+   "quote": null,
+   "prefill": 34.1,
+   "vram": 20732,
+   "error": ""
+  },
+  {
+   "model": "lcpp-ds41-flash-iq1s-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "3090 + V100, expert cache 34 GiB, split 1:1, flash attention on, Q8 KV, ubatch 512, 96k context; short benchmark; 30,250-token retrieval correct, first token 14 min (35 tok/s prefill); free 2.5 GiB (3090) / 8.8 GiB (V100)",
+   "decode": 16.5,
+   "quote": null,
+   "prefill": 35.2,
+   "vram": 23806,
+   "error": ""
+  },
+  {
+   "model": "lcpp-ds41-flash-iq1s-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "3090 + V100, expert cache 28 GiB, split 1:1, flash attention on, Q8 KV, ubatch 1024, 96k context; short benchmark; 30,250-token retrieval correct, first token 9 min (54 tok/s prefill); free 4.6 GiB (3090) / 11.7 GiB (V100)",
+   "decode": 13.9,
+   "quote": null,
+   "prefill": 44.1,
+   "vram": 20752,
+   "error": ""
+  },
+  {
+   "model": "lcpp-ds41-flash-iq1s-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "3090 + V100, expert cache 28 GiB, split 1:1, flash attention on, Q8 KV, ubatch 2048, 96k context; short benchmark; 30,250-token retrieval correct, first token 6 min (83 tok/s prefill); free 2.7 GiB (3090) / 10.3 GiB (V100)",
+   "decode": 13.61,
+   "quote": null,
+   "prefill": 58.5,
+   "vram": 22184,
+   "error": ""
+  },
+  {
+   "model": "lcpp-ds41-flash-iq1s-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "3090 + V100, expert cache 40 GiB, split 1:1, flash attention off, F16 KV, ubatch 128, 8k context",
+   "decode": null,
+   "quote": null,
+   "prefill": null,
+   "vram": null,
+   "error": "does not fit: the V100 runs out of memory reserving compute buffers at load (40 GiB expert cache)"
+  },
+  {
+   "model": "lcpp-ds41-flash-iq1s-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "3090 + V100, expert cache 40 GiB, split 3:4, flash attention off, F16 KV, ubatch 128, 8k context",
+   "decode": null,
+   "quote": null,
+   "prefill": null,
+   "vram": null,
+   "error": "does not fit: the V100 runs out of memory reserving compute buffers at load (40 GiB expert cache)"
+  },
+  {
+   "model": "lcpp-qwopus38-q6k-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "V100 alone, Q8 KV, 96k context; short benchmark; 30,125-token retrieval correct, first token 43 s (700 tok/s prefill); 90,105-token retrieval correct, first token 193 s (470 tok/s prefill); free 8.0 GiB",
+   "decode": 27.03,
+   "quote": null,
+   "prefill": 681.7,
+   "vram": 24624,
    "error": ""
   }
  ],
@@ -12604,6 +14451,41 @@
    "doc": "https://github.com/alexderz/agentic-model-testing/blob/main/docs/model-research/tuning.md#10-engine-choice"
   },
   {
+   "id": "two-cards",
+   "title": "Two different cards: grow the expert cache, then ubatch",
+   "rule": "On a 3090 + V100 pair, spend the extra VRAM on the expert cache first, turn flash attention on, then raise ubatch while both cards keep 1.5 GiB free.",
+   "metrics": [
+    {
+     "label": "DeepSeek-V4.1-Flash UD-IQ1_S decode, start to best (cache 20 to 34 GiB, flash attention, Q8 KV)",
+     "before": 9.7,
+     "after": 16.5,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Same, prefill of a 30k prompt, ubatch 512 to 2048",
+     "before": 35.3,
+     "after": 83.3,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Same, decode with flash attention off to on",
+     "before": 13.3,
+     "after": 15.5,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Qwopus 27B Q6_K decode on the V100 alone, 96k context",
+     "before": null,
+     "after": 27.0,
+     "unit": "tok/s"
+    }
+   ],
+   "chart": "bars",
+   "evidence": "2026-11-08, llama.cpp Clover 4838ffb, 3090 at 250 W, short-benchmark rates: a 90,230-token retrieval at 96k context was correct on DeepSeek (31 tok/s prefill, 48.5 min to first token); a 40 GiB cache does not load.",
+   "caveat": "Short-benchmark rates, not agent runs. Without flash attention, ubatch 512 left only 1.2 GiB on the 3090 and broke the fit rule.",
+   "doc": "https://github.com/alexderz/agentic-model-testing/blob/main/docs/model-research/tuning.md#12-two-different-cards-a-3090-and-a-v100"
+  },
+  {
    "id": "quality-checks",
    "title": "Check a setup before trusting speed",
    "rule": "Run quality and multi-session checks on every new engine or settings change before ranking speed.",
@@ -13626,6 +15508,102 @@
     "note": "0 of 10. Hit the output budget; the SVG is truncated. Letter scores were not recorded. One round.",
     "frames": [],
     "live": null
+   },
+   {
+    "case": "fnb-v31-udiq1m-t5-oneshot-orrery-r1",
+    "entry": "strata0210-fnb-v31-udiq1m-128k",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 43271.0,
+    "wall_s": 374.5,
+    "tok_s": 115.7,
+    "points": {
+     "A": 1.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 1.0,
+     "E": 1.0
+    },
+    "total": 7.0,
+    "note": "Eight planets on toothed rings at exact real period ratios (Earth 12 s); arms, pinions and planets move. All eight start in a line, so the outer four pile up at the right, and the caption runs off the plate. The gear train below shows wheels that do not touch, and the night side is a fixed shaded half. First token 0.5 s. One round.",
+    "frames": [
+     "frames/orrery/fnb-v31-udiq1m-t5-oneshot-orrery-r1/frame-100.webp",
+     "frames/orrery/fnb-v31-udiq1m-t5-oneshot-orrery-r1/frame-2000.webp",
+     "frames/orrery/fnb-v31-udiq1m-t5-oneshot-orrery-r1/frame-6000.webp"
+    ],
+    "live": "live/orrery/fnb-v31-udiq1m-t5-oneshot-orrery-r1/orrery.svg"
+   },
+   {
+    "case": "fnb-v31-udiq3xxs-t5-oneshot-orrery-r1",
+    "entry": "strata0210-fnb-v31-udiq3xxs-128k",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 52435.0,
+    "wall_s": 458.2,
+    "tok_s": 114.6,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. The SVG does not parse (one circle repeats its attributes), so the viewer shows an error banner over a partial plate. First token 0.6 s. One round.",
+    "frames": [
+     "frames/orrery/fnb-v31-udiq3xxs-t5-oneshot-orrery-r1/frame-100.webp",
+     "frames/orrery/fnb-v31-udiq3xxs-t5-oneshot-orrery-r1/frame-2000.webp",
+     "frames/orrery/fnb-v31-udiq3xxs-t5-oneshot-orrery-r1/frame-6000.webp"
+    ],
+    "live": "live/orrery/fnb-v31-udiq3xxs-t5-oneshot-orrery-r1/orrery.svg"
+   },
+   {
+    "case": "fnb-v31-udq2kxl-t5-oneshot-orrery-r1",
+    "entry": "strata0210-fnb-v31-udq2kxl-128k",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 48937.0,
+    "wall_s": 528.7,
+    "tok_s": 92.7,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. The reply is an HTML page whose script fills the SVG; the SVG alone is empty groups, so every frame is blank. First token 0.6 s. One round.",
+    "frames": [
+     "frames/orrery/fnb-v31-udq2kxl-t5-oneshot-orrery-r1/frame-100.webp",
+     "frames/orrery/fnb-v31-udq2kxl-t5-oneshot-orrery-r1/frame-2000.webp",
+     "frames/orrery/fnb-v31-udq2kxl-t5-oneshot-orrery-r1/frame-6000.webp"
+    ],
+    "live": "live/orrery/fnb-v31-udq2kxl-t5-oneshot-orrery-r1/orrery.svg"
+   },
+   {
+    "case": "fnb-v31-udq3kxl-t5-oneshot-orrery-r1",
+    "entry": "strata0210-fnb-v31-udq3kxl-128k",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 47398.0,
+    "wall_s": 446.1,
+    "tok_s": 106.4,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. The reply is an HTML page; the extracted SVG runs into the page and does not parse. First token 0.8 s. One round.",
+    "frames": [
+     "frames/orrery/fnb-v31-udq3kxl-t5-oneshot-orrery-r1/frame-100.webp",
+     "frames/orrery/fnb-v31-udq3kxl-t5-oneshot-orrery-r1/frame-2000.webp",
+     "frames/orrery/fnb-v31-udq3kxl-t5-oneshot-orrery-r1/frame-6000.webp"
+    ],
+    "live": "live/orrery/fnb-v31-udq3kxl-t5-oneshot-orrery-r1/orrery.svg"
    }
   ],
   "pagoda": [
@@ -14976,6 +16954,102 @@
     "note": "Camera inside the scene, top clipped, no visible spire or upturned eaves, no pond seen. One round.",
     "frames": [],
     "live": null
+   },
+   {
+    "case": "fnb-v31-udiq1m-t6-oneshot-pagoda-r1",
+    "entry": "strata0210-fnb-v31-udiq1m-128k",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 31006.0,
+    "wall_s": 306.6,
+    "tok_s": 101.3,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. Blank: the script calls a three.js function that does not exist (MathUtils.floor) and stops. First token 0.5 s. One round.",
+    "frames": [
+     "frames/pagoda/fnb-v31-udiq1m-t6-oneshot-pagoda-r1/frame-1500.webp",
+     "frames/pagoda/fnb-v31-udiq1m-t6-oneshot-pagoda-r1/frame-5000.webp",
+     "frames/pagoda/fnb-v31-udiq1m-t6-oneshot-pagoda-r1/frame-10000.webp"
+    ],
+    "live": "live/pagoda/fnb-v31-udiq1m-t6-oneshot-pagoda-r1/page.html"
+   },
+   {
+    "case": "fnb-v31-udiq3xxs-t6-oneshot-pagoda-r1",
+    "entry": "strata0210-fnb-v31-udiq3xxs-128k",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 44477.0,
+    "wall_s": 414.9,
+    "tok_s": 107.4,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. Blank: a syntax error stops the script. First token 0.7 s. One round.",
+    "frames": [
+     "frames/pagoda/fnb-v31-udiq3xxs-t6-oneshot-pagoda-r1/frame-1500.webp",
+     "frames/pagoda/fnb-v31-udiq3xxs-t6-oneshot-pagoda-r1/frame-5000.webp",
+     "frames/pagoda/fnb-v31-udiq3xxs-t6-oneshot-pagoda-r1/frame-10000.webp"
+    ],
+    "live": "live/pagoda/fnb-v31-udiq3xxs-t6-oneshot-pagoda-r1/page.html"
+   },
+   {
+    "case": "fnb-v31-udq2kxl-t6-oneshot-pagoda-r1",
+    "entry": "strata0210-fnb-v31-udq2kxl-128k",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 42992.0,
+    "wall_s": 452.1,
+    "tok_s": 95.2,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. Blank: a variable is used before it is set and the script stops. First token 0.7 s. One round.",
+    "frames": [
+     "frames/pagoda/fnb-v31-udq2kxl-t6-oneshot-pagoda-r1/frame-1500.webp",
+     "frames/pagoda/fnb-v31-udq2kxl-t6-oneshot-pagoda-r1/frame-5000.webp",
+     "frames/pagoda/fnb-v31-udq2kxl-t6-oneshot-pagoda-r1/frame-10000.webp"
+    ],
+    "live": "live/pagoda/fnb-v31-udq2kxl-t6-oneshot-pagoda-r1/page.html"
+   },
+   {
+    "case": "fnb-v31-udq3kxl-t6-oneshot-pagoda-r1",
+    "entry": "strata0210-fnb-v31-udq3kxl-128k",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 48120.0,
+    "wall_s": 489.9,
+    "tok_s": 98.4,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. Blank: a syntax error stops the script; only the loading screen shows. First token 0.8 s. One round.",
+    "frames": [
+     "frames/pagoda/fnb-v31-udq3kxl-t6-oneshot-pagoda-r1/frame-1500.webp",
+     "frames/pagoda/fnb-v31-udq3kxl-t6-oneshot-pagoda-r1/frame-5000.webp",
+     "frames/pagoda/fnb-v31-udq3kxl-t6-oneshot-pagoda-r1/frame-10000.webp"
+    ],
+    "live": "live/pagoda/fnb-v31-udq3kxl-t6-oneshot-pagoda-r1/page.html"
    }
   ],
   "agent-orrery": [
@@ -15234,6 +17308,74 @@
     "note": "One scored run.",
     "frames": [],
     "live": null
+   },
+   {
+    "case": "t8-orrery-fnb-v31-udiq1m-r1",
+    "entry": "strata0210-fnb-v31-udiq1m-128k",
+    "test": 8,
+    "finish": "agent done",
+    "tokens": 53231.0,
+    "wall_s": 478.6,
+    "tok_s": 111.22,
+    "points": {
+     "A": 1.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 1.0,
+     "E": 1.0
+    },
+    "total": 7.0,
+    "note": "Vision off; 8 min. Six planets on rotating arms at exact period ratios (Earth 8.3 s) over toothed rings; the arms run past their planets to the rim, no meshing pair is visible, and the night sides are not readable. One round.",
+    "frames": [
+     "frames/agent-orrery/t8-orrery-fnb-v31-udiq1m-r1/frame-100.webp",
+     "frames/agent-orrery/t8-orrery-fnb-v31-udiq1m-r1/frame-2000.webp",
+     "frames/agent-orrery/t8-orrery-fnb-v31-udiq1m-r1/frame-6000.webp"
+    ],
+    "live": "live/agent-orrery/t8-orrery-fnb-v31-udiq1m-r1/orrery.svg"
+   },
+   {
+    "case": "t8-orrery-fnb-v31-udiq3xxs-r1",
+    "entry": "strata0210-fnb-v31-udiq3xxs-128k",
+    "test": 8,
+    "finish": "agent done",
+    "tokens": 24840.0,
+    "wall_s": 274.7,
+    "tok_s": 90.43,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. After a test file, the model called a tool that does not exist, as plain text, and the agent ended with no orrery. 5 min. One round.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t8-orrery-fnb-v31-udq2kxl-r1",
+    "entry": "strata0210-fnb-v31-udq2kxl-128k",
+    "test": 8,
+    "finish": "agent done",
+    "tokens": 60727.0,
+    "wall_s": 606.2,
+    "tok_s": 100.18,
+    "points": {
+     "A": 1.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 1.0,
+     "E": 2.0
+    },
+    "total": 8.0,
+    "note": "Vision off; 10 min. Six planets at exact period ratios (Earth 16 s) on arms driven from toothed pinions round a toothed sun; the dark half of each planet faces away from the sun. Several planets sit between rings, and each arm pivots on its own pinion, so the train cannot drive the orbits as drawn. One round.",
+    "frames": [
+     "frames/agent-orrery/t8-orrery-fnb-v31-udq2kxl-r1/frame-100.webp",
+     "frames/agent-orrery/t8-orrery-fnb-v31-udq2kxl-r1/frame-2000.webp",
+     "frames/agent-orrery/t8-orrery-fnb-v31-udq2kxl-r1/frame-6000.webp"
+    ],
+    "live": "live/agent-orrery/t8-orrery-fnb-v31-udq2kxl-r1/orrery.svg"
    }
   ],
   "agent-pagoda": [
@@ -15584,6 +17726,102 @@
     "note": "The camera is too close. One scored run. The orrery was not run.",
     "frames": [],
     "live": null
+   },
+   {
+    "case": "t8-pagoda-fnb-v31-udiq1m-r1",
+    "entry": "strata0210-fnb-v31-udiq1m-128k",
+    "test": 8,
+    "finish": "agent done",
+    "tokens": 83098.0,
+    "wall_s": 790.3,
+    "tok_s": 105.15,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 10.0,
+    "note": "Vision off; 27 browser calls, 13 min. Five storeys of red walls and dark eaves with raised corner blocks and tips, a stepped gold spire, a stone platform with lanterns, a path to a red torii, a pond, cherry trees with shadows and drifting petals; the camera orbits. One round.",
+    "frames": [
+     "frames/agent-pagoda/t8-pagoda-fnb-v31-udiq1m-r1/frame-1500.webp",
+     "frames/agent-pagoda/t8-pagoda-fnb-v31-udiq1m-r1/frame-5000.webp",
+     "frames/agent-pagoda/t8-pagoda-fnb-v31-udiq1m-r1/frame-10000.webp"
+    ],
+    "live": "live/agent-pagoda/t8-pagoda-fnb-v31-udiq1m-r1/page.html"
+   },
+   {
+    "case": "t8-pagoda-fnb-v31-udiq3xxs-r1",
+    "entry": "strata0210-fnb-v31-udiq3xxs-128k",
+    "test": 8,
+    "finish": "agent done",
+    "tokens": 50766.0,
+    "wall_s": 599.7,
+    "tok_s": 84.65,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 1.0,
+     "D": 2.0,
+     "E": 1.0
+    },
+    "total": 8.0,
+    "note": "Vision off; 33 browser calls, 10 min. A slim five-tier tower with gold corner cubes and a tall spire, stone walls, a pond, a torii, cherry trees and petals. A foreground tree hides the base in every frame, and no shadows show. One round.",
+    "frames": [
+     "frames/agent-pagoda/t8-pagoda-fnb-v31-udiq3xxs-r1/frame-1500.webp",
+     "frames/agent-pagoda/t8-pagoda-fnb-v31-udiq3xxs-r1/frame-5000.webp",
+     "frames/agent-pagoda/t8-pagoda-fnb-v31-udiq3xxs-r1/frame-10000.webp"
+    ],
+    "live": "live/agent-pagoda/t8-pagoda-fnb-v31-udiq3xxs-r1/page.html"
+   },
+   {
+    "case": "t8-pagoda-fnb-v31-udq2kxl-r1",
+    "entry": "strata0210-fnb-v31-udq2kxl-128k",
+    "test": 8,
+    "finish": "agent done",
+    "tokens": 37441.0,
+    "wall_s": 363.3,
+    "tok_s": 103.06,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. Vision off and it never opened its page; three.js throws on a colour value and nothing draws. 6 min. One round.",
+    "frames": [
+     "frames/agent-pagoda/t8-pagoda-fnb-v31-udq2kxl-r1/frame-1500.webp",
+     "frames/agent-pagoda/t8-pagoda-fnb-v31-udq2kxl-r1/frame-5000.webp",
+     "frames/agent-pagoda/t8-pagoda-fnb-v31-udq2kxl-r1/frame-10000.webp"
+    ],
+    "live": "live/agent-pagoda/t8-pagoda-fnb-v31-udq2kxl-r1/page.html"
+   },
+   {
+    "case": "t8-pagoda-fnb-v31-udq3kxl-r1",
+    "entry": "strata0210-fnb-v31-udq3kxl-128k",
+    "test": 8,
+    "finish": "agent done",
+    "tokens": 37052.0,
+    "wall_s": 417.3,
+    "tok_s": 88.79,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 2.0,
+     "E": 1.0
+    },
+    "total": 9.0,
+    "note": "Vision off; it never opened its page, 7 min. A five-storey pagoda with red upturned tips and a gold spire on a stone platform, on a floating voxel island with a torii, a small pond, cherry trees and petals; the camera orbits. No cast shadow shows. One round.",
+    "frames": [
+     "frames/agent-pagoda/t8-pagoda-fnb-v31-udq3kxl-r1/frame-1500.webp",
+     "frames/agent-pagoda/t8-pagoda-fnb-v31-udq3kxl-r1/frame-5000.webp",
+     "frames/agent-pagoda/t8-pagoda-fnb-v31-udq3kxl-r1/frame-10000.webp"
+    ],
+    "live": "live/agent-pagoda/t8-pagoda-fnb-v31-udq3kxl-r1/page.html"
    }
   ],
   "labyrinth": [
@@ -15726,16 +17964,96 @@
     "note": "Nothing generated. D and E were not scored. One round.",
     "frames": [],
     "live": null
+   },
+   {
+    "case": "fnb-v31-udiq1m-t7-labyrinth-agent-r1",
+    "entry": "strata0210-fnb-v31-udiq1m-128k",
+    "test": 7,
+    "finish": "agent done",
+    "tokens": 102966.0,
+    "wall_s": 4965.3,
+    "tok_s": 20.74,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": null,
+     "E": null
+    },
+    "total": null,
+    "note": "Threefold Hollow. Showcase reproduces, 10 of 10 hidden seeds give distinct passing mazes, extra credit met. D and E were not scored yet. One round.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "fnb-v31-udiq3xxs-t7-labyrinth-agent-r1",
+    "entry": "strata0210-fnb-v31-udiq3xxs-128k",
+    "test": 7,
+    "finish": "agent done",
+    "tokens": 177862.0,
+    "wall_s": 2450.0,
+    "tok_s": 72.6,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": null,
+     "E": null
+    },
+    "total": null,
+    "note": "The Long Descent Ascent. Showcase reproduces, 10 of 10 hidden seeds give distinct passing mazes, extra credit met. D and E were not scored yet. One round.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "fnb-v31-udq2kxl-t7-labyrinth-agent-r1",
+    "entry": "strata0210-fnb-v31-udq2kxl-128k",
+    "test": 7,
+    "finish": "agent done",
+    "tokens": 169135.0,
+    "wall_s": 2373.0,
+    "tok_s": 71.27,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": null,
+     "E": null
+    },
+    "total": null,
+    "note": "Stopped after 40 minutes to ask for confirmation before a rewrite, with no maze file left; 0 of 10 hidden seeds. D and E were not scored. One round.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "fnb-v31-udq3kxl-t7-labyrinth-agent-r1",
+    "entry": "strata0210-fnb-v31-udq3kxl-128k",
+    "test": 7,
+    "finish": "agent done",
+    "tokens": 166532.0,
+    "wall_s": 2072.2,
+    "tok_s": 80.36,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": null,
+     "E": null
+    },
+    "total": null,
+    "note": "The Long Way to the Sky Door. Showcase reproduces, 10 of 10 hidden seeds give distinct passing mazes, extra credit met. D and E were not scored yet. One round.",
+    "frames": [],
+    "live": null
    }
   ]
  },
  "counts": {
-  "models": 98,
-  "runs": 280,
-  "test3": 73,
-  "oneshots": 134,
-  "frames": 256,
-  "pass": 200,
-  "live": 82
+  "models": 109,
+  "runs": 332,
+  "test3": 86,
+  "oneshots": 153,
+  "frames": 298,
+  "pass": 245,
+  "live": 96
  }
 }
