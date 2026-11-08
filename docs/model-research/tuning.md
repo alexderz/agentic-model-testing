@@ -294,6 +294,11 @@ layers split over the two cards, the routed experts of 40 layers in RAM
 | Cache 34 GiB at 96k: 30,250-token retrieval correct | **16.5** | 35 (30k prompt, 14.3 min) | 2.5 / 8.8 |
 | Cache 28 GiB, ubatch 1024 at 96k: 30k retrieval correct | 13.9 | 54 (9.3 min) | 4.6 / 11.7 |
 | Cache 28 GiB, ubatch 2048 at 96k: 30k retrieval correct | 13.6 | **83** (6.1 min) | 2.7 / 10.3 |
+| Cache 34 GiB, ubatch 1024 at 96k: 30k and 90k retrieval correct | 16.4 | 56 (30k, 9.1 min); 49 (90k, 30.5 min) | 1.6 / 8.7 (just inside the fit rule) |
+| Same, 16 CPU batch threads instead of 12 | 16.5 | 56 (30k, 9.0 min) | 1.6 / 8.7 |
+| Same, split 3:2 (more layers on the V100) | 15.0 | 56 (30k, 9.0 min) | 5.7 / 4.6 |
+| Cache 34 GiB, ubatch 2048, split 3:2: 30k and 90k correct | 14.7 | 84 (30k, 6.0 min); 67 (90k, 22.6 min) | 3.9 / 2.8 |
+| Cache 30 GiB, ubatch 2048, split 1:1: 30k and 90k correct | 14.5 | 84 (30k, 6.0 min); **69** (90k, 21.7 min) | 1.7 / 9.3 |
 | Cache 40 GiB (split 1:1 or 3:4) | does not load: the V100 runs out of memory reserving compute buffers | | |
 
 What we take from it:
@@ -305,9 +310,14 @@ What we take from it:
 - ubatch is the prefill lever, as on one card (section 4): 128 to 512 doubles
   prefill, 512 to 2048 more than doubles it again on a 30k prompt. Without flash
   attention, ubatch 512 broke the fit rule on the 3090.
-- More threads did nothing; prefill with experts in RAM stays the weak spot, so
+- More threads did nothing, for decode or for prefill (CPU batch threads 12 to 16); prefill with experts in RAM stays the weak spot, so
   a long first prompt takes minutes.
-- The cache 34 GiB and ubatch 1024/2048 combination is still being measured.
+- The cache and ubatch compete for the 3090. A 34 GiB cache with ubatch 1024 keeps
+  the best decode (16.4 tok/s) but leaves 1.6 GiB free, just inside the rule. A
+  30 GiB cache with ubatch 2048 gives the fastest long prompts (a 90k prompt reaches
+  its first token in 22 minutes, down from 48.5) at 14.5 tok/s decode.
+- Moving layers to the V100 (split 3:2) frees the 3090 but costs about 1.4 tok/s of
+  decode, so split 1:1 stays the better trade.
 
 **Qwopus3.8-27B-Coder-Flash Q6_K on the V100 alone**, 96k context, Q8 KV: decode
 27.0 tok/s, first token 0.8 s on short prompts; 30,125-token retrieval correct
