@@ -1,0 +1,163 @@
+<svg id="orrery" viewBox="0 0 1240 1140" role="img"
+        aria-label="Animated brass clockwork orrery: eight planets orbit the sun at their true relative periods, driven by pinions rolling inside fixed toothed racks, each with a day and night terminator sweeping its surface.">
+        <defs>
+          <linearGradient id="brassHi" x1="0" y1="0" x2=".6" y2="1">
+            <stop offset="0" stop-color="#fbeecb"/><stop offset=".3" stop-color="#dcae63"/>
+            <stop offset=".58" stop-color="#96682c"/><stop offset=".82" stop-color="#e3c284"/>
+            <stop offset="1" stop-color="#7d5a26"/>
+          </linearGradient>
+          <linearGradient id="brassMid" x1=".1" y1="0" x2=".9" y2="1">
+            <stop offset="0" stop-color="#e6c78d"/><stop offset=".42" stop-color="#b17f38"/>
+            <stop offset=".72" stop-color="#775020"/><stop offset="1" stop-color="#c89a55"/>
+          </linearGradient>
+          <linearGradient id="brassDk" x1="0" y1="0" x2=".8" y2="1">
+            <stop offset="0" stop-color="#a97e3a"/><stop offset=".5" stop-color="#6a491d"/>
+            <stop offset="1" stop-color="#9b7334"/>
+          </linearGradient>
+          <linearGradient id="brassHot" x1="0" y1="0" x2=".7" y2="1">
+            <stop offset="0" stop-color="#fff3d6"/><stop offset=".4" stop-color="#f5cf8e"/>
+            <stop offset="1" stop-color="#b17f38"/>
+          </linearGradient>
+          <radialGradient id="brassDeep" cx=".36" cy=".32" r=".8">
+            <stop offset="0" stop-color="#8a6228"/><stop offset=".6" stop-color="#3f2d13"/>
+            <stop offset="1" stop-color="#1d1608"/>
+          </radialGradient>
+          <radialGradient id="patinaG" cx=".4" cy=".35" r=".75">
+            <stop offset="0" stop-color="#132222"/><stop offset=".7" stop-color="#0a1314"/>
+            <stop offset="1" stop-color="#05080a"/>
+          </radialGradient>
+          <radialGradient id="sunG" cx=".38" cy=".34" r=".72">
+            <stop offset="0" stop-color="#fff8e6"/><stop offset=".38" stop-color="#f8d98f"/>
+            <stop offset=".72" stop-color="#d99a3c"/><stop offset="1" stop-color="#8a5620"/>
+          </radialGradient>
+          <radialGradient id="sunGlow" cx=".5" cy=".5" r=".5">
+            <stop offset="0" stop-color="#f5c97a" stop-opacity=".55"/>
+            <stop offset=".45" stop-color="#c9762e" stop-opacity=".22"/>
+            <stop offset="1" stop-color="#c9762e" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="screwG" cx=".34" cy=".3" r=".8">
+            <stop offset="0" stop-color="#f0d6a5"/><stop offset=".55" stop-color="#a97e3a"/>
+            <stop offset="1" stop-color="#4a3415"/>
+          </radialGradient>
+          <linearGradient id="term" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#04060700" stop-opacity="0"/>
+            <stop offset=".43" stop-color="#04060a" stop-opacity=".06"/>
+            <stop offset=".505" stop-color="#04060a" stop-opacity=".34"/>
+            <stop offset=".575" stop-color="#04060a" stop-opacity=".76"/>
+            <stop offset=".74" stop-color="#020406" stop-opacity=".93"/>
+            <stop offset="1" stop-color="#010203" stop-opacity=".97"/>
+          </linearGradient>
+          <radialGradient id="rim" cx=".1" cy=".5" r=".62">
+            <stop offset="0" stop-color="#fff2cf" stop-opacity=".42"/>
+            <stop offset=".5" stop-color="#fff2cf" stop-opacity=".08"/>
+            <stop offset="1" stop-color="#fff2cf" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="nightrim" cx="1.02" cy=".5" r=".55">
+            <stop offset="0" stop-color="#9fc9e6" stop-opacity=".20"/>
+            <stop offset=".6" stop-color="#9fc9e6" stop-opacity=".04"/>
+            <stop offset="1" stop-color="#9fc9e6" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="ringG" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#00000000" stop-opacity=".1"/>
+            <stop offset=".2" stop-color="#d8b271" stop-opacity=".8"/>
+            <stop offset=".5" stop-color="#8b6a34" stop-opacity=".45"/>
+            <stop offset=".8" stop-color="#e6c78d" stop-opacity=".8"/>
+            <stop offset="1" stop-color="#d8b271" stop-opacity=".2"/>
+          </linearGradient>
+          <pattern id="grain" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(26)">
+            <rect width="5" height="5" fill="none"/>
+            <path d="M0 0H5" stroke="#c9964a" stroke-opacity=".05" stroke-width="1"/>
+            <path d="M0 2.5H5" stroke="#4f9385" stroke-opacity=".03" stroke-width="1"/>
+          </pattern>
+          <filter id="soft" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="7"/>
+          </filter>
+          <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="3.4" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="plateTex" x="0" y="0" width="100%" height="100%">
+            <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="3" seed="7"/>
+            <feColorMatrix values="0 0 0 0 0.72  0 0 0 0 0.60  0 0 0 0 0.40  0 0 0 .055 0"/>
+            <feComposite in2="SourceGraphic" operator="over"/>
+          </filter>
+        </defs>
+
+        <!-- ============ plate ============ -->
+        <g id="layer-plate">
+          <rect x="10" y="10" width="1220" height="1120" rx="14" fill="url(#patinaG)"/>
+          <rect x="10" y="10" width="1220" height="1120" rx="14" fill="url(#grain)" opacity=".8"/>
+          <rect x="10" y="10" width="1220" height="1120" rx="14" fill="#c9964a" opacity=".03" filter="url(#plateTex)"/>
+          <rect x="10" y="10" width="1220" height="1120" rx="14" fill="none" stroke="#c9964a" stroke-opacity=".28" stroke-width="2.5"/>
+          <rect x="24" y="24" width="1192" height="1092" rx="10" fill="none" stroke="#c9964a" stroke-opacity=".13"/>
+          <circle cx="620" cy="570" r="548" fill="none" stroke="#c9964a" stroke-opacity=".07"/>
+          <circle cx="620" cy="570" r="560" fill="none" stroke="#4f9385" stroke-opacity=".07"/>
+          <g id="screws"></g>
+        </g>
+
+        <g id="layer-glow">
+          <circle cx="620" cy="570" r="330" fill="url(#sunGlow)" opacity=".9"/>
+        </g>
+        <g id="layer-motes"></g>
+
+        <!-- ============ engraved wheels ============ -->
+        <g id="layer-calendar"></g>
+        <g id="layer-rings"></g>
+        <g id="layer-orbits"></g>
+        <g id="layer-trains"></g>
+
+        <!-- ============ sun + arbor stack ============ -->
+        <g id="layer-sun">
+          <g id="corona"></g>
+          <circle cx="620" cy="570" r="30" fill="url(#sunG)" stroke="#7a4c17" stroke-width="1.4"/>
+          <circle cx="620" cy="570" r="21" fill="none" stroke="#fff4d8" stroke-opacity=".35"/>
+          <g id="spokes"></g>
+        </g>
+
+        <g id="layer-stack"></g>
+        <g id="layer-arms"></g>
+        <g id="layer-pinions"></g>
+
+        <!-- ============ live tags ============ -->
+        <g id="layer-tags" style="pointer-events:none"></g>
+
+        <!-- ============ going train (escapement, governor) ============ -->
+        <g id="movement" transform="translate(180,975) rotate(-2)">
+          <rect x="-158" y="-122" width="316" height="238" rx="7" fill="url(#patinaG)" stroke="#c9964a" stroke-opacity=".3"/>
+          <rect x="-150" y="-114" width="300" height="222" rx="5" fill="none" stroke="#c9964a" stroke-opacity=".12"/>
+          <text class="platetext" x="-150" y="-86" style="font-size:15px;letter-spacing:3.6px">GOING TRAIN</text>
+          <text class="smalltext" x="-150" y="94" style="font-size:10px;fill:#7d7462">deadbeat escapement · 15 teeth · crutch &amp; flyer governor</text>
+          <g id="mv-hubs"></g>
+        </g>
+
+        <!-- ============ day & night inset ============ -->
+        <g id="inset-dn" transform="translate(1062,152)">
+          <rect x="-128" y="-96" width="256" height="192" rx="7" fill="url(#patinaG)" stroke="#c9964a" stroke-opacity=".3"/>
+          <rect x="-120" y="-88" width="240" height="176" rx="5" fill="none" stroke="#c9964a" stroke-opacity=".12"/>
+          <text class="platetext" x="-120" y="-62" style="font-size:13px;letter-spacing:3.2px">DAY &amp; NIGHT</text>
+          <g id="dn-inset"></g>
+        </g>
+
+        <!-- ============ sidereal days dial ============ -->
+        <g id="inset-dial" transform="translate(1064,966)">
+          <circle r="92" fill="url(#patinaG)" stroke="#c9964a" stroke-opacity=".32"/>
+          <circle r="84" fill="none" stroke="#c9964a" stroke-opacity=".14"/>
+          <text class="platetext" x="-72" y="-104" style="font-size:13px;letter-spacing:3px">ROTATIONS</text>
+          <g id="dial-marks"></g>
+          <text class="smalltext" x="0" y="46" text-anchor="middle" style="font-size:10px;fill:#7d7462">sidereal days elapsed</text>
+          <text id="dial-val" class="platetext" x="0" y="24" text-anchor="middle"
+                 style="font-size:24px;letter-spacing:1px;fill:url(#brassHi)">0</text>
+          <g id="dial-hands"></g>
+          <circle r="5" fill="url(#brassMid)" stroke="#2b2110"/>
+        </g>
+
+        <!-- ============ engraved rim titles ============ -->
+        <path id="arcTop" d="M 620 1128 A 558 558 0 1 1 620 12" fill="none"/>
+        <path id="arcBot" d="M 620 16 A 554 554 0 1 1 619.9 16" fill="none"/>
+        <text class="platetext" dy="8"><textPath href="#arcTop" startOffset="4%">
+          THE · HOROLOGIIUM · ORRARIUM · No·XLVII · EIGHT · WORLDS · ONE · ESCAPEMENT ·</textPath></text>
+        <text class="platetext" dy="8" style="font-size:21px;letter-spacing:6px"><textPath href="#arcBot" startOffset="8%">
+          SIDEREAL · PERIODS · TRUE · DAY · AND · NIGHT · TERMINATORS · LIVE ·</textPath></text>
+        <g id="spoke-labels"></g>
+        <g id="belt"></g>
+      </svg>

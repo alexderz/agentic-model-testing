@@ -266,3 +266,50 @@ engine or settings change that matters.
 
 A speed result without the probe next to it is a lead, not a pick. The picks
 only change when a graded test 1 or 2 run supports them.
+
+## 12. Two different cards: a 3090 and a V100
+
+Since 2026-11-06 the test box has a Tesla V100 32 GB (sm_70) next to the RTX 3090
+24 GB (sm_86, held at 250 W). One llama.cpp build (Clover, commit 4838ffb) serves
+both. All rates below are short-benchmark rates: one oracle prompt, a warm-up and
+two measured prompts of a few hundred output tokens, not agent runs. Fit rule as
+everywhere: at least 1.5 GiB free on each card after the longest prefill.
+
+**DeepSeek-V4.1-Flash 1017 UD-IQ1_S across both cards.** Attention and dense
+layers split over the two cards, the routed experts of 40 layers in RAM
+(`--n-cpu-moe 40`), and a GPU expert cache (`--moe-cache-mib`).
+
+| Change (one at a time) | Decode tok/s | Prefill tok/s | Free 3090 / V100 GiB |
+| --- | --- | --- | --- |
+| Start: cache 20 GiB, split 1:1, F16 KV, flash attention off, ubatch 128, 8k | 9.7 | 16.7 (1.1k prompt) | 10.0 / 15.9 |
+| Cache 28 GiB | 12.5 | 17.2 | 6.1 / 11.9 |
+| Split 2:3 (more layers on the 3090) | 13.3 | 16.5 | 2.6 / 15.3 |
+| Threads 12 to 16 | 13.4 | 16.5 | 2.6 / 15.3 |
+| Flash attention on | 15.5 | 16.5 | 3.2 / 15.3 |
+| Q8 KV with flash attention | 15.2 | 16.7 | 3.2 / 15.3 |
+| ubatch 512 without flash attention | 12.9 | 33.0 | **1.2** / 15.3 (fails the fit rule) |
+| ubatch 512 with flash attention and Q8 KV | 15.0 | 33.4 | 3.0 / 15.3 |
+| Same, split back to 1:1 | 13.9 | 34.1 | 6.4 / 11.9 |
+| Same at 96k context: 90,230-token retrieval correct | 14.0 | 31 (90k prompt, 48.5 min to first token) | 5.5 / 11.8 |
+| Cache 34 GiB at 96k: 30,250-token retrieval correct | **16.5** | 35 (30k prompt, 14.3 min) | 2.5 / 8.8 |
+| Cache 28 GiB, ubatch 1024 at 96k: 30k retrieval correct | 13.9 | 54 (9.3 min) | 4.6 / 11.7 |
+| Cache 28 GiB, ubatch 2048 at 96k: 30k retrieval correct | 13.6 | **83** (6.1 min) | 2.7 / 10.3 |
+| Cache 40 GiB (split 1:1 or 3:4) | does not load: the V100 runs out of memory reserving compute buffers | | |
+
+What we take from it:
+
+- The expert cache is the decode lever (20 to 34 GiB: 9.7 to 16.5 tok/s); 40 GiB
+  does not fit beside the V100's compute buffers.
+- Flash attention is worth about 2 tok/s and saves about 0.5 GiB on the 3090; Q8
+  KV costs nothing measurable and makes 96k context cheap (about 0.8 GiB over 8k).
+- ubatch is the prefill lever, as on one card (section 4): 128 to 512 doubles
+  prefill, 512 to 2048 more than doubles it again on a 30k prompt. Without flash
+  attention, ubatch 512 broke the fit rule on the 3090.
+- More threads did nothing; prefill with experts in RAM stays the weak spot, so
+  a long first prompt takes minutes.
+- The cache 34 GiB and ubatch 1024/2048 combination is still being measured.
+
+**Qwopus3.8-27B-Coder-Flash Q6_K on the V100 alone**, 96k context, Q8 KV: decode
+27.0 tok/s, first token 0.8 s on short prompts; 30,125-token retrieval correct
+with a 43 s first token (700 tok/s prefill) and 90,105 tokens correct in 193 s
+(470 tok/s). 8.0 GiB stayed free. No agent tests on this setup yet.

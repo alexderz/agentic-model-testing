@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voxel Pagoda</title>
+<style>
+  html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#a8d8e8;}
+  canvas{display:block;}
+</style>
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js" } }
+</script>
+</head>
+<body>
+<script type="module">
+import * as THREE from 'three';
+
+// ---------- renderer / scene / camera ----------
+const renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 0.85));
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFShadowMap;
+if ('outputColorSpace' in renderer) renderer.outputColorSpace = THREE.SRGBColorSpace;
+document.body.appendChild(renderer.domElement);
+
+const SKY = 0x9fd4e6;
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(SKY);
+scene.fog = new THREE.Fog(SKY, 150, 320);
+
+const camera = new THREE.PerspectiveCamera(52, window.innerWidth / window.innerHeight, 0.5, 800);
+const target = new THREE.Vector3(0, 20, 0);
+
+function resize() {
+  const w = window.innerWidth, h = window.innerHeight;
+  const s = renderer.getSize(new THREE.Vector2());
+  if (s.x !== w || s.y !== h) {
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h);
+  }
+}
+window.addEventListener('resize', resize);
+
+// ---------- lights ----------
+const hemi = new THREE.HemisphereLight(0xdff2fa, 0x5a6b4a, 1.9);
+scene.add(hemi);
+
+const sun = new THREE.DirectionalLight(0xfff2d8, 3.6);
+sun.position.set(70, 105, 55);
+sun.castShadow = true;
+sun.shadow.mapSize.set(1024, 1024);
+sun.shadow.camera.left = -95;
+sun.shadow.camera.right = 95;
+sun.shadow.camera.top = 95;
+sun.shadow.camera.bottom = -95;
+sun.shadow.camera.near = 1;
+sun.shadow.camera.far = 320;
+sun.shadow.bias = -0.0006;
+sun.shadow.normalBias = 0.35;
+scene.add(sun);
+scene.add(sun.target);
+
+const fill = new THREE.DirectionalLight(0xcfe6ff, 0.8);
+fill.position.set(-60, 40, -50);
+scene.add(fill);
+
+// ---------- voxel builder ----------
+const vox = new Map();
+const key = (x, y, z) => x + ',' + y + ',' + z;
+function setV(x, y, z, c) { vox.set(key(x, y, z), c); }
+function hasV(x, y, z) { return vox.has(key(x, y, z)); }
+
+function hash(x, y, z) {
+  let h = (x * 374761393 + y * 668265263 + z * 1274126177) | 0;
+  h = ((h ^ (h >> 13)) * 1274126177) | 0;
+  return ((h ^ (h >> 16)) >>> 0) / 4294967295;
+}
+
+const PAL = {};
+function reg(name, hex) { PAL[name] = hex; }
+// palette
+reg('grass1', 0x6fa04b); reg('grass2', 0x7fb055); reg('grass3', 0x628f42);
+reg('dirt',   0x9b7d51); reg('stone1', 0x9aa0a3); reg('stone2', 0x868d90);
+reg('stone3', 0xa9b0b2); reg('slate', 0x8f9498);
+reg('wood',   0x9c4a38); reg('post',  0x7a3024); reg('wall',  0xede4d2);
+reg('roof',   0x30374a); reg('roof2', 0x262c3c); reg('gold',  0xd9b34a);
+reg('door',   0x4f2a1c); reg('red',   0xc73a2c); reg('black', 0x26211f);
+reg('trunk',  0x6e4a2f); reg('pink1', 0xf6b8cd); reg('pink2', 0xf19fbf);
+reg('pink3', 0xfbd6e3); reg('water1', 0x3f7fb0); reg('water2', 0x4a90be);
+reg('water3', 0x36719f); reg('leaf',  0x4f8f4a); reg('lamp',  0xf6e2a0);
+reg('rock',   0x7d8286); reg('red2', 0xd8503f);
+reg('sand',   0xd9cfa6); reg('sand2', 0xcbc09a); reg('sand3', 0xe4dbb6);
+reg('pine1',  0x3f7a3a); reg('pine2', 0x356431); reg('pine3', 0x488745);
+reg('flower1',0xf2a0b8); reg('flower2',0xf5e08a);
+
+function buildVoxelMesh() {
+  const pos = [], nor = [], col = [];
+  const c = new THREE.Color();
+  const dirs = [
+    [[1,0,0],[[0.5,-0.5,-0.5],[0.5,0.5,-0.5],[0.5,0.5,0.5],[0.5,-0.5,-0.5],[0.5,0.5,0.5],[0.5,-0.5,0.5]]],
+    [[-1,0,0],[[-0.5,-0.5,0.5],[-0.5,0.5,0.5],[-0.5,0.5,-0.5],[-0.5,-0.5,0.5],[-0.5,0.5,-0.5],[-0.5,-0.5,-0.5]]],
+    [[0,1,0],[[-0.5,0.5,-0.5],[0.5,0.5,-0.5],[0.5,0.5,0.5],[-0.5,0.5,-0.5],[0.5,0.5,0.5],[-0.5,0.5,0.5]]],
+    [[0,-1,0],[[-0.5,-0.5,0.5],[0.5,-0.5,0.5],[0.5,-0.5,-0.5],[-0.5,-0.5,0.5],[0.5,-0.5,-0.5],[-0.5,-0.5,-0.5]]],
+    [[0,0,1],[[-0.5,-0.5,0.5],[0.5,-0.5,0.5],[0.5,0.5,0.5],[-0.5,-0.5,0.5],[0.5,0.5,0.5],[-0.5,0.5,0.5]]],
+    [[0,0,-1],[[0.5,-0.5,-0.5],[-0.5,-0.5,-0.5],[-0.5,0.5,-0.5],[0.5,-0.5,-0.5],[-0.5,0.5,-0.5],[0.5,0.5,-0.5]]]
+  ];
+  for (const [k, cName] of vox) {
+    const p = k.split(',');
+    const x = +p[0], y = +p[1], z = +p[2];
+    const j = 0.90 + 0.16 * hash(x, y, z);
+    c.setHex(PAL[cName] !== undefined ? PAL[cName] : cName);
+    const r = Math.min(1, c.r * j), g = Math.min(1, c.g * j), b = Math.min(1, c.b * j);
+    for (const [d, verts] of dirs) {
+      if (hasV(x + d[0], y + d[1], z + d[2])) continue;
+      for (const v of verts) {
+        pos.push(x + v[0], y + v[1], z + v[2]);
+        nor.push(d[0], d[1], d[2]);
+        col.push(r, g, b);
+      }
+    }
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  geo.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3));
+  geo.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+  const mat = new THREE.MeshLambertMaterial({ vertexColors: true });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  return mesh;
+}
+
+// ---------- ground ----------
+const ground = new THREE.Mesh(
+  new THREE.BoxGeometry(300, 1, 300),
+  new THREE.MeshLambertMaterial({ color: 0x74a552 })
+);
+ground.position.y = -1.02;
+ground.receiveShadow = true;
+scene.add(ground);
+
+// ---------- pond ----------
+function pond(cx, cz, rx, rz) {
+  for (let x = -rx - 1; x <= rx + 1; x++) {
+    for (let z = -rz - 1; z <= rz + 1; z++) {
+      const d = (x * x) / (rx * rx) + (z * z) / (rz * rz);
+      if (d <= 1.0) {
+        const r = hash(cx + x, 0, cz + z);
+        setV(cx + x, 0, cz + z, r < 0.55 ? 'water1' : (r < 0.85 ? 'water2' : 'water3'));
+      } else if (d <= 1.75) {
+        setV(cx + x, 0, cz + z, hash(x, 0, z) < 0.5 ? 'stone1' : 'slate');
+      }
+    }
+  }
+  // lily pads + a rock
+  setV(cx - 2, 0, cz + 1, 'leaf');
+  setV(cx + 1, 0, cz - 1, 'leaf');
+  setV(cx + 3, 0, cz + 2, 'rock');
+  setV(cx + 3, 1, cz + 2, 'rock');
+}
+
+// ---------- stone platform + steps ----------
+function platform() {
+  function slab(hw, y0, y1) {
+    for (let y = y0; y <= y1; y++)
+      for (let x = -hw; x <= hw; x++)
+        for (let z = -hw; z <= hw; z++) {
+          if (Math.abs(x) !== hw && Math.abs(z) !== hw && y !== y0 && y !== y1) continue; // hollow
+          const r = hash(x, y, z);
+          setV(x, y, z, r < 0.45 ? 'stone1' : (r < 0.8 ? 'stone2' : 'stone3'));
+        }
+  }
+  slab(9, 0, 0);
+  slab(8, 1, 1);
+  slab(8, 2, 2);
+  // steps up on +z side
+  for (let x = -3; x <= 3; x++) {
+    setV(x, 0, 9, 'stone2'); setV(x, 0, 10, 'stone1');
+    setV(x, 0, 11, 'stone3');
+  }
+  // path to torii
+  for (let z = 12; z <= 30; z++)
+    for (let x = -2; x <= 2; x++)
+      if (Math.abs(x) === 2 && hash(x, 0, z) < 0.7) continue;
+      else setV(x, 0, z, hash(x, 0, z) < 0.5 ? 'stone3' : 'slate');
+}
+
+// ---------- pagoda ----------
+function ringSquare(r, y, cName) {
+  for (let x = -r; x <= r; x++) { setV(x, y, r, cName); setV(x, y, -r, cName); }
+  for (let z = -r + 1; z <= r - 1; z++) { setV(r, y, z, cName); setV(-r, y, z, cName); }
+}
+function fillSquare(r, y, cName) {
+  for (let x = -r; x <= r; x++) for (let z = -r; z <= r; z++) setV(x, y, z, cName);
+}
+
+function pagoda() {
+  const stories = [
+    { bw: 3, h: 5, eave: 6 },
+    { bw: 3, h: 4, eave: 5 },
+    { bw: 2, h: 4, eave: 4 },
+    { bw: 2, h: 3, eave: 4 },
+    { bw: 1, h: 3, eave: 3 }
+  ];
+  let y = 3;
+  stories.forEach((s, i) => {
+    const bw = s.bw, h = s.h;
+    // body walls
+    for (let yy = y; yy < y + h; yy++) {
+      for (let x = -bw; x <= bw; x++) {
+        for (let z = -bw; z <= bw; z++) {
+          const edge = (Math.abs(x) === bw || Math.abs(z) === bw);
+          if (!edge) continue;
+          const corner = (Math.abs(x) === bw && Math.abs(z) === bw);
+          let c = 'wall';
+          if (corner) c = 'post';
+          else if (yy === y) c = 'post';
+          else if (yy === y + h - 1) c = 'wood';
+          else if (((x % 2 === 0 && Math.abs(z) === bw) || (z % 2 === 0 && Math.abs(x) === bw)) && yy > y && yy < y + h - 1) c = 'door';
+          setV(x, yy, z, c);
+        }
+      }
+    }
+    fillSquare(bw, y, 'wood'); // floor slab
+    // balcony railing for upper stories
+    if (i > 0) {
+      const br = bw + 1;
+      for (let x = -br; x <= br; x++) for (const z of [br, -br]) if ((x + z) % 2 === 0) setV(x, y - 1, z, 'wood');
+      for (let z = -br + 1; z <= br - 1; z++) for (const x of [br, -br]) if ((x + z) % 2 === 0) setV(x, y - 1, z, 'wood');
+    }
+    // stacked eaves: outer ring then inner ring one up
+    ringSquare(s.eave, y + h, 'roof');
+    ringSquare(s.eave - 1, y + h + 1, 'roof2');
+    ringSquare(bw, y + h + 1, 'roof2');
+    // upturned corners: raised tips with gold caps
+    for (const sx of [-1, 1]) for (const sz of [-1, 1]) {
+      setV(sx * s.eave, y + h + 1, sz * s.eave, 'roof');
+      setV(sx * s.eave, y + h + 2, sz * s.eave, 'gold');
+      setV(sx * (s.eave - 1), y + h + 1, sz * (s.eave), 'roof');
+      setV(sx * (s.eave), y + h + 1, sz * (s.eave - 1), 'roof');
+    }
+    y = y + h + 2;
+  });
+  // top roof cap
+  fillSquare(2, y, 'roof2');
+  // spire
+  const spireBase = y + 1;
+  for (let yy = spireBase; yy <= spireBase + 14; yy++) setV(0, yy, 0, 'post');
+  for (let k = 0; k < 6; k++) ringSquare(1, spireBase + 1 + k * 2, 'gold');
+  setV(0, spireBase + 14, 0, 'gold');
+  setV(0, spireBase + 15, 0, 'gold');
+  setV(1, spireBase + 14, 0, 'gold'); setV(-1, spireBase + 14, 0, 'gold');
+  setV(0, spireBase + 14, 1, 'gold'); setV(0, spireBase + 14, -1, 'gold');
+  setV(0, spireBase + 16, 0, 'gold');
+}
+
+// ---------- torii gate ----------
+function torii(cx, cz) {
+  for (const sx of [-1, 1]) {
+    for (let y = 1; y <= 12; y++)
+      for (const dx of [0, 1]) for (const dz of [0, 1])
+        setV(cx + sx * 6 + (sx > 0 ? dx - 1 : -dx), y, cz + dz, 'red');
+  }
+  // shimaki + kasagi (top double beam)
+  for (let x = -9; x <= 9; x++) { setV(cx + x, 13, cz, 'black'); setV(cx + x, 13, cz + 1, 'black'); }
+  for (let x = -8; x <= 8; x++) { setV(cx + x, 12, cz, 'black'); setV(cx + x, 12, cz + 1, 'black'); }
+  for (const sx of [-1, 1]) { setV(cx + sx * 9, 14, cz, 'black'); setV(cx + sx * 9, 14, cz + 1, 'black'); }
+  // nuki crossbeam
+  for (let x = -7; x <= 7; x++) { setV(cx + x, 9, cz, 'red'); setV(cx + x, 9, cz + 1, 'red2'); }
+  // central strut + tablet
+  setV(cx, 10, cz, 'red'); setV(cx, 11, cz, 'red');
+  setV(cx, 10, cz + 1, 'red2'); setV(cx, 11, cz + 1, 'red2');
+}
+
+// ---------- cherry blossom tree ----------
+function tree(cx, cz) {
+  for (let y = 1; y <= 8; y++) setV(cx, y, cz, 'trunk');
+  // branches
+  const br = [[1,0],[0,1],[-1,0],[0,-1]];
+  br.forEach((d, i) => {
+    const len = 2 + (i % 2);
+    for (let k = 1; k <= len; k++) {
+      setV(cx + d[0] * k, 6 + Math.ceil(k / 2), cz + d[1] * k, 'trunk');
+      setV(cx + d[0] * (k + 1), 8 + Math.ceil(k / 2), cz + d[1] * (k + 1), 'trunk');
+    }
+  });
+  // canopy blobs
+  const blobs = [[0, 10, 0, 4], [3, 9, 1, 3], [-3, 9, -2, 3], [0, 12, 0, 3], [1, 10, -3, 2]];
+  for (const [ox, oy, oz, r] of blobs) {
+    for (let x = -r; x <= r; x++) for (let y = -r; y <= r; y++) for (let z = -r; z <= r; z++) {
+      if (x * x + y * y * 1.3 + z * z > r * r + hash(cx + x, oy + y, cz + z) * 4 - 1) continue;
+      const h = hash(cx + x * 7, oy + y * 3, cz + z);
+      setV(cx + ox + x, oy + y, cz + oz + z, h < 0.42 ? 'pink1' : (h < 0.75 ? 'pink2' : 'pink3'));
+    }
+  }
+}
+
+// ---------- stone lantern ----------
+function lantern(cx, cz) {
+  for (const x of [0, 1]) for (const z of [0, 1]) setV(cx + x, 0, cz + z, 'slate');
+  setV(cx, 1, cz, 'stone2');
+  setV(cx, 2, cz, 'stone1');
+  for (const x of [-1, 0, 1]) for (const z of [-1, 0, 1]) if (Math.abs(x) + Math.abs(z) <= 1) setV(cx + x, 3, cz + z, 'stone3');
+  setV(cx, 4, cz, 'lamp');
+  setV(cx + 1, 4, cz, 'lamp'); setV(cx - 1, 4, cz, 'lamp');
+  setV(cx, 4, cz + 1, 'lamp'); setV(cx, 4, cz - 1, 'lamp');
+  setV(cx, 5, cz, 'stone2');
+  for (const x of [-1, 0, 1]) for (const z of [-1, 0, 1]) setV(cx + x, 6, cz + z, 'slate');
+  setV(cx, 7, cz, 'stone1');
+}
+
+// ---------- scatter grass tufts, flowers, bushes ----------
+function scatter() {
+  const blocked = (x, z) =>
+    (Math.abs(x) < 12 && Math.abs(z) < 12) ||           // platform
+    (Math.abs(x) <= 3 && z > 8 && z < 34) ||            // path
+    (x > 11 && x < 27 && z > 2 && z < 16) ||            // pond 1
+    (x < -14 && x > -26 && z > -11 && z < -1);          // pond 2
+  for (let i = 0; i < 850; i++) {
+    const x = Math.floor(hash(i, 1, 2) * 80 - 40);
+    const z = Math.floor(hash(i, 3, 4) * 80 - 40);
+    if (Math.abs(x) > 38 || Math.abs(z) > 38 || blocked(x, z)) continue;
+    const r = hash(x * 3 + i, 5, z * 7);
+    if (r < 0.34) setV(x, 0, z, r < 0.12 ? 'grass3' : 'grass2');
+    else if (r < 0.40) setV(x, 0, z, 'dirt');
+    else if (r < 0.45) { setV(x, 0, z, 'leaf'); if (r < 0.435) { setV(x, 1, z, 'pink2'); } }
+    else if (r < 0.47) { setV(x, 0, z, 'leaf'); setV(x, 1, z, 'gold'); }
+    else if (r < 0.485) { setV(x, 0, z, 'rock'); }
+  }
+}
+
+// ---------- stone fence along the path ----------
+function fence() {
+  for (const sx of [-1, 1]) {
+    for (let z = 12; z <= 32; z++) {
+      const x = sx * 5;
+      if (z % 4 === 0) { setV(x, 0, z, 'stone2'); setV(x, 1, z, 'stone1'); setV(x, 2, z, 'stone3'); }
+      else if (z % 4 === 2) { setV(x, 1, z, 'slate'); }
+    }
+  }
+}
+
+// ---------- red footbridge near pond ----------
+function bridge(cx, cz) {
+  for (let i = 0; i < 5; i++) {
+    const y = Math.round(Math.sin((i / 4) * Math.PI) * 1.5);
+    for (const dz of [0, 1]) {
+      setV(cx, y, cz + dz, 'red');
+      setV(cx - 1, y, cz + dz, 'red2');
+    }
+    if (i === 0 || i === 4) { setV(cx, y + 1, cz, 'red'); setV(cx, y + 1, cz + 1, 'red'); }
+  }
+}
+
+// ---------- gravel plaza ring around the platform ----------
+function plaza() {
+  for (let x = -18; x <= 18; x++) for (let z = -18; z <= 18; z++) {
+    const d = Math.max(Math.abs(x), Math.abs(z));
+    const dd = Math.hypot(x, z);
+    if (dd < 12.2 || dd > 17.5) continue;
+    if (Math.abs(x) <= 3 && z > 8) continue; // keep path stone
+    const r = hash(x, 9, z);
+    setV(x, 0, z, r < 0.35 ? 'sand' : (r < 0.65 ? 'sand2' : (r < 0.82 ? 'sand3' : 'sand2')));
+  }
+}
+
+// ---------- pine treeline ----------
+function pine(cx, cz, h) {
+  for (let y = 1; y <= 3; y++) setV(cx, y, cz, 'trunk');
+  for (let yy = 3; yy <= h; yy++) {
+    const rad = Math.max(0, Math.round((h - yy) * 0.55) + (yy % 2));
+    if (rad === 0) { setV(cx, yy, cz, 'pine2'); continue; }
+    for (let x = -rad; x <= rad; x++) for (let z = -rad; z <= rad; z++) {
+      if (Math.abs(x) + Math.abs(z) > rad) continue;
+      if (hash(cx + x * 3, yy, cz + z * 5) < 0.14) continue;
+      const t = hash(cx + x, yy * 7, cz + z);
+      setV(cx + x, yy, cz + z, t < 0.4 ? 'pine1' : (t < 0.72 ? 'pine2' : 'pine3'));
+    }
+  }
+}
+function treeline() {
+  for (let i = 0; i < 22; i++) {
+    const a = (i / 22) * Math.PI * 2 + 0.14;
+    const r = 33 + hash(i, 21, 22) * 8;
+    const cx = Math.round(Math.sin(a) * r), cz = Math.round(Math.cos(a) * r);
+    if (Math.abs(cx) <= 5 && cz > 28) continue;
+    pine(cx, cz, 8 + Math.floor(hash(i, 23, 24) * 6));
+  }
+}
+
+// ---------- assemble ----------
+scatter();
+plaza();
+platform();
+pond(19, 9, 6, 5);
+pond(-20, -6, 4, 3);
+pagoda();
+torii(0, 24);
+fence();
+bridge(12, 8);
+treeline();
+tree(-16, 12);
+tree(15, -14);
+tree(-14, -18);
+tree(20, 20);
+tree(-24, 24);
+tree(26, -2);
+tree(2, -24);
+lantern(5, 13);
+lantern(-5, 13);
+lantern(5, 30);
+lantern(-5, 30);
+
+scene.add(buildVoxelMesh());
+
+// ---------- petals ----------
+const PETALS = 64;
+const petalGeo = new THREE.BoxGeometry(0.6, 0.1, 0.6);
+const petalMat = new THREE.MeshLambertMaterial({ color: 0xffc3dd, side: THREE.DoubleSide });
+const petals = new THREE.InstancedMesh(petalGeo, petalMat, PETALS);
+petals.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+scene.add(petals);
+const petalData = [];
+const dummy = new THREE.Object3D();
+for (let i = 0; i < PETALS; i++) {
+  petalData.push({
+    x: (Math.random() - 0.5) * 60,
+    y: Math.random() * 50 + 5,
+    z: (Math.random() - 0.5) * 60,
+    vy: 1.4 + Math.random() * 1.6,
+    ph: Math.random() * Math.PI * 2,
+    sw: 0.6 + Math.random() * 1.2,
+    rx: Math.random() * 0.05,
+    rz: Math.random() * 0.05
+  });
+}
+function updatePetals(t, dt) {
+  for (let i = 0; i < PETALS; i++) {
+    const p = petalData[i];
+    p.y -= p.vy * dt;
+    if (p.y < 0.3) {
+      p.y = 42 + Math.random() * 18;
+      p.x = (Math.random() - 0.5) * 60;
+      p.z = (Math.random() - 0.5) * 60;
+    }
+    dummy.position.set(p.x + Math.sin(t * p.sw + p.ph) * 2.2, p.y, p.z + Math.cos(t * 0.7 * p.sw + p.ph) * 2.2);
+    dummy.rotation.set(t * (0.6 + p.rx) + p.ph, t * 0.4 + p.ph, t * (0.5 + p.rz));
+    dummy.updateMatrix();
+    petals.setMatrixAt(i, dummy.matrix);
+  }
+  petals.instanceMatrix.needsUpdate = true;
+}
+
+// ---------- animate ----------
+let angle = -0.7;
+let prev = performance.now();
+let firstFrame = true;
+function animate() {
+  requestAnimationFrame(animate);
+  const now = performance.now();
+  const dt = Math.min(0.05, (now - prev) / 1000);
+  prev = now;
+  resize();
+  angle += dt * 0.055;
+  const R = 66, cy = 28;
+  camera.position.set(Math.sin(angle) * R, cy + Math.sin(angle * 0.5) * 3, Math.cos(angle) * R);
+  camera.lookAt(target);
+  updatePetals(now / 1000, dt);
+  renderer.render(scene, camera);
+  if (firstFrame) { sun.shadow.autoUpdate = false; firstFrame = false; }
+}
+window.__dbg = { THREE, scene, camera, renderer, vox, get angle() { return angle; } };
+animate();
+</script>
+</body>
+</html>
