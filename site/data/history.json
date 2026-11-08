@@ -1,7 +1,7 @@
 {
  "schema": "history/1",
- "generated_from": "private bake-off grades through 2026-11-08: Flash-Next Unsloth v3.1 round 1 and the 3090 + V100 serving tuning; runs from 2026-10-07 on",
- "generated": "2026-11-08 15:42 CST",
+ "generated_from": "private bake-off grades through 2026-11-08: Flash-Next Unsloth v3.1 round 1 and the 3090 + V100 serving tuning (through the cache and ubatch combinations); runs from 2026-10-07 on",
+ "generated": "2026-11-08 17:18 CST",
  "runs_new": [
   {
    "case": "wa-saluki-27b-iq2",
@@ -4330,6 +4330,56 @@
   {
    "model": "lcpp-ds41-flash-iq1s-3090-v100",
    "engine": "llama.cpp Clover 4838ffb",
+   "variant": "3090 + V100, expert cache 34 GiB, split 1:1, flash attention on, Q8 KV, ubatch 1024, 96k context; short benchmark; 30,250-token retrieval correct, first token 9.1 min (56 tok/s prefill); 90,230-token retrieval correct, first token 30.5 min (49 tok/s prefill); free 1.6 GiB (3090) / 8.7 GiB (V100), just inside our fit rule",
+   "decode": 16.44,
+   "quote": null,
+   "prefill": 45.6,
+   "vram": 23826,
+   "error": ""
+  },
+  {
+   "model": "lcpp-ds41-flash-iq1s-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "3090 + V100, expert cache 34 GiB, split 3:2, flash attention on, Q8 KV, ubatch 1024, 96k context; short benchmark; 30,250-token retrieval correct, first token 9.0 min (56 tok/s prefill); free 5.7 GiB (3090) / 4.6 GiB (V100)",
+   "decode": 15.02,
+   "quote": null,
+   "prefill": 46.7,
+   "vram": 28104,
+   "error": ""
+  },
+  {
+   "model": "lcpp-ds41-flash-iq1s-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "3090 + V100, expert cache 34 GiB, split 3:2, flash attention on, Q8 KV, ubatch 2048, 96k context; short benchmark; 30,250-token retrieval correct, first token 6.0 min (84 tok/s prefill); 90,230-token retrieval correct, first token 22.6 min (67 tok/s prefill); free 3.9 GiB (3090) / 2.8 GiB (V100)",
+   "decode": 14.72,
+   "quote": null,
+   "prefill": 61.3,
+   "vram": 29876,
+   "error": ""
+  },
+  {
+   "model": "lcpp-ds41-flash-iq1s-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "3090 + V100, expert cache 34 GiB, split 1:1, flash attention on, Q8 KV, ubatch 1024, 96k context, 16 batch threads; short benchmark; 30,250-token retrieval correct, first token 9.0 min (56 tok/s prefill), same as 12 threads; free 1.6 GiB (3090) / 8.7 GiB (V100)",
+   "decode": 16.45,
+   "quote": null,
+   "prefill": 45.7,
+   "vram": 23826,
+   "error": ""
+  },
+  {
+   "model": "lcpp-ds41-flash-iq1s-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "3090 + V100, expert cache 30 GiB, split 1:1, flash attention on, Q8 KV, ubatch 2048, 96k context; short benchmark; 30,250-token retrieval correct, first token 6.0 min (84 tok/s prefill); 90,230-token retrieval correct, first token 21.7 min (69 tok/s prefill); free 1.7 GiB (3090) / 9.3 GiB (V100)",
+   "decode": 14.5,
+   "quote": null,
+   "prefill": 59.1,
+   "vram": 23204,
+   "error": ""
+  },
+  {
+   "model": "lcpp-ds41-flash-iq1s-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
    "variant": "3090 + V100, expert cache 40 GiB, split 1:1, flash attention off, F16 KV, ubatch 128, 8k context",
    "decode": null,
    "quote": null,
@@ -4572,7 +4622,7 @@
    "date": "2026-11-08",
    "era": "Engines",
    "title": "Two cards: a 3090 and a V100",
-   "what": "DeepSeek-V4.1-Flash UD-IQ1_S spans both cards: 9.7 to 16.5 tok/s short-benchmark decode, 90k retrieval correct at 96k. Qwopus 27B Q6_K runs on the V100 alone at 27 tok/s.",
+   "what": "DeepSeek-V4.1-Flash UD-IQ1_S spans both cards: 9.7 to 16.5 tok/s short-benchmark decode, 90k retrieval correct at 96k with the first token in 22 min (was 48.5). Qwopus 27B Q6_K runs on the V100 alone at 27 tok/s.",
    "why": "A second, larger card makes room for the expert cache and long context."
   },
   {
@@ -5487,7 +5537,7 @@
    "date": "2026-11-08",
    "title": "DeepSeek-V4.1-Flash runs across a 3090 and a V100",
    "kind": "tuning",
-   "summary": "DeepSeek-V4.1-Flash 1017 UD-IQ1_S now serves from two different cards, an RTX 3090 24 GB and a Tesla V100 32 GB, with the routed experts in RAM and a GPU expert cache. Short-benchmark decode rose from 9.7 tok/s on the starting config (20 GiB cache, F16 KV, flash attention off) to 16.5 tok/s with a 34 GiB cache, flash attention and Q8 KV at 96k context. A 90,230-token retrieval at 96k context was correct; it took 48.5 minutes to the first token (31 tok/s prefill). Raising ubatch from 512 to 1024 and 2048 cut the 30k-token first-token time from 14.3 to 9.3 and 6.1 minutes (35, 54 and 83 tok/s prefill; the 512 point used a 34 GiB cache, the others 28 GiB). A 40 GiB cache does not fit: the V100 runs out of memory at load.",
+   "summary": "DeepSeek-V4.1-Flash 1017 UD-IQ1_S now serves from two different cards, an RTX 3090 24 GB and a Tesla V100 32 GB, with the routed experts in RAM and a GPU expert cache. Short-benchmark decode rose from 9.7 tok/s on the starting config (20 GiB cache, F16 KV, flash attention off) to 16.5 tok/s with a 34 GiB cache, flash attention and Q8 KV at 96k context. Raising ubatch from 512 to 2048 cut the 30k-token first-token time from 14.3 to 6.1 minutes (35 to 83 tok/s prefill). A 90,230-token retrieval at 96k context was correct in every config tried; its first token came after 48.5 minutes at ubatch 512 and 21.7 minutes with a 30 GiB cache and ubatch 2048 (69 tok/s prefill). The two levers compete for the 3090: a 34 GiB cache with ubatch 1024 keeps the best decode (16.4 tok/s) but leaves 1.6 GiB free, just inside our 1.5 GiB rule; a 30 GiB cache with ubatch 2048 gives the fastest long prompts at 14.5 tok/s decode; moving layers to the V100 (split 3:2) frees the 3090 but costs about 1.4 tok/s. A 40 GiB cache does not fit: the V100 runs out of memory at load.",
    "settings": "llama.cpp Clover 4838ffb; --n-cpu-moe 40 --moe-cache-mib 34816 --tensor-split 1,1 --flash-attn on --cache-type-k q8_0 --cache-type-v q8_0 --ubatch-size 512; 3090 at 250 W",
    "metrics": [
     {
@@ -5513,10 +5563,16 @@
      "before": 13.3,
      "after": 15.5,
      "unit": "tok/s"
+    },
+    {
+     "label": "Prefill on a 90k prompt, ubatch 512 to 2048 (cache 28 to 30 GiB)",
+     "before": 31.0,
+     "after": 69.2,
+     "unit": "tok/s"
     }
    ],
    "quality": "Every run answered the oracle prompt correctly; the 30k and 90k retrieval prompts found their planted markers.",
-   "caveat": "Short-benchmark rates (two prompts of a few hundred output tokens), not agent-run rates. The 34 GiB cache plus ubatch 1024 or 2048 is still being measured. Fit rule: at least 1.5 GiB free on each card after the longest prefill; ubatch 512 without flash attention missed it (1.2 GiB on the 3090)."
+   "caveat": "Short-benchmark rates (two prompts of a few hundred output tokens), not agent-run rates. Fit rule: at least 1.5 GiB free on each card after the longest prefill; ubatch 512 without flash attention missed it (1.2 GiB on the 3090). More CPU batch threads (12 to 16) changed nothing."
   },
   {
    "date": "2026-11-08",
