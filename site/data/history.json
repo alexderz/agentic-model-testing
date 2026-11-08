@@ -1,7 +1,7 @@
 {
  "schema": "history/1",
  "generated_from": "private bake-off grades through 2026-11-08: Flash-Next Unsloth v3.1 round 1 and the 3090 + V100 serving tuning; runs from 2026-10-07 on",
- "generated": "2026-11-08 17:00 CST",
+ "generated": "2026-11-08 15:42 CST",
  "runs_new": [
   {
    "case": "wa-saluki-27b-iq2",
