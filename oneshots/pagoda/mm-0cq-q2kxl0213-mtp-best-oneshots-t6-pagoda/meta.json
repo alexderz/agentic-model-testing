@@ -1,0 +1,43 @@
+{
+ "artifact_found": true,
+ "case": "mm-0cq-q2kxl0213-mtp-best-oneshots-t6-pagoda",
+ "ctx": 131072,
+ "finish_reason": "stop",
+ "finished": "2026-11-09T10:53:17-06:00",
+ "first_token_s": 0.607,
+ "max_tokens": 126976,
+ "model": "strata0213-fnb-v31-udq2kxl-128k",
+ "rate_kind": "single long request (not agent-run)",
+ "reasoning_chars": 76305,
+ "reply_chars": 41056,
+ "sampling": "engine defaults",
+ "started": "2026-11-09T10:47:24-06:00",
+ "status": "ok",
+ "test": "6",
+ "think_budget": 24000,
+ "think_field": "chat_template_kwargs.enable_thinking=True sent; budget is the engine setting",
+ "thinking": true,
+ "timings": {
+  "cache_n": 0,
+  "draft_n": 30169,
+  "draft_n_accepted": 21899,
+  "predicted_ms": 351756.4,
+  "predicted_n": 40641,
+  "predicted_per_second": 115.5,
+  "predicted_per_token_ms": 8.659,
+  "prompt_ms": 716.0,
+  "prompt_n": 196,
+  "prompt_per_second": 273.7,
+  "prompt_per_token_ms": 3.653
+ },
+ "tok_s": 115.5,
+ "usage": {
+  "completion_tokens": 40641,
+  "prompt_tokens": 196,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  },
+  "total_tokens": 40837
+ },
+ "wall_s": 352.485
+}

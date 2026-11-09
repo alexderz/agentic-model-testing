@@ -1,0 +1,48 @@
+{
+ "artifact_found": true,
+ "case": "mm-0e1-q2kxl0213-mtp-best-oneshots-qwensampling-t6-pagoda",
+ "ctx": 131072,
+ "finish_reason": "stop",
+ "finished": "2026-11-09T11:43:29-06:00",
+ "first_token_s": 0.566,
+ "max_tokens": 126976,
+ "model": "strata0213-fnb-v31-udq2kxl-128k",
+ "rate_kind": "single long request (not agent-run)",
+ "reasoning_chars": 66959,
+ "reply_chars": 34794,
+ "sampling": {
+  "min_p": 0.0,
+  "temperature": 0.6,
+  "top_k": 20,
+  "top_p": 0.95
+ },
+ "started": "2026-11-09T11:38:20-06:00",
+ "status": "ok",
+ "test": "6",
+ "think_budget": 24000,
+ "think_field": "chat_template_kwargs.enable_thinking=True sent; budget is the engine setting",
+ "thinking": true,
+ "timings": {
+  "cache_n": 0,
+  "draft_n": 29335,
+  "draft_n_accepted": 22540,
+  "predicted_ms": 308277.2,
+  "predicted_n": 38446,
+  "predicted_per_second": 124.7,
+  "predicted_per_token_ms": 8.022,
+  "prompt_ms": 667.0,
+  "prompt_n": 196,
+  "prompt_per_second": 293.9,
+  "prompt_per_token_ms": 3.403
+ },
+ "tok_s": 124.7,
+ "usage": {
+  "completion_tokens": 38446,
+  "prompt_tokens": 196,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  },
+  "total_tokens": 38642
+ },
+ "wall_s": 308.958
+}
