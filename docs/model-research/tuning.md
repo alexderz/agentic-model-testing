@@ -401,6 +401,7 @@ correctly and kept at least 1.5 GiB free on each card.
 | 128.6 setup on UD-Q2_K_XL / UD-Q3_K_XL | 123.05 / 111.95 | 2,935 / 2,764 | 122 / 108 (79 / 60 after 30k) |
 | Peer tier, one slot, growing K/V + min-p 0.6, on UD-IQ3_XXS / UD-Q2_K_XL / UD-Q3_K_XL | 107.1 / 106.95 / 100.65 | 2,642 / 2,644 / 2,384 | 127 / 108 / 101 (122 / 121 / 90 after 30k) |
 | Peer tier, four slots with resident K/V, min-p 0.6 | 105.3 | 2,589 | 123 |
+| Memory lock on (PLE table pinned in RAM): 128.6 setup / peer tier one, two, four slots | 122.5 / 109.95 / 104.1 / 110.2 | 2,981 / 2,663 / 2,591 / 2,595 | 108 / 106 / 116 / 122 |
 
 What we take from it:
 
@@ -465,6 +466,11 @@ What we take from it:
 - The same setup gives 123.0 tok/s on UD-Q2_K_XL and 112.0 on UD-Q3_K_XL (101.6 on
   the old stack). On the peer tier the quant barely matters: Q2_K_XL ties IQ3_XXS
   at about 107 tok/s and holds 121 tok/s right after a 30k prompt.
+- Locking Strata's PLE table in RAM is neutral on every setup (-5% to +3%, inside
+  noise); it only makes loads faster (about 51 s instead of 81 to 122 s for the
+  multi-slot setups).
+- llamAmpere 0.6.3.8 ties 0.6.3.2 on Linux: 85.1 tok/s decode and 1,873 tok/s
+  prefill at 100k (53.8 s to first token).
 - Best so far is 128.6 tok/s, about 86% of the 150 tok/s goal; replicates gave
   127.6 and 127.7. Run-to-run noise is about 4 tok/s, so single-digit differences
   between rows are not real.
