@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-11-09 14:41 CST",
- "built": "2026-11-09 14:41 CST",
+ "generated": "2026-11-09 16:49 CST",
+ "built": "2026-11-09 16:49 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -225,6 +225,47 @@
    ],
    "quality": "Test 1 fails every live check; test 6 pagodas 0 of 10 each.",
    "caveat": "One agent run (OpenCode, not T3 Code); test 2 agent runs stopped at the 85 °C limit and are being rerun at 300 W."
+  },
+  {
+   "date": "2026-11-09",
+   "title": "Flash-Next daily driver ships a working CLI with Qwen thinking sampling; eight 30k or four 100k slots fit one 3090",
+   "kind": "grading",
+   "summary": "Same daily-driver setup (UD-Q2_K_XL, MTP draft head, one 3090 at 300 W), but with Qwen's thinking sampling (temperature 0.6, top-p 0.95, top-k 20): agent test 1 took 40 minutes at 121.4 tok/s agent-run decode with a 0.37 s median first token, and the CLI passes every live check with 15 subcommands. One test file has a syntax error, so its own test run collects nothing. The earlier engine-default run took 62 minutes and crashed on start. Serving: eight 30k prompts or four 100k prompts fit at once, but total decode stays at about 98-110 tok/s, so more slots buy concurrency, not throughput.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Agent test 1 live checks, engine-default to Qwen thinking sampling",
+     "before": 0,
+     "after": 5,
+     "unit": "of 5"
+    },
+    {
+     "label": "Agent-run decode, test 1",
+     "before": 120.6,
+     "after": 121.4,
+     "unit": "tok/s"
+    },
+    {
+     "label": "First token median, test 1",
+     "before": 0.46,
+     "after": 0.37,
+     "unit": "s"
+    },
+    {
+     "label": "Total decode, eight 30k streams (short benchmark)",
+     "before": null,
+     "after": 97.5,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Total decode, four 100k streams (short benchmark)",
+     "before": null,
+     "after": 109.7,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Test 1 passes 5 of 5 live checks; every parallel stream found its early and late markers.",
+   "caveat": "One agent run each (OpenCode, not T3 Code). Parallel rates are short benchmarks; the k-th 100k prompt waits about k x 50 s for its first token because prompts prefill one at a time."
   },
   {
    "date": "2026-11-08",
@@ -3632,7 +3673,7 @@
    "quant": "Unsloth UD-Q2_K_XL v3.1 (74 GiB)",
    "kind": "stock",
    "uncensored": false,
-   "note": "Serving tuning toward 150 tok/s decode, then the daily driver (MTP draft head). Short-benchmark rates, except agent test 1 (2026-11-09): agent-run decode 120.6 tok/s, first token median 0.46 s, but the CLI it built crashes on start.",
+   "note": "Serving tuning toward 150 tok/s decode, then the daily driver (MTP draft head). Short-benchmark rates, except agent test 1 (2026-11-09): with engine-default sampling at 350 W, 120.6 tok/s agent-run decode but the CLI crashes on start; with Qwen thinking sampling at 300 W, 121.4 tok/s, first token median 0.37 s, every live check passes.",
    "vision": null
   },
   "strata0213-fnb-v31-udq3kxl-128k": {
@@ -11384,6 +11425,30 @@
     "loc": 2923,
     "errors_per_kloc": 0.0
    }
+  },
+  {
+   "case": "mm-0f2a-q2kxl0213-mtp-best-test1-agent-thinking-qwensampling-300w",
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 0,
+   "tests_fail": 0,
+   "subcmds": 15,
+   "tps": 121.4,
+   "minutes": 40,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-09 15:09",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 5712,
+    "errors_per_kloc": 0.0
+   }
   }
  ],
  "test3": [
@@ -14655,6 +14720,26 @@
    "quote": null,
    "prefill": 2837.8,
    "vram": 21330,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 alone, 300 W, the 128.6 setup (adaptive fetch 2, English and code draft vocabulary, fetch margin 0, PCIe share 0.55, K/V cache that grows with the context, stream draft-head norm, draft min-p 0.6) on UD-Q2_K_XL, MTP draft head, batch build for MTP, VRAM reserve 3,072 MiB, sampled (temperature 0.7, top-p 0.8, top-k 20); four then eight ~30k prompts with 1,200-word replies, all correct; total decode 99.5 tok/s with 4 streams and 97.5 tok/s with 8 (7-14 tok/s per stream); prompts prefill one at a time (first tokens 11.4 to 111.0 s); free 2.3 GiB (3090) with eight prompts live, so eight 30k slots fit",
+   "decode": 97.47,
+   "quote": null,
+   "prefill": 2174.0,
+   "vram": 22178,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 alone, 300 W, the 128.6 setup (adaptive fetch 2, English and code draft vocabulary, fetch margin 0, PCIe share 0.55, K/V cache that grows with the context, stream draft-head norm, draft min-p 0.6) on UD-Q2_K_XL, MTP draft head, batch build for MTP, VRAM reserve 3,072 MiB, sampled (temperature 0.7, top-p 0.8, top-k 20); three then four ~100k prompts with 1,200-word replies, all correct; total decode 102.3 tok/s with 3 streams and 109.7 tok/s with 4; prompts prefill one at a time (about 2,700 tok/s alone, 1,900 while others decode; first tokens 38, 91, 144 and 197 s); free 3.0 GiB (3090) with four prompts live, so four 100k slots fit",
+   "decode": 109.68,
+   "quote": null,
+   "prefill": 2707.9,
+   "vram": 21510,
    "error": ""
   }
  ],
@@ -20038,11 +20123,11 @@
  },
  "counts": {
   "models": 124,
-  "runs": 333,
+  "runs": 334,
   "test3": 86,
   "oneshots": 157,
   "frames": 310,
-  "pass": 245,
+  "pass": 246,
   "live": 100
  }
 }
