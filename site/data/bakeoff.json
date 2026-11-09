@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-11-08 17:18 CST",
- "built": "2026-11-08 17:19 CST",
+ "generated": "2026-11-08 19:25 CST",
+ "built": "2026-11-08 19:25 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -202,6 +202,58 @@
    ],
    "quality": "Agent tests by the suite graders; art graded by hand from rendered frames, blind side by side. Stories passed a language check (no CJK, no misspellings); their craft scores are not in yet.",
    "caveat": "One round each. Story rubric, labyrinth D and E, and test 3 rubric are not graded yet. UD-Q3_K_XL test 1 is left out: the grader could not run its CLI. UD-Q2_K_XL test 2T did not run."
+  },
+  {
+   "date": "2026-11-08",
+   "title": "Flash-Next on one 3090: 117 tok/s, and a V100 that keeps it fast after long prompts",
+   "kind": "tuning",
+   "summary": "Toward a goal of 150 tok/s decode and 1,000+ tok/s prefill on a larger Unsloth v3.1 quant of Flash-Next, Strata 0.2.12 on one RTX 3090 reached 116.9 tok/s short-benchmark decode on UD-IQ3_XXS (from 98.8): power 250 to 350 W gave +13% and adaptive overlap +4%. Prefill is met: a 120,007-token retrieval was correct with the first token in 42.5 s (2,831 tok/s). On the 3090 alone, decode right after that long prompt drops to about 65 tok/s; with the V100 as a helper expert cache it stays at 113 tok/s. Two 128k slots fit at 100 tok/s per stream, four at 94.",
+   "settings": "Strata 0.2.12, MTP spec 4, min-p 0.5, 128k context, int8 KV, STRATA_ADAPT_OVERLAP=1 (3090 alone) or --expert-cache-device1 14500 --remote-expert-opt (with the V100)",
+   "metrics": [
+    {
+     "label": "Decode, short benchmark, UD-IQ3_XXS",
+     "before": 98.8,
+     "after": 116.9,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Prefill, 120k-token retrieval",
+     "before": 2419,
+     "after": 2831,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Decode right after the 120k prompt, 3090 alone to 3090 + V100 helper",
+     "before": 67.0,
+     "after": 113.2,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Oracle and both retrieval prompts (30k and 120k) correct in every passing config.",
+   "caveat": "Short-benchmark rates, not agent runs; the 150 tok/s goal is not reached. Multi-slot rows measure one stream, not the total. llamAmpere 0.6.3.2 on the same files was slower (86 tok/s decode, 1,865 tok/s prefill at 100k)."
+  },
+  {
+   "date": "2026-11-08",
+   "title": "Dense 27Bs on the V100: Arete fits, the 3090 does not",
+   "kind": "tuning",
+   "summary": "Arete-27B Q6_K on the V100 alone runs at 26.1 tok/s short-benchmark decode with 96k context and Q8 KV; 30k and 90k retrievals were correct (first tokens 43 s and 191 s). On the RTX 3090 alone it does not load: 22 GiB of weights plus the KV cache is more than 24 GiB. Qwopus 27B Q4_K_M decodes at 33 tok/s on either card, but the V100 prefills at about 60% of the 3090's rate.",
+   "settings": "llama.cpp Clover 4838ffb; --cache-type-k q8_0 --cache-type-v q8_0, 98,304 context",
+   "metrics": [
+    {
+     "label": "Arete-27B Q6_K decode, V100 alone",
+     "before": null,
+     "after": 26.1,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Qwopus 27B Q4_K_M prefill, 30k prompt, 3090 to V100",
+     "before": 1095,
+     "after": 662,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Oracle and both retrieval prompts correct.",
+   "caveat": "Short-benchmark rates. The 3090 rerun of a 2026-11-02 setup was about 20% slower (33.0 against 41.6 tok/s) after a driver change; the earlier power limit is not yet checked, so this is not pinned on the driver."
   },
   {
    "date": "2026-11-04",
@@ -1548,6 +1600,13 @@
    "title": "Unsloth v3.1 quants graded",
    "what": "Four quants, one round: all pass tests 3 and 4; UD-IQ1_M is fastest and draws best; one-shot pagodas all blank.",
    "why": "Alex expected the small quants to brute-force code but draw worse; the code half held, the art half did not."
+  },
+  {
+   "date": "2026-11-08",
+   "era": "Flash-Next",
+   "title": "Flash-Next toward 150 tok/s on one 3090",
+   "what": "Strata 0.2.12: 98.8 to 116.9 tok/s short-benchmark decode (350 W, adaptive overlap); 120k prompts prefill at 2,800+ tok/s; a V100 helper cache keeps decode at 113 tok/s after a 120k prompt.",
+   "why": "Goal: 150 tok/s decode and 1,000+ tok/s prefill on a larger quant. Prefill is met; decode is at 78%."
   }
  ],
  "events": [],
@@ -3277,6 +3336,97 @@
     "label": "yes (head)",
     "status": "head"
    }
+  },
+  "strata0212-fnb-v31-udiq3xxs-128k": {
+   "id": "strata0212-fnb-v31-udiq3xxs-128k",
+   "family": "Qwen3.8 Flash-Next",
+   "label": "Flash-Next UD-IQ3_XXS (Unsloth Dynamic v3.1) · Strata 0.2.12, RTX 3090, 128k, 8-bit KV",
+   "base": "Qwen/Qwen3.8-Flash-Next",
+   "arch": "MoE",
+   "engine": "Strata 0.2.12",
+   "quant": "Unsloth UD-IQ3_XXS v3.1 (77.9 GiB)",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "Serving tuning toward 150 tok/s decode (no agent tests on this engine version yet). Short-benchmark rates.",
+   "vision": null
+  },
+  "strata0212-fnb-v31-udq2kxl-128k": {
+   "id": "strata0212-fnb-v31-udq2kxl-128k",
+   "family": "Qwen3.8 Flash-Next",
+   "label": "Flash-Next UD-Q2_K_XL (Unsloth Dynamic v3.1) · Strata 0.2.12, RTX 3090, 128k, 8-bit KV",
+   "base": "Qwen/Qwen3.8-Flash-Next",
+   "arch": "MoE",
+   "engine": "Strata 0.2.12",
+   "quant": "Unsloth UD-Q2_K_XL v3.1 (74 GiB)",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "Serving tuning toward 150 tok/s decode (no agent tests on this engine version yet). Short-benchmark rates.",
+   "vision": null
+  },
+  "strata0212-fnb-v31-udq3kxl-128k": {
+   "id": "strata0212-fnb-v31-udq3kxl-128k",
+   "family": "Qwen3.8 Flash-Next",
+   "label": "Flash-Next UD-Q3_K_XL (Unsloth Dynamic v3.1) · Strata 0.2.12, RTX 3090, 128k, 8-bit KV",
+   "base": "Qwen/Qwen3.8-Flash-Next",
+   "arch": "MoE",
+   "engine": "Strata 0.2.12",
+   "quant": "Unsloth UD-Q3_K_XL v3.1 (83 GiB)",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "Serving tuning toward 150 tok/s decode (no agent tests on this engine version yet). Short-benchmark rates.",
+   "vision": null
+  },
+  "strata0212-fnb-v31-udiq3xxs-3090-v100": {
+   "id": "strata0212-fnb-v31-udiq3xxs-3090-v100",
+   "family": "Qwen3.8 Flash-Next",
+   "label": "Flash-Next UD-IQ3_XXS (Unsloth Dynamic v3.1) · Strata 0.2.12, RTX 3090 + V100 helper expert cache, 128k, 8-bit KV",
+   "base": "Qwen/Qwen3.8-Flash-Next",
+   "arch": "MoE",
+   "engine": "Strata 0.2.12",
+   "quant": "Unsloth UD-IQ3_XXS v3.1 (77.9 GiB)",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "Serving tuning: the Tesla V100 holds a second expert cache for the RTX 3090. Short-benchmark rates.",
+   "vision": null
+  },
+  "llamampere0632-fnb-v31-udiq3xxs-108k": {
+   "id": "llamampere0632-fnb-v31-udiq3xxs-108k",
+   "family": "Qwen3.8 Flash-Next",
+   "label": "Flash-Next UD-IQ3_XXS (Unsloth Dynamic v3.1) · llamAmpere 0.6.3.2, RTX 3090, 108k, 8-bit KV",
+   "base": "Qwen/Qwen3.8-Flash-Next",
+   "arch": "MoE",
+   "engine": "llamAmpere 0.6.3.2",
+   "quant": "Unsloth UD-IQ3_XXS v3.1 (77.9 GiB)",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "Serving tuning toward 150 tok/s decode (no agent tests on this engine version yet). Short-benchmark rates.",
+   "vision": null
+  },
+  "lcpp-qwopus38-q4km-v100": {
+   "id": "lcpp-qwopus38-q4km-v100",
+   "family": "Qwen3.8 27B",
+   "label": "Qwopus3.8-27B-Coder-Flash Q4_K_M · llama.cpp (Clover 4838ffb), V100 alone, 96k, 8-bit KV",
+   "base": "Qwen/Qwen3.8-27B",
+   "arch": "dense 27B",
+   "engine": "llama.cpp Clover 4838ffb",
+   "quant": "Q4_K_M",
+   "kind": "tune",
+   "uncensored": false,
+   "note": "Serving tuning only: the whole model on the Tesla V100 32 GB. Short-benchmark rates.",
+   "vision": null
+  },
+  "lcpp-arete27b-q6k": {
+   "id": "lcpp-arete27b-q6k",
+   "family": "Qwen3.8 27B",
+   "label": "Arete-27B Q6_K · llama.cpp (Clover 4838ffb), 96k, 8-bit KV",
+   "base": "Qwen/Qwen3.8-27B",
+   "arch": "dense 27B",
+   "engine": "llama.cpp Clover 4838ffb",
+   "quant": "Q6_K",
+   "kind": "tune",
+   "uncensored": false,
+   "note": "Nous Research fine-tune of Qwen3.8-27B. Serving tuning only (no agent tests yet): fits the V100 alone, not the RTX 3090. Short-benchmark rates.",
+   "vision": null
   }
  },
  "runs": [
@@ -12872,6 +13022,356 @@
    "prefill": 681.7,
    "vram": 24624,
    "error": ""
+  },
+  {
+   "model": "qwopus38-q4km-98k",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "RTX 3090 alone, 250 W, Q8 KV, 96k context, NVIDIA driver 580 (rerun of the 2026-11-02 setup, which gave 41.6 tok/s decode); short benchmark; 30,125-token retrieval correct, first token 28.0 s (1,095 tok/s prefill); 90,105-token retrieval correct, first token 109.5 s (831 tok/s prefill); free 5.0 GiB (3090)",
+   "decode": 33.01,
+   "quote": null,
+   "prefill": 1086.7,
+   "vram": 19458,
+   "error": ""
+  },
+  {
+   "model": "lcpp-qwopus38-q4km-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "V100 alone, Q8 KV, 96k context (same file as the 3090 row); short benchmark; 30,125-token retrieval correct, first token 46.0 s (662 tok/s prefill); 90,105-token retrieval correct, first token 3.3 min (454 tok/s prefill); free 12.8 GiB (V100)",
+   "decode": 33.04,
+   "quote": null,
+   "prefill": 635.6,
+   "vram": 19660,
+   "error": ""
+  },
+  {
+   "model": "lcpp-arete27b-q6k",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "V100 alone, Q8 KV, 96k context; short benchmark; 30,125-token retrieval correct, first token 43.0 s (709 tok/s prefill); 90,105-token retrieval correct, first token 3.2 min (476 tok/s prefill); free 6.5 GiB (V100)",
+   "decode": 26.07,
+   "quote": null,
+   "prefill": 688.0,
+   "vram": 26088,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 250 W, MTP spec 4; short benchmark; 30,037-token retrieval correct, first token 12.8 s (2,353 tok/s prefill); 120,007-token retrieval correct, first token 49.7 s (2,419 tok/s prefill); decode right after the long prompt 68 tok/s; free 2.2 GiB (3090)",
+   "decode": 98.8,
+   "quote": null,
+   "prefill": 943.5,
+   "vram": 22368,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 250 W, MTP spec 4; short benchmark; 30,037-token retrieval correct, first token 12.5 s (2,417 tok/s prefill); 120,007-token retrieval correct, first token 49.0 s (2,452 tok/s prefill); decode right after the long prompt 65 tok/s; free 2.2 GiB (3090)",
+   "decode": 100.1,
+   "quote": null,
+   "prefill": 1013.5,
+   "vram": 22364,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 250 W, prefill chunks up to 32k (auto already does this); short benchmark; 30,037-token retrieval correct, first token 13.1 s (2,308 tok/s prefill); 120,007-token retrieval correct, first token 50.2 s (2,397 tok/s prefill); decode right after the long prompt 61 tok/s; free 2.2 GiB (3090)",
+   "decode": 98.95,
+   "quote": null,
+   "prefill": 957.5,
+   "vram": 22368,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 250 W, MTP spec 6; short benchmark; 30,037-token retrieval correct, first token 12.9 s (2,340 tok/s prefill); 120,007-token retrieval correct, first token 49.6 s (2,426 tok/s prefill); decode right after the long prompt 48 tok/s; free 2.1 GiB (3090)",
+   "decode": 95.05,
+   "quote": null,
+   "prefill": 956.0,
+   "vram": 22402,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12 (CUDA 12.9 build)",
+   "variant": "3090 alone, 250 W, MTP spec 4 (control for the V100 helper rows); short benchmark; 30,037-token retrieval correct, first token 12.8 s (2,361 tok/s prefill); 120,007-token retrieval correct, first token 49.7 s (2,420 tok/s prefill); decode right after the long prompt 64 tok/s; free 2.2 GiB (3090)",
+   "decode": 97.7,
+   "quote": null,
+   "prefill": 971.6,
+   "vram": 22368,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-3090-v100",
+   "engine": "Strata 0.2.12 (CUDA 12.9 build)",
+   "variant": "3090 + V100 helper expert cache (14,500 slots), 250 W; short benchmark; 30,037-token retrieval correct, first token 12.7 s (2,370 tok/s prefill); 120,007-token retrieval correct, first token 52.8 s (2,275 tok/s prefill); decode right after the long prompt 103 tok/s; free 2.2 GiB (3090) / 3.7 GiB (V100)",
+   "decode": 98.85,
+   "quote": null,
+   "prefill": 1011.3,
+   "vram": 28994,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udq3kxl-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 250 W, MTP spec 4; short benchmark; 30,037-token retrieval correct, first token 13.2 s (2,283 tok/s prefill); 120,007-token retrieval correct, first token 51.3 s (2,346 tok/s prefill); decode right after the long prompt 59 tok/s; free 2.2 GiB (3090)",
+   "decode": 96.8,
+   "quote": null,
+   "prefill": 870.7,
+   "vram": 22366,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 250 W, VRAM reserve 2,048 to 1,536 MiB; short benchmark; 30,037-token retrieval correct, first token 12.7 s (2,374 tok/s prefill); 120,007-token retrieval correct, first token 49.9 s (2,410 tok/s prefill); decode right after the long prompt 68 tok/s; free 1.7 GiB (3090)",
+   "decode": 99.65,
+   "quote": null,
+   "prefill": 1027.5,
+   "vram": 22878,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 300 W; short benchmark; 30,037-token retrieval correct, first token 11.8 s (2,559 tok/s prefill); 120,007-token retrieval correct, first token 44.5 s (2,701 tok/s prefill); decode right after the long prompt 67 tok/s; free 2.2 GiB (3090)",
+   "decode": 108.1,
+   "quote": null,
+   "prefill": 984.5,
+   "vram": 22366,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W (the card's maximum); short benchmark; 30,037-token retrieval correct, first token 11.3 s (2,662 tok/s prefill); 120,007-token retrieval correct, first token 42.6 s (2,824 tok/s prefill); decode right after the long prompt 67 tok/s; free 2.1 GiB (3090)",
+   "decode": 112.2,
+   "quote": null,
+   "prefill": 986.3,
+   "vram": 22376,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-3090-v100",
+   "engine": "Strata 0.2.12 (CUDA 12.9 build)",
+   "variant": "3090 + V100 helper expert cache, 350 W, remote expert optimisation on; short benchmark; 30,037-token retrieval correct, first token 11.1 s (2,722 tok/s prefill); 120,007-token retrieval correct, first token 45.8 s (2,623 tok/s prefill); decode right after the long prompt 113 tok/s; free 2.2 GiB (3090) / 3.7 GiB (V100)",
+   "decode": 108.35,
+   "quote": null,
+   "prefill": 1009.6,
+   "vram": 28994,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-3090-v100",
+   "engine": "Strata 0.2.12 (CUDA 12.9 build)",
+   "variant": "3090 + V100 helper expert cache, 350 W, remote expert optimisation off; short benchmark; 30,037-token retrieval correct, first token 11.1 s (2,726 tok/s prefill); 120,007-token retrieval correct, first token 45.6 s (2,634 tok/s prefill); decode right after the long prompt 77 tok/s; free 2.2 GiB (3090) / 3.7 GiB (V100)",
+   "decode": 104.5,
+   "quote": null,
+   "prefill": 986.3,
+   "vram": 28994,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 250 W, two 128k slots (one stream measured); short benchmark; 30,037-token retrieval correct, first token 12.4 s (2,433 tok/s prefill); 120,007-token retrieval correct, first token 51.5 s (2,335 tok/s prefill); decode right after the long prompt 59 tok/s; free 2.2 GiB (3090)",
+   "decode": 80.5,
+   "quote": null,
+   "prefill": 686.6,
+   "vram": 22296,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W; short benchmark; 30,037-token retrieval correct, first token 10.8 s (2,794 tok/s prefill); 120,007-token retrieval correct, first token 41.6 s (2,888 tok/s prefill); decode right after the long prompt 63 tok/s; free 2.2 GiB (3090)",
+   "decode": 110.05,
+   "quote": null,
+   "prefill": 1037.3,
+   "vram": 22364,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udq3kxl-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W; short benchmark; 30,037-token retrieval correct, first token 11.6 s (2,600 tok/s prefill); 120,007-token retrieval correct, first token 44.0 s (2,734 tok/s prefill); decode right after the long prompt 62 tok/s; free 2.1 GiB (3090)",
+   "decode": 100.25,
+   "quote": null,
+   "prefill": 893.4,
+   "vram": 22392,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W, MTP min-p 0.5 to 0.3; short benchmark; 30,037-token retrieval correct, first token 11.3 s (2,662 tok/s prefill); 120,007-token retrieval correct, first token 42.6 s (2,825 tok/s prefill); decode right after the long prompt 67 tok/s; free 2.2 GiB (3090)",
+   "decode": 104.6,
+   "quote": null,
+   "prefill": 980.2,
+   "vram": 22372,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-3090-v100",
+   "engine": "Strata 0.2.12 (CUDA 12.9 build)",
+   "variant": "3090 + V100 helper expert cache, 350 W, two 128k slots (one stream measured); short benchmark; 30,037-token retrieval correct, first token 11.1 s (2,713 tok/s prefill); 120,007-token retrieval correct, first token 45.8 s (2,622 tok/s prefill); decode right after the long prompt 101 tok/s; free 2.2 GiB (3090) / 3.7 GiB (V100)",
+   "decode": 100.15,
+   "quote": null,
+   "prefill": 638.1,
+   "vram": 28954,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W, MTP spec 3; short benchmark; 30,037-token retrieval correct, first token 11.4 s (2,644 tok/s prefill); 120,007-token retrieval correct, first token 42.8 s (2,808 tok/s prefill); decode right after the long prompt 68 tok/s; free 2.2 GiB (3090)",
+   "decode": 110.35,
+   "quote": null,
+   "prefill": 966.7,
+   "vram": 22374,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W, transparent huge pages for the expert arena; short benchmark; 30,037-token retrieval correct, first token 11.4 s (2,646 tok/s prefill); 120,007-token retrieval correct, first token 42.9 s (2,806 tok/s prefill); decode right after the long prompt 58 tok/s; free 2.1 GiB (3090)",
+   "decode": 110.8,
+   "quote": null,
+   "prefill": 975.3,
+   "vram": 22378,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W, asynchronous adaptive expert tier; short benchmark; 30,037-token retrieval correct, first token 11.2 s (2,700 tok/s prefill); 120,007-token retrieval correct, first token 42.0 s (2,862 tok/s prefill); decode right after the long prompt 62 tok/s; free 2.2 GiB (3090)",
+   "decode": 110.7,
+   "quote": null,
+   "prefill": 980.5,
+   "vram": 22374,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W, adaptive overlap on; short benchmark; 30,037-token retrieval correct, first token 11.3 s (2,661 tok/s prefill); 120,007-token retrieval correct, first token 42.5 s (2,831 tok/s prefill); decode right after the long prompt 65 tok/s; free 2.2 GiB (3090)",
+   "decode": 116.85,
+   "quote": null,
+   "prefill": 978.2,
+   "vram": 22372,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W, shared-memory resident-expert kernel; short benchmark; 30,037-token retrieval correct, first token 11.3 s (2,661 tok/s prefill); 120,007-token retrieval correct, first token 42.6 s (2,820 tok/s prefill); decode right after the long prompt 72 tok/s; free 2.1 GiB (3090)",
+   "decode": 108.2,
+   "quote": null,
+   "prefill": 986.8,
+   "vram": 22388,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-3090-v100",
+   "engine": "Strata 0.2.12 (CUDA 12.9 build)",
+   "variant": "3090 + V100 helper expert cache, 350 W, four 128k slots (one stream measured); short benchmark; 30,037-token retrieval correct, first token 11.2 s (2,687 tok/s prefill); 120,007-token retrieval correct, first token 46.1 s (2,609 tok/s prefill); decode right after the long prompt 80 tok/s; free 2.2 GiB (3090) / 3.8 GiB (V100)",
+   "decode": 93.65,
+   "quote": null,
+   "prefill": 584.7,
+   "vram": 28860,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-3090-v100",
+   "engine": "Strata 0.2.12 (CUDA 12.9 build)",
+   "variant": "3090 + V100 helper expert cache, 350 W, adaptive overlap on, remote expert optimisation off; short benchmark; 30,037-token retrieval correct, first token 10.9 s (2,760 tok/s prefill); 120,007-token retrieval correct, first token 45.1 s (2,666 tok/s prefill); decode right after the long prompt 77 tok/s; free 2.2 GiB (3090) / 3.7 GiB (V100)",
+   "decode": 108.3,
+   "quote": null,
+   "prefill": 1000.2,
+   "vram": 28994,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W, adaptive overlap on, MTP min-p 0.5 to 0.7; short benchmark; 30,037-token retrieval correct, first token 11.3 s (2,672 tok/s prefill); 120,007-token retrieval correct, first token 42.4 s (2,834 tok/s prefill); decode right after the long prompt 70 tok/s; free 2.2 GiB (3090)",
+   "decode": 114.6,
+   "quote": null,
+   "prefill": 983.2,
+   "vram": 22372,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udq3kxl-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W, adaptive overlap on; short benchmark; 30,037-token retrieval correct, first token 11.6 s (2,603 tok/s prefill); 120,007-token retrieval correct, first token 43.9 s (2,742 tok/s prefill); decode right after the long prompt 64 tok/s; free 2.1 GiB (3090)",
+   "decode": 101.6,
+   "quote": null,
+   "prefill": 888.4,
+   "vram": 22394,
+   "error": ""
+  },
+  {
+   "model": "llamampere0632-fnb-v31-udiq3xxs-108k",
+   "engine": "llamAmpere 0.6.3.2",
+   "variant": "3090 alone, 250 W, no draft model; short benchmark; 30,085-token retrieval correct, first token 27.6 s (1,093 tok/s prefill); 100,057-token retrieval correct, first token 59.3 s (1,699 tok/s prefill); decode right after the long prompt 38 tok/s; free 1.1 GiB (3090)",
+   "decode": 59.24,
+   "quote": null,
+   "prefill": 138.0,
+   "vram": 23440,
+   "error": "does not meet our fit rule: 1.1 GiB free on the 3090 (needs 1.5)"
+  },
+  {
+   "model": "llamampere0632-fnb-v31-udiq3xxs-108k",
+   "engine": "llamAmpere 0.6.3.2",
+   "variant": "3090 alone, 250 W, no draft model, expert-cache reserve 1,536 MiB; short benchmark; 30,085-token retrieval correct, first token 27.3 s (1,108 tok/s prefill); 100,057-token retrieval correct, first token 59.1 s (1,705 tok/s prefill); decode right after the long prompt 40 tok/s; free 1.6 GiB (3090)",
+   "decode": 61.67,
+   "quote": null,
+   "prefill": 215.3,
+   "vram": 22968,
+   "error": ""
+  },
+  {
+   "model": "llamampere0632-fnb-v31-udiq3xxs-108k",
+   "engine": "llamAmpere 0.6.3.2",
+   "variant": "3090 alone, 250 W, the author's Swift Q2S-B MTP draft model; short benchmark; 30,085-token retrieval correct, first token 28.0 s (1,080 tok/s prefill); 100,057-token retrieval correct, first token 62.7 s (1,607 tok/s prefill); decode right after the long prompt 64 tok/s; free 1.6 GiB (3090)",
+   "decode": 84.29,
+   "quote": null,
+   "prefill": 210.7,
+   "vram": 22968,
+   "error": ""
+  },
+  {
+   "model": "llamampere0632-fnb-v31-udiq3xxs-108k",
+   "engine": "llamAmpere 0.6.3.2",
+   "variant": "3090 alone, 350 W, the author's Swift Q2S-B MTP draft model; short benchmark; 30,085-token retrieval correct, first token 26.2 s (1,152 tok/s prefill); 100,057-token retrieval correct, first token 54.1 s (1,865 tok/s prefill); decode right after the long prompt 64 tok/s; free 1.6 GiB (3090)",
+   "decode": 85.61,
+   "quote": null,
+   "prefill": 209.2,
+   "vram": 22966,
+   "error": ""
+  },
+  {
+   "model": "lcpp-arete27b-q6k",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "RTX 3090 alone, 250 W, Q8 KV, 96k context",
+   "decode": null,
+   "quote": null,
+   "prefill": null,
+   "vram": null,
+   "error": "does not fit: the KV cache allocation fails at load (22 GiB of weights plus 96k Q8 KV is more than 24 GiB)"
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 250 W, drafting off",
+   "decode": null,
+   "quote": null,
+   "prefill": null,
+   "vram": null,
+   "error": "not supported: native IQ packs require MTP drafting (--spec 2 or more)"
   }
  ],
  "engines": [
@@ -14546,6 +15046,47 @@
    "evidence": "2026-11-08, llama.cpp Clover 4838ffb, 3090 at 250 W, short-benchmark rates: 90,230-token retrievals at 96k context were correct on DeepSeek in every config, with the first token after 48.5 min at ubatch 512 and 21.7 min at ubatch 2048; splitting 3:2 to free the 3090 costs about 1.4 tok/s decode; a 40 GiB cache does not load.",
    "caveat": "Short-benchmark rates, not agent runs. Without flash attention, ubatch 512 left only 1.2 GiB on the 3090 and broke the fit rule.",
    "doc": "https://github.com/alexderz/agentic-model-testing/blob/main/docs/model-research/tuning.md#12-two-different-cards-a-3090-and-a-v100"
+  },
+  {
+   "id": "flash-next-goal",
+   "title": "Flash-Next on one 3090: power first, then overlap, then a helper card",
+   "rule": "With Strata on a 3090, raise the power limit before touching draft settings, turn adaptive overlap on, and add a second card as an expert cache when long prompts matter.",
+   "metrics": [
+    {
+     "label": "Flash-Next UD-IQ3_XXS decode, 250 W to 350 W",
+     "before": 98.8,
+     "after": 112.2,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Same, adaptive overlap off to on",
+     "before": 112.2,
+     "after": 116.9,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Same, prefill of a 120k prompt, 250 W to 350 W",
+     "before": 2419,
+     "after": 2824,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Decode right after a 120k prompt, 3090 alone to 3090 + V100 helper cache",
+     "before": 67.0,
+     "after": 113.2,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Per-stream decode with two 128k slots, 3090 alone (250 W) to 3090 + V100 (350 W)",
+     "before": 80.5,
+     "after": 100.2,
+     "unit": "tok/s"
+    }
+   ],
+   "chart": "bars",
+   "evidence": "2026-11-08, Strata 0.2.12, 128k context, int8 KV, short-benchmark rates; 30k and 120k retrievals correct in every passing config. No gain from MTP spec 3 or 6, min-p 0.3 or 0.7, asynchronous tiers, transparent huge pages, the shared-memory expert kernel or a smaller VRAM reserve.",
+   "caveat": "Short-benchmark rates, not agent runs. The goal of 150 tok/s decode is not reached (best 116.9). Multi-slot rows measure one stream, not the total.",
+   "doc": "https://github.com/alexderz/agentic-model-testing/blob/main/docs/model-research/tuning.md#13-flash-next-toward-150-toks-on-one-3090"
   },
   {
    "id": "quality-checks",
@@ -18110,7 +18651,7 @@
   ]
  },
  "counts": {
-  "models": 109,
+  "models": 116,
   "runs": 332,
   "test3": 86,
   "oneshots": 153,
