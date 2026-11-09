@@ -403,6 +403,9 @@ correctly and kept at least 1.5 GiB free on each card.
 | Peer tier, four slots with resident K/V, min-p 0.6 | 105.3 | 2,589 | 123 |
 | Memory lock on (PLE table pinned in RAM): 128.6 setup / peer tier one, two, four slots | 122.5 / 109.95 / 104.1 / 110.2 | 2,981 / 2,663 / 2,591 / 2,595 | 108 / 106 / 116 / 122 |
 | Strata 0.2.13 (engine only): 128.6 setup / peer tier one slot | 126.05 / 109.4 | 2,984 / 2,647 | 117 / 133 (73 / 124 after 30k) |
+| Strata 0.2.13, 128.6 setup on UD-Q2_K_XL / UD-Q3_K_XL | 128.1 / 118.45 | 2,889 / 2,769 | 122 / 104 (78 / 83 after 30k) |
+| 256k context, UD-IQ3_XXS: default reserve / reserve 3,072 MiB; UD-Q2_K_XL reserve 3,072 MiB | 124.25 / 120.5 / 122.0 | 2,718 / 2,734 / 2,677 at 248k (about 91-93 s) | misses our fit rule: 0.8 / 1.3 / 1.4 GiB free |
+| 256k context, UD-Q2_K_XL, reserve 4,096 MiB | 124.5 | 2,628 at 248k (94.7 s) | 115 (73 after 30k); 2.2 GiB free, fits |
 
 What we take from it:
 
@@ -474,6 +477,47 @@ What we take from it:
   prefill at 100k (53.8 s to first token).
 - Strata 0.2.13 ties 0.2.12: 126.05 tok/s on the 3090 alone and 109.4 on the peer
   tier, with the same prefill. The 0.2.12 packs load unchanged.
-- Best so far is 128.6 tok/s, about 86% of the 150 tok/s goal; replicates gave
+- A 256k slot fits on the 3090 alone with a 4,096 MiB VRAM reserve on UD-Q2_K_XL: the
+  248k-token retrieval is correct, the first token arrives in 94.7 s (2,628 tok/s),
+  and 2.2 GiB stays free.
+- Best on prose so far is 128.6 tok/s, about 86% of the 150 tok/s goal; replicates gave
   127.6 and 127.7. Run-to-run noise is about 4 tok/s, so single-digit differences
   between rows are not real.
+
+### Code and JSON output, and several streams at once (2026-11-09)
+
+The short benchmark now also runs code and JSON prompts, and a quality check of
+three tasks with checkable answers (a Python task run in a network-free sandbox, a
+JSON extraction, a word problem). Strata 0.2.13, the 128.6 setup, short-benchmark
+rates.
+
+| Setup | Prose | Code (accepted) | JSON (accepted) | Quality |
+| --- | --- | --- | --- | --- |
+| UD-IQ3_XXS, MTP head | 123.2 | 147.0 (82%) | 178.85 (95%) | 3/3 |
+| UD-IQ3_XXS, DFlash2 draft model | 120.55 | 156.8 (76%) | 198.25 (93%) | 3/3 |
+| UD-Q2_K_XL, MTP head | 121.55 | 150.65 (83%) | 179.2 (96%) | 3/3 |
+| UD-Q2_K_XL, DFlash2 draft model | 120.4 | **162.25** (77%) | **203.1** (92%) | 3/3 |
+| UD-IQ3_XXS, both drafters, automatic choice | 100.95 | 132.85 | 184.55 | 3/3 |
+| UD-IQ3_XXS, DFlash2 flags written out, window 8 or confidence 0.3 | 87.2 | 85.9 | 137.2 | 3/3 |
+| V100 peer tier, one slot, MTP head | 107.8 | 133.95 (81%) | 147.25 (95%) | 3/3 |
+
+Several streams at once: total decode while every stream is writing, about
+1,600-token replies.
+
+| Setup | 1 / 2 / 4 streams, tok/s | First tokens with four ~30k prompts |
+| --- | --- | --- |
+| Strata, 3090 alone, four 128k slots, short prompts | 97.3 / 114.9 / 126.2 | 0.7-3.8 s |
+| Strata, 3090 alone, four 128k slots, ~30k prompts | 95.1 / 105.1 / 122.7 | 11.9 / 28.3 / 44.7 / 61.1 s |
+| Strata, peer tier, four 128k slots, ~30k prompts | 99.1 / 116.8 / 124.1 | 11.7 / 27.8 / 43.9 / 60.2 s |
+| llama.cpp, Tiel-Coder 35B Q6 in VRAM on both cards, four 128k slots | 96.55 / 133.2 / 164.5 | 19.8 / 38.3 / 55.7 / 72.2 s |
+
+- The 150 tok/s goal is met for code and JSON: the DFlash2 draft model gives 162
+  tok/s on code and 203 on JSON on UD-Q2_K_XL. Prose stays at 120-128.
+- Letting Strata choose the drafter is slower than either fixed choice.
+- Writing the DFlash2 flags out by hand nearly stopped drafting (31 tokens drafted on
+  prose), so a wider window and a lower confidence threshold are not yet tested.
+- Four 128k slots fit on the 3090 alone (2.0 GiB free with four 30k prompts live),
+  but Strata prefills prompts one at a time and drafts almost nothing once two
+  streams decode together, so four streams sum to only about 125 tok/s. A batch-4
+  server also makes a lone request slower. llama.cpp batches the streams and goes
+  from 97 to 165 tok/s.
