@@ -402,6 +402,7 @@ correctly and kept at least 1.5 GiB free on each card.
 | Peer tier, one slot, growing K/V + min-p 0.6, on UD-IQ3_XXS / UD-Q2_K_XL / UD-Q3_K_XL | 107.1 / 106.95 / 100.65 | 2,642 / 2,644 / 2,384 | 127 / 108 / 101 (122 / 121 / 90 after 30k) |
 | Peer tier, four slots with resident K/V, min-p 0.6 | 105.3 | 2,589 | 123 |
 | Memory lock on (PLE table pinned in RAM): 128.6 setup / peer tier one, two, four slots | 122.5 / 109.95 / 104.1 / 110.2 | 2,981 / 2,663 / 2,591 / 2,595 | 108 / 106 / 116 / 122 |
+| Strata 0.2.13 (engine only): 128.6 setup / peer tier one slot | 126.05 / 109.4 | 2,984 / 2,647 | 117 / 133 (73 / 124 after 30k) |
 
 What we take from it:
 
@@ -471,6 +472,8 @@ What we take from it:
   multi-slot setups).
 - llamAmpere 0.6.3.8 ties 0.6.3.2 on Linux: 85.1 tok/s decode and 1,873 tok/s
   prefill at 100k (53.8 s to first token).
+- Strata 0.2.13 ties 0.2.12: 126.05 tok/s on the 3090 alone and 109.4 on the peer
+  tier, with the same prefill. The 0.2.12 packs load unchanged.
 - Best so far is 128.6 tok/s, about 86% of the 150 tok/s goal; replicates gave
   127.6 and 127.7. Run-to-run noise is about 4 tok/s, so single-digit differences
   between rows are not real.
