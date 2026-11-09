@@ -1,7 +1,7 @@
 {
  "schema": "history/1",
- "generated_from": "private bake-off grades through 2026-11-08: Flash-Next Unsloth v3.1 round 1, the 3090 + V100 serving tuning and the Flash-Next 150 tok/s serving goal (Strata 0.2.12 through round 15, llamAmpere 0.6.3.2); runs from 2026-10-07 on",
- "generated": "2026-11-08 23:41 CST",
+ "generated_from": "private bake-off grades through 2026-11-08: Flash-Next Unsloth v3.1 round 1, the 3090 + V100 serving tuning and the Flash-Next 150 tok/s serving goal (Strata 0.2.12 through round 20, and a dual-card Tiel-Coder Q6 serving check, llamAmpere 0.6.3.2); runs from 2026-10-07 on",
+ "generated": "2026-11-09 01:48 CST",
  "runs_new": [
   {
    "case": "wa-saluki-27b-iq2",
@@ -3985,6 +3985,45 @@
    "uncensored": false,
    "note": "Nous Research fine-tune of Qwen3.8-27B. Serving tuning only (no agent tests yet): fits the V100 alone, not the RTX 3090. Short-benchmark rates.",
    "vision": null
+  },
+  "strata0212-fnb-v31-udq2kxl-3090-v100": {
+   "id": "strata0212-fnb-v31-udq2kxl-3090-v100",
+   "family": "Qwen3.8 Flash-Next",
+   "label": "Flash-Next UD-Q2_K_XL (Unsloth Dynamic v3.1) \u00b7 Strata 0.2.12, RTX 3090 + V100 peer tier, 128k, 8-bit KV",
+   "base": "Qwen/Qwen3.8-Flash-Next",
+   "arch": "MoE",
+   "engine": "Strata 0.2.12",
+   "quant": "Unsloth UD-Q2_K_XL v3.1 (74 GiB)",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "Serving tuning: the Tesla V100 is a peer tier that computes the experts it caches for the RTX 3090. Short-benchmark rates.",
+   "vision": null
+  },
+  "strata0212-fnb-v31-udq3kxl-3090-v100": {
+   "id": "strata0212-fnb-v31-udq3kxl-3090-v100",
+   "family": "Qwen3.8 Flash-Next",
+   "label": "Flash-Next UD-Q3_K_XL (Unsloth Dynamic v3.1) \u00b7 Strata 0.2.12, RTX 3090 + V100 peer tier, 128k, 8-bit KV",
+   "base": "Qwen/Qwen3.8-Flash-Next",
+   "arch": "MoE",
+   "engine": "Strata 0.2.12",
+   "quant": "Unsloth UD-Q3_K_XL v3.1 (83 GiB)",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "Serving tuning: the Tesla V100 is a peer tier that computes the experts it caches for the RTX 3090. Short-benchmark rates.",
+   "vision": null
+  },
+  "lcpp-tiel35b-q6kxl-3090-v100": {
+   "id": "lcpp-tiel35b-q6kxl-3090-v100",
+   "family": "Tiel Coder 35B",
+   "label": "Tiel-Coder-35B-A3B UD-Q6_K_XL \u00b7 llama.cpp (Clover 4838ffb), RTX 3090 + V100, 128k, 8-bit KV",
+   "base": "Tiel-Coder-35B-A3B",
+   "arch": "MoE 35B / 3B active",
+   "engine": "llama.cpp Clover 4838ffb",
+   "quant": "Unsloth UD-Q6_K_XL",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "Serving tuning only: the whole Q6 model in VRAM across both cards (the V100 half empty). Short-benchmark rates.",
+   "vision": null
   }
  },
  "ab_new": [
@@ -5221,6 +5260,206 @@
   {
    "model": "strata0212-fnb-v31-udiq3xxs-128k",
    "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W, adaptive fetch 2 (overlap off), English and code draft vocabulary, fetch margin 0, PCIe share 0.55, K/V cache that grows with the context, per-token (stream) draft-head norm, draft min-p 0.7; short benchmark; 30,037-token retrieval correct, first token 10.1 s (2,983 tok/s prefill); 120,007-token retrieval correct, first token 40.5 s (2,972 tok/s prefill); decode right after the 30k prompt 71 tok/s, after the long prompt 123 tok/s; free 2.1 GiB (3090)",
+   "decode": 126.0,
+   "quote": null,
+   "prefill": 989.4,
+   "vram": 22398,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W, adaptive fetch 2 (overlap off), English and code draft vocabulary, fetch margin 0, PCIe share 0.55, K/V cache that grows with the context, per-token (stream) draft-head norm, draft min-p 0.6, draft window 5; short benchmark; 30,037-token retrieval correct, first token 10.2 s (2,966 tok/s prefill); 120,007-token retrieval correct, first token 40.7 s (2,954 tok/s prefill); decode right after the 30k prompt 77 tok/s, after the long prompt 114 tok/s; free 2.1 GiB (3090)",
+   "decode": 123.85,
+   "quote": null,
+   "prefill": 965.5,
+   "vram": 22400,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-3090-v100",
+   "engine": "Strata 0.2.12 (CUDA 12.9 build)",
+   "variant": "3090 + V100 peer tier, 350 W, English and code draft vocabulary, four 128k slots with per-slot drafting (one stream measured), peer reserve 2,560 MiB, prompt rows kept on the 3090, 20k tokens of K/V resident in VRAM (rest streamed from pinned host memory), per-token (stream) draft-head norm, draft min-p 0.6; short benchmark; 30,037-token retrieval correct, first token 11.2 s (2,698 tok/s prefill); 120,007-token retrieval correct, first token 46.4 s (2,589 tok/s prefill); decode right after the 30k prompt 117 tok/s, after the long prompt 123 tok/s; free 2.2 GiB (3090) / 2.7 GiB (V100)",
+   "decode": 105.3,
+   "quote": null,
+   "prefill": 678.5,
+   "vram": 30054,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-3090-v100",
+   "engine": "Strata 0.2.12 (CUDA 12.9 build)",
+   "variant": "3090 + V100 peer tier, 350 W, English and code draft vocabulary, peer reserve 2,048 MiB, prompt rows kept on the 3090, per-token (stream) draft-head norm, K/V cache that grows with the context, draft min-p 0.6; short benchmark; 30,037-token retrieval correct, first token 11.0 s (2,728 tok/s prefill); 120,007-token retrieval correct, first token 45.5 s (2,642 tok/s prefill); decode right after the 30k prompt 122 tok/s, after the long prompt 127 tok/s; free 2.2 GiB (3090) / 2.1 GiB (V100)",
+   "decode": 107.1,
+   "quote": null,
+   "prefill": 992.2,
+   "vram": 30568,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W, adaptive fetch 2 (overlap off), English and code draft vocabulary, fetch margin 0, PCIe share 0.55, K/V cache that grows with the context, per-token (stream) draft-head norm, draft min-p 0.6, prompt chunk 4,096 tokens instead of automatic; short benchmark; 30,037-token retrieval correct, first token 13.2 s (2,288 tok/s prefill); 120,007-token retrieval correct, first token 52.9 s (2,272 tok/s prefill); decode right after the 30k prompt 68 tok/s, after the long prompt 125 tok/s; free 2.1 GiB (3090)",
+   "decode": 127.6,
+   "quote": null,
+   "prefill": 1000.9,
+   "vram": 22396,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W, adaptive fetch 2 (overlap off), English and code draft vocabulary, fetch margin 0, PCIe share 0.55, K/V cache that grows with the context, per-token (stream) draft-head norm, draft min-p 0.6, helper threads moved off the worker cores; short benchmark; 30,037-token retrieval correct, first token 10.2 s (2,947 tok/s prefill); 120,007-token retrieval correct, first token 40.7 s (2,953 tok/s prefill); decode right after the 30k prompt 83 tok/s, after the long prompt 112 tok/s; free 2.2 GiB (3090)",
+   "decode": 123.55,
+   "quote": null,
+   "prefill": 998.3,
+   "vram": 22374,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W, adaptive fetch 2 (overlap off), English and code draft vocabulary, fetch margin 0, PCIe share 0.55, K/V cache that grows with the context, per-token (stream) draft-head norm, draft min-p 0.6, 8 CPU pool workers instead of 15; short benchmark; 30,037-token retrieval correct, first token 10.2 s (2,946 tok/s prefill); 120,007-token retrieval correct, first token 40.9 s (2,939 tok/s prefill); decode right after the 30k prompt 71 tok/s, after the long prompt 124 tok/s; free 2.1 GiB (3090)",
+   "decode": 119.85,
+   "quote": null,
+   "prefill": 1025.7,
+   "vram": 22398,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W, adaptive fetch 2 (overlap off), English and code draft vocabulary, fetch margin 0, PCIe share 0.55, K/V cache that grows with the context, per-token (stream) draft-head norm, draft min-p 0.6, adaptive cache minimum gain 1.0 instead of 1.5; short benchmark; 30,037-token retrieval correct, first token 10.2 s (2,944 tok/s prefill); 120,007-token retrieval correct, first token 41.0 s (2,934 tok/s prefill); decode right after the 30k prompt 77 tok/s, after the long prompt 112 tok/s; free 2.2 GiB (3090)",
+   "decode": 123.3,
+   "quote": null,
+   "prefill": 999.3,
+   "vram": 22370,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W, adaptive fetch 2 (overlap off), English and code draft vocabulary, fetch margin 0, PCIe share 0.55, K/V cache that grows with the context, per-token (stream) draft-head norm, draft min-p 0.6; short benchmark; 30,037-token retrieval correct, first token 11.3 s (2,665 tok/s prefill); 120,007-token retrieval correct, first token 41.0 s (2,935 tok/s prefill); decode right after the 30k prompt 79 tok/s, after the long prompt 122 tok/s; free 2.1 GiB (3090)",
+   "decode": 123.05,
+   "quote": null,
+   "prefill": 1065.1,
+   "vram": 22400,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udq3kxl-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W, adaptive fetch 2 (overlap off), English and code draft vocabulary, fetch margin 0, PCIe share 0.55, K/V cache that grows with the context, per-token (stream) draft-head norm, draft min-p 0.6; short benchmark; 30,037-token retrieval correct, first token 12.2 s (2,474 tok/s prefill); 120,007-token retrieval correct, first token 43.5 s (2,764 tok/s prefill); decode right after the 30k prompt 60 tok/s, after the long prompt 108 tok/s; free 2.1 GiB (3090)",
+   "decode": 111.95,
+   "quote": null,
+   "prefill": 880.3,
+   "vram": 22424,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W, adaptive fetch 2 (overlap off), English and code draft vocabulary, fetch margin 0, PCIe share 0.55, K/V cache that grows with the context, per-token (stream) draft-head norm, draft min-p 0.6, host thread on a hyper-thread sibling so the pool gets every physical core; short benchmark; 30,037-token retrieval correct, first token 10.2 s (2,944 tok/s prefill); 120,007-token retrieval correct, first token 40.9 s (2,943 tok/s prefill); decode right after the 30k prompt 73 tok/s, after the long prompt 124 tok/s; free 2.2 GiB (3090)",
+   "decode": 119.75,
+   "quote": null,
+   "prefill": 973.1,
+   "vram": 22374,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W, adaptive fetch 2 (overlap off), English and code draft vocabulary, fetch margin 0, PCIe share 0.55, K/V cache that grows with the context, per-token (stream) draft-head norm, draft min-p 0.6, 96 pool tasks instead of 48; short benchmark; 30,037-token retrieval correct, first token 10.1 s (2,977 tok/s prefill); 120,007-token retrieval correct, first token 40.3 s (2,981 tok/s prefill); decode right after the 30k prompt 71 tok/s, after the long prompt 114 tok/s; free 2.1 GiB (3090)",
+   "decode": 127.7,
+   "quote": null,
+   "prefill": 984.1,
+   "vram": 22378,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W, adaptive fetch 2 (overlap off), English and code draft vocabulary, fetch margin 0, PCIe share 0.55, K/V cache that grows with the context, per-token (stream) draft-head norm, draft min-p 0.6, high-priority CUDA graph stream; short benchmark; 30,037-token retrieval correct, first token 10.2 s (2,958 tok/s prefill); 120,007-token retrieval correct, first token 40.8 s (2,950 tok/s prefill); decode right after the 30k prompt 77 tok/s, after the long prompt 123 tok/s; free 2.2 GiB (3090)",
+   "decode": 126.45,
+   "quote": null,
+   "prefill": 973.6,
+   "vram": 22372,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W, adaptive fetch 2 (overlap off), English and code draft vocabulary, fetch margin 0, PCIe share 0.55, K/V cache that grows with the context, DFlash2 draft model instead of the MTP head (Strata picked draft window 6, confidence 0.5); short benchmark; 30,037-token retrieval correct, first token 10.2 s (2,960 tok/s prefill); 120,007-token retrieval correct, first token 40.8 s (2,946 tok/s prefill); decode right after the 30k prompt 75 tok/s, after the long prompt 125 tok/s; free 2.2 GiB (3090)",
+   "decode": 118.9,
+   "quote": null,
+   "prefill": 980.3,
+   "vram": 22286,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W, adaptive fetch 2 (overlap off), English and code draft vocabulary, fetch margin 0, PCIe share 0.55, K/V cache that grows with the context, DFlash2 draft model instead of the MTP head, draft window 6, confidence 0.65; short benchmark; 30,037-token retrieval correct, first token 10.2 s (2,959 tok/s prefill); 120,007-token retrieval correct, first token 40.8 s (2,950 tok/s prefill); decode right after the 30k prompt 86 tok/s, after the long prompt 119 tok/s; free 2.2 GiB (3090)",
+   "decode": 116.9,
+   "quote": null,
+   "prefill": 985.5,
+   "vram": 22290,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udq3kxl-3090-v100",
+   "engine": "Strata 0.2.12 (CUDA 12.9 build)",
+   "variant": "3090 + V100 peer tier, 350 W, English and code draft vocabulary, peer reserve 2,048 MiB, prompt rows kept on the 3090, per-token (stream) draft-head norm, K/V cache that grows with the context, draft min-p 0.6; short benchmark; 30,037-token retrieval correct, first token 12.3 s (2,458 tok/s prefill); 120,007-token retrieval correct, first token 50.4 s (2,384 tok/s prefill); decode right after the 30k prompt 90 tok/s, after the long prompt 101 tok/s; free 2.2 GiB (3090) / 2.1 GiB (V100)",
+   "decode": 100.65,
+   "quote": null,
+   "prefill": 884.4,
+   "vram": 30568,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udq2kxl-3090-v100",
+   "engine": "Strata 0.2.12 (CUDA 12.9 build)",
+   "variant": "3090 + V100 peer tier, 350 W, English and code draft vocabulary, peer reserve 2,048 MiB, prompt rows kept on the 3090, per-token (stream) draft-head norm, K/V cache that grows with the context, draft min-p 0.6; short benchmark; 30,037-token retrieval correct, first token 11.0 s (2,744 tok/s prefill); 120,007-token retrieval correct, first token 45.5 s (2,644 tok/s prefill); decode right after the 30k prompt 121 tok/s, after the long prompt 108 tok/s; free 2.2 GiB (3090) / 2.2 GiB (V100)",
+   "decode": 106.95,
+   "quote": null,
+   "prefill": 1052.1,
+   "vram": 30566,
+   "error": ""
+  },
+  {
+   "model": "lcpp-tiel35b-q6kxl-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "3090 + V100, all layers in VRAM, split 3:4, flash attention on, Q8 KV, 128k context, thinking off; short benchmark; 30,263-token retrieval correct, first token 16.2 s (1,889 tok/s prefill); 120,233-token retrieval correct, first token 88.0 s (1,373 tok/s prefill); decode right after the 30k prompt 97 tok/s, after the long prompt 63 tok/s; free 5.2 GiB (3090) / 16.6 GiB (V100)",
+   "decode": 118.39,
+   "quote": null,
+   "prefill": 1459.153009696707,
+   "vram": 19226,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W, draft min-p 0.6 setup, prefill head alias",
+   "decode": null,
+   "quote": null,
+   "prefill": null,
+   "vram": null,
+   "error": "not supported: the prefill head alias needs short reads off"
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W, draft min-p 0.6 setup, short reads off, prefill head alias",
+   "decode": null,
+   "quote": null,
+   "prefill": null,
+   "vram": null,
+   "error": "not supported on this build: the second request fails because the output head is reloaded at another address while captured verify graphs still point at the old one"
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
    "variant": "3090 alone, 250 W, drafting off",
    "decode": null,
    "quote": null,
@@ -5457,7 +5696,7 @@
    "date": "2026-11-08",
    "era": "Flash-Next",
    "title": "Flash-Next toward 150 tok/s on one 3090",
-   "what": "Strata 0.2.12: 98.8 to 128.6 tok/s short-benchmark decode (350 W, English draft vocabulary, stream draft-head norm, draft min-p 0.6); 120k prompts prefill at about 2,990 tok/s; adaptive fetch keeps decode at 124-127 tok/s right after a 120k prompt on the 3090 alone; four 128k slots with the V100 keep 109 tok/s per stream.",
+   "what": "Strata 0.2.12: 98.8 to 128.6 tok/s short-benchmark decode (350 W, English draft vocabulary, stream draft-head norm, draft min-p 0.6); 120k prompts prefill at about 2,990 tok/s; adaptive fetch keeps decode at 124-127 tok/s right after a 120k prompt on the 3090 alone; four 128k slots with the V100 keep 109 tok/s per stream. Twenty more single-change runs did not beat it; UD-Q2_K_XL reaches 123.0 and UD-Q3_K_XL 112.0 on the same setup.",
    "why": "Goal: 150 tok/s decode and 1,000+ tok/s prefill on a larger quant. Prefill is met; decode is at 86%, limited by the draft head."
   }
  ],
@@ -6452,7 +6691,7 @@
    "date": "2026-11-08",
    "title": "Flash-Next on one 3090: 129 tok/s, and 127 tok/s right after a 120k prompt",
    "kind": "tuning",
-   "summary": "Toward a goal of 150 tok/s decode and 1,000+ tok/s prefill on a larger Unsloth v3.1 quant of Flash-Next, Strata 0.2.12 on one RTX 3090 reached 128.6 tok/s short-benchmark decode on UD-IQ3_XXS (from 98.8): power 250 to 350 W gave +13%, an English and code draft vocabulary +2%, and a per-token (stream) draft-head norm with a draft min-p of 0.6 most of the rest, by raising draft acceptance from about 55% to 60-68%. Prefill is met: with a K/V cache that grows with the context, a 120,007-token retrieval was correct with the first token in 40.2 s (2,987 tok/s). Strata's adaptive fetch (margin 0, PCIe share 0.55) holds 124-127 tok/s right after that long prompt on the 3090 alone. With the V100 as a peer tier that computes its cached experts, decode stays at 119 tok/s after a 30k prompt and 128 after 120k, and four 128k slots keep 109 tok/s per stream.",
+   "summary": "Toward a goal of 150 tok/s decode and 1,000+ tok/s prefill on a larger Unsloth v3.1 quant of Flash-Next, Strata 0.2.12 on one RTX 3090 reached 128.6 tok/s short-benchmark decode on UD-IQ3_XXS (from 98.8): power 250 to 350 W gave +13%, an English and code draft vocabulary +2%, and a per-token (stream) draft-head norm with a draft min-p of 0.6 most of the rest, by raising draft acceptance from about 55% to 60-68%. Prefill is met: with a K/V cache that grows with the context, a 120,007-token retrieval was correct with the first token in 40.2 s (2,987 tok/s). Strata's adaptive fetch (margin 0, PCIe share 0.55) holds 124-127 tok/s right after that long prompt on the 3090 alone. With the V100 as a peer tier that computes its cached experts, decode stays at 119 tok/s after a 30k prompt and 128 after 120k, and four 128k slots keep 109 tok/s per stream. Twenty more single-change runs found nothing faster: CPU pool and thread placement, prompt chunk size, a high-priority graph stream and a DFlash2 draft model (7.5% slower on our prose prompts) all tied or lost, and two replicates (127.6, 127.7) confirm the 128.6 base. The same setup gives 123.0 tok/s on UD-Q2_K_XL and 112.0 on UD-Q3_K_XL. On the peer tier the quant barely matters: Q2_K_XL ties IQ3_XXS at 107 tok/s.",
    "settings": "Strata 0.2.12, MTP spec 4, --spec-min-p 0.6, --mtp-hnorm stream, --mtp-draft-vocab draft_vocab_en.bin, 128k context, int8 KV, --kv-grow, STRATA_ADAPT_FETCH=2 STRATA_ADAPT_FETCH_MARGIN=0 --pcie-frac 0.55 (3090 alone)",
    "metrics": [
     {
@@ -6481,7 +6720,7 @@
     }
    ],
    "quality": "Oracle and both retrieval prompts (30k and 120k) correct in every passing config.",
-   "caveat": "Short-benchmark rates, not agent runs; the 150 tok/s goal is not reached (86%). Run-to-run noise is about 4 tok/s and the 128.6 row is one run. Multi-slot rows measure one stream, not the total. On the 3090 alone decode drops to 65-80 tok/s right after a 30k prompt. A router prior that prefers cached experts reached 135 tok/s after long prompts but changes the output and is not adopted without a quality check. llamAmpere 0.6.3.2 on the same files was slower (86 tok/s decode)."
+   "caveat": "Short-benchmark rates, not agent runs; the 150 tok/s goal is not reached (86%). Run-to-run noise is about 4 tok/s; the 128.6 base replicated at 127.6 and 127.7. Multi-slot rows measure one stream, not the total. On the 3090 alone decode drops to 65-80 tok/s right after a 30k prompt. A router prior that prefers cached experts reached 135 tok/s after long prompts but changes the output and is not adopted without a quality check. llamAmpere 0.6.3.2 on the same files was slower (86 tok/s decode)."
   },
   {
    "date": "2026-11-08",
