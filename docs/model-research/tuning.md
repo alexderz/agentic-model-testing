@@ -500,6 +500,14 @@ rates.
 | UD-IQ3_XXS, both drafters, automatic choice | 100.95 | 132.85 | 184.55 | 3/3 |
 | UD-IQ3_XXS, DFlash2 flags written out, window 8 or confidence 0.3 | 87.2 | 85.9 | 137.2 | 3/3 |
 | V100 peer tier, one slot, MTP head | 107.8 | 133.95 (81%) | 147.25 (95%) | 3/3 |
+| UD-Q2_K_XL, DFlash2, window 8 | 121.4 | 162.15 (72%) | **206.95** (88%) | 3/3 |
+| UD-Q2_K_XL, DFlash2, window 8, with 30k and 120k retrievals (2.2 GiB free after 120k) | 120.25 | **167.55** (75%) | 206.05 (89%) | retrievals correct |
+| UD-Q2_K_XL, DFlash2, confidence 0.3 / window 8 and confidence 0.3 | 114.25 / 112.95 | 157.1 / 149.4 | 198.45 / 195.2 | 3/3 |
+| UD-Q2_K_XL, memory clock locked at 9,751 MHz: DFlash2 window 8 / MTP head | 117.35 / 125.25 | 162.95 / 151.6 | 201.85 / 177.45 | retrievals correct |
+| UD-Q2_K_XL, sampled like an agent: MTP head / MTP coupled / DFlash2 window 8 | 122.95 / 124.7 / 118.4 | 157.55 / 157.05 / 150.5 | 183.65 / 179.1 / 197.6 | retrievals correct |
+| 256k context, UD-Q2_K_XL, MTP head, reserve 4,096 MiB | 123.55 | 144.9 | 172.9 | 248k correct, 94.75 s |
+| 256k context, UD-Q2_K_XL, DFlash2, reserve 4,096 MiB: Strata's choice / confidence 0.5 | 116.5 / 120.2 | 152.85 / 154.65 | 193.7 / 191.45 | 248k correct, 93.1 / 93.3 s, 2.6 GiB free |
+| 256k context, UD-Q2_K_XL, DFlash2, reserve 3,584 MiB: Strata's choice / confidence 0.5 | 116.1 / 117.6 | 157.95 / 157.45 | 192.6 / 197.35 | 248k correct, 93.7 s, 2.2 GiB free |
 
 Several streams at once: total decode while every stream is writing, about
 1,600-token replies.
@@ -510,6 +518,8 @@ Several streams at once: total decode while every stream is writing, about
 | Strata, 3090 alone, four 128k slots, ~30k prompts | 95.1 / 105.1 / 122.7 | 11.9 / 28.3 / 44.7 / 61.1 s |
 | Strata, peer tier, four 128k slots, ~30k prompts | 99.1 / 116.8 / 124.1 | 11.7 / 27.8 / 43.9 / 60.2 s |
 | llama.cpp, Tiel-Coder 35B Q6 in VRAM on both cards, four 128k slots | 96.55 / 133.2 / 164.5 | 19.8 / 38.3 / 55.7 / 72.2 s |
+| Strata, 3090 alone, four 128k slots, DFlash2 on each slot, sampled | 93.5 / 108.9 / 126.9 | 11.1 to 55.8 s; 0.6 GiB free, misses our fit rule |
+| llamAmpere 0.6.3.2, UD-IQ3_XXS, four 32k slots | 71.5 / 82.6 / 45.7 | 129 s for one prompt, 505 s with four |
 
 - The 150 tok/s goal is met for code and JSON: the DFlash2 draft model gives 162
   tok/s on code and 203 on JSON on UD-Q2_K_XL. Prose stays at 120-128.
@@ -521,3 +531,14 @@ Several streams at once: total decode while every stream is writing, about
   streams decode together, so four streams sum to only about 125 tok/s. A batch-4
   server also makes a lone request slower. llama.cpp batches the streams and goes
   from 97 to 165 tok/s.
+- With a draft window of 8, the DFlash2 draft model reaches 167.55 tok/s on code and
+  206 on JSON, and the same setup keeps 2.2 GiB free after a 120k-token prompt
+  (first token 42.2 s). A 256k slot with DFlash2 fits and stays above 150 on code.
+- A lower draft confidence (0.3) is slower; coupled draft sampling and a memory clock
+  lock change nothing (under CUDA the driver keeps the memory clock at 9,501 MHz).
+- Sampled like an agent (temperature 0.7, top-p 0.8, top-k 20), the MTP head keeps its
+  greedy rates; DFlash2 loses about 10% on code (150.5 tok/s) and 4% on JSON.
+- llamAmpere does not scale Flash-Next across slots: a 30k prompt prefills at 234
+  tok/s and four streams total only 46 tok/s.
+- Keeping the K/V cache in host RAM (llama.cpp, Tiel-Coder on both cards) cuts
+  decode from 118 to 24 tok/s and prefill by about 40% to free only 1.2-1.4 GiB per card.

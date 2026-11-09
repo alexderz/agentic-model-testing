@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-11-09 08:12 CST",
- "built": "2026-11-09 08:13 CST",
+ "generated": "2026-11-09 10:21 CST",
+ "built": "2026-11-09 10:21 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -144,6 +144,35 @@
    ],
    "quality": "Quality check 3/3 on every code and JSON setup; all JSON outputs valid; every retrieval correct.",
    "caveat": "Short-benchmark rates, not agent runs. Writing the DFlash2 flags out explicitly nearly stopped drafting (87 tok/s), so a wider draft window and a lower confidence threshold are not yet tested."
+  },
+  {
+   "date": "2026-11-09",
+   "kind": "tuning",
+   "title": "Flash-Next code output at 168 tok/s with a fit check, and it holds when sampled like an agent",
+   "summary": "On UD-Q2_K_XL with a DFlash2 draft model and a draft window of 8, Strata 0.2.13 reaches 167.55 tok/s on code, 206 on JSON and 154.8 on mixed prose and code, and still keeps 2.2 GiB free after a 120k-token prompt (first token 42.2 s, 2,847 tok/s prefill). A 256k slot with the DFlash2 draft model also fits and stays above 150 on code and JSON (152.85-157.95 and 191-197 tok/s; first token at 248k in about 93 s). Sampling like an agent instead of greedy decoding leaves the MTP head unchanged and costs DFlash2 about 10% on code (150.5 tok/s). A lower draft confidence, coupled draft sampling and a memory clock lock changed nothing; four slots with DFlash2 sum to 127 tok/s but miss our fit rule. llamAmpere with four slots is far slower (46-83 tok/s total, 30k prompts prefill at 234 tok/s). Keeping the K/V cache in host RAM on llama.cpp cuts decode about five times.",
+   "settings": "Strata 0.2.13, the 128.6 setup, DFlash2 draft model, draft window 8, draft confidence 0.5, 128k context, int8 KV; 256k rows use a 3,584-4,096 MiB VRAM reserve",
+   "metrics": [
+    {
+     "label": "Code decode, MTP head to DFlash2 window 8 (UD-Q2_K_XL)",
+     "before": 150.65,
+     "after": 167.55,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Code decode, greedy to sampled (DFlash2)",
+     "before": 167.55,
+     "after": 150.5,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Decode with K/V cache in VRAM to host RAM (Tiel-Coder, llama.cpp)",
+     "before": 118.4,
+     "after": 24.25,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Quality check 3/3 on every code and JSON setup; all JSON outputs valid; every retrieval correct.",
+   "caveat": "Short-benchmark rates, not agent runs. Prose stays at about 116-128 tok/s, short of the 150 goal; run-to-run spread is about 5%."
   },
   {
    "date": "2026-11-08",
@@ -14331,6 +14360,176 @@
    "prefill": 1829.8,
    "vram": 22542,
    "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 alone, 350 W, adaptive fetch 2, English and code draft vocabulary, fetch margin 0, PCIe share 0.55, K/V cache that grows with the context, stream draft-head norm, draft min-p 0.6 (the 128.6 setup) on UD-Q2_K_XL, DFlash2 draft model, draft window 8; short benchmark by content: prose 121.4, code 162.15 (72% accepted), JSON 206.95 tok/s (88% accepted, both valid); quality check 3/3 (a Python task run in a sandbox, a JSON extraction, a word problem); first token 0.3-0.5 s on short prompts; free 2.2 GiB (3090)",
+   "decode": 121.4,
+   "quote": null,
+   "prefill": 1067.6,
+   "vram": 22306,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 alone, 350 W, adaptive fetch 2, English and code draft vocabulary, fetch margin 0, PCIe share 0.55, K/V cache that grows with the context, stream draft-head norm, draft min-p 0.6 (the 128.6 setup) on UD-Q2_K_XL, DFlash2 draft model, draft confidence 0.3; short benchmark by content: prose 114.25, code 157.1, JSON 198.45 tok/s (both valid); quality check 3/3 (a Python task run in a sandbox, a JSON extraction, a word problem); slower than confidence 0.5; free 2.2 GiB (3090)",
+   "decode": 114.25,
+   "quote": null,
+   "prefill": 1062.4,
+   "vram": 22282,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 alone, 350 W, adaptive fetch 2, English and code draft vocabulary, fetch margin 0, PCIe share 0.55, K/V cache that grows with the context, stream draft-head norm, draft min-p 0.6 (the 128.6 setup) on UD-Q2_K_XL, DFlash2 draft model, draft window 8 and confidence 0.3; short benchmark by content: prose 112.95, code 149.4, JSON 195.2 tok/s (both valid); quality check 3/3 (a Python task run in a sandbox, a JSON extraction, a word problem); the slowest of the three; free 2.2 GiB (3090)",
+   "decode": 112.95,
+   "quote": null,
+   "prefill": 1051.2,
+   "vram": 22304,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 alone, 350 W, adaptive fetch 2, English and code draft vocabulary, fetch margin 0, PCIe share 0.55, K/V cache that grows with the context, stream draft-head norm, draft min-p 0.6 (the 128.6 setup) on UD-Q2_K_XL, MTP draft head, 256k context, VRAM reserve 4,096 MiB; short benchmark by content: prose 123.55, code 144.9, JSON 172.9 tok/s (both valid); 248,373-token retrieval correct, first token 94.75 s (2,626 tok/s prefill); free 2.2 GiB (3090)",
+   "decode": 123.55,
+   "quote": null,
+   "prefill": 1006.2,
+   "vram": 22294,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 alone, 350 W, adaptive fetch 2, English and code draft vocabulary, fetch margin 0, PCIe share 0.55, K/V cache that grows with the context, stream draft-head norm, draft min-p 0.6 (the 128.6 setup) on UD-Q2_K_XL, DFlash2 draft model, draft window 8 (the best code and JSON setup); short benchmark by content: prose 120.25, code 167.55 (75% accepted), JSON 206.05 (89% accepted, both valid), mixed prose and code 154.8 tok/s; 30,037-token retrieval correct, first token 11.2 s (2,685 tok/s prefill); 120,007-token retrieval correct, first token 42.2 s (2,847 tok/s prefill); free 2.2 GiB (3090) after the 120k prompt, so it fits",
+   "decode": 120.25,
+   "quote": null,
+   "prefill": 1069.7,
+   "vram": 22304,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 alone, 350 W, adaptive fetch 2, English and code draft vocabulary, fetch margin 0, PCIe share 0.55, K/V cache that grows with the context, stream draft-head norm, draft min-p 0.6 (the 128.6 setup) on UD-Q2_K_XL, DFlash2 draft model with Strata's own window and confidence (6 and 0.7), 256k context, VRAM reserve 4,096 MiB; short benchmark by content: prose 116.5, code 152.85, JSON 193.7 tok/s (both valid); 248,373-token retrieval correct, first token 93.1 s (2,672 tok/s prefill); free 2.6 GiB (3090)",
+   "decode": 116.5,
+   "quote": null,
+   "prefill": 1012.7,
+   "vram": 21924,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 alone, 350 W, adaptive fetch 2, English and code draft vocabulary, fetch margin 0, PCIe share 0.55, K/V cache that grows with the context, stream draft-head norm, draft min-p 0.6 (the 128.6 setup) on UD-Q2_K_XL, DFlash2 draft model, confidence 0.5, 256k context, VRAM reserve 4,096 MiB; short benchmark by content: prose 120.2, code 154.65, JSON 191.45 tok/s (both valid); 248,373-token retrieval correct, first token 93.3 s (2,667 tok/s prefill); free 2.6 GiB (3090)",
+   "decode": 120.2,
+   "quote": null,
+   "prefill": 1004.6,
+   "vram": 21924,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 alone, 350 W, adaptive fetch 2, English and code draft vocabulary, fetch margin 0, PCIe share 0.55, K/V cache that grows with the context, stream draft-head norm, draft min-p 0.6 (the 128.6 setup) on UD-Q2_K_XL, DFlash2 draft model, 256k context, VRAM reserve 3,584 MiB; short benchmark by content: prose 116.1, code 157.95, JSON 192.6 tok/s (both valid); 248,373-token retrieval correct, first token 93.7 s (2,650 tok/s prefill); free 2.2 GiB (3090)",
+   "decode": 116.1,
+   "quote": null,
+   "prefill": 1019.1,
+   "vram": 22374,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 alone, 350 W, adaptive fetch 2, English and code draft vocabulary, fetch margin 0, PCIe share 0.55, K/V cache that grows with the context, stream draft-head norm, draft min-p 0.6 (the 128.6 setup) on UD-Q2_K_XL, DFlash2 draft model, confidence 0.5, 256k context, VRAM reserve 3,584 MiB; short benchmark by content: prose 117.6, code 157.45, JSON 197.35 tok/s (both valid); 248,373-token retrieval correct, first token 93.7 s (2,651 tok/s prefill); free 2.2 GiB (3090)",
+   "decode": 117.6,
+   "quote": null,
+   "prefill": 1029.3,
+   "vram": 22370,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 alone, 350 W, adaptive fetch 2, English and code draft vocabulary, fetch margin 0, PCIe share 0.55, K/V cache that grows with the context, stream draft-head norm, draft min-p 0.6 (the 128.6 setup) on UD-Q2_K_XL, DFlash2 draft model, draft window 8, memory clock locked at 9,751 MHz (the driver still runs 9,501 MHz under CUDA, so the lock does nothing); short benchmark by content: prose 117.35, code 162.95, JSON 201.85, mixed 151.8 tok/s; 120,007-token retrieval correct, first token 42.7 s; free 2.2 GiB (3090)",
+   "decode": 117.35,
+   "quote": null,
+   "prefill": 1046.7,
+   "vram": 22300,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 alone, 350 W, adaptive fetch 2, English and code draft vocabulary, fetch margin 0, PCIe share 0.55, K/V cache that grows with the context, stream draft-head norm, draft min-p 0.6 (the 128.6 setup) on UD-Q2_K_XL, MTP draft head, memory clock locked at 9,751 MHz (no effect under CUDA); short benchmark by content: prose 125.25, code 151.6, JSON 177.45 tok/s; 30k and 120k retrievals correct; free 2.2 GiB (3090)",
+   "decode": 125.25,
+   "quote": null,
+   "prefill": 1080.5,
+   "vram": 22370,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 alone, 350 W, adaptive fetch 2, English and code draft vocabulary, fetch margin 0, PCIe share 0.55, K/V cache that grows with the context, stream draft-head norm, draft min-p 0.6 (the 128.6 setup) on UD-Q2_K_XL, MTP draft head, sampled like an agent (temperature 0.7, top-p 0.8, top-k 20); short benchmark by content: prose 122.95, code 157.55 (84% accepted), JSON 183.65 tok/s (95% accepted, valid), about the same as greedy; 30k and 120k retrievals correct, first token 11.3 / 41.7 s; free 2.2 GiB (3090)",
+   "decode": 122.95,
+   "quote": null,
+   "prefill": 1075.7,
+   "vram": 22370,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 alone, 350 W, adaptive fetch 2, English and code draft vocabulary, fetch margin 0, PCIe share 0.55, K/V cache that grows with the context, stream draft-head norm, draft min-p 0.6 (the 128.6 setup) on UD-Q2_K_XL, MTP draft head with coupled draft sampling, sampled like an agent (temperature 0.7, top-p 0.8, top-k 20); short benchmark by content: prose 124.7, code 157.05, JSON 179.1 tok/s (valid); no change from uncoupled; 30k and 120k retrievals correct; free 2.2 GiB (3090)",
+   "decode": 124.7,
+   "quote": null,
+   "prefill": 1077.1,
+   "vram": 22374,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 alone, 350 W, adaptive fetch 2, English and code draft vocabulary, fetch margin 0, PCIe share 0.55, K/V cache that grows with the context, stream draft-head norm, draft min-p 0.6 (the 128.6 setup) on UD-Q2_K_XL, DFlash2 draft model, draft window 8, sampled like an agent (temperature 0.7, top-p 0.8, top-k 20); short benchmark by content: prose 118.4, code 150.5 (71% accepted), JSON 197.6 (87% accepted, valid), mixed 146.9 tok/s; code is 10% below greedy; 30k and 120k retrievals correct, first token 11.3 / 42.6 s; free 2.2 GiB (3090)",
+   "decode": 118.4,
+   "quote": null,
+   "prefill": 1066.4,
+   "vram": 22306,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 alone, 350 W, adaptive fetch 2, English and code draft vocabulary, fetch margin 0, PCIe share 0.55, K/V cache that grows with the context, stream draft-head norm, draft min-p 0.6 (the 128.6 setup) on UD-Q2_K_XL, DFlash2 draft model on each of four 128k slots with resident K/V, sampled; four ~30k prompts with 1,200-word replies, all correct; total decode 93.5 / 108.9 / 126.9 tok/s with 1 / 2 / 4 streams; prompts prefill one at a time (first tokens 11.1 to 55.8 s); free 0.6 GiB (3090) with four prompts live, misses our 1.5 GiB fit rule",
+   "decode": 126.92,
+   "quote": null,
+   "prefill": 2837.9,
+   "vram": 23968,
+   "error": "misses the fit rule: 592 MiB free with four 30k prompts live"
+  },
+  {
+   "model": "llamampere0632-fnb-v31-udiq3xxs-108k",
+   "engine": "llamAmpere 0.6.3.2",
+   "variant": "3090 alone, 350 W, the author's Swift Q2S-B MTP draft model, four 32k slots; one-stream short benchmark 65.2 tok/s; four ~30k prompts with 1,200-word replies, all correct; total decode 71.5 / 82.6 / 45.7 tok/s with 1 / 2 / 4 streams; a lone 30k prompt prefills at 234 tok/s (first token 129 s), four shared prompts wait 505 s; free 2.5 GiB (3090); Strata does about 10 times better on prefill",
+   "decode": 45.69,
+   "quote": null,
+   "prefill": 233.7,
+   "vram": 21974,
+   "error": ""
+  },
+  {
+   "model": "lcpp-tiel35b-q6kxl-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "both cards, K/V cache kept in host RAM instead of VRAM; short benchmark; 30,263-token retrieval correct, first token 26.4 s (1,155 tok/s prefill); 120,233-token retrieval correct, first token 144.2 s (836 tok/s prefill); decode 24 tok/s against 118 with the K/V cache in VRAM, about 5 times slower to free only about 1.4 GiB (3090) and 1.2 GiB (V100)",
+   "decode": 24.25,
+   "quote": null,
+   "prefill": 1006.9,
+   "vram": 17790,
+   "error": ""
   }
  ],
  "engines": [
@@ -16049,8 +16248,8 @@
     }
    ],
    "chart": "bars",
-   "evidence": "2026-11-08, Strata 0.2.12, 128k context, int8 KV, short-benchmark rates; 30k and 120k retrievals correct in every config. No gain from MTP spec 3, 5 or 6, min-p 0.3 or 0.7, asynchronous tiers, transparent huge pages, the shared-memory expert kernel, a smaller VRAM reserve, split decode attention, coupled drafting (greedy benchmark), the fused hyper-connection projection, PCIe share 0.80, a prompt-lookup chain, a 4-bit draft head, resident K/V for a single slot, draft min-p 0.7 or window 5 with the stream norm, a 4,096-token prompt chunk (prefill 23% slower), CPU pool and host-thread placement, more pool tasks, a lower adaptive gain threshold, a high-priority graph stream, a DFlash2 draft model on prose (7.5% slower; it wins on code and JSON, 162 and 203 tok/s), locking the PLE table in RAM, Strata 0.2.13 (126.1 tok/s alone, 109.4 on the peer tier), or llamAmpere 0.6.3.8 (85.1 tok/s, same as 0.6.3.2). The prefill head alias does not run on this build. Measuring through the llama-swap proxy cost 2% (noise).",
-   "caveat": "Short-benchmark rates, not agent runs. The goal of 150 tok/s decode is met on code (162 tok/s) and JSON (203) with a DFlash2 draft model, not on prose (best 128.6, replicated at 127.6 and 127.7); the limit is the draft head. Multi-slot rows measure one stream unless they say total; four streams on Strata sum to about 125 tok/s. Two slots on the 3090 alone still starve the expert cache after long prompts (53 tok/s after 120k).",
+   "evidence": "2026-11-08, Strata 0.2.12, 128k context, int8 KV, short-benchmark rates; 30k and 120k retrievals correct in every config. No gain from MTP spec 3, 5 or 6, min-p 0.3 or 0.7, asynchronous tiers, transparent huge pages, the shared-memory expert kernel, a smaller VRAM reserve, split decode attention, coupled drafting (greedy benchmark), the fused hyper-connection projection, PCIe share 0.80, a prompt-lookup chain, a 4-bit draft head, resident K/V for a single slot, draft min-p 0.7 or window 5 with the stream norm, a 4,096-token prompt chunk (prefill 23% slower), CPU pool and host-thread placement, more pool tasks, a lower adaptive gain threshold, a high-priority graph stream, a DFlash2 draft model on prose (7.5% slower; it wins on code and JSON, up to 167.55 and 206.95 tok/s with a draft window of 8), locking the PLE table in RAM, Strata 0.2.13 (126.1 tok/s alone, 109.4 on the peer tier), or llamAmpere 0.6.3.8 (85.1 tok/s, same as 0.6.3.2). The prefill head alias does not run on this build. Measuring through the llama-swap proxy cost 2% (noise).",
+   "caveat": "Short-benchmark rates, not agent runs. The goal of 150 tok/s decode is met on code (167.55 tok/s greedy, 150.5 sampled) and JSON (206.95) with a DFlash2 draft model, not on prose (best 128.6, replicated at 127.6 and 127.7); the limit is the draft head. Multi-slot rows measure one stream unless they say total; four streams on Strata sum to about 125 tok/s. Two slots on the 3090 alone still starve the expert cache after long prompts (53 tok/s after 120k).",
    "doc": "https://github.com/alexderz/agentic-model-testing/blob/main/docs/model-research/tuning.md#13-flash-next-toward-150-toks-on-one-3090"
   },
   {
