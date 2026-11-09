@@ -458,18 +458,18 @@
     },
     {
       "id": "flash-next-goal",
-      "title": "Flash-Next on one 3090: power, overlap, draft vocabulary, then adaptive fetch",
-      "rule": "With Strata on a 3090, raise the power limit before touching draft settings, load the English and code draft vocabulary, and use adaptive fetch (margin 0) when long prompts matter; adaptive overlap is a hair faster on short prompts only.",
+      "title": "Flash-Next on one 3090: power, draft vocabulary and draft-head norm, then adaptive fetch",
+      "rule": "With Strata on a 3090, raise the power limit before touching draft settings, load the English and code draft vocabulary, use the stream draft-head norm with draft min-p 0.6, and use adaptive fetch (margin 0, PCIe share 0.55) with a growing K/V cache; add the V100 as a peer tier with prompt rows kept on the 3090 for several slots or decode after mid-length prompts.",
       "metrics": [
         {"label": "Flash-Next UD-IQ3_XXS decode, 250 W to 350 W", "before": 98.8, "after": 112.2, "unit": "tok/s"},
-        {"label": "Same, adaptive overlap and English draft vocabulary", "before": 112.2, "after": 118.8, "unit": "tok/s"},
-        {"label": "Same, prefill of a 120k prompt, 250 W to 350 W with int8 hyper-connection projections", "before": 2419, "after": 2965, "unit": "tok/s"},
-        {"label": "Decode right after a 120k prompt, overlap to adaptive fetch (margin 0, PCIe share 0.55)", "before": 63.6, "after": 125.3, "unit": "tok/s"},
-        {"label": "Per-stream decode with two 128k slots, 3090 alone (350 W) to 3090 + V100 helper", "before": 84.0, "after": 100.2, "unit": "tok/s"}
+        {"label": "Same, draft vocabulary, adaptive fetch, growing K/V, stream draft-head norm, min-p 0.6", "before": 112.2, "after": 128.6, "unit": "tok/s"},
+        {"label": "Same, prefill of a 120k prompt, 250 W to 350 W with a growing K/V cache", "before": 2419, "after": 2987, "unit": "tok/s"},
+        {"label": "Decode right after a 120k prompt, overlap to adaptive fetch with the stream norm", "before": 63.6, "after": 127.4, "unit": "tok/s"},
+        {"label": "Per-stream decode with four 128k slots, V100 helper cache to V100 peer tier with resident K/V and stream norm", "before": 93.7, "after": 109.3, "unit": "tok/s"}
       ],
       "chart": "bars",
-      "evidence": "2026-11-08, Strata 0.2.12, 128k context, int8 KV, short-benchmark rates; 30k and 120k retrievals correct in every config. No gain from MTP spec 3 or 6, min-p 0.3 or 0.7, asynchronous tiers, transparent huge pages, the shared-memory expert kernel, a smaller VRAM reserve, split decode attention, coupled drafting (greedy benchmark) or the fused hyper-connection projection.",
-      "caveat": "Short-benchmark rates, not agent runs. The goal of 150 tok/s decode is not reached (best 118.8); a decode profile puts the limit on the draft head (2.2 tokens kept per window). Multi-slot rows measure one stream, not the total. The V100 peer tier missed our fit rule by 44 MiB.",
+      "evidence": "2026-11-08, Strata 0.2.12, 128k context, int8 KV, short-benchmark rates; 30k and 120k retrievals correct in every config. No gain from MTP spec 3, 5 or 6, min-p 0.3 or 0.7, asynchronous tiers, transparent huge pages, the shared-memory expert kernel, a smaller VRAM reserve, split decode attention, coupled drafting (greedy benchmark), the fused hyper-connection projection, PCIe share 0.80, a prompt-lookup chain, a 4-bit draft head, or resident K/V for a single slot. Measuring through the llama-swap proxy cost 2% (noise).",
+      "caveat": "Short-benchmark rates, not agent runs. The goal of 150 tok/s decode is not reached (best 128.6, one run); the limit is the draft head. Multi-slot rows measure one stream, not the total. Two slots on the 3090 alone still starve the expert cache after long prompts (53 tok/s after 120k).",
       "doc": "docs/model-research/tuning.md#13-flash-next-toward-150-toks-on-one-3090"
     },
     {
