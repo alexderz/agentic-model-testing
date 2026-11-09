@@ -363,6 +363,18 @@ correctly and kept at least 1.5 GiB free on each card.
 | Same, adaptive overlap on (needs the optimisation off) | 108.3 | 2,666 | 77 |
 | Two 128k slots: 3090 alone at 250 W / with the V100 at 350 W | 80.5 / 100.2 | 2,335 / 2,622 | 59 / 101 |
 | Four 128k slots with the V100 | 93.7 | 2,609 | 80 |
+| Overlap + split decode attention / coupled drafting | 115.1 / 114.3 | 2,865 / 2,838 | 65 / 69 |
+| Overlap + router prior 1.5 (**lossy**, changes the output) | 117.7 | 2,823 | 135 |
+| Overlap + English and code draft vocabulary | **118.8** | 2,847 (42.2 s) | 64 |
+| Same + fused hyper-connection up projection / int8 hyper-connection projections | 118.0 / 114.8 | 2,905 / 2,934 | 69 / 77 |
+| Adaptive fetch 2 instead of overlap | 113.5 | 2,823 | 102 |
+| Fetch + draft vocabulary | 117.2 | 2,838 | 101 |
+| Fetch + draft vocabulary + int8 hyper-connection projections | 113.3 | **2,965 (40.6 s)** | 100 |
+| Fetch + draft vocabulary, fetch margin 0 | 118.5 | 2,845 | 115 |
+| Same, PCIe share 0.55 | 116.8 | 2,879 (41.8 s) | **125** |
+| Fetch + draft vocabulary, two 128k slots, 3090 alone | 84.0 | 2,754 | 50 |
+| V100 helper cache + draft vocabulary | 109.2 | 2,636 | 105 |
+| V100 peer tier (the V100 computes its cached experts) + draft vocabulary, one / two slots | 107.1 / 96.7 | 1,546 / 1,517 (77.7 s) | 118 / 101; misses our fit rule (1,492 MiB free on the V100) |
 | Drafting off | not supported: native IQ packs require MTP drafting | | |
 
 What we take from it:
@@ -387,4 +399,19 @@ What we take from it:
   Swift Q2S-B draft model and 1,865 tok/s prefill at 100k (54 s to first token) at
   350 W; without a draft model, 59 to 62 tok/s, and the default expert-cache
   reserve left only 1.1 GiB free (a 1,536 MiB reserve fixes it).
-- Best so far is 116.9 tok/s, about 78% of the 150 tok/s goal.
+- The English and code draft vocabulary is a small exact gain (+2%) and frees about
+  110 MiB for experts.
+- Adaptive fetch fixes decode after long prompts on the 3090 alone: with margin 0 and
+  a 0.55 PCIe share it holds 125 tok/s right after a 120k prompt (overlap: about 65)
+  at almost the same short-benchmark rate. That is the best setup for agent turns.
+- A decode profile (overlap, first measured prompt) shows why short-benchmark decode
+  has stopped near 119: each draft window tries 3.0 tokens and keeps 2.2, and takes
+  19.5 ms, of which GPU work alone is about 12.9 ms and expert-cache misses about
+  2.1 ms. Removing every miss would give at most about 128 tok/s; 150 needs more
+  accepted tokens per window, which means a better draft head.
+- The router prior that prefers cached experts reaches 135 tok/s after long prompts,
+  but it changes the model's output and is not adopted without a quality check.
+- The V100 peer tier gives 118 tok/s after a 120k prompt but halves prefill (about
+  1,550 tok/s) and left 44 MiB too little free on the V100 for our fit rule.
+- Best so far is 118.8 tok/s, about 79% of the 150 tok/s goal. Run-to-run noise is
+  about 4 tok/s, so single-digit differences between rows are not real.
