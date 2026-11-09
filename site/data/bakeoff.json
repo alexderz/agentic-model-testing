@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-11-09 12:33 CST",
- "built": "2026-11-09 12:33 CST",
+ "generated": "2026-11-09 14:41 CST",
+ "built": "2026-11-09 14:41 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -202,6 +202,29 @@
    ],
    "quality": "Every parallel stream answered its prompt correctly; 30k retrievals correct in the thinking-on runs; one of two JSON outputs invalid in each thinking-on run.",
    "caveat": "Short-benchmark rates, not agent runs. Strata prefills parallel prompts one at a time and drafts little once several streams decode, so the total stays near 123 tok/s; per stream that is 19-35 tok/s with four streams."
+  },
+  {
+   "date": "2026-11-09",
+   "title": "Flash-Next keeps agent speed but still cannot ship a working CLI or pagoda",
+   "kind": "grading",
+   "summary": "On the daily-driver setup (UD-Q2_K_XL, MTP draft head, one 3090) agent test 1 ran 62 minutes at 120.6 tok/s agent-run decode with a 0.46 s median first token, yet the CLI it delivered crashes on start (its own tests: 94 pass, 53 fail). Four more one-shot pagodas, across Q2_K_XL and Q3_K_XL and both samplers, are all blank: 0 working pagodas in 8 tries for this model.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Agent-run decode, test 1",
+     "before": null,
+     "after": 120.6,
+     "unit": "tok/s"
+    },
+    {
+     "label": "First token median, test 1",
+     "before": null,
+     "after": 0.46,
+     "unit": "s"
+    }
+   ],
+   "quality": "Test 1 fails every live check; test 6 pagodas 0 of 10 each.",
+   "caveat": "One agent run (OpenCode, not T3 Code); test 2 agent runs stopped at the 85 °C limit and are being rerun at 300 W."
   },
   {
    "date": "2026-11-08",
@@ -3609,7 +3632,7 @@
    "quant": "Unsloth UD-Q2_K_XL v3.1 (74 GiB)",
    "kind": "stock",
    "uncensored": false,
-   "note": "Serving tuning toward 150 tok/s decode (no agent tests on this engine version yet). Short-benchmark rates.",
+   "note": "Serving tuning toward 150 tok/s decode, then the daily driver (MTP draft head). Short-benchmark rates, except agent test 1 (2026-11-09): agent-run decode 120.6 tok/s, first token median 0.46 s, but the CLI it built crashes on start.",
    "vision": null
   },
   "strata0213-fnb-v31-udq3kxl-128k": {
@@ -11337,6 +11360,30 @@
     "loc": 0,
     "errors_per_kloc": null
    }
+  },
+  {
+   "case": "mm-0d1-q2kxl0213-mtp-best-test1-agent",
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 0,
+   "tests_pass": 94,
+   "tests_fail": 53,
+   "subcmds": 0,
+   "tps": 120.6,
+   "minutes": 61,
+   "compactions": 0,
+   "ctx": 131072,
+   "kv": "q8_0",
+   "verdict": "fail",
+   "finished": "2026-11-09 12:45",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 2923,
+    "errors_per_kloc": 0.0
+   }
   }
  ],
  "test3": [
@@ -18896,6 +18943,102 @@
      "frames/pagoda/fnb-v31-udq3kxl-t6-oneshot-pagoda-r1/frame-10000.webp"
     ],
     "live": "live/pagoda/fnb-v31-udq3kxl-t6-oneshot-pagoda-r1/page.html"
+   },
+   {
+    "case": "mm-0cq-q2kxl0213-mtp-best-oneshots-t6-pagoda",
+    "entry": "strata0213-fnb-v31-udq2kxl-128k",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 40641.0,
+    "wall_s": 352.485,
+    "tok_s": 115.5,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. Blank: a variable used before it exists ('c is not defined') stops the script; every frame shows only the dark background. Nothing is drawn, so every point is 0. First token 0.6 s; 115.5 tok/s is a single long request, not an agent-run rate. UD-Q2_K_XL, engine-default sampling, 350 W; Strata 0.2.13, MTP draft head. One round.",
+    "frames": [
+     "frames/pagoda/mm-0cq-q2kxl0213-mtp-best-oneshots-t6-pagoda/frame-1500.webp",
+     "frames/pagoda/mm-0cq-q2kxl0213-mtp-best-oneshots-t6-pagoda/frame-5000.webp",
+     "frames/pagoda/mm-0cq-q2kxl0213-mtp-best-oneshots-t6-pagoda/frame-10000.webp"
+    ],
+    "live": "live/pagoda/mm-0cq-q2kxl0213-mtp-best-oneshots-t6-pagoda/page.html"
+   },
+   {
+    "case": "mm-0cs-q3kxl0213-mtp-best-oneshots-t6-pagoda",
+    "entry": "strata0213-fnb-v31-udq3kxl-128k",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 42368.0,
+    "wall_s": 400.314,
+    "tok_s": 108.6,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. Blank: a syntax error (missing ')' after an argument list) stops the script; every frame shows only the dark background. Nothing is drawn, so every point is 0. First token 0.7 s; 108.6 tok/s is a single long request, not an agent-run rate. UD-Q3_K_XL, engine-default sampling, 350 W; Strata 0.2.13, MTP draft head. One round.",
+    "frames": [
+     "frames/pagoda/mm-0cs-q3kxl0213-mtp-best-oneshots-t6-pagoda/frame-1500.webp",
+     "frames/pagoda/mm-0cs-q3kxl0213-mtp-best-oneshots-t6-pagoda/frame-5000.webp",
+     "frames/pagoda/mm-0cs-q3kxl0213-mtp-best-oneshots-t6-pagoda/frame-10000.webp"
+    ],
+    "live": "live/pagoda/mm-0cs-q3kxl0213-mtp-best-oneshots-t6-pagoda/page.html"
+   },
+   {
+    "case": "mm-0e1-q2kxl0213-mtp-best-oneshots-qwensampling-t6-pagoda",
+    "entry": "strata0213-fnb-v31-udq2kxl-128k",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 38446.0,
+    "wall_s": 308.958,
+    "tok_s": 124.7,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. Blank: a three.js type error (a mesh built from something that is not a geometry) stops the script; every frame is one flat colour. Nothing is drawn, so every point is 0. First token 0.6 s; 124.7 tok/s is a single long request, not an agent-run rate. UD-Q2_K_XL, Qwen thinking sampling (temperature 0.6, top-p 0.95, top-k 20), 350 W; Strata 0.2.13, MTP draft head. One round.",
+    "frames": [
+     "frames/pagoda/mm-0e1-q2kxl0213-mtp-best-oneshots-qwensampling-t6-pagoda/frame-1500.webp",
+     "frames/pagoda/mm-0e1-q2kxl0213-mtp-best-oneshots-qwensampling-t6-pagoda/frame-5000.webp",
+     "frames/pagoda/mm-0e1-q2kxl0213-mtp-best-oneshots-qwensampling-t6-pagoda/frame-10000.webp"
+    ],
+    "live": "live/pagoda/mm-0e1-q2kxl0213-mtp-best-oneshots-qwensampling-t6-pagoda/page.html"
+   },
+   {
+    "case": "mm-0f1-q3kxl0213-mtp-best-oneshots-qwensampling-t6-pagoda",
+    "entry": "strata0213-fnb-v31-udq3kxl-128k",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 41955.0,
+    "wall_s": 372.463,
+    "tok_s": 112.9,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. Blank: a syntax error (a stray word inside a hex colour, '0xf0a martian') stops the script; only the title block shows and the 3D view is one flat colour. Nothing is drawn, so every point is 0. First token 0.8 s; 112.9 tok/s is a single long request, not an agent-run rate. UD-Q3_K_XL, Qwen thinking sampling (temperature 0.6, top-p 0.95, top-k 20), 325 W; Strata 0.2.13, MTP draft head. One round.",
+    "frames": [
+     "frames/pagoda/mm-0f1-q3kxl0213-mtp-best-oneshots-qwensampling-t6-pagoda/frame-1500.webp",
+     "frames/pagoda/mm-0f1-q3kxl0213-mtp-best-oneshots-qwensampling-t6-pagoda/frame-5000.webp",
+     "frames/pagoda/mm-0f1-q3kxl0213-mtp-best-oneshots-qwensampling-t6-pagoda/frame-10000.webp"
+    ],
+    "live": "live/pagoda/mm-0f1-q3kxl0213-mtp-best-oneshots-qwensampling-t6-pagoda/page.html"
    }
   ],
   "agent-orrery": [
@@ -19895,11 +20038,11 @@
  },
  "counts": {
   "models": 124,
-  "runs": 332,
+  "runs": 333,
   "test3": 86,
-  "oneshots": 153,
-  "frames": 298,
+  "oneshots": 157,
+  "frames": 310,
   "pass": 245,
-  "live": 96
+  "live": 100
  }
 }

@@ -1,7 +1,7 @@
 {
  "schema": "history/1",
- "generated_from": "private bake-off grades through 2026-11-08: Flash-Next Unsloth v3.1 round 1, the 3090 + V100 serving tuning and the Flash-Next 150 tok/s serving goal (Strata 0.2.12 through round 21 and a Strata 0.2.13 engine check, code and JSON benchmarks with a quality check, a 256k slot and four-stream totals, DFlash2 window and confidence, sampled decoding, llamAmpere with four slots, K/V cache in host RAM, parallel slots that fit, thinking-on sampled decoding, a dual-card Tiel-Coder Q6 serving check, llamAmpere 0.6.3.2 and 0.6.3.8); runs from 2026-10-07 on",
- "generated": "2026-11-09 12:33 CST",
+ "generated_from": "private bake-off grades through 2026-11-08: Flash-Next Unsloth v3.1 round 1, the 3090 + V100 serving tuning and the Flash-Next 150 tok/s serving goal (Strata 0.2.12 through round 21 and a Strata 0.2.13 engine check, code and JSON benchmarks with a quality check, a 256k slot and four-stream totals, DFlash2 window and confidence, sampled decoding, llamAmpere with four slots, K/V cache in host RAM, parallel slots that fit, thinking-on sampled decoding, a dual-card Tiel-Coder Q6 serving check, llamAmpere 0.6.3.2 and 0.6.3.8, the daily driver's first agent run and one-shot pagodas); runs from 2026-10-07 on",
+ "generated": "2026-11-09 14:41 CST",
  "runs_new": [
   {
    "case": "wa-saluki-27b-iq2",
@@ -3075,6 +3075,30 @@
     "loc": 0,
     "errors_per_kloc": null
    }
+  },
+  {
+   "case": "mm-0d1-q2kxl0213-mtp-best-test1-agent",
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 0,
+   "tests_pass": 94,
+   "tests_fail": 53,
+   "subcmds": 0,
+   "tps": 120.6,
+   "minutes": 61,
+   "compactions": 0,
+   "ctx": 131072,
+   "kv": "q8_0",
+   "verdict": "fail",
+   "finished": "2026-11-09 12:45",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 2923,
+    "errors_per_kloc": 0.0
+   }
   }
  ],
  "test3_new": [
@@ -4074,7 +4098,7 @@
    "quant": "Unsloth UD-Q2_K_XL v3.1 (74 GiB)",
    "kind": "stock",
    "uncensored": false,
-   "note": "Serving tuning toward 150 tok/s decode (no agent tests on this engine version yet). Short-benchmark rates.",
+   "note": "Serving tuning toward 150 tok/s decode, then the daily driver (MTP draft head). Short-benchmark rates, except agent test 1 (2026-11-09): agent-run decode 120.6 tok/s, first token median 0.46 s, but the CLI it built crashes on start.",
    "vision": null
   },
   "strata0213-fnb-v31-udq3kxl-128k": {
@@ -7356,6 +7380,29 @@
    ],
    "quality": "Every parallel stream answered its prompt correctly; 30k retrievals correct in the thinking-on runs; one of two JSON outputs invalid in each thinking-on run.",
    "caveat": "Short-benchmark rates, not agent runs. Strata prefills parallel prompts one at a time and drafts little once several streams decode, so the total stays near 123 tok/s; per stream that is 19-35 tok/s with four streams."
+  },
+  {
+   "date": "2026-11-09",
+   "title": "Flash-Next keeps agent speed but still cannot ship a working CLI or pagoda",
+   "kind": "grading",
+   "summary": "On the daily-driver setup (UD-Q2_K_XL, MTP draft head, one 3090) agent test 1 ran 62 minutes at 120.6 tok/s agent-run decode with a 0.46 s median first token, yet the CLI it delivered crashes on start (its own tests: 94 pass, 53 fail). Four more one-shot pagodas, across Q2_K_XL and Q3_K_XL and both samplers, are all blank: 0 working pagodas in 8 tries for this model.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Agent-run decode, test 1",
+     "before": null,
+     "after": 120.6,
+     "unit": "tok/s"
+    },
+    {
+     "label": "First token median, test 1",
+     "before": null,
+     "after": 0.46,
+     "unit": "s"
+    }
+   ],
+   "quality": "Test 1 fails every live check; test 6 pagodas 0 of 10 each.",
+   "caveat": "One agent run (OpenCode, not T3 Code); test 2 agent runs stopped at the 85 \u00b0C limit and are being rerun at 300 W."
   }
  ],
  "amend": [
