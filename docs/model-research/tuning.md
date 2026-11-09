@@ -392,6 +392,15 @@ correctly and kept at least 1.5 GiB free on each card.
 | Peer tier + stream norm, one / two / four slots (two and four with resident K/V) | 106.6 / 104.8 / 109.3 | 2,649 / 2,599 / 2,607 | 103 / 117 / 122 |
 | Peer tier, one slot, stream norm + growing K/V | 107.0 | 2,641 (45.5 s) | **128** (119 after 30k) |
 | 3090 alone, stream norm, two 128k slots with resident K/V | 105.6 | 2,805 | 53 |
+| Stream norm, min-p 0.7 / min-p 0.6 with draft window 5 | 126.0 / 123.85 | 2,972 / 2,954 | 123 / 114 |
+| 128.6 setup, 4,096-token prompt chunks instead of automatic | 127.6 | 2,272 (52.9 s) | 125 |
+| 128.6 setup, helper threads off the pool cores / 8 pool workers / gain threshold 1.0 | 123.55 / 119.85 / 123.3 | about 2,940 | 112 / 124 / 112 |
+| 128.6 setup, host thread on a hyper-thread sibling / 96 pool tasks / high-priority graph stream | 119.75 / 127.7 / 126.45 | 2,943 / 2,981 / 2,950 | 124 / 114 / 123 |
+| 128.6 setup with a DFlash2 draft model instead of the MTP head, confidence 0.5 / 0.65 | 118.9 / 116.9 | 2,946 / 2,950 | 125 / 119 |
+| Prefill head alias (with or without short reads off) | not supported on this build | | |
+| 128.6 setup on UD-Q2_K_XL / UD-Q3_K_XL | 123.05 / 111.95 | 2,935 / 2,764 | 122 / 108 (79 / 60 after 30k) |
+| Peer tier, one slot, growing K/V + min-p 0.6, on UD-IQ3_XXS / UD-Q2_K_XL / UD-Q3_K_XL | 107.1 / 106.95 / 100.65 | 2,642 / 2,644 / 2,384 | 127 / 108 / 101 (122 / 121 / 90 after 30k) |
+| Peer tier, four slots with resident K/V, min-p 0.6 | 105.3 | 2,589 | 123 |
 
 What we take from it:
 
@@ -446,6 +455,16 @@ What we take from it:
   tok/s per stream and 100+ after long prompts. Two slots on the 3090 alone still
   starve the expert cache after long prompts (53 tok/s).
 - Measuring through the llama-swap proxy costs about 2%, within noise.
-- Best so far is 128.6 tok/s, about 86% of the 150 tok/s goal, from one run.
-  Run-to-run noise is about 4 tok/s, so single-digit differences between rows are
-  not real.
+- Twenty more single-change runs on the 128.6 setup did not beat it. CPU pool
+  size, thread placement, pool tasks, the adaptive gain threshold and a
+  high-priority graph stream all tie or lose; smaller prompt chunks cut prefill by
+  23% without helping decode after the prompt.
+- A DFlash2 draft model accepts about as many tokens as the stream-norm MTP head
+  but drafts more of them, and is 7.5% slower on our prose prompts. Strata reports
+  it wins on greedy code and JSON, which this benchmark does not cover.
+- The same setup gives 123.0 tok/s on UD-Q2_K_XL and 112.0 on UD-Q3_K_XL (101.6 on
+  the old stack). On the peer tier the quant barely matters: Q2_K_XL ties IQ3_XXS
+  at about 107 tok/s and holds 121 tok/s right after a 30k prompt.
+- Best so far is 128.6 tok/s, about 86% of the 150 tok/s goal; replicates gave
+  127.6 and 127.7. Run-to-run noise is about 4 tok/s, so single-digit differences
+  between rows are not real.
