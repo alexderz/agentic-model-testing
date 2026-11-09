@@ -323,3 +323,68 @@ What we take from it:
 27.0 tok/s, first token 0.8 s on short prompts; 30,125-token retrieval correct
 with a 43 s first token (700 tok/s prefill) and 90,105 tokens correct in 193 s
 (470 tok/s). 8.0 GiB stayed free. No agent tests on this setup yet.
+
+**Arete-27B Q6_K** (a Nous Research fine-tune of Qwen3.8-27B) in the same setup:
+decode 26.1 tok/s; 30,125 tokens correct in 43 s (709 tok/s) and 90,105 tokens in
+191 s (476 tok/s); 6.5 GiB free. On the 3090 alone it does not load: 22 GiB of
+weights plus the 96k Q8 KV cache is more than 24 GiB.
+
+**Qwopus 27B Q4_K_M, 3090 against V100**, 96k, Q8 KV: decode is the same on both
+cards (33.0 tok/s), but the V100 prefills at about 60% of the 3090's rate (662
+against 1,095 tok/s at 30k; 90k first token 200 s against 110 s). The 3090 rerun
+is about 20% below the 2026-11-02 run of the same setup (41.6 tok/s) after a
+driver change; the earlier power limit is not checked yet, so the cause is open.
+
+## 13. Flash-Next toward 150 tok/s on one 3090
+
+Goal set 2026-11-08: 150 tok/s decode and more than 1,000 tok/s prefill on a larger
+Unsloth Dynamic v3.1 quant of Qwen3.8 Flash-Next, with about 128k context and int8
+KV. Strata 0.2.12 with MTP drafting (spec 4, min-p 0.5) on the RTX 3090; the Tesla
+V100 joins only as a helper expert cache. All rates are short-benchmark rates (one
+oracle prompt, a warm-up and two measured prompts of 384 output tokens), not agent
+runs. Every passing config answered both retrievals (30,037 and 120,007 tokens)
+correctly and kept at least 1.5 GiB free on each card.
+
+| Change (one at a time, UD-IQ3_XXS unless noted) | Decode tok/s | 120k prefill tok/s (first token) | Decode right after 120k |
+| --- | --- | --- | --- |
+| Start: 3090 alone, 250 W | 98.8 | 2,419 (49.7 s) | 68 |
+| UD-Q2_K_XL / UD-Q3_K_XL at 250 W | 100.1 / 96.8 | 2,452 / 2,346 | 65 / 59 |
+| MTP spec 6 | 95.1 | 2,426 | 48 |
+| Prefill chunks up to 32k | 99.0 | 2,397 | 61 |
+| Power 300 W | 108.1 | 2,701 (44.5 s) | 67 |
+| Power 350 W (the card's maximum) | 112.2 | 2,824 (42.6 s) | 67 |
+| 350 W: MTP spec 3 / min-p 0.3 | 110.4 / 104.6 | 2,808 / 2,825 | 68 / 67 |
+| 350 W: huge pages / async tier / shared-memory expert kernel | 110.8 / 110.7 / 108.2 | 2,806 / 2,862 / 2,820 | 58 / 62 / 72 |
+| 350 W: **adaptive overlap on** | **116.9** | 2,831 (42.5 s) | 65 |
+| Overlap, min-p 0.7 | 114.6 | 2,834 | 70 |
+| Overlap, UD-Q3_K_XL | 101.6 | 2,742 | 64 |
+| 350 W + V100 helper cache (remote expert optimisation on) | 108.4 | 2,623 (45.8 s) | **113** |
+| Same, remote expert optimisation off | 104.5 | 2,634 | 77 |
+| Same, adaptive overlap on (needs the optimisation off) | 108.3 | 2,666 | 77 |
+| Two 128k slots: 3090 alone at 250 W / with the V100 at 350 W | 80.5 / 100.2 | 2,335 / 2,622 | 59 / 101 |
+| Four 128k slots with the V100 | 93.7 | 2,609 | 80 |
+| Drafting off | not supported: native IQ packs require MTP drafting | | |
+
+What we take from it:
+
+- The 3090 is power-bound on this engine: 250 to 350 W is +13% decode and +17%
+  prefill. Start there before tuning anything else.
+- Adaptive overlap is the only engine knob that moved short-benchmark decode
+  (+4%). Draft window, min-p, huge pages, the async tier and the shared-memory
+  kernel did not.
+- Prefill is far past the goal: a 120k prompt reaches its first token in about
+  42 s.
+- On the 3090 alone, decode right after a long prompt falls to about 65 tok/s
+  because the long prompt evicts the expert cache. A V100 helper cache keeps it at
+  101 to 113 tok/s. That matters more for agent work than the short benchmark,
+  where the helper costs about 4 tok/s.
+- Extra slots fit: two 128k slots cost one stream about 8% with the helper card
+  (20% on the 3090 alone), four cost about 14%. Total throughput across streams is
+  not measured yet.
+- The quant matters little: UD-Q2_K_XL and UD-IQ3_XXS are within 2%, UD-Q3_K_XL
+  is about 10% slower.
+- llamAmpere 0.6.3.2 on the same files: 85.6 tok/s decode with the author's
+  Swift Q2S-B draft model and 1,865 tok/s prefill at 100k (54 s to first token) at
+  350 W; without a draft model, 59 to 62 tok/s, and the default expert-cache
+  reserve left only 1.1 GiB free (a 1,536 MiB reserve fixes it).
+- Best so far is 116.9 tok/s, about 78% of the 150 tok/s goal.
