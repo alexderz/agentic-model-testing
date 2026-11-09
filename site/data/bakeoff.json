@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-11-09 10:21 CST",
- "built": "2026-11-09 10:21 CST",
+ "generated": "2026-11-09 12:33 CST",
+ "built": "2026-11-09 12:33 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -173,6 +173,35 @@
    ],
    "quality": "Quality check 3/3 on every code and JSON setup; all JSON outputs valid; every retrieval correct.",
    "caveat": "Short-benchmark rates, not agent runs. Prose stays at about 116-128 tok/s, short of the 150 goal; run-to-run spread is about 5%."
+  },
+  {
+   "date": "2026-11-09",
+   "kind": "tuning",
+   "title": "Four Flash-Next slots fit on one 3090, and two 100k slots fit too",
+   "summary": "With a 3,072 MiB VRAM reserve, Strata 0.2.13 on UD-Q2_K_XL now runs four 128k slots on the 3090 alone within our 1.5 GiB fit rule: four ~30k prompts, all answered correctly, sum to 122.7 tok/s with either the MTP head (3.0 GiB free) or the DFlash2 draft model (1.6 GiB free). Two slots with ~100k prompts each also fit (3.2 GiB free) and sum to 103.1 tok/s; the second prompt waits for the first, so its first token takes 88.5 s against 35.4 s alone. With thinking on and Qwen's thinking sampling, the MTP head is faster on prose (124.9 against 116.45 tok/s) while DFlash2 stays ahead on code (150.2 against 139.3) and JSON (186.9 against 166.8).",
+   "settings": "Strata 0.2.13, the 128.6 setup on UD-Q2_K_XL, 128k slots, int8 KV; parallel rows use a 3,072 MiB VRAM reserve and sampling at temperature 0.7, top-p 0.8, top-k 20",
+   "metrics": [
+    {
+     "label": "Free VRAM with four 30k prompts live, DFlash2 without reserve to MTP head with 3,072 MiB reserve",
+     "before": 0.6,
+     "after": 3.0,
+     "unit": "GiB"
+    },
+    {
+     "label": "Total decode, one to four streams (MTP head, four 30k prompts)",
+     "before": 95.1,
+     "after": 122.7,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Prose decode with thinking on, DFlash2 to MTP head",
+     "before": 116.45,
+     "after": 124.9,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Every parallel stream answered its prompt correctly; 30k retrievals correct in the thinking-on runs; one of two JSON outputs invalid in each thinking-on run.",
+   "caveat": "Short-benchmark rates, not agent runs. Strata prefills parallel prompts one at a time and drafts little once several streams decode, so the total stays near 123 tok/s; per stream that is 19-35 tok/s with four streams."
   },
   {
    "date": "2026-11-08",
@@ -1669,7 +1698,7 @@
    "date": "2026-11-08",
    "era": "Flash-Next",
    "title": "Flash-Next toward 150 tok/s on one 3090",
-   "what": "Strata 0.2.12: 98.8 to 128.6 tok/s short-benchmark decode (350 W, English draft vocabulary, stream draft-head norm, draft min-p 0.6); 120k prompts prefill at about 2,990 tok/s; adaptive fetch keeps decode at 124-127 tok/s right after a 120k prompt on the 3090 alone; four 128k slots with the V100 keep 109 tok/s per stream. Twenty more single-change runs did not beat it; UD-Q2_K_XL reaches 123.0 and UD-Q3_K_XL 112.0 on the same setup. A memory lock, Strata 0.2.13 and llamAmpere 0.6.3.8 changed nothing. On code and JSON the goal is met: a DFlash2 draft model on UD-Q2_K_XL gives 162 tok/s on code and 203 on JSON with the quality check passing; four streams together reach only about 125 tok/s on Strata, against 165 on llama.cpp.",
+   "what": "Strata 0.2.12: 98.8 to 128.6 tok/s short-benchmark decode (350 W, English draft vocabulary, stream draft-head norm, draft min-p 0.6); 120k prompts prefill at about 2,990 tok/s; adaptive fetch keeps decode at 124-127 tok/s right after a 120k prompt on the 3090 alone; four 128k slots with the V100 keep 109 tok/s per stream. Twenty more single-change runs did not beat it; UD-Q2_K_XL reaches 123.0 and UD-Q3_K_XL 112.0 on the same setup. A memory lock, Strata 0.2.13 and llamAmpere 0.6.3.8 changed nothing. On code and JSON the goal is met: a DFlash2 draft model on UD-Q2_K_XL gives 162 tok/s on code and 203 on JSON with the quality check passing; four streams together reach only about 125 tok/s on Strata, against 165 on llama.cpp; with a 3,072 MiB VRAM reserve four 30k slots (122.7 tok/s total) and two 100k slots (103.1 tok/s total) fit the 1.5 GiB rule.",
    "why": "Goal: 150 tok/s decode and 1,000+ tok/s prefill on a larger quant. Prefill is met; code and JSON decode are met; prose decode is at 86%, limited by the draft head."
   }
  ],
@@ -14529,6 +14558,56 @@
    "quote": null,
    "prefill": 1006.9,
    "vram": 17790,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 alone, 350 W, adaptive fetch 2, English and code draft vocabulary, fetch margin 0, PCIe share 0.55, K/V cache that grows with the context, stream draft-head norm, draft min-p 0.6 (the 128.6 setup) on UD-Q2_K_XL, DFlash2 draft model, draft window 8, thinking on, Qwen's thinking sampling (temperature 0.6, top-p 0.95, top-k 20); short benchmark by content: prose 116.45, code 150.2 (79% accepted), JSON 186.9 tok/s (90% accepted, one of two valid); first token 0.4-0.7 s on short prompts; 30,037-token retrieval correct, first token 11.4 s (2,642 tok/s prefill); free 2.2 GiB (3090)",
+   "decode": 116.45,
+   "quote": null,
+   "prefill": 1079.0,
+   "vram": 22308,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 alone, 350 W, adaptive fetch 2, English and code draft vocabulary, fetch margin 0, PCIe share 0.55, K/V cache that grows with the context, stream draft-head norm, draft min-p 0.6 (the 128.6 setup) on UD-Q2_K_XL, MTP draft head, thinking on, Qwen's thinking sampling (temperature 0.6, top-p 0.95, top-k 20); short benchmark by content: prose 124.9 (77% accepted), code 139.3 (84% accepted), JSON 166.8 tok/s (94% accepted, one of two valid); faster than DFlash2 on prose with thinking on; first token 0.4-0.7 s on short prompts; 30,037-token retrieval correct, first token 11.8 s (2,559 tok/s prefill); free 2.1 GiB (3090)",
+   "decode": 124.9,
+   "quote": null,
+   "prefill": 1082.8,
+   "vram": 22400,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 alone, 350 W, adaptive fetch 2, English and code draft vocabulary, fetch margin 0, PCIe share 0.55, K/V cache that grows with the context, stream draft-head norm, draft min-p 0.6 (the 128.6 setup) on UD-Q2_K_XL, DFlash2 draft model on each of four 128k slots, VRAM reserve 3,072 MiB, sampled (temperature 0.7, top-p 0.8, top-k 20); four ~30k prompts with 1,200-word replies, all correct; total decode 94.5 / 101.2 / 122.7 tok/s with 1 / 2 / 4 streams; prompts prefill one at a time (first tokens 10.6 to 54.4 s); free 1.6 GiB (3090) with four prompts live, so it fits",
+   "decode": 122.69,
+   "quote": null,
+   "prefill": 2846.4,
+   "vram": 22944,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 alone, 350 W, adaptive fetch 2, English and code draft vocabulary, fetch margin 0, PCIe share 0.55, K/V cache that grows with the context, stream draft-head norm, draft min-p 0.6 (the 128.6 setup) on UD-Q2_K_XL, MTP draft head on each of four 128k slots, VRAM reserve 3,072 MiB, sampled (temperature 0.7, top-p 0.8, top-k 20); four ~30k prompts with 1,200-word replies, all correct; total decode 95.1 / 107.2 / 122.7 tok/s with 1 / 2 / 4 streams; prompts prefill one at a time (first tokens 10.9 to 55.0 s); free 3.0 GiB (3090) with four prompts live, so it fits with room to spare",
+   "decode": 122.74,
+   "quote": null,
+   "prefill": 2786.0,
+   "vram": 21478,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 alone, 350 W, adaptive fetch 2, English and code draft vocabulary, fetch margin 0, PCIe share 0.55, K/V cache that grows with the context, stream draft-head norm, draft min-p 0.6 (the 128.6 setup) on UD-Q2_K_XL, MTP draft head on each of two 128k slots, VRAM reserve 3,072 MiB, sampled (temperature 0.7, top-p 0.8, top-k 20); two ~100k prompts with 1,200-word replies, both correct; total decode 95.0 / 103.1 tok/s with 1 / 2 streams; first token 35.4 s for one prompt, 35.8 and 88.5 s with two (prompts prefill one at a time, about 2,810-2,840 tok/s); free 3.2 GiB (3090) with both prompts live, so it fits",
+   "decode": 103.05,
+   "quote": null,
+   "prefill": 2837.8,
+   "vram": 21330,
    "error": ""
   }
  ],
