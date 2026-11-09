@@ -376,6 +376,22 @@ correctly and kept at least 1.5 GiB free on each card.
 | V100 helper cache + draft vocabulary | 109.2 | 2,636 | 105 |
 | V100 peer tier (the V100 computes its cached experts) + draft vocabulary, one / two slots | 107.1 / 96.7 | 1,546 / 1,517 (77.7 s) | 118 / 101; misses our fit rule (1,492 MiB free on the V100) |
 | Drafting off | not supported: native IQ packs require MTP drafting | | |
+| V100 peer tier, peer reserve 2,560 MiB (fit fixed) | 98.6 | 1,550 (77.5 s) | 114 |
+| Same, prompt rows kept on the 3090 | 102.8 | 2,628 (45.7 s) | 116 |
+| Same, peer reserve 2,048 MiB | 107.5 | 2,674 (45.0 s) | 116 |
+| Peer tier, prompt rows on the 3090, two / four 128k slots | 94.8 / 90.8 | 2,626 / 2,614 | 97 / 95 |
+| Same + 20k tokens of K/V resident in VRAM (rest from host memory), one / two / four slots | 103.3 / 99.0 / 97.5 | 2,631 / 2,603 / 2,619 | 104 / 101 / 100 |
+| Fetch, margin 0, PCIe share 0.80 | 113.6 | 2,833 | 116 |
+| Fetch, PCIe share 0.55, prompt-lookup chain 4 | 113.8 | 2,845 | 124 |
+| Fetch, PCIe share 0.55, K/V cache that grows with the context | 118.2 | 2,986 (40.3 s) | 118 |
+| Same + per-token (stream) draft-head norm | 122.95 | **2,987 (40.2 s)** | **127** |
+| Same, 4-bit draft head and projections instead of the stream norm | 115.6 | 2,960 | 125 |
+| Stream norm, draft window 5 | 122.85 | 2,986 | 106 |
+| Stream norm, draft min-p 0.6 | **128.6** | 2,956 (40.7 s) | 124 |
+| The 122.95 setup measured through the llama-swap proxy | 120.5 | 2,973 | 112 |
+| Peer tier + stream norm, one / two / four slots (two and four with resident K/V) | 106.6 / 104.8 / 109.3 | 2,649 / 2,599 / 2,607 | 103 / 117 / 122 |
+| Peer tier, one slot, stream norm + growing K/V | 107.0 | 2,641 (45.5 s) | **128** (119 after 30k) |
+| 3090 alone, stream norm, two 128k slots with resident K/V | 105.6 | 2,805 | 53 |
 
 What we take from it:
 
@@ -413,5 +429,23 @@ What we take from it:
   but it changes the model's output and is not adopted without a quality check.
 - The V100 peer tier gives 118 tok/s after a 120k prompt but halves prefill (about
   1,550 tok/s) and left 44 MiB too little free on the V100 for our fit rule.
-- Best so far is 118.8 tok/s, about 79% of the 150 tok/s goal. Run-to-run noise is
-  about 4 tok/s, so single-digit differences between rows are not real.
+- The peer tier's prefill penalty came from splitting prompt rows across the two
+  cards. With prompt rows kept on the 3090 it prefills at about 2,630 tok/s, and a
+  2,048 MiB peer reserve then fits our rule (2.1 GiB free on the V100).
+- The per-token (stream) draft-head norm is the first change past the profile's
+  ceiling: draft acceptance rises from about 55% to 60-68%. With draft min-p 0.6 it
+  reaches 128.6 tok/s. It helps the per-slot drafters most: four peer-tier slots go
+  from 97.5 to 109.3 tok/s per stream.
+- A K/V cache that grows with the context gives the best prefill, about 2,990 tok/s
+  at both 30k and 120k, because the prompt borrows expert slots while the context is
+  short.
+- Right after a 120k prompt the 3090 alone holds 124-127 tok/s, but right after a
+  30k prompt it drops to 65-80. The peer tier holds 119 after 30k and 128 after
+  120k, so it is the steadier setup for agent turns.
+- With 20k tokens of K/V resident, two and four slots on the peer tier keep 99-109
+  tok/s per stream and 100+ after long prompts. Two slots on the 3090 alone still
+  starve the expert cache after long prompts (53 tok/s).
+- Measuring through the llama-swap proxy costs about 2%, within noise.
+- Best so far is 128.6 tok/s, about 86% of the 150 tok/s goal, from one run.
+  Run-to-run noise is about 4 tok/s, so single-digit differences between rows are
+  not real.
