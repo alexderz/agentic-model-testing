@@ -508,6 +508,7 @@ rates.
 | 256k context, UD-Q2_K_XL, MTP head, reserve 4,096 MiB | 123.55 | 144.9 | 172.9 | 248k correct, 94.75 s |
 | 256k context, UD-Q2_K_XL, DFlash2, reserve 4,096 MiB: Strata's choice / confidence 0.5 | 116.5 / 120.2 | 152.85 / 154.65 | 193.7 / 191.45 | 248k correct, 93.1 / 93.3 s, 2.6 GiB free |
 | 256k context, UD-Q2_K_XL, DFlash2, reserve 3,584 MiB: Strata's choice / confidence 0.5 | 116.1 / 117.6 | 157.95 / 157.45 | 192.6 / 197.35 | 248k correct, 93.7 s, 2.2 GiB free |
+| UD-Q2_K_XL, thinking on, Qwen's thinking sampling: DFlash2 window 8 / MTP head | 116.45 / **124.9** | **150.2** / 139.3 | **186.9** / 166.8 | 30k correct; one of two JSON outputs invalid in each |
 
 Several streams at once: total decode while every stream is writing, about
 1,600-token replies.
@@ -520,6 +521,9 @@ Several streams at once: total decode while every stream is writing, about
 | llama.cpp, Tiel-Coder 35B Q6 in VRAM on both cards, four 128k slots | 96.55 / 133.2 / 164.5 | 19.8 / 38.3 / 55.7 / 72.2 s |
 | Strata, 3090 alone, four 128k slots, DFlash2 on each slot, sampled | 93.5 / 108.9 / 126.9 | 11.1 to 55.8 s; 0.6 GiB free, misses our fit rule |
 | llamAmpere 0.6.3.2, UD-IQ3_XXS, four 32k slots | 71.5 / 82.6 / 45.7 | 129 s for one prompt, 505 s with four |
+| Strata, 3090 alone, four 128k slots, DFlash2, reserve 3,072 MiB, sampled | 94.5 / 101.2 / 122.7 | 10.6 to 54.4 s; 1.6 GiB free, fits |
+| Strata, 3090 alone, four 128k slots, MTP head, reserve 3,072 MiB, sampled | 95.1 / 107.2 / 122.7 | 10.9 to 55.0 s; 3.0 GiB free, fits |
+| Strata, 3090 alone, two 128k slots, MTP head, reserve 3,072 MiB, ~100k prompts, sampled | 95.0 / 103.1 / - | 35.4 s alone; 35.8 and 88.5 s with two; 3.2 GiB free, fits |
 
 - The 150 tok/s goal is met for code and JSON: the DFlash2 draft model gives 162
   tok/s on code and 203 on JSON on UD-Q2_K_XL. Prose stays at 120-128.
@@ -542,3 +546,8 @@ Several streams at once: total decode while every stream is writing, about
   tok/s and four streams total only 46 tok/s.
 - Keeping the K/V cache in host RAM (llama.cpp, Tiel-Coder on both cards) cuts
   decode from 118 to 24 tok/s and prefill by about 40% to free only 1.2-1.4 GiB per card.
+- A 3,072 MiB VRAM reserve makes four 128k slots fit the 1.5 GiB rule (3.0 GiB free with
+  the MTP head, 1.6 GiB with DFlash2); the total stays at about 123 tok/s. Two slots
+  with ~100k prompts also fit (3.2 GiB free, 103 tok/s total, second first token 88.5 s).
+- With thinking on and Qwen's thinking sampling, the MTP head wins on prose (124.9
+  tok/s) and DFlash2 on code and JSON (150.2 and 186.9).
