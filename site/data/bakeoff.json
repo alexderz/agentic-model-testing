@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-11-09 03:56 CST",
- "built": "2026-11-09 03:56 CST",
+ "generated": "2026-11-09 06:05 CST",
+ "built": "2026-11-09 06:05 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -207,7 +207,7 @@
    "date": "2026-11-08",
    "title": "Flash-Next on one 3090: 129 tok/s, and 127 tok/s right after a 120k prompt",
    "kind": "tuning",
-   "summary": "Toward a goal of 150 tok/s decode and 1,000+ tok/s prefill on a larger Unsloth v3.1 quant of Flash-Next, Strata 0.2.12 on one RTX 3090 reached 128.6 tok/s short-benchmark decode on UD-IQ3_XXS (from 98.8): power 250 to 350 W gave +13%, an English and code draft vocabulary +2%, and a per-token (stream) draft-head norm with a draft min-p of 0.6 most of the rest, by raising draft acceptance from about 55% to 60-68%. Prefill is met: with a K/V cache that grows with the context, a 120,007-token retrieval was correct with the first token in 40.2 s (2,987 tok/s). Strata's adaptive fetch (margin 0, PCIe share 0.55) holds 124-127 tok/s right after that long prompt on the 3090 alone. With the V100 as a peer tier that computes its cached experts, decode stays at 119 tok/s after a 30k prompt and 128 after 120k, and four 128k slots keep 109 tok/s per stream. Twenty more single-change runs found nothing faster: CPU pool and thread placement, prompt chunk size, a high-priority graph stream and a DFlash2 draft model (7.5% slower on our prose prompts) all tied or lost, and two replicates (127.6, 127.7) confirm the 128.6 base. The same setup gives 123.0 tok/s on UD-Q2_K_XL and 112.0 on UD-Q3_K_XL. On the peer tier the quant barely matters: Q2_K_XL ties IQ3_XXS at 107 tok/s. Locking Strata's PLE table in RAM is neutral (122.5 on the 3090 alone, 104-110 on the peer-tier setups, all within noise), and llamAmpere 0.6.3.8 ties 0.6.3.2 (85.1 tok/s).",
+   "summary": "Toward a goal of 150 tok/s decode and 1,000+ tok/s prefill on a larger Unsloth v3.1 quant of Flash-Next, Strata 0.2.12 on one RTX 3090 reached 128.6 tok/s short-benchmark decode on UD-IQ3_XXS (from 98.8): power 250 to 350 W gave +13%, an English and code draft vocabulary +2%, and a per-token (stream) draft-head norm with a draft min-p of 0.6 most of the rest, by raising draft acceptance from about 55% to 60-68%. Prefill is met: with a K/V cache that grows with the context, a 120,007-token retrieval was correct with the first token in 40.2 s (2,987 tok/s). Strata's adaptive fetch (margin 0, PCIe share 0.55) holds 124-127 tok/s right after that long prompt on the 3090 alone. With the V100 as a peer tier that computes its cached experts, decode stays at 119 tok/s after a 30k prompt and 128 after 120k, and four 128k slots keep 109 tok/s per stream. Twenty more single-change runs found nothing faster: CPU pool and thread placement, prompt chunk size, a high-priority graph stream and a DFlash2 draft model (7.5% slower on our prose prompts) all tied or lost, and two replicates (127.6, 127.7) confirm the 128.6 base. The same setup gives 123.0 tok/s on UD-Q2_K_XL and 112.0 on UD-Q3_K_XL. On the peer tier the quant barely matters: Q2_K_XL ties IQ3_XXS at 107 tok/s. Locking Strata's PLE table in RAM is neutral (122.5 on the 3090 alone, 104-110 on the peer-tier setups, all within noise), Strata 0.2.13 ties 0.2.12 (126.1 tok/s on the 3090 alone, 109.4 on the peer tier), and llamAmpere 0.6.3.8 ties 0.6.3.2 (85.1 tok/s).",
    "settings": "Strata 0.2.12, MTP spec 4, --spec-min-p 0.6, --mtp-hnorm stream, --mtp-draft-vocab draft_vocab_en.bin, 128k context, int8 KV, --kv-grow, STRATA_ADAPT_FETCH=2 STRATA_ADAPT_FETCH_MARGIN=0 --pcie-frac 0.55 (3090 alone)",
    "metrics": [
     {
@@ -1611,7 +1611,7 @@
    "date": "2026-11-08",
    "era": "Flash-Next",
    "title": "Flash-Next toward 150 tok/s on one 3090",
-   "what": "Strata 0.2.12: 98.8 to 128.6 tok/s short-benchmark decode (350 W, English draft vocabulary, stream draft-head norm, draft min-p 0.6); 120k prompts prefill at about 2,990 tok/s; adaptive fetch keeps decode at 124-127 tok/s right after a 120k prompt on the 3090 alone; four 128k slots with the V100 keep 109 tok/s per stream. Twenty more single-change runs did not beat it; UD-Q2_K_XL reaches 123.0 and UD-Q3_K_XL 112.0 on the same setup. A memory lock and llamAmpere 0.6.3.8 changed nothing.",
+   "what": "Strata 0.2.12: 98.8 to 128.6 tok/s short-benchmark decode (350 W, English draft vocabulary, stream draft-head norm, draft min-p 0.6); 120k prompts prefill at about 2,990 tok/s; adaptive fetch keeps decode at 124-127 tok/s right after a 120k prompt on the 3090 alone; four 128k slots with the V100 keep 109 tok/s per stream. Twenty more single-change runs did not beat it; UD-Q2_K_XL reaches 123.0 and UD-Q3_K_XL 112.0 on the same setup. A memory lock, Strata 0.2.13 and llamAmpere 0.6.3.8 changed nothing.",
    "why": "Goal: 150 tok/s decode and 1,000+ tok/s prefill on a larger quant. Prefill is met; decode is at 86%, limited by the draft head."
   }
  ],
@@ -3484,6 +3484,32 @@
    "kind": "stock",
    "uncensored": false,
    "note": "Serving tuning toward 150 tok/s decode (no agent tests on this engine version yet). Short-benchmark rates.",
+   "vision": null
+  },
+  "strata0213-fnb-v31-udiq3xxs-128k": {
+   "id": "strata0213-fnb-v31-udiq3xxs-128k",
+   "family": "Qwen3.8 Flash-Next",
+   "label": "Flash-Next UD-IQ3_XXS (Unsloth Dynamic v3.1) · Strata 0.2.13, RTX 3090, 128k, 8-bit KV",
+   "base": "Qwen/Qwen3.8-Flash-Next",
+   "arch": "MoE",
+   "engine": "Strata 0.2.13",
+   "quant": "Unsloth UD-IQ3_XXS v3.1 (77.9 GiB)",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "Serving tuning toward 150 tok/s decode (no agent tests on this engine version yet). Short-benchmark rates.",
+   "vision": null
+  },
+  "strata0213-fnb-v31-udiq3xxs-3090-v100": {
+   "id": "strata0213-fnb-v31-udiq3xxs-3090-v100",
+   "family": "Qwen3.8 Flash-Next",
+   "label": "Flash-Next UD-IQ3_XXS (Unsloth Dynamic v3.1) · Strata 0.2.13, RTX 3090 + V100 peer tier, 128k, 8-bit KV",
+   "base": "Qwen/Qwen3.8-Flash-Next",
+   "arch": "MoE",
+   "engine": "Strata 0.2.13",
+   "quant": "Unsloth UD-IQ3_XXS v3.1 (77.9 GiB)",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "Serving tuning: the Tesla V100 holds a second expert cache for the RTX 3090. Short-benchmark rates.",
    "vision": null
   }
  },
@@ -14060,6 +14086,26 @@
    "prefill": 209.8,
    "vram": 22996,
    "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 alone, 350 W, adaptive fetch 2 (overlap off), English and code draft vocabulary, fetch margin 0, PCIe share 0.55, K/V cache that grows with the context, per-token (stream) draft-head norm, draft min-p 0.6, memory lock on; the 128.6 setup with only the engine changed (0.2.12 packs load unchanged); short benchmark; 30,037-token retrieval correct, first token 10.1 s (2,993 tok/s prefill); 120,007-token retrieval correct, first token 40.3 s (2,984 tok/s prefill); decode right after the 30k prompt 73 tok/s, after the long prompt 117 tok/s; free 2.2 GiB (3090)",
+   "decode": 126.05,
+   "quote": null,
+   "prefill": 992.5,
+   "vram": 22368,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udiq3xxs-3090-v100",
+   "engine": "Strata 0.2.13 (CUDA 12.9 build)",
+   "variant": "3090 + V100 peer tier, 350 W, English and code draft vocabulary, peer reserve 2,048 MiB, prompt rows kept on the 3090, per-token (stream) draft-head norm, K/V cache that grows with the context, draft min-p 0.6, memory lock on; the one-slot peer-tier setup with only the engine changed; short benchmark; 30,037-token retrieval correct, first token 11.0 s (2,740 tok/s prefill); 120,007-token retrieval correct, first token 45.4 s (2,647 tok/s prefill); decode right after the 30k prompt 124 tok/s, after the long prompt 133 tok/s; free 2.2 GiB (3090) / 2.1 GiB (V100)",
+   "decode": 109.4,
+   "quote": null,
+   "prefill": 985.9,
+   "vram": 30568,
+   "error": ""
   }
  ],
  "engines": [
@@ -15778,7 +15824,7 @@
     }
    ],
    "chart": "bars",
-   "evidence": "2026-11-08, Strata 0.2.12, 128k context, int8 KV, short-benchmark rates; 30k and 120k retrievals correct in every config. No gain from MTP spec 3, 5 or 6, min-p 0.3 or 0.7, asynchronous tiers, transparent huge pages, the shared-memory expert kernel, a smaller VRAM reserve, split decode attention, coupled drafting (greedy benchmark), the fused hyper-connection projection, PCIe share 0.80, a prompt-lookup chain, a 4-bit draft head, resident K/V for a single slot, draft min-p 0.7 or window 5 with the stream norm, a 4,096-token prompt chunk (prefill 23% slower), CPU pool and host-thread placement, more pool tasks, a lower adaptive gain threshold, a high-priority graph stream, a DFlash2 draft model (7.5% slower on prose), locking the PLE table in RAM, or llamAmpere 0.6.3.8 (85.1 tok/s, same as 0.6.3.2). The prefill head alias does not run on this build. Measuring through the llama-swap proxy cost 2% (noise).",
+   "evidence": "2026-11-08, Strata 0.2.12, 128k context, int8 KV, short-benchmark rates; 30k and 120k retrievals correct in every config. No gain from MTP spec 3, 5 or 6, min-p 0.3 or 0.7, asynchronous tiers, transparent huge pages, the shared-memory expert kernel, a smaller VRAM reserve, split decode attention, coupled drafting (greedy benchmark), the fused hyper-connection projection, PCIe share 0.80, a prompt-lookup chain, a 4-bit draft head, resident K/V for a single slot, draft min-p 0.7 or window 5 with the stream norm, a 4,096-token prompt chunk (prefill 23% slower), CPU pool and host-thread placement, more pool tasks, a lower adaptive gain threshold, a high-priority graph stream, a DFlash2 draft model (7.5% slower on prose), locking the PLE table in RAM, Strata 0.2.13 (126.1 tok/s alone, 109.4 on the peer tier), or llamAmpere 0.6.3.8 (85.1 tok/s, same as 0.6.3.2). The prefill head alias does not run on this build. Measuring through the llama-swap proxy cost 2% (noise).",
    "caveat": "Short-benchmark rates, not agent runs. The goal of 150 tok/s decode is not reached (best 128.6, replicated at 127.6 and 127.7); the limit is the draft head. Multi-slot rows measure one stream, not the total. Two slots on the 3090 alone still starve the expert cache after long prompts (53 tok/s after 120k).",
    "doc": "https://github.com/alexderz/agentic-model-testing/blob/main/docs/model-research/tuning.md#13-flash-next-toward-150-toks-on-one-3090"
   },
@@ -19345,7 +19391,7 @@
   ]
  },
  "counts": {
-  "models": 120,
+  "models": 122,
   "runs": 332,
   "test3": 86,
   "oneshots": 153,
