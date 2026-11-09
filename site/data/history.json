@@ -1,7 +1,7 @@
 {
  "schema": "history/1",
- "generated_from": "private bake-off grades through 2026-11-08: Flash-Next Unsloth v3.1 round 1, the 3090 + V100 serving tuning and the Flash-Next 150 tok/s serving goal (Strata 0.2.12, llamAmpere 0.6.3.2); runs from 2026-10-07 on",
- "generated": "2026-11-08 19:25 CST",
+ "generated_from": "private bake-off grades through 2026-11-08: Flash-Next Unsloth v3.1 round 1, the 3090 + V100 serving tuning and the Flash-Next 150 tok/s serving goal (Strata 0.2.12 through round 10, llamAmpere 0.6.3.2); runs from 2026-10-07 on",
+ "generated": "2026-11-08 21:33 CST",
  "runs_new": [
   {
    "case": "wa-saluki-27b-iq2",
@@ -4841,6 +4841,166 @@
   {
    "model": "strata0212-fnb-v31-udiq3xxs-128k",
    "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W, adaptive overlap on, split decode attention; short benchmark; 30,037-token retrieval correct, first token 11.2 s (2,699 tok/s prefill); 120,007-token retrieval correct, first token 42.0 s (2,864 tok/s prefill); decode right after the long prompt 65 tok/s; free 2.2 GiB (3090)",
+   "decode": 115.05,
+   "quote": null,
+   "prefill": 985.0,
+   "vram": 22374,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W, adaptive overlap on, coupled (Gumbel) drafting, which acts only on sampled requests and this benchmark is greedy; short benchmark; 30,037-token retrieval correct, first token 11.3 s (2,673 tok/s prefill); 120,007-token retrieval correct, first token 42.4 s (2,838 tok/s prefill); decode right after the long prompt 69 tok/s; free 2.1 GiB (3090)",
+   "decode": 114.3,
+   "quote": null,
+   "prefill": 985.3,
+   "vram": 22376,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W, adaptive overlap on, router prior 1.5 toward experts already in VRAM (lossy: changes the output; needs a quality check before use); short benchmark; 30,037-token retrieval correct, first token 11.3 s (2,675 tok/s prefill); 120,007-token retrieval correct, first token 42.6 s (2,823 tok/s prefill); decode right after the long prompt 135 tok/s; free 2.2 GiB (3090)",
+   "decode": 117.65,
+   "quote": null,
+   "prefill": 1035.7,
+   "vram": 22374,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W, adaptive overlap on, decode profiler on (diagnostic; rates slightly depressed); short benchmark; 30,037-token retrieval correct, first token 11.2 s (2,695 tok/s prefill); 120,007-token retrieval correct, first token 42.0 s (2,865 tok/s prefill); decode right after the long prompt 64 tok/s; free 2.1 GiB (3090)",
+   "decode": 110.85,
+   "quote": null,
+   "prefill": 981.4,
+   "vram": 22388,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W, adaptive overlap on, English and code draft vocabulary; short benchmark; 30,037-token retrieval correct, first token 11.2 s (2,699 tok/s prefill); 120,007-token retrieval correct, first token 42.2 s (2,847 tok/s prefill); decode right after the long prompt 64 tok/s; free 2.2 GiB (3090)",
+   "decode": 118.8,
+   "quote": null,
+   "prefill": 990.7,
+   "vram": 22374,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W, adaptive fetch 2 (overlap off); short benchmark; 30,037-token retrieval correct, first token 11.3 s (2,663 tok/s prefill); 120,007-token retrieval correct, first token 42.6 s (2,823 tok/s prefill); decode right after the long prompt 102 tok/s; free 2.1 GiB (3090)",
+   "decode": 113.45,
+   "quote": null,
+   "prefill": 992.7,
+   "vram": 22376,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W, adaptive overlap on, English and code draft vocabulary, fused hyper-connection up projection; short benchmark; 30,037-token retrieval correct, first token 11.0 s (2,748 tok/s prefill); 120,007-token retrieval correct, first token 41.4 s (2,904 tok/s prefill); decode right after the long prompt 69 tok/s; free 2.2 GiB (3090)",
+   "decode": 118.0,
+   "quote": null,
+   "prefill": 993.6,
+   "vram": 22374,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W, adaptive overlap on, English and code draft vocabulary, int8 hyper-connection projections; short benchmark; 30,037-token retrieval correct, first token 10.3 s (2,935 tok/s prefill); 120,007-token retrieval correct, first token 41.0 s (2,934 tok/s prefill); decode right after the long prompt 77 tok/s; free 2.1 GiB (3090)",
+   "decode": 114.75,
+   "quote": null,
+   "prefill": 984.8,
+   "vram": 22382,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W, adaptive fetch 2 (overlap off), English and code draft vocabulary; short benchmark; 30,037-token retrieval correct, first token 11.2 s (2,686 tok/s prefill); 120,007-token retrieval correct, first token 42.4 s (2,838 tok/s prefill); decode right after the long prompt 101 tok/s; free 2.2 GiB (3090)",
+   "decode": 117.15,
+   "quote": null,
+   "prefill": 981.0,
+   "vram": 22374,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W, adaptive fetch 2 (overlap off), English and code draft vocabulary, int8 hyper-connection projections; short benchmark; 30,037-token retrieval correct, first token 10.1 s (2,974 tok/s prefill); 120,007-token retrieval correct, first token 40.6 s (2,965 tok/s prefill); decode right after the long prompt 100 tok/s; free 2.1 GiB (3090)",
+   "decode": 113.25,
+   "quote": null,
+   "prefill": 1006.9,
+   "vram": 22380,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-3090-v100",
+   "engine": "Strata 0.2.12 (CUDA 12.9 build)",
+   "variant": "3090 + V100 helper expert cache, 350 W, remote expert optimisation on, English and code draft vocabulary; short benchmark; 30,037-token retrieval correct, first token 11.0 s (2,726 tok/s prefill); 120,007-token retrieval correct, first token 45.6 s (2,636 tok/s prefill); decode right after the long prompt 105 tok/s; free 2.2 GiB (3090) / 3.7 GiB (V100)",
+   "decode": 109.2,
+   "quote": null,
+   "prefill": 1010.3,
+   "vram": 29000,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W, adaptive fetch 2 (overlap off), English and code draft vocabulary, two 128k slots (one stream measured); short benchmark; 30,037-token retrieval correct, first token 10.5 s (2,866 tok/s prefill); 120,007-token retrieval correct, first token 43.7 s (2,754 tok/s prefill); decode right after the long prompt 50 tok/s; free 2.2 GiB (3090)",
+   "decode": 84.0,
+   "quote": null,
+   "prefill": 630.3,
+   "vram": 22326,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-3090-v100",
+   "engine": "Strata 0.2.12 (CUDA 12.9 build)",
+   "variant": "3090 + V100 peer tier (the V100 computes its own cached experts), 350 W, English and code draft vocabulary; short benchmark; 30,037-token retrieval correct, first token 19.2 s (1,569 tok/s prefill); 120,007-token retrieval correct, first token 77.7 s (1,546 tok/s prefill); decode right after the long prompt 118 tok/s; free 2.2 GiB (3090) / 1.46 GiB (V100)",
+   "decode": 107.1,
+   "quote": null,
+   "prefill": 962.0,
+   "vram": 31276,
+   "error": "does not meet our fit rule: 1,492 MiB free on the V100 (needs 1,536)"
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W, adaptive fetch 2 (overlap off), English and code draft vocabulary, fetch margin 0; short benchmark; 30,037-token retrieval correct, first token 11.2 s (2,693 tok/s prefill); 120,007-token retrieval correct, first token 42.3 s (2,844 tok/s prefill); decode right after the long prompt 115 tok/s; free 2.2 GiB (3090)",
+   "decode": 118.45,
+   "quote": null,
+   "prefill": 984.9,
+   "vram": 22374,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-3090-v100",
+   "engine": "Strata 0.2.12 (CUDA 12.9 build)",
+   "variant": "3090 + V100 peer tier, 350 W, English and code draft vocabulary, two 128k slots (one stream measured); short benchmark; 30,037-token retrieval correct, first token 19.6 s (1,538 tok/s prefill); 120,007-token retrieval correct, first token 79.2 s (1,517 tok/s prefill); decode right after the long prompt 100 tok/s; free 2.2 GiB (3090) / 1.46 GiB (V100)",
+   "decode": 96.7,
+   "quote": null,
+   "prefill": 753.9,
+   "vram": 31276,
+   "error": "does not meet our fit rule: 1,492 MiB free on the V100 (needs 1,536)"
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
+   "variant": "3090 alone, 350 W, adaptive fetch 2 (overlap off), English and code draft vocabulary, fetch margin 0, PCIe share 0.55; short benchmark; 30,037-token retrieval correct, first token 11.0 s (2,728 tok/s prefill); 120,007-token retrieval correct, first token 41.8 s (2,879 tok/s prefill); decode right after the long prompt 125 tok/s; free 2.1 GiB (3090)",
+   "decode": 116.8,
+   "quote": null,
+   "prefill": 987.6,
+   "vram": 22376,
+   "error": ""
+  },
+  {
+   "model": "strata0212-fnb-v31-udiq3xxs-128k",
+   "engine": "Strata 0.2.12",
    "variant": "3090 alone, 250 W, drafting off",
    "decode": null,
    "quote": null,
@@ -5077,8 +5237,8 @@
    "date": "2026-11-08",
    "era": "Flash-Next",
    "title": "Flash-Next toward 150 tok/s on one 3090",
-   "what": "Strata 0.2.12: 98.8 to 116.9 tok/s short-benchmark decode (350 W, adaptive overlap); 120k prompts prefill at 2,800+ tok/s; a V100 helper cache keeps decode at 113 tok/s after a 120k prompt.",
-   "why": "Goal: 150 tok/s decode and 1,000+ tok/s prefill on a larger quant. Prefill is met; decode is at 78%."
+   "what": "Strata 0.2.12: 98.8 to 118.8 tok/s short-benchmark decode (350 W, adaptive overlap, English draft vocabulary); 120k prompts prefill at 2,800 to 2,965 tok/s; adaptive fetch keeps decode at 125 tok/s right after a 120k prompt on the 3090 alone.",
+   "why": "Goal: 150 tok/s decode and 1,000+ tok/s prefill on a larger quant. Prefill is met; decode is at 79%, limited by the draft head."
   }
  ],
  "findings": [
@@ -6070,32 +6230,32 @@
   },
   {
    "date": "2026-11-08",
-   "title": "Flash-Next on one 3090: 117 tok/s, and a V100 that keeps it fast after long prompts",
+   "title": "Flash-Next on one 3090: 119 tok/s, and 125 tok/s right after a 120k prompt",
    "kind": "tuning",
-   "summary": "Toward a goal of 150 tok/s decode and 1,000+ tok/s prefill on a larger Unsloth v3.1 quant of Flash-Next, Strata 0.2.12 on one RTX 3090 reached 116.9 tok/s short-benchmark decode on UD-IQ3_XXS (from 98.8): power 250 to 350 W gave +13% and adaptive overlap +4%. Prefill is met: a 120,007-token retrieval was correct with the first token in 42.5 s (2,831 tok/s). On the 3090 alone, decode right after that long prompt drops to about 65 tok/s; with the V100 as a helper expert cache it stays at 113 tok/s. Two 128k slots fit at 100 tok/s per stream, four at 94.",
-   "settings": "Strata 0.2.12, MTP spec 4, min-p 0.5, 128k context, int8 KV, STRATA_ADAPT_OVERLAP=1 (3090 alone) or --expert-cache-device1 14500 --remote-expert-opt (with the V100)",
+   "summary": "Toward a goal of 150 tok/s decode and 1,000+ tok/s prefill on a larger Unsloth v3.1 quant of Flash-Next, Strata 0.2.12 on one RTX 3090 reached 118.8 tok/s short-benchmark decode on UD-IQ3_XXS (from 98.8): power 250 to 350 W gave +13%, adaptive overlap +4% and an English and code draft vocabulary +2%. Prefill is met: a 120,007-token retrieval was correct with the first token in 40.6 s (2,965 tok/s). Decode right after that long prompt used to drop to about 65 tok/s; Strata's adaptive fetch (margin 0, PCIe share 0.55) now holds 125 tok/s there on the 3090 alone, at 116.8 tok/s on the short benchmark. A decode profile shows the last step to 150 needs a better draft head, not more cache: each draft window keeps 2.2 tokens.",
+   "settings": "Strata 0.2.12, MTP spec 4, min-p 0.5, 128k context, int8 KV, --mtp-draft-vocab draft_vocab_en.bin, STRATA_ADAPT_FETCH=2 STRATA_ADAPT_FETCH_MARGIN=0 --pcie-frac 0.55 (3090 alone, best for long prompts) or STRATA_ADAPT_OVERLAP=1 (best short benchmark)",
    "metrics": [
     {
      "label": "Decode, short benchmark, UD-IQ3_XXS",
      "before": 98.8,
-     "after": 116.9,
+     "after": 118.8,
      "unit": "tok/s"
     },
     {
      "label": "Prefill, 120k-token retrieval",
      "before": 2419,
-     "after": 2831,
+     "after": 2965,
      "unit": "tok/s"
     },
     {
-     "label": "Decode right after the 120k prompt, 3090 alone to 3090 + V100 helper",
+     "label": "Decode right after the 120k prompt, 3090 alone",
      "before": 67.0,
-     "after": 113.2,
+     "after": 125.3,
      "unit": "tok/s"
     }
    ],
    "quality": "Oracle and both retrieval prompts (30k and 120k) correct in every passing config.",
-   "caveat": "Short-benchmark rates, not agent runs; the 150 tok/s goal is not reached. Multi-slot rows measure one stream, not the total. llamAmpere 0.6.3.2 on the same files was slower (86 tok/s decode, 1,865 tok/s prefill at 100k)."
+   "caveat": "Short-benchmark rates, not agent runs; the 150 tok/s goal is not reached. Run-to-run noise is about 4 tok/s. Multi-slot rows measure one stream, not the total. A router prior that prefers cached experts reached 135 tok/s after long prompts but changes the output and is not adopted without a quality check. llamAmpere 0.6.3.2 on the same files was slower (86 tok/s decode)."
   },
   {
    "date": "2026-11-08",
