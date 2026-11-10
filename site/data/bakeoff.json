@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-11-09 21:07 CST",
- "built": "2026-11-09 21:07 CST",
+ "generated": "2026-11-09 23:16 CST",
+ "built": "2026-11-09 23:17 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -342,6 +342,33 @@
    ],
    "quality": "Test 2T full pass on both quants (builds, initialize, real tool call; 8 and 11 tools); test 7 A 2, B 2, C 2, D 1 (a comb of one-cell dead ends), E 2 (every claim in its notes reproduced); UD-Q3_K_XL test 2 fails to build.",
    "caveat": "One agent run each (OpenCode, not T3 Code); one sample per quant, so not a ranking. The UD-Q3_K_XL test 2 failure is one undeclared tool call; no other daily-driver run made one. Test 7 D is judged from the map only, without walking it in Minecraft."
+  },
+  {
+   "date": "2026-11-09",
+   "title": "A host-RAM session cache makes switching between long sessions 37 times faster; two 256k agent slots fit on one 3090",
+   "kind": "tuning",
+   "summary": "Daily driver (UD-Q2_K_XL, MTP draft head, one 3090 at 300 W), short-benchmark rates. With a 12 GiB session cache in host RAM, returning to a 93k-token session that another one displaced gives its first token in 0.93 s median instead of 34.8 s, because 99.9% of the prompt is reused; it costs 2-2.8 GiB of host RAM per parked session and no VRAM. Batch slots alone do not keep sessions (35.9 s). For agent serving, two 256k slots with two ~240k prompts at once fit on every setup tried with at least 2.1 GiB free per card. Keeping the whole K/V in 3090 VRAM starves the expert cache (51.5 tok/s total); keeping 20,480 cells per layer in VRAM and the rest in pinned host RAM gives 90.2 tok/s total with the fastest second prompt (first token 235 s). Adding the V100, as a peer tier or a layer split, gives 94-101 tok/s, one sample each, so all of these are one band.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "First token on a session switch, 93k session, no cache to host-RAM cache",
+     "before": 34.8,
+     "after": 0.93,
+     "unit": "s"
+    },
+    {
+     "label": "Total decode, two 240k prompts, whole K/V in 3090 VRAM to 20k cells resident",
+     "before": 51.5,
+     "after": 90.2,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Total decode, two 240k prompts, whole K/V in 3090 VRAM, V100 peer tier added",
+     "before": 51.5,
+     "after": 101.2,
+     "unit": "tok/s"
+    }
+   ]
   },
   {
    "date": "2026-11-08",
@@ -14939,6 +14966,96 @@
    "prefill": 2707.9,
    "vram": 21510,
    "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 at 300 W, the daily-driver setup (UD-Q2_K_XL, MTP draft head, 8-bit K/V, 128k), session cache in host RAM (12 GiB, 4 sessions); sessions of about 93k prompt tokens served one request at a time in rotation, 3 turns each, so every turn after the first returns to a session another one displaced; all marker recalls correct; switching back to a displaced session takes 0.93 s median for the first token (99.9% of the prompt reused) against 33-34 s for a cold read; 2.0-2.8 GiB of host RAM per parked session, no VRAM; free 2.2 GiB (3090), fits",
+   "decode": null,
+   "quote": null,
+   "prefill": 2785.0,
+   "vram": 22368,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 at 300 W, the daily-driver setup (UD-Q2_K_XL, MTP draft head, 8-bit K/V, 128k), no session cache (as the daily driver ran until now); sessions of about 93k prompt tokens served one request at a time in rotation, 3 turns each, so every turn after the first returns to a session another one displaced; all marker recalls correct; every switch re-reads the whole session: 34.8 s median to the first token, 0% reused; free 2.2 GiB (3090), fits",
+   "decode": null,
+   "quote": null,
+   "prefill": 2700.0,
+   "vram": 22366,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 at 300 W, the daily-driver setup (UD-Q2_K_XL, MTP draft head, 8-bit K/V, 128k), four batch slots, no session cache; sessions of about 93k prompt tokens served one request at a time in rotation, 3 turns each, so every turn after the first returns to a session another one displaced; all marker recalls correct; finished batch slots do not keep a conversation, so a switch still takes 35.9 s median to the first token, 0% reused; free 3.2 GiB (3090), fits",
+   "decode": null,
+   "quote": null,
+   "prefill": 2700.0,
+   "vram": 21288,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 at 300 W, UD-Q2_K_XL, two 256k slots (batch 2 with the MTP head), 8-bit K/V, VRAM reserve 3,072 MiB, Qwen thinking sampling; two ~240k prompts at once with long replies, both streams recall early and late markers correctly; the whole K/V of both slots in 3090 VRAM (about 11 GiB) leaves only 1,532 expert-cache slots; first tokens 137.6 and 344.7 s; total decode 51.5 tok/s while both write (19.3 and 25.1 per stream); free 3.2 GiB (3090), fits",
+   "decode": 51.49,
+   "quote": null,
+   "prefill": 1751.5,
+   "vram": 21264,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 at 300 W, UD-Q2_K_XL, two 256k slots (batch 2 with the MTP head), 8-bit K/V, VRAM reserve 3,072 MiB, Qwen thinking sampling; two ~240k prompts at once with long replies, both streams recall early and late markers correctly; 20,480 K/V cells per layer resident in VRAM, the rest of each 256k context in pinned host RAM (never disk); expert cache 6,887 slots; first tokens 94.8 and 234.9 s; total decode 90.2 tok/s (52.0 and 29.9 per stream); free 3.2 GiB (3090), fits; picked for the agent serving profile",
+   "decode": 90.22,
+   "quote": null,
+   "prefill": 2546.7,
+   "vram": 21342,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 at 300 W, UD-Q2_K_XL, two 256k slots (batch 2 with the MTP head), 8-bit K/V, VRAM reserve 3,072 MiB, Qwen thinking sampling; two ~240k prompts at once with long replies, both streams recall early and late markers correctly; whole K/V in 3090 VRAM plus the V100 as a peer tier holding 16,753 experts; first tokens 137.8 and 344.1 s; total decode 101.2 tok/s (32.5 and 59.3 per stream); free 3.2 GiB (3090) and 2.2 GiB (V100), fits",
+   "decode": 101.23,
+   "quote": null,
+   "prefill": 1749.4,
+   "vram": 21306,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 at 300 W, UD-Q2_K_XL, two 256k slots (batch 2 with the MTP head), 8-bit K/V, VRAM reserve 3,072 MiB, Qwen thinking sampling; two ~240k prompts at once with long replies, both streams recall early and late markers correctly; 65,536 K/V cells resident in VRAM, the rest in pinned host RAM; first tokens 96.5 and 239.9 s; total decode 83.8 tok/s (33.2 and 41.2 per stream), no gain over 20,480 cells because 99.7% of K/V reads already hit VRAM; free 3.2 GiB (3090), fits",
+   "decode": 83.81,
+   "quote": null,
+   "prefill": 2501.3,
+   "vram": 21312,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 at 300 W, UD-Q2_K_XL, two 256k slots (batch 2 with the MTP head), 8-bit K/V, VRAM reserve 3,072 MiB, Qwen thinking sampling; two ~240k prompts at once with long replies, both streams recall early and late markers correctly; 20,480 K/V cells resident plus the V100 peer tier (23,615 of 24,576 experts on the two cards); first tokens 105.6 and 264.5 s; total decode 93.7 tok/s (34.6 and 47.4 per stream), within noise of the 3090 alone; free 3.2 GiB (3090) and 2.1 GiB (V100), fits",
+   "decode": 93.69,
+   "quote": null,
+   "prefill": 2284.1,
+   "vram": 21312,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 at 300 W, UD-Q2_K_XL, two 256k slots (batch 2 with the MTP head), 8-bit K/V, VRAM reserve 3,072 MiB, Qwen thinking sampling; two ~240k prompts at once with long replies, both streams recall early and late markers correctly; layers split 24/24 across the 3090 and V100 so each card holds half of the whole K/V; first tokens 121.4 and 369.5 s; total decode 96.6 tok/s (25.9 and 56.6 per stream); the 3090 runs at 71 C instead of 78-80 C; free 3.3 GiB (3090) and 3.2 GiB (V100), fits",
+   "decode": 96.55,
+   "quote": null,
+   "prefill": 1985.9,
+   "vram": 21228,
+   "error": ""
   }
  ],
  "engines": [
@@ -16660,6 +16777,35 @@
    "evidence": "2026-11-08, Strata 0.2.12, 128k context, int8 KV, short-benchmark rates; 30k and 120k retrievals correct in every config. No gain from MTP spec 3, 5 or 6, min-p 0.3 or 0.7, asynchronous tiers, transparent huge pages, the shared-memory expert kernel, a smaller VRAM reserve, split decode attention, coupled drafting (greedy benchmark), the fused hyper-connection projection, PCIe share 0.80, a prompt-lookup chain, a 4-bit draft head, resident K/V for a single slot, draft min-p 0.7 or window 5 with the stream norm, a 4,096-token prompt chunk (prefill 23% slower), CPU pool and host-thread placement, more pool tasks, a lower adaptive gain threshold, a high-priority graph stream, a DFlash2 draft model on prose (7.5% slower; it wins on code and JSON, up to 167.55 and 206.95 tok/s with a draft window of 8), locking the PLE table in RAM, Strata 0.2.13 (126.1 tok/s alone, 109.4 on the peer tier), or llamAmpere 0.6.3.8 (85.1 tok/s, same as 0.6.3.2). The prefill head alias does not run on this build. Measuring through the llama-swap proxy cost 2% (noise).",
    "caveat": "Short-benchmark rates, not agent runs. The goal of 150 tok/s decode is met on code (167.55 tok/s greedy, 150.5 sampled) and JSON (206.95) with a DFlash2 draft model, not on prose (best 128.6, replicated at 127.6 and 127.7); the limit is the draft head. Multi-slot rows measure one stream unless they say total; four streams on Strata sum to about 125 tok/s. Two slots on the 3090 alone still starve the expert cache after long prompts (53 tok/s after 120k).",
    "doc": "https://github.com/alexderz/agentic-model-testing/blob/main/docs/model-research/tuning.md#13-flash-next-toward-150-toks-on-one-3090"
+  },
+  {
+   "id": "agent-serving",
+   "title": "Long agent sessions on one 3090: park sessions in host RAM, keep a 20k K/V window in VRAM",
+   "rule": "For several long agent sessions, give the engine a session cache in host RAM so a displaced session comes back without a re-read, and for 256k slots keep about 20k K/V cells per layer in VRAM with the rest in pinned host RAM rather than the whole K/V in VRAM.",
+   "metrics": [
+    {
+     "label": "First token on a switch back to a 93k session, no cache to 12 GiB host-RAM cache",
+     "before": 34.8,
+     "after": 0.93,
+     "unit": "s"
+    },
+    {
+     "label": "Total decode, two 240k prompts at once, whole K/V in VRAM to 20k cells resident",
+     "before": 51.5,
+     "after": 90.2,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Same, whole K/V in 3090 VRAM, V100 peer tier added",
+     "before": 51.5,
+     "after": 101.2,
+     "unit": "tok/s"
+    }
+   ],
+   "chart": "bars",
+   "evidence": "2026-11-09, Strata 0.2.13, UD-Q2_K_XL, MTP draft head, 8-bit K/V, 3090 at 300 W, short-benchmark rates; every marker recall correct. Session switches: 0.93 s median with the cache (99.9% of the prompt reused, 2-2.8 GiB host RAM per parked session, no VRAM), 34.8 s without it, 35.9 s with four batch slots (finished slots do not keep a conversation). Two 256k slots with two ~240k prompts: 51.5 tok/s total with the whole K/V in 3090 VRAM (expert cache cut to 1,532 slots), 90.2 with 20,480 resident cells, 83.8 with 65,536 (99.7% of K/V reads already hit VRAM at 20,480), 101.2 with the V100 peer tier, 93.7 with both, 96.6 with the layers split 24/24 across the cards. All fit with at least 2.1 GiB free per card.",
+   "caveat": "One sample each, so 84-101 tok/s is one band. Second prompts wait for the first: first tokens 235 to 370 s at 240k. Pinning about 9 GiB of host RAM can stall the load for minutes when the page cache is full.",
+   "doc": "https://github.com/alexderz/agentic-model-testing/blob/main/docs/model-research/tuning.md#session-switches-and-two-256k-agent-slots-2026-11-09"
   },
   {
    "id": "quality-checks",

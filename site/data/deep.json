@@ -474,6 +474,20 @@
       "doc": "docs/model-research/tuning.md#13-flash-next-toward-150-toks-on-one-3090"
     },
     {
+      "id": "agent-serving",
+      "title": "Long agent sessions on one 3090: park sessions in host RAM, keep a 20k K/V window in VRAM",
+      "rule": "For several long agent sessions, give the engine a session cache in host RAM so a displaced session comes back without a re-read, and for 256k slots keep about 20k K/V cells per layer in VRAM with the rest in pinned host RAM rather than the whole K/V in VRAM.",
+      "metrics": [
+        {"label": "First token on a switch back to a 93k session, no cache to 12 GiB host-RAM cache", "before": 34.8, "after": 0.93, "unit": "s"},
+        {"label": "Total decode, two 240k prompts at once, whole K/V in VRAM to 20k cells resident", "before": 51.5, "after": 90.2, "unit": "tok/s"},
+        {"label": "Same, whole K/V in 3090 VRAM, V100 peer tier added", "before": 51.5, "after": 101.2, "unit": "tok/s"}
+      ],
+      "chart": "bars",
+      "evidence": "2026-11-09, Strata 0.2.13, UD-Q2_K_XL, MTP draft head, 8-bit K/V, 3090 at 300 W, short-benchmark rates; every marker recall correct. Session switches: 0.93 s median with the cache (99.9% of the prompt reused, 2-2.8 GiB host RAM per parked session, no VRAM), 34.8 s without it, 35.9 s with four batch slots (finished slots do not keep a conversation). Two 256k slots with two ~240k prompts: 51.5 tok/s total with the whole K/V in 3090 VRAM (expert cache cut to 1,532 slots), 90.2 with 20,480 resident cells, 83.8 with 65,536 (99.7% of K/V reads already hit VRAM at 20,480), 101.2 with the V100 peer tier, 93.7 with both, 96.6 with the layers split 24/24 across the cards. All fit with at least 2.1 GiB free per card.",
+      "caveat": "One sample each, so 84-101 tok/s is one band. Second prompts wait for the first: first tokens 235 to 370 s at 240k. Pinning about 9 GiB of host RAM can stall the load for minutes when the page cache is full.",
+      "doc": "docs/model-research/tuning.md#session-switches-and-two-256k-agent-slots-2026-11-09"
+    },
+    {
       "id": "quality-checks",
       "title": "Check a setup before trusting speed",
       "rule": "Run quality and multi-session checks on every new engine or settings change before ranking speed.",
