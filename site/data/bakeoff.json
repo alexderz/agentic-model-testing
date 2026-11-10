@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-11-10 05:46 CST",
- "built": "2026-11-10 05:47 CST",
+ "generated": "2026-11-10 07:55 CST",
+ "built": "2026-11-10 07:55 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -207,6 +207,35 @@
    ],
    "quality": "Peer tier: 6 of 6 streams recall both markers; UD-Q2_0: 30k and 120k retrievals right; Arete-27B test 1: 5 of 5 live checks, 59/0 own tests.",
    "caveat": "One sample each. Three of the four 120k streams hit the 12,000-token reply limit. The Arete run is OpenCode, not T3 Code; its first attempt the same night never started (a sandbox network bug on our side) and is not a result."
+  },
+  {
+   "date": "2026-11-10",
+   "title": "UD-Q2_0 matches the daily driver's quality and runs about 13% faster in agent runs",
+   "kind": "model",
+   "summary": "Agent-run rates, Qwen thinking sampling, one 3090 at 300 W, OpenCode. The smaller UD-Q2_0 quant (65.7 GiB) passed agent test 1 with every live check, 25 subcommands and 471 of its own tests passing (64 minutes, 136.6 tok/s decode, first token median 0.33 s), test 2T with 9 tools and 85 tests passing while using only the real endpoints (33 minutes, 137.0 tok/s, median 0.39 s), and scored 9 of 10 on the labyrinth (44 minutes, 135.3 tok/s, median 0.25 s). UD-Q2_K_XL on the same setup decoded 119-123 tok/s in its agent runs and also scored 9 on the labyrinth; UD-Q3_K_XL scored 10 at about 108 tok/s. Both 2-bit quants fit with 2.2 GiB free.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Agent-run decode, test 1, UD-Q2_K_XL to UD-Q2_0",
+     "before": 121.4,
+     "after": 136.6,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Agent-run decode, test 2T, UD-Q2_K_XL to UD-Q2_0",
+     "before": 121.6,
+     "after": 137.0,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Labyrinth score, UD-Q2_K_XL to UD-Q2_0",
+     "before": 9,
+     "after": 9,
+     "unit": "of 10"
+    }
+   ],
+   "quality": "Test 1: 5 of 5 live checks, 471/0 own tests. Test 2T: builds, 9 tools, tool call works, 85/0 tests, trust verdict tested. Test 7: A 2, B 2, C 2, D 1, E 2.",
+   "caveat": "One run each. The short benchmark showed only a 1-2% speed gap, so the agent-run gain may partly be run-to-run variation. Test 2 is still running. OpenCode, not T3 Code."
   },
   {
    "date": "2026-11-09",
@@ -3914,7 +3943,7 @@
    "quant": "Unsloth UD-Q2_0 v3.1 (65.7 GiB)",
    "kind": "stock",
    "uncensored": false,
-   "note": "The smaller 2-bit quant on the daily-driver setup (MTP draft head, one 3090 at 300 W), tried because smaller weights leave more expert-cache room in VRAM. Short-benchmark rates; agent tests running.",
+   "note": "The smaller 2-bit quant on the daily-driver setup (MTP draft head, one 3090 at 300 W), tried because smaller weights leave more expert-cache room in VRAM. Short-benchmark decode ties UD-Q2_K_XL (122.4 against 120.7 tok/s). Agent runs (2026-11-10, Qwen thinking sampling, OpenCode): test 1 passes with 471 of its own tests at 136.6 tok/s; test 2T passes with 9 tools and 85 tests at 137.0 tok/s and uses only the real endpoints; the labyrinth (test 7) scores 9 of 10 at 135.3 tok/s. First token median 0.25-0.39 s. Test 2 still running.",
    "vision": null
   }
  },
@@ -11870,6 +11899,55 @@
     "rust_errors": 0,
     "loc": 1366,
     "errors_per_kloc": 0.0
+   }
+  },
+  {
+   "case": "mm-0h2-udq200213-mtp-best-test1-agent-thinking-qwensampling-300w",
+   "model": "strata0213-fnb-v31-udq20-128k",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 471,
+   "tests_fail": 0,
+   "subcmds": 25,
+   "tps": 136.6,
+   "minutes": 64,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-10 05:51",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 7418,
+    "errors_per_kloc": 1.1
+   }
+  },
+  {
+   "case": "mm-0h5-udq200213-mtp-best-test2t-agent-thinking-qwensampling-300w-r2",
+   "model": "strata0213-fnb-v31-udq20-128k",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 85,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 137.0,
+   "minutes": 33,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-10 07:11",
+   "flavor": "2T",
+   "struggle": {
+    "compiles": 38,
+    "failed_compiles": 18,
+    "rust_errors": 70,
+    "loc": 5834,
+    "errors_per_kloc": 12.0
    }
   }
  ],
@@ -20801,16 +20879,36 @@
     "note": "Run beside a test 1 session on the agent serving profile. Its second request thought for the full 24,000-token reasoning budget; the forced answer had no tool call, so the session ended after one turn with no files. 0 of 10 hidden seeds. The same weights and budget scored 9 of 10 alone. Agent-run decode 42.8 tok/s with the other session running, first token median 3.5 s. One round.",
     "frames": [],
     "live": null
+   },
+   {
+    "case": "mm-0h4-udq200213-mtp-best-test7-agent-thinking-qwensampling-300w",
+    "entry": "strata0213-fnb-v31-udq20-128k",
+    "test": 7,
+    "finish": "agent done",
+    "tokens": 130204.0,
+    "wall_s": 2665.7,
+    "tok_s": 48.84,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 1.0,
+     "E": 2.0
+    },
+    "total": 9.0,
+    "note": "The Threefold Labyrinth. Showcase reproduces, 10 of 10 hidden seeds give distinct passing mazes, extra credit met. D 1 from the map checker only: no entrance tunnel, six stairs spread along the route and the route winds, but it is a comb by design: 91 of 153 side openings are one-cell dead ends and only 11 run six cells or more. E 2: every checkable claim in its notes reproduced. Agent-run decode 135.3 tok/s, first token median 0.25 s; tok_s here is output tokens over wall time. One round.",
+    "frames": [],
+    "live": null
    }
   ]
  },
  "counts": {
   "models": 126,
-  "runs": 342,
+  "runs": 344,
   "test3": 86,
-  "oneshots": 160,
+  "oneshots": 161,
   "frames": 310,
-  "pass": 253,
+  "pass": 255,
   "live": 100
  }
 }
