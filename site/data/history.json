@@ -1,7 +1,7 @@
 {
  "schema": "history/1",
- "generated_from": "private bake-off grades through 2026-11-08: Flash-Next Unsloth v3.1 round 1, the 3090 + V100 serving tuning and the Flash-Next 150 tok/s serving goal (Strata 0.2.12 through round 21 and a Strata 0.2.13 engine check, code and JSON benchmarks with a quality check, a 256k slot and four-stream totals, DFlash2 window and confidence, sampled decoding, llamAmpere with four slots, K/V cache in host RAM, parallel slots that fit, thinking-on sampled decoding, a dual-card Tiel-Coder Q6 serving check, llamAmpere 0.6.3.2 and 0.6.3.8, the daily driver's agent test 1, 2, 2T and 7 runs, UD-Q3_K_XL test 1, 2 and 2T runs, session switching with a host-RAM session cache, two 256k agent slots, the agent serving profile (parked 155k sessions, four 120k streams, two agents at once on test 2), one-shot pagodas and eight- and four-slot fits); runs from 2026-10-07 on",
- "generated": "2026-11-10 01:25 CST",
+ "generated_from": "private bake-off grades through 2026-11-08: Flash-Next Unsloth v3.1 round 1, the 3090 + V100 serving tuning and the Flash-Next 150 tok/s serving goal (Strata 0.2.12 through round 21 and a Strata 0.2.13 engine check, code and JSON benchmarks with a quality check, a 256k slot and four-stream totals, DFlash2 window and confidence, sampled decoding, llamAmpere with four slots, K/V cache in host RAM, parallel slots that fit, thinking-on sampled decoding, a dual-card Tiel-Coder Q6 serving check, llamAmpere 0.6.3.2 and 0.6.3.8, the daily driver's agent test 1, 2, 2T and 7 runs, UD-Q3_K_XL test 1, 2 and 2T runs, session switching with a host-RAM session cache, two 256k agent slots, the agent serving profile (parked 155k sessions, four 120k streams, two agents at once on tests 1 and 2, a 30-minute idle resume), the UD-Q3_K_XL test 7 run, one-shot pagodas and eight- and four-slot fits); runs from 2026-10-07 on",
+ "generated": "2026-11-10 03:34 CST",
  "runs_new": [
   {
    "case": "wa-saluki-27b-iq2",
@@ -3268,6 +3268,30 @@
     "rust_errors": 52,
     "loc": 6285,
     "errors_per_kloc": 8.3
+   }
+  },
+  {
+   "case": "mm-0ff0-q2kxl0213-agent-profile-hold-test1-test7-r2-p1",
+   "model": "qwen3.8-flash-next-agent",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 205,
+   "tests_fail": 0,
+   "subcmds": 14,
+   "tps": 74.1,
+   "minutes": 40,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-10 02:30",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 4253,
+    "errors_per_kloc": 0.7
    }
   }
  ],
@@ -7905,6 +7929,41 @@
     }
    ],
    "quality": "Test 2 full pass (builds, initialize, 8 tools, real tool call, 113/0 own tests); all 30 switch recalls and all 6 concurrent streams correct."
+  },
+  {
+   "date": "2026-11-10",
+   "title": "UD-Q3_K_XL builds the best Flash-Next labyrinth (10 of 10); the agent serving profile passes test 1 beside a second agent",
+   "kind": "grading",
+   "summary": "Test 7, the three-floor labyrinth generator, on UD-Q3_K_XL with the daily-driver engine setup (MTP draft head, one 3090 at 300 W, Qwen thinking sampling) scores 10 of 10 in 53 minutes at 108.2 tok/s agent-run decode with a 0.58 s median first token. Its maze has no entrance tunnel, evenly spread stairs and real side passages, where UD-Q2_K_XL's (9 of 10, 38 minutes, 119.5 tok/s) was a comb of one-cell dead ends. On the agent serving profile (two 256k slots, sessions parked in host RAM), OpenCode ran test 1 and test 7 at the same time: test 1 passed every live check with 14 subcommands and 205 of its own tests in 40 minutes at 74.1 tok/s, first token median 0.49 s with prompts up to 196k tokens. A session left idle for 30 minutes came back from host RAM with its first token in 1.85 s. The test 7 session scored 0: its second request thought for the full 24,000-token reasoning budget and the forced answer had no tool call, so OpenCode ended the session with no files.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Test 7 total, UD-Q2_K_XL to UD-Q3_K_XL (daily-driver setup)",
+     "before": 9,
+     "after": 10,
+     "unit": "of 10"
+    },
+    {
+     "label": "Agent-run decode, test 7, UD-Q2_K_XL to UD-Q3_K_XL",
+     "before": 119.5,
+     "after": 108.2,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Agent-run decode, test 1 on the agent profile beside a second agent",
+     "before": null,
+     "after": 74.1,
+     "unit": "tok/s"
+    },
+    {
+     "label": "First token after 30 minutes idle, session restored from host RAM",
+     "before": null,
+     "after": 1.85,
+     "unit": "s"
+    }
+   ],
+   "quality": "Test 7 A 2, B 2, C 2, D 2, E 2 (every claim in its notes reproduced); agent-profile test 1 passes 5 of 5 live checks, 205/0 own tests; agent-profile test 7 A-E 0 (no files).",
+   "caveat": "One agent run each (OpenCode, not T3 Code); one sample per quant, so not a ranking. Test 7 D is judged from the map only, without walking it in Minecraft. The test 7 stop at the reasoning budget is one stochastic outcome: the same weights and budget scored 9 of 10 solo."
   }
  ],
  "amend": [
