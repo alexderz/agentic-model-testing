@@ -1,7 +1,7 @@
 {
  "schema": "history/1",
- "generated_from": "private bake-off grades through 2026-11-08: Flash-Next Unsloth v3.1 round 1, the 3090 + V100 serving tuning and the Flash-Next 150 tok/s serving goal (Strata 0.2.12 through round 21 and a Strata 0.2.13 engine check, code and JSON benchmarks with a quality check, a 256k slot and four-stream totals, DFlash2 window and confidence, sampled decoding, llamAmpere with four slots, K/V cache in host RAM, parallel slots that fit, thinking-on sampled decoding, a dual-card Tiel-Coder Q6 serving check, llamAmpere 0.6.3.2 and 0.6.3.8, the daily driver's agent test 1, 2, 2T and 7 runs, UD-Q3_K_XL test 1, 2 and 2T runs, session switching with a host-RAM session cache, two 256k agent slots, the agent serving profile (parked 155k sessions, four 120k streams, two agents at once on tests 1 and 2, a 30-minute idle resume), the UD-Q3_K_XL test 7 run, Arete-27B test 1 on the V100, the V100 peer tier with four agent slots, the UD-Q2_0 speed check, its agent test 1, 2, 2T and 7 runs and its agent-profile check, GSQ IQ3_S agent test 1, Tiel-Coder Q6 agent test 1, one-shot pagodas and eight- and four-slot fits); runs from 2026-10-07 on",
- "generated": "2026-11-10 10:04 CST",
+ "generated_from": "private bake-off grades through 2026-11-08: Flash-Next Unsloth v3.1 round 1, the 3090 + V100 serving tuning and the Flash-Next 150 tok/s serving goal (Strata 0.2.12 through round 21 and a Strata 0.2.13 engine check, code and JSON benchmarks with a quality check, a 256k slot and four-stream totals, DFlash2 window and confidence, sampled decoding, llamAmpere with four slots, K/V cache in host RAM, parallel slots that fit, thinking-on sampled decoding, a dual-card Tiel-Coder Q6 serving check, llamAmpere 0.6.3.2 and 0.6.3.8, the daily driver's agent test 1, 2, 2T and 7 runs, UD-Q3_K_XL test 1, 2 and 2T runs, session switching with a host-RAM session cache, two 256k agent slots, the agent serving profile (parked 155k sessions, four 120k streams, two agents at once on tests 1 and 2, a 30-minute idle resume), the UD-Q3_K_XL test 7 run, Arete-27B test 1 on the V100, the V100 peer tier with four agent slots, the UD-Q2_0 speed check, its agent test 1, 2, 2T and 7 runs and its agent-profile check, GSQ IQ3_S agent tests 1, 2 and 7, Tiel-Coder Q6 agent test 1, one-shot pagodas and eight- and four-slot fits); runs from 2026-10-07 on",
+ "generated": "2026-11-10 12:12 CST",
  "runs_new": [
   {
    "case": "wa-saluki-27b-iq2",
@@ -3438,6 +3438,30 @@
     "loc": 5372,
     "errors_per_kloc": 1.5
    }
+  },
+  {
+   "case": "mm-0i1-gsqiq3s0213-mtp-best-test2-agent-thinking-qwensampling-300w",
+   "model": "strata0213-fnb-gsq-iq3s-128k",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 160,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 118.0,
+   "minutes": 64,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-10 10:29",
+   "struggle": {
+    "compiles": 61,
+    "failed_compiles": 33,
+    "rust_errors": 89,
+    "loc": 9562,
+    "errors_per_kloc": 9.3
+   }
   }
  ],
  "test3_new": [
@@ -4489,7 +4513,7 @@
    "quant": "GSQ-RCO IQ3_S (77.9 GiB)",
    "kind": "stock",
    "uncensored": false,
-   "note": "A 3-bit quant rechecked on the daily-driver setup (MTP draft head, one 3090 at 300 W, Qwen thinking sampling), with only the weights changed from the UD-Q2_0 runs, to see whether more bits buy quality. Agent test 1 (2026-11-10, OpenCode): every live check passes, 20 subcommands, 255 of its own tests pass, 48 minutes at 117.2 tok/s agent-run decode, first token median 0.31 s; 2.2 GiB free. Tests 2 and 7 running.",
+   "note": "A 3-bit quant rechecked on the daily-driver setup (MTP draft head, one 3090 at 300 W, Qwen thinking sampling), with only the weights changed from the UD-Q2_0 runs, to see whether more bits buy quality. Agent test 1 (2026-11-10, OpenCode): every live check passes, 20 subcommands, 255 of its own tests pass, 48 minutes at 117.2 tok/s agent-run decode, first token median 0.31 s; 2.2 GiB free. Test 2: builds, 11 tools, the tool call works and 160 of its own tests pass (64 minutes, 118.0 tok/s, first token median 0.57 s), but it answers an initialize request for the 2024-11-05 protocol version with an error instead of offering a version it supports, so older clients cannot connect. The labyrinth (test 7) scores 8 of 10 at 118.0 tok/s (first token median 0.42 s): one fixed serpentine route for every seed. It is about 14% slower than UD-Q2_0 on every test and does not beat it on any.",
    "vision": null
   }
  },
@@ -8272,6 +8296,35 @@
    ],
    "quality": "UD-Q2_0 test 2: builds, 14 tools, tool call works, 136/0 tests. GSQ IQ3_S test 1: 5 of 5 live checks, 255/0 own tests. Tiel-Coder test 1: 0 of 5 live checks, no tests.",
    "caveat": "One run each. GSQ IQ3_S tests 2 and 7 are still running. OpenCode, not T3 Code."
+  },
+  {
+   "date": "2026-11-10",
+   "title": "A 3-bit GSQ quant is 14% slower than UD-Q2_0 and no better on any agent test",
+   "kind": "model",
+   "summary": "Agent-run rates, Qwen thinking sampling, one 3090 at 300 W, OpenCode; only the weights changed from the UD-Q2_0 runs. GSQ-RCO IQ3_S passed test 2 with 11 tools and 160 of its own tests in 64 minutes at 118.0 tok/s (first token median 0.57 s), but its server rejects the 2024-11-05 initialize handshake, so older clients cannot connect; UD-Q2_0 had 14 tools and a working handshake at 137.8 tok/s. On the labyrinth it scored 8 of 10 at 118.0 tok/s (first token median 0.42 s): every seed shares one fixed serpentine route with short stubs added to make junctions, against UD-Q2_0's 9 at 135.3 tok/s. With test 1 (255 own tests against 471), more bits bought no quality here.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Agent-run decode, test 2, UD-Q2_0 to GSQ IQ3_S",
+     "before": 137.8,
+     "after": 118.0,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Agent-run decode, test 7, UD-Q2_0 to GSQ IQ3_S",
+     "before": 135.3,
+     "after": 118.0,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Labyrinth score, UD-Q2_0 to GSQ IQ3_S",
+     "before": 9,
+     "after": 8,
+     "unit": "of 10"
+    }
+   ],
+   "quality": "GSQ IQ3_S test 2: builds, 11 tools, tool call works, 160/0 tests, initialize fails for the 2024-11-05 version. Test 7: A 2, B 2, C 2, D 0, E 2.",
+   "caveat": "One run each. OpenCode, not T3 Code. GSQ IQ3_XXS runs next on the same three tests."
   }
  ],
  "amend": [

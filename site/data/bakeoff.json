@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-11-10 10:04 CST",
- "built": "2026-11-10 10:04 CST",
+ "generated": "2026-11-10 12:12 CST",
+ "built": "2026-11-10 12:12 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -265,6 +265,35 @@
    ],
    "quality": "UD-Q2_0 test 2: builds, 14 tools, tool call works, 136/0 tests. GSQ IQ3_S test 1: 5 of 5 live checks, 255/0 own tests. Tiel-Coder test 1: 0 of 5 live checks, no tests.",
    "caveat": "One run each. GSQ IQ3_S tests 2 and 7 are still running. OpenCode, not T3 Code."
+  },
+  {
+   "date": "2026-11-10",
+   "title": "A 3-bit GSQ quant is 14% slower than UD-Q2_0 and no better on any agent test",
+   "kind": "model",
+   "summary": "Agent-run rates, Qwen thinking sampling, one 3090 at 300 W, OpenCode; only the weights changed from the UD-Q2_0 runs. GSQ-RCO IQ3_S passed test 2 with 11 tools and 160 of its own tests in 64 minutes at 118.0 tok/s (first token median 0.57 s), but its server rejects the 2024-11-05 initialize handshake, so older clients cannot connect; UD-Q2_0 had 14 tools and a working handshake at 137.8 tok/s. On the labyrinth it scored 8 of 10 at 118.0 tok/s (first token median 0.42 s): every seed shares one fixed serpentine route with short stubs added to make junctions, against UD-Q2_0's 9 at 135.3 tok/s. With test 1 (255 own tests against 471), more bits bought no quality here.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Agent-run decode, test 2, UD-Q2_0 to GSQ IQ3_S",
+     "before": 137.8,
+     "after": 118.0,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Agent-run decode, test 7, UD-Q2_0 to GSQ IQ3_S",
+     "before": 135.3,
+     "after": 118.0,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Labyrinth score, UD-Q2_0 to GSQ IQ3_S",
+     "before": 9,
+     "after": 8,
+     "unit": "of 10"
+    }
+   ],
+   "quality": "GSQ IQ3_S test 2: builds, 11 tools, tool call works, 160/0 tests, initialize fails for the 2024-11-05 version. Test 7: A 2, B 2, C 2, D 0, E 2.",
+   "caveat": "One run each. OpenCode, not T3 Code. GSQ IQ3_XXS runs next on the same three tests."
   },
   {
    "date": "2026-11-09",
@@ -3985,7 +4014,7 @@
    "quant": "GSQ-RCO IQ3_S (77.9 GiB)",
    "kind": "stock",
    "uncensored": false,
-   "note": "A 3-bit quant rechecked on the daily-driver setup (MTP draft head, one 3090 at 300 W, Qwen thinking sampling), with only the weights changed from the UD-Q2_0 runs, to see whether more bits buy quality. Agent test 1 (2026-11-10, OpenCode): every live check passes, 20 subcommands, 255 of its own tests pass, 48 minutes at 117.2 tok/s agent-run decode, first token median 0.31 s; 2.2 GiB free. Tests 2 and 7 running.",
+   "note": "A 3-bit quant rechecked on the daily-driver setup (MTP draft head, one 3090 at 300 W, Qwen thinking sampling), with only the weights changed from the UD-Q2_0 runs, to see whether more bits buy quality. Agent test 1 (2026-11-10, OpenCode): every live check passes, 20 subcommands, 255 of its own tests pass, 48 minutes at 117.2 tok/s agent-run decode, first token median 0.31 s; 2.2 GiB free. Test 2: builds, 11 tools, the tool call works and 160 of its own tests pass (64 minutes, 118.0 tok/s, first token median 0.57 s), but it answers an initialize request for the 2024-11-05 protocol version with an error instead of offering a version it supports, so older clients cannot connect. The labyrinth (test 7) scores 8 of 10 at 118.0 tok/s (first token median 0.42 s): one fixed serpentine route for every seed. It is about 14% slower than UD-Q2_0 on every test and does not beat it on any.",
    "vision": null
   }
  },
@@ -12062,6 +12091,30 @@
     "rust_errors": 0,
     "loc": 5372,
     "errors_per_kloc": 1.5
+   }
+  },
+  {
+   "case": "mm-0i1-gsqiq3s0213-mtp-best-test2-agent-thinking-qwensampling-300w",
+   "model": "strata0213-fnb-gsq-iq3s-128k",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 160,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 118.0,
+   "minutes": 64,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-10 10:29",
+   "struggle": {
+    "compiles": 61,
+    "failed_compiles": 33,
+    "rust_errors": 89,
+    "loc": 9562,
+    "errors_per_kloc": 9.3
    }
   }
  ],
@@ -21029,16 +21082,36 @@
     "note": "The Threefold Labyrinth. Showcase reproduces, 10 of 10 hidden seeds give distinct passing mazes, extra credit met. D 1 from the map checker only: no entrance tunnel, six stairs spread along the route and the route winds, but it is a comb by design: 91 of 153 side openings are one-cell dead ends and only 11 run six cells or more. E 2: every checkable claim in its notes reproduced. Agent-run decode 135.3 tok/s, first token median 0.25 s; tok_s here is output tokens over wall time. One round.",
     "frames": [],
     "live": null
+   },
+   {
+    "case": "mm-0i2-gsqiq3s0213-mtp-best-test7-agent-thinking-qwensampling-300w",
+    "entry": "strata0213-fnb-gsq-iq3s-128k",
+    "test": 7,
+    "finish": "agent done",
+    "tokens": 266217.0,
+    "wall_s": 3281.2,
+    "tok_s": 81.13,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 0.0,
+     "E": 2.0
+    },
+    "total": 8.0,
+    "note": "Sevenfold Maze. Showcase reproduces, 10 of 10 hidden seeds give distinct passing mazes, extra credit met, but every seed shares the same 327-cell route and floor sequence; only branches, checkpoints, title and palette vary (its notes say so). D 0 from the map checker only: the route is a fixed serpentine of seven bands with a one- or two-cell stub on almost every cell to make junctions; 74 of 112 side openings are one-cell dead ends and 12 run six cells or more. No entrance tunnel and the stairs are spread out, which was not enough for 1. E 2: every claim in its notes reproduced. Agent-run decode 118.0 tok/s, first token median 0.42 s; tok_s here is output tokens over wall time. One round.",
+    "frames": [],
+    "live": null
    }
   ]
  },
  "counts": {
   "models": 127,
-  "runs": 347,
+  "runs": 348,
   "test3": 86,
-  "oneshots": 161,
+  "oneshots": 162,
   "frames": 310,
-  "pass": 257,
+  "pass": 258,
   "live": 100
  }
 }
