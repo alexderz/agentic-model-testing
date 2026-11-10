@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-11-10 14:21 CST",
- "built": "2026-11-10 14:21 CST",
+ "generated": "2026-11-10 16:27 CST",
+ "built": "2026-11-10 16:28 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -323,6 +323,35 @@
    ],
    "quality": "GSQ IQ3_XXS test 1: 5 of 5 live checks, 263/0 own tests. Test 2: builds, 9 tools, initialize and tool call work, 145/0 tests. Tiel-Coder thinking off, test 1: 5 of 5 live checks, 27/0 tests.",
    "caveat": "One run each. OpenCode, not T3 Code. The IQ3_XXS labyrinth run is waiting for its hand grade."
+  },
+  {
+   "date": "2026-11-10",
+   "title": "Arete-27B builds a working test 2 server on the V100 alone; Tiel-Coder with thinking off fails test 2 on a broken tool call",
+   "kind": "model",
+   "summary": "Agent-run rates, OpenCode. Arete-27B Q6 on the V100 alone built the Rust Home Assistant server with 8 tools, a working handshake and 48 of its own tests in 81 minutes at 20.7 tok/s (first token median 1.11 s): a clean pass, but the smallest server of the recent test 2 runs and about a sixth of UD-Q2_0's speed. Tiel-Coder-35B Q6 across the 3090 and V100 with thinking off, which passed test 1, left a server that does not build: at a 104k prompt it wrote its next tool call as plain text, so the agent took that as a final answer and stopped after 11 minutes (80.3 tok/s, first token median 0.17 s). The smaller GSQ quant, IQ3_XXS, scored 8 of 10 on the labyrinth at 129.2 tok/s, one point under UD-Q2_0.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Test 2 tools, UD-Q2_0 to Arete-27B",
+     "before": 14,
+     "after": 8,
+     "unit": "tools"
+    },
+    {
+     "label": "Agent-run decode, test 2, UD-Q2_0 to Arete-27B",
+     "before": 137.8,
+     "after": 20.7,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Labyrinth score, UD-Q2_0 to GSQ IQ3_XXS",
+     "before": 9,
+     "after": 8,
+     "unit": "of 10"
+    }
+   ],
+   "quality": "Arete-27B test 2: builds, 8 tools, initialize and tool call work, 48/0 tests. Tiel-Coder thinking off, test 2: does not build. GSQ IQ3_XXS test 7: A 2, B 2, C 2, D 0, E 2.",
+   "caveat": "One run each. OpenCode, not T3 Code. Labyrinth walkability (D) is judged from the map, not a walk in Minecraft."
   },
   {
    "date": "2026-11-09",
@@ -3900,7 +3929,7 @@
    "quant": "Q6_K",
    "kind": "tune",
    "uncensored": false,
-   "note": "Nous Research fine-tune of Qwen3.8-27B. Fits the V100 alone, not the RTX 3090. Serving tuning is short-benchmark rates. Agent test 1 on the V100 alone (2026-11-10, Qwen thinking sampling): every live check passes, 11 subcommands, its own 59 tests pass, 60 minutes, 18.4 tok/s agent-run decode, first token median 0.61 s.",
+   "note": "Nous Research fine-tune of Qwen3.8-27B. Fits the V100 alone, not the RTX 3090. Serving tuning is short-benchmark rates. Agent test 1 on the V100 alone (2026-11-10, Qwen thinking sampling): every live check passes, 11 subcommands, its own 59 tests pass, 60 minutes, 18.4 tok/s agent-run decode, first token median 0.61 s. Agent test 2 (same setup): builds, 8 tools, the handshake and the tool call work, 48 of its own tests pass, 81 minutes at 20.7 tok/s agent-run decode, first token median 1.11 s; 6.5 GiB free.",
    "vision": null
   },
   "strata0212-fnb-v31-udq2kxl-3090-v100": {
@@ -3939,7 +3968,7 @@
    "quant": "Unsloth UD-Q6_K_XL",
    "kind": "stock",
    "uncensored": false,
-   "note": "Serving tuning only: the whole Q6 model in VRAM across both cards (the V100 half empty). Short-benchmark rates. Agent test 1 (2026-11-10, thinking on, Qwen thinking sampling, OpenCode): it wrote eight files, then replied \"Stopped.\" after 5 minutes as if interrupted (nothing interrupted it), with no entry point and no tests, so no live check could run; 103.5 tok/s agent-run decode, first token median 0.15 s; 5.2 GiB free on the 3090. Agent test 1 again with thinking off (Qwen non-thinking sampling): every live check passes, 10 subcommands, 27 of its own tests pass, in 8 minutes at 98.3 tok/s agent-run decode, first token median 0.31 s; 5.2 GiB free on the 3090. A small tool, but a working one.",
+   "note": "Serving tuning only: the whole Q6 model in VRAM across both cards (the V100 half empty). Short-benchmark rates. Agent test 1 (2026-11-10, thinking on, Qwen thinking sampling, OpenCode): it wrote eight files, then replied \"Stopped.\" after 5 minutes as if interrupted (nothing interrupted it), with no entry point and no tests, so no live check could run; 103.5 tok/s agent-run decode, first token median 0.15 s; 5.2 GiB free on the 3090. Agent test 1 again with thinking off (Qwen non-thinking sampling): every live check passes, 10 subcommands, 27 of its own tests pass, in 8 minutes at 98.3 tok/s agent-run decode, first token median 0.31 s; 5.2 GiB free on the 3090. A small tool, but a working one. Agent test 2 with thinking off: the server does not build (9 errors left). At a 104k prompt the model wrote its next tool call as plain text instead of a real call, so the agent took it as a final answer and stopped after 11 minutes; 80.3 tok/s agent-run decode, first token median 0.17 s.",
    "vision": null
   },
   "llamampere0638-fnb-v31-udiq3xxs-108k": {
@@ -4056,7 +4085,7 @@
    "quant": "GSQ-RCO IQ3_XXS (70.6 GiB)",
    "kind": "stock",
    "uncensored": false,
-   "note": "The smaller 3-bit GSQ quant on the daily-driver setup (MTP draft head, one 3090 at 300 W, Qwen thinking sampling), with only the weights changed from the UD-Q2_0 runs. Agent test 1 (2026-11-10, OpenCode): every live check passes, 18 subcommands, 263 of its own tests pass, 65 minutes at 128.9 tok/s agent-run decode, first token median 0.41 s; 2.2 GiB free. Test 2: builds, 9 tools, the 2024-11-05 handshake and the tool call work, 145 of its own tests pass (50 minutes, 134.3 tok/s, first token median 0.38 s). Faster than IQ3_S and close to UD-Q2_0, but fewer tools and tests than UD-Q2_0. The labyrinth (test 7) is waiting for its hand grade.",
+   "note": "The smaller 3-bit GSQ quant on the daily-driver setup (MTP draft head, one 3090 at 300 W, Qwen thinking sampling), with only the weights changed from the UD-Q2_0 runs. Agent test 1 (2026-11-10, OpenCode): every live check passes, 18 subcommands, 263 of its own tests pass, 65 minutes at 128.9 tok/s agent-run decode, first token median 0.41 s; 2.2 GiB free. Test 2: builds, 9 tools, the 2024-11-05 handshake and the tool call work, 145 of its own tests pass (50 minutes, 134.3 tok/s, first token median 0.38 s). Faster than IQ3_S and close to UD-Q2_0, but fewer tools and tests than UD-Q2_0. The labyrinth (test 7) scored 8 of 10 at 129.2 tok/s (first token median 0.42 s): the route changes with each seed, but it is a comb of one-cell dead ends.",
    "vision": null
   }
  },
@@ -12229,6 +12258,54 @@
     "rust_errors": 0,
     "loc": 884,
     "errors_per_kloc": 4.5
+   }
+  },
+  {
+   "case": "mm-0i7-v100-arete27b-q6k-ctx96k-test2-agent-thinking-qwensampling",
+   "model": "lcpp-arete27b-q6k",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 48,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 20.7,
+   "minutes": 81,
+   "compactions": null,
+   "ctx": 98304,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-10 15:38",
+   "struggle": {
+    "compiles": 9,
+    "failed_compiles": 5,
+    "rust_errors": 32,
+    "loc": 2193,
+    "errors_per_kloc": 15.0
+   }
+  },
+  {
+   "case": "mm-0i9-dual-tiel35b-q6kxl-ctx128k-test2-agent-nothink-qwensampling",
+   "model": "lcpp-tiel35b-q6kxl-3090-v100",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": null,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 80.3,
+   "minutes": 11,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "q8_0",
+   "verdict": "fail",
+   "finished": "2026-11-10 16:01",
+   "struggle": {
+    "compiles": 28,
+    "failed_compiles": 28,
+    "rust_errors": 130,
+    "loc": 707,
+    "errors_per_kloc": 183.9
    }
   }
  ],
@@ -21216,16 +21293,36 @@
     "note": "Sevenfold Maze. Showcase reproduces, 10 of 10 hidden seeds give distinct passing mazes, extra credit met, but every seed shares the same 327-cell route and floor sequence; only branches, checkpoints, title and palette vary (its notes say so). D 0 from the map checker only: the route is a fixed serpentine of seven bands with a one- or two-cell stub on almost every cell to make junctions; 74 of 112 side openings are one-cell dead ends and 12 run six cells or more. No entrance tunnel and the stairs are spread out, which was not enough for 1. E 2: every claim in its notes reproduced. Agent-run decode 118.0 tok/s, first token median 0.42 s; tok_s here is output tokens over wall time. One round.",
     "frames": [],
     "live": null
+   },
+   {
+    "case": "mm-0i5-gsqiq3xxs0213-mtp-best-test7-agent-thinking-qwensampling-300w",
+    "entry": "strata0213-fnb-gsq-iq3xxs-128k",
+    "test": 7,
+    "finish": "agent done",
+    "tokens": 263579.0,
+    "wall_s": 2735.2,
+    "tok_s": 96.47,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 0.0,
+     "E": 2.0
+    },
+    "total": 8.0,
+    "note": "Halls of the Turned Corner. Showcase reproduces, 10 of 10 hidden seeds give distinct passing mazes, extra credit met, and unlike the IQ3_S run the route changes with each seed. D 0 from the map checker only: the route shuttles back and forth at exactly the length limit and almost everything else hangs off it as teeth: of 201 side openings 118 are one-cell dead ends and only 10 run six cells or more. No entrance tunnel and the stairs are spread out, which was not enough for 1. E 2: every claim in its notes reproduced. Agent-run decode 129.2 tok/s, first token median 0.42 s; tok_s here is output tokens over wall time. One round.",
+    "frames": [],
+    "live": null
    }
   ]
  },
  "counts": {
   "models": 128,
-  "runs": 351,
+  "runs": 353,
   "test3": 86,
-  "oneshots": 162,
+  "oneshots": 163,
   "frames": 310,
-  "pass": 261,
+  "pass": 262,
   "live": 100
  }
 }
