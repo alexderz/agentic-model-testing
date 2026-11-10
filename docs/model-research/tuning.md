@@ -598,6 +598,8 @@ rates, thinking on:
 | Same, switch back to a parked session | **1.25 s** median (2.5 s max) | 85.3 median | 3.3 GiB |
 | Four 256k slots, two ~120k prompts at once | 45.8 / 113.7 s | 91.4 (47.5 / 37.3) | 3.1 GiB |
 | Four 256k slots, four ~120k prompts at once | 48.0 / 116.4 / 184.8 / 253.1 s | 95.8 (27.2 / 20.5 / 19.0 / 19.4) | 3.1 GiB |
+| Four slots plus the V100 peer tier, two ~120k prompts | 49.4 / 123.6 s | 101.1 (42.3 / 53.2) | 3.1 / 2.2 GiB |
+| Four slots plus the V100 peer tier, four ~120k prompts | 51.7 / 126.3 / 200.6 / 275.5 s | 109.6 (30.0 / 22.0 / 25.7 / 23.2) | 3.1 / 2.2 GiB |
 
 - All 30 switch recalls and all 6 concurrent streams were right. Each parked 155k session
   holds about 3 GiB of host RAM; at 6 sessions the host's free memory fell from 40 to
@@ -609,3 +611,14 @@ rates, thinking on:
   decode per session, about 77 summed, first token median 1.36 s with prompts up to 217k
   tokens; sessions were parked and restored from host RAM inside the run. The test 1
   session was cut by our own thermal check and is not graded.
+- With four slots the V100 peer tier is worth about 11-14% of total decode (101.1 against
+  91.4 with two prompts, 109.6 against 95.8 with four); with two slots it was inside the
+  noise. The profile stays on the 3090 alone so the V100 stays free; four slots plus the
+  peer tier is the setup for four parallel agents. One sample each; three of the four
+  120k streams hit the 12,000-token reply limit.
+
+The smaller UD-Q2_0 quant (65.7 GiB against 74.1 GiB for UD-Q2_K_XL) on the daily-driver
+setup at 300 W (2026-11-10, short-benchmark rates, greedy): decode 122.4 tok/s against
+120.7, short-prompt first tokens 0.30-0.97 s against 0.35-1.15 s, 30k and 120k retrievals
+right in 10.6 / 42.7 s against 11.7 / 43.8 s, 2.2 GiB free on both. Speed is a tie, so its
+agent tests decide between the two.

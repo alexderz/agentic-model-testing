@@ -1,7 +1,7 @@
 {
  "schema": "history/1",
- "generated_from": "private bake-off grades through 2026-11-08: Flash-Next Unsloth v3.1 round 1, the 3090 + V100 serving tuning and the Flash-Next 150 tok/s serving goal (Strata 0.2.12 through round 21 and a Strata 0.2.13 engine check, code and JSON benchmarks with a quality check, a 256k slot and four-stream totals, DFlash2 window and confidence, sampled decoding, llamAmpere with four slots, K/V cache in host RAM, parallel slots that fit, thinking-on sampled decoding, a dual-card Tiel-Coder Q6 serving check, llamAmpere 0.6.3.2 and 0.6.3.8, the daily driver's agent test 1, 2, 2T and 7 runs, UD-Q3_K_XL test 1, 2 and 2T runs, session switching with a host-RAM session cache, two 256k agent slots, the agent serving profile (parked 155k sessions, four 120k streams, two agents at once on tests 1 and 2, a 30-minute idle resume), the UD-Q3_K_XL test 7 run, one-shot pagodas and eight- and four-slot fits); runs from 2026-10-07 on",
- "generated": "2026-11-10 03:34 CST",
+ "generated_from": "private bake-off grades through 2026-11-08: Flash-Next Unsloth v3.1 round 1, the 3090 + V100 serving tuning and the Flash-Next 150 tok/s serving goal (Strata 0.2.12 through round 21 and a Strata 0.2.13 engine check, code and JSON benchmarks with a quality check, a 256k slot and four-stream totals, DFlash2 window and confidence, sampled decoding, llamAmpere with four slots, K/V cache in host RAM, parallel slots that fit, thinking-on sampled decoding, a dual-card Tiel-Coder Q6 serving check, llamAmpere 0.6.3.2 and 0.6.3.8, the daily driver's agent test 1, 2, 2T and 7 runs, UD-Q3_K_XL test 1, 2 and 2T runs, session switching with a host-RAM session cache, two 256k agent slots, the agent serving profile (parked 155k sessions, four 120k streams, two agents at once on tests 1 and 2, a 30-minute idle resume), the UD-Q3_K_XL test 7 run, Arete-27B test 1 on the V100, the V100 peer tier with four agent slots, the UD-Q2_0 speed check, one-shot pagodas and eight- and four-slot fits); runs from 2026-10-07 on",
+ "generated": "2026-11-10 05:46 CST",
  "runs_new": [
   {
    "case": "wa-saluki-27b-iq2",
@@ -3293,6 +3293,30 @@
     "loc": 4253,
     "errors_per_kloc": 0.7
    }
+  },
+  {
+   "case": "mm-0fg-v100-arete27b-q6k-ctx96k-test1-agent-thinking-qwensampling-r2",
+   "model": "lcpp-arete27b-q6k",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 59,
+   "tests_fail": 0,
+   "subcmds": 11,
+   "tps": 18.4,
+   "minutes": 60,
+   "compactions": null,
+   "ctx": 98304,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-10 03:32",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 1366,
+    "errors_per_kloc": 0.0
+   }
   }
  ],
  "test3_new": [
@@ -4201,7 +4225,7 @@
    "quant": "Q6_K",
    "kind": "tune",
    "uncensored": false,
-   "note": "Nous Research fine-tune of Qwen3.8-27B. Serving tuning only (no agent tests yet): fits the V100 alone, not the RTX 3090. Short-benchmark rates.",
+   "note": "Nous Research fine-tune of Qwen3.8-27B. Fits the V100 alone, not the RTX 3090. Serving tuning is short-benchmark rates. Agent test 1 on the V100 alone (2026-11-10, Qwen thinking sampling): every live check passes, 11 subcommands, its own 59 tests pass, 60 minutes, 18.4 tok/s agent-run decode, first token median 0.61 s.",
    "vision": null
   },
   "strata0212-fnb-v31-udq2kxl-3090-v100": {
@@ -4319,6 +4343,19 @@
    "kind": "stock",
    "uncensored": false,
    "note": "Agent serving profile (2026-11-10): the daily-driver quant with two 256k slots, 20,480 K/V cells per layer in VRAM and the rest in pinned host RAM, and a 28 GiB host-RAM session cache, one 3090 at 300 W. Agent test 2 run at the same time as a test 1 session on the same load (Qwen thinking sampling): full pass, 8 tools, its own 113 tests pass, 70 minutes, 39.2 tok/s agent-run decode per session (about 77 summed with the other session), first token median 1.36 s with prompts up to 217k tokens. The test 1 session beside it was cut by a test-harness thermal check, not graded.",
+   "vision": null
+  },
+  "strata0213-fnb-v31-udq20-128k": {
+   "id": "strata0213-fnb-v31-udq20-128k",
+   "family": "Qwen3.8 Flash-Next",
+   "label": "Flash-Next UD-Q2_0 (Unsloth Dynamic v3.1) \u00b7 Strata 0.2.13, RTX 3090, 128k, 8-bit KV",
+   "base": "Qwen/Qwen3.8-Flash-Next",
+   "arch": "MoE",
+   "engine": "Strata 0.2.13",
+   "quant": "Unsloth UD-Q2_0 v3.1 (65.7 GiB)",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "The smaller 2-bit quant on the daily-driver setup (MTP draft head, one 3090 at 300 W), tried because smaller weights leave more expert-cache room in VRAM. Short-benchmark rates; agent tests running.",
    "vision": null
   }
  },
@@ -6362,6 +6399,46 @@
    "prefill": 2550.8,
    "vram": 21480,
    "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 at 300 W, the daily-driver setup (MTP draft head, 8-bit K/V, 128k, adaptive fetch, draft min-p 0.6), greedy; short benchmark; UD-Q2_K_XL as the control for UD-Q2_0; decode 122.0 and 119.3 tok/s on two prose runs; short prompts first token 0.35-1.15 s; 30,037-token retrieval correct, first token 11.7 s; 120,007-token retrieval correct, first token 43.8 s (2,743 tok/s prefill); free 2.2 GiB (3090), fits",
+   "decode": 120.65,
+   "quote": null,
+   "prefill": 2742.5,
+   "vram": 22368,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq20-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 at 300 W, the daily-driver setup (MTP draft head, 8-bit K/V, 128k, adaptive fetch, draft min-p 0.6), greedy; short benchmark; UD-Q2_0 (65.7 GiB against 74.1 GiB); decode 123.5 and 121.2 tok/s on two prose runs, within 1-2% of UD-Q2_K_XL; short prompts first token 0.30-0.97 s; 30,037-token retrieval correct, first token 10.6 s; 120,007-token retrieval correct, first token 42.7 s (2,819 tok/s prefill); free 2.2 GiB (3090), fits",
+   "decode": 122.35,
+   "quote": null,
+   "prefill": 2818.7,
+   "vram": 22356,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 at 300 W plus the V100 peer tier (2,048 MiB peer reserve), UD-Q2_K_XL, the agent serving profile with four 256k slots (batch 4 with the MTP head), 8-bit K/V, 20,480 K/V cells per layer resident in VRAM and the rest in pinned host RAM, a 28 GiB session cache in host RAM, Qwen thinking sampling; two ~120k prompts at once, both streams correct; first tokens 49.4 and 123.6 s; total decode 101.1 tok/s (42.3 and 53.2 per stream), against 91.4 on the 3090 alone; free 3.1 GiB (3090) and 2.2 GiB (V100), fits",
+   "decode": 101.09,
+   "quote": null,
+   "prefill": 2444.8,
+   "vram": 21318,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 at 300 W plus the V100 peer tier (2,048 MiB peer reserve), UD-Q2_K_XL, the agent serving profile with four 256k slots (batch 4 with the MTP head), 8-bit K/V, 20,480 K/V cells per layer resident in VRAM and the rest in pinned host RAM, a 28 GiB session cache in host RAM, Qwen thinking sampling; four ~120k prompts at once (480k live tokens), all four streams correct; first tokens 51.7, 126.3, 200.6 and 275.5 s (about 75 s per extra prompt); total decode 109.6 tok/s (30.0, 22.0, 25.7 and 23.2 per stream), against 95.8 on the 3090 alone; free 3.1 GiB (3090) and 2.2 GiB (V100), fits",
+   "decode": 109.56,
+   "quote": null,
+   "prefill": 2368.6,
+   "vram": 21478,
+   "error": ""
   }
  ],
  "tests": [
@@ -7964,6 +8041,35 @@
    ],
    "quality": "Test 7 A 2, B 2, C 2, D 2, E 2 (every claim in its notes reproduced); agent-profile test 1 passes 5 of 5 live checks, 205/0 own tests; agent-profile test 7 A-E 0 (no files).",
    "caveat": "One agent run each (OpenCode, not T3 Code); one sample per quant, so not a ranking. Test 7 D is judged from the map only, without walking it in Minecraft. The test 7 stop at the reasoning budget is one stochastic outcome: the same weights and budget scored 9 of 10 solo."
+  },
+  {
+   "date": "2026-11-10",
+   "title": "The V100 adds 14% to four parallel agent streams; UD-Q2_0 is as fast as UD-Q2_K_XL; Arete-27B passes test 1 on the V100",
+   "kind": "tuning",
+   "summary": "Short-benchmark rates. On the agent serving profile with four 256k slots, adding the V100 as a peer tier raises total decode with four ~120k prompts at once from 95.8 to 109.6 tok/s, and with two from 91.4 to 101.1; with two slots the same peer tier was inside the noise. All six streams were right and both cards fit (3.1 GiB free on the 3090, 2.2 GiB on the V100). The smaller UD-Q2_0 quant (65.7 GiB against 74.1 GiB) on the daily-driver setup at 300 W decodes 122.4 tok/s against 120.7 for UD-Q2_K_XL, with both long retrievals right and first tokens of 10.6 and 42.7 s at 30k and 120k; its agent tests decide between them. Agent run: Arete-27B Q6_K on the V100 alone passed test 1 (every live check, 11 subcommands, 59 of its own tests) in 60 minutes at 18.4 tok/s, first token median 0.61 s.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Total decode, four ~120k prompts at once, 3090 alone to V100 peer tier added",
+     "before": 95.8,
+     "after": 109.6,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Short-benchmark decode, UD-Q2_K_XL to UD-Q2_0 (daily-driver setup, 300 W)",
+     "before": 120.7,
+     "after": 122.4,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Agent-run decode, Arete-27B test 1 on the V100",
+     "before": null,
+     "after": 18.4,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Peer tier: 6 of 6 streams recall both markers; UD-Q2_0: 30k and 120k retrievals right; Arete-27B test 1: 5 of 5 live checks, 59/0 own tests.",
+   "caveat": "One sample each. Three of the four 120k streams hit the 12,000-token reply limit. The Arete run is OpenCode, not T3 Code; its first attempt the same night never started (a sandbox network bug on our side) and is not a result."
   }
  ],
  "amend": [
