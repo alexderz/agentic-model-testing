@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-11-10 07:55 CST",
- "built": "2026-11-10 07:55 CST",
+ "generated": "2026-11-10 10:04 CST",
+ "built": "2026-11-10 10:04 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -236,6 +236,35 @@
    ],
    "quality": "Test 1: 5 of 5 live checks, 471/0 own tests. Test 2T: builds, 9 tools, tool call works, 85/0 tests, trust verdict tested. Test 7: A 2, B 2, C 2, D 1, E 2.",
    "caveat": "One run each. The short benchmark showed only a 1-2% speed gap, so the agent-run gain may partly be run-to-run variation. Test 2 is still running. OpenCode, not T3 Code."
+  },
+  {
+   "date": "2026-11-10",
+   "title": "UD-Q2_0 passes all four agent tests; a 3-bit GSQ quant passes test 1 but is 14% slower",
+   "kind": "model",
+   "summary": "Agent-run rates, Qwen thinking sampling, one 3090 at 300 W, OpenCode. UD-Q2_0 passed agent test 2 in full with 14 tools and 136 of its own tests (46 minutes, 137.8 tok/s decode, first token median 0.30 s), so it now passes tests 1, 2 and 2T and scores 9 of 10 on the labyrinth. On the agent serving profile it decodes 104.3 tok/s total over two ~240k prompts, against 90.2 for UD-Q2_K_XL (short benchmark). GSQ-RCO IQ3_S, a 3-bit quant on the same setup, passed test 1 with every live check, 20 subcommands and 255 of its own tests, at 117.2 tok/s (first token median 0.31 s). Tiel-Coder-35B Q6 across both cards stopped itself after 5 minutes on test 1 and shipped nothing runnable.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Agent-run decode, test 2, UD-Q2_K_XL to UD-Q2_0",
+     "before": 122.7,
+     "after": 137.8,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Total decode, two ~240k prompts, UD-Q2_K_XL to UD-Q2_0",
+     "before": 90.2,
+     "after": 104.3,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Agent-run decode, test 1, UD-Q2_0 to GSQ IQ3_S",
+     "before": 136.6,
+     "after": 117.2,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "UD-Q2_0 test 2: builds, 14 tools, tool call works, 136/0 tests. GSQ IQ3_S test 1: 5 of 5 live checks, 255/0 own tests. Tiel-Coder test 1: 0 of 5 live checks, no tests.",
+   "caveat": "One run each. GSQ IQ3_S tests 2 and 7 are still running. OpenCode, not T3 Code."
   },
   {
    "date": "2026-11-09",
@@ -3852,7 +3881,7 @@
    "quant": "Unsloth UD-Q6_K_XL",
    "kind": "stock",
    "uncensored": false,
-   "note": "Serving tuning only: the whole Q6 model in VRAM across both cards (the V100 half empty). Short-benchmark rates.",
+   "note": "Serving tuning only: the whole Q6 model in VRAM across both cards (the V100 half empty). Short-benchmark rates. Agent test 1 (2026-11-10, thinking on, Qwen thinking sampling, OpenCode): it wrote eight files, then replied \"Stopped.\" after 5 minutes as if interrupted (nothing interrupted it), with no entry point and no tests, so no live check could run; 103.5 tok/s agent-run decode, first token median 0.15 s; 5.2 GiB free on the 3090.",
    "vision": null
   },
   "llamampere0638-fnb-v31-udiq3xxs-108k": {
@@ -3943,7 +3972,20 @@
    "quant": "Unsloth UD-Q2_0 v3.1 (65.7 GiB)",
    "kind": "stock",
    "uncensored": false,
-   "note": "The smaller 2-bit quant on the daily-driver setup (MTP draft head, one 3090 at 300 W), tried because smaller weights leave more expert-cache room in VRAM. Short-benchmark decode ties UD-Q2_K_XL (122.4 against 120.7 tok/s). Agent runs (2026-11-10, Qwen thinking sampling, OpenCode): test 1 passes with 471 of its own tests at 136.6 tok/s; test 2T passes with 9 tools and 85 tests at 137.0 tok/s and uses only the real endpoints; the labyrinth (test 7) scores 9 of 10 at 135.3 tok/s. First token median 0.25-0.39 s. Test 2 still running.",
+   "note": "The smaller 2-bit quant on the daily-driver setup (MTP draft head, one 3090 at 300 W), tried because smaller weights leave more expert-cache room in VRAM. Short-benchmark decode ties UD-Q2_K_XL (122.4 against 120.7 tok/s). Agent runs (2026-11-10, Qwen thinking sampling, OpenCode): test 1 passes with 471 of its own tests at 136.6 tok/s; test 2T passes with 9 tools and 85 tests at 137.0 tok/s and uses only the real endpoints; the labyrinth (test 7) scores 9 of 10 at 135.3 tok/s. First token median 0.25-0.39 s. Test 2 passes in full with 14 tools and 136 of its own tests at 137.8 tok/s (first token median 0.30 s), so it passes all four agent tests. On the agent serving profile (two 256k slots, two ~240k prompts at once, short benchmark) it decodes 104.3 tok/s total against 90.2 for UD-Q2_K_XL, with 3.1 GiB free.",
+   "vision": null
+  },
+  "strata0213-fnb-gsq-iq3s-128k": {
+   "id": "strata0213-fnb-gsq-iq3s-128k",
+   "family": "Qwen3.8 Flash-Next",
+   "label": "Flash-Next GSQ-RCO IQ3_S · Strata 0.2.13, RTX 3090, 128k, 8-bit KV",
+   "base": "Qwen/Qwen3.8-Flash-Next",
+   "arch": "MoE",
+   "engine": "Strata 0.2.13",
+   "quant": "GSQ-RCO IQ3_S (77.9 GiB)",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "A 3-bit quant rechecked on the daily-driver setup (MTP draft head, one 3090 at 300 W, Qwen thinking sampling), with only the weights changed from the UD-Q2_0 runs, to see whether more bits buy quality. Agent test 1 (2026-11-10, OpenCode): every live check passes, 20 subcommands, 255 of its own tests pass, 48 minutes at 117.2 tok/s agent-run decode, first token median 0.31 s; 2.2 GiB free. Tests 2 and 7 running.",
    "vision": null
   }
  },
@@ -11949,6 +11991,78 @@
     "loc": 5834,
     "errors_per_kloc": 12.0
    }
+  },
+  {
+   "case": "mm-0h6-udq200213-mtp-best-test2-agent-thinking-qwensampling-300w",
+   "model": "strata0213-fnb-v31-udq20-128k",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 136,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 137.8,
+   "minutes": 46,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-10 07:58",
+   "struggle": {
+    "compiles": 40,
+    "failed_compiles": 17,
+    "rust_errors": 115,
+    "loc": 6643,
+    "errors_per_kloc": 17.3
+   }
+  },
+  {
+   "case": "mm-0h8-dual-tiel35b-q6kxl-ctx128k-test1-agent-thinking-qwensampling",
+   "model": "lcpp-tiel35b-q6kxl-3090-v100",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 0,
+   "tests_pass": 0,
+   "tests_fail": 0,
+   "subcmds": 0,
+   "tps": 103.5,
+   "minutes": 5,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "q8_0",
+   "verdict": "fail",
+   "finished": "2026-11-10 08:23",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 924,
+    "errors_per_kloc": 0.0
+   }
+  },
+  {
+   "case": "mm-0i0-gsqiq3s0213-mtp-best-test1-agent-thinking-qwensampling-300w",
+   "model": "strata0213-fnb-gsq-iq3s-128k",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 255,
+   "tests_fail": 0,
+   "subcmds": 20,
+   "tps": 117.2,
+   "minutes": 48,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-10 09:25",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 5372,
+    "errors_per_kloc": 1.5
+   }
   }
  ],
  "test3": [
@@ -15401,6 +15515,16 @@
    "prefill": 2368.6,
    "vram": 21478,
    "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq20-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 at 300 W, UD-Q2_0, the agent serving profile shape (two 256k slots, batch 2 with the MTP head), 8-bit K/V, VRAM reserve 3,072 MiB, 20,480 K/V cells per layer resident in VRAM and the rest in pinned host RAM, Qwen thinking sampling; two ~240k prompts at once with long replies, both streams correct; first tokens 93.7 and 230.5 s; total decode 104.3 tok/s (62.1 and 32.2 per stream), against 90.2 for UD-Q2_K_XL on the same shape; free 3.1 GiB (3090), fits",
+   "decode": 104.28,
+   "quote": null,
+   "prefill": 2575.9,
+   "vram": 21352,
+   "error": ""
   }
  ],
  "engines": [
@@ -17157,10 +17281,16 @@
      "before": 95.8,
      "after": 109.6,
      "unit": "tok/s"
+    },
+    {
+     "label": "Total decode, two 240k prompts, 20k cells resident, UD-Q2_K_XL to UD-Q2_0",
+     "before": 90.2,
+     "after": 104.3,
+     "unit": "tok/s"
     }
    ],
    "chart": "bars",
-   "evidence": "2026-11-09, Strata 0.2.13, UD-Q2_K_XL, MTP draft head, 8-bit K/V, 3090 at 300 W, short-benchmark rates; every marker recall correct. Session switches: 0.93 s median with the cache (99.9% of the prompt reused, 2-2.8 GiB host RAM per parked session, no VRAM), 34.8 s without it, 35.9 s with four batch slots (finished slots do not keep a conversation). Two 256k slots with two ~240k prompts: 51.5 tok/s total with the whole K/V in 3090 VRAM (expert cache cut to 1,532 slots), 90.2 with 20,480 resident cells, 83.8 with 65,536 (99.7% of K/V reads already hit VRAM at 20,480), 101.2 with the V100 peer tier, 93.7 with both, 96.6 with the layers split 24/24 across the cards. All fit with at least 2.1 GiB free per card. 2026-11-10, the picked profile with a 28 GiB session cache: 4 then 6 sessions of about 155k tokens, switch first token 1.25 s median (60.0 s cold), 30 of 30 recalls, about 3 GiB host RAM per parked session, decode on switch turns 85 tok/s; four slots with four ~120k prompts at once: 95.8 tok/s total (91.4 with two), fits with 3.1 GiB free. Two OpenCode agents on one load: test 2 full pass at 39.2 tok/s agent-run per session. The V100 peer tier with four slots: 101.1 tok/s total with two ~120k prompts (91.4 alone) and 109.6 with four (95.8 alone), all streams right, 3.1 GiB free on the 3090 and 2.2 GiB on the V100.",
+   "evidence": "2026-11-09, Strata 0.2.13, UD-Q2_K_XL, MTP draft head, 8-bit K/V, 3090 at 300 W, short-benchmark rates; every marker recall correct. Session switches: 0.93 s median with the cache (99.9% of the prompt reused, 2-2.8 GiB host RAM per parked session, no VRAM), 34.8 s without it, 35.9 s with four batch slots (finished slots do not keep a conversation). Two 256k slots with two ~240k prompts: 51.5 tok/s total with the whole K/V in 3090 VRAM (expert cache cut to 1,532 slots), 90.2 with 20,480 resident cells, 83.8 with 65,536 (99.7% of K/V reads already hit VRAM at 20,480), 101.2 with the V100 peer tier, 93.7 with both, 96.6 with the layers split 24/24 across the cards. All fit with at least 2.1 GiB free per card. 2026-11-10, the picked profile with a 28 GiB session cache: 4 then 6 sessions of about 155k tokens, switch first token 1.25 s median (60.0 s cold), 30 of 30 recalls, about 3 GiB host RAM per parked session, decode on switch turns 85 tok/s; four slots with four ~120k prompts at once: 95.8 tok/s total (91.4 with two), fits with 3.1 GiB free. Two OpenCode agents on one load: test 2 full pass at 39.2 tok/s agent-run per session. The V100 peer tier with four slots: 101.1 tok/s total with two ~120k prompts (91.4 alone) and 109.6 with four (95.8 alone), all streams right, 3.1 GiB free on the 3090 and 2.2 GiB on the V100. The smaller UD-Q2_0 quant on the same two-slot shape: 104.3 tok/s total against 90.2, first tokens 93.7 and 230.5 s, 3.1 GiB free.",
    "caveat": "One sample each, so 84-101 tok/s is one band. Second prompts wait for the first: first tokens 235 to 370 s at 240k. Pinning about 9 GiB of host RAM can stall the load for minutes when the page cache is full. Six parked 155k sessions took host free memory from 40 to 13.6 GiB.",
    "doc": "https://github.com/alexderz/agentic-model-testing/blob/main/docs/model-research/tuning.md#session-switches-and-two-256k-agent-slots-2026-11-09"
   },
@@ -20903,12 +21033,12 @@
   ]
  },
  "counts": {
-  "models": 126,
-  "runs": 344,
+  "models": 127,
+  "runs": 347,
   "test3": 86,
   "oneshots": 161,
   "frames": 310,
-  "pass": 255,
+  "pass": 257,
   "live": 100
  }
 }
