@@ -1,7 +1,7 @@
 {
  "schema": "history/1",
- "generated_from": "private bake-off grades through 2026-11-08: Flash-Next Unsloth v3.1 round 1, the 3090 + V100 serving tuning and the Flash-Next 150 tok/s serving goal (Strata 0.2.12 through round 21 and a Strata 0.2.13 engine check, code and JSON benchmarks with a quality check, a 256k slot and four-stream totals, DFlash2 window and confidence, sampled decoding, llamAmpere with four slots, K/V cache in host RAM, parallel slots that fit, thinking-on sampled decoding, a dual-card Tiel-Coder Q6 serving check, llamAmpere 0.6.3.2 and 0.6.3.8, the daily driver's agent test 1 and 2 runs, a UD-Q3_K_XL test 1 run, one-shot pagodas and eight- and four-slot fits); runs from 2026-10-07 on",
- "generated": "2026-11-09 18:59 CST",
+ "generated_from": "private bake-off grades through 2026-11-08: Flash-Next Unsloth v3.1 round 1, the 3090 + V100 serving tuning and the Flash-Next 150 tok/s serving goal (Strata 0.2.12 through round 21 and a Strata 0.2.13 engine check, code and JSON benchmarks with a quality check, a 256k slot and four-stream totals, DFlash2 window and confidence, sampled decoding, llamAmpere with four slots, K/V cache in host RAM, parallel slots that fit, thinking-on sampled decoding, a dual-card Tiel-Coder Q6 serving check, llamAmpere 0.6.3.2 and 0.6.3.8, the daily driver's agent test 1, 2, 2T and 7 runs, UD-Q3_K_XL test 1, 2 and 2T runs, one-shot pagodas and eight- and four-slot fits); runs from 2026-10-07 on",
+ "generated": "2026-11-09 21:07 CST",
  "runs_new": [
   {
    "case": "wa-saluki-27b-iq2",
@@ -3171,6 +3171,80 @@
     "loc": 10262,
     "errors_per_kloc": 9.7
    }
+  },
+  {
+   "case": "mm-0f6-q2kxl0213-mtp-best-test2t-agent-thinking-qwensampling-300w",
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 120,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 121.6,
+   "minutes": 62,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-09 19:00",
+   "flavor": "2T",
+   "struggle": {
+    "compiles": 57,
+    "failed_compiles": 35,
+    "rust_errors": 95,
+    "loc": 6502,
+    "errors_per_kloc": 14.8
+   }
+  },
+  {
+   "case": "mm-0f8-q3kxl0213-mtp-best-test2-agent-thinking-qwensampling-300w",
+   "model": "strata0213-fnb-v31-udq3kxl-128k",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": null,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 109.1,
+   "minutes": 12,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "q8_0",
+   "verdict": "fail",
+   "finished": "2026-11-09 19:52",
+   "struggle": {
+    "compiles": 1,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 1454,
+    "errors_per_kloc": 0.0
+   }
+  },
+  {
+   "case": "mm-0f9-q3kxl0213-mtp-best-test2t-agent-thinking-qwensampling-300w",
+   "model": "strata0213-fnb-v31-udq3kxl-128k",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 150,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 108.5,
+   "minutes": 68,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-09 21:01",
+   "flavor": "2T",
+   "struggle": {
+    "compiles": 42,
+    "failed_compiles": 13,
+    "rust_errors": 93,
+    "loc": 7361,
+    "errors_per_kloc": 12.6
+   }
   }
  ],
  "test3_new": [
@@ -4170,7 +4244,7 @@
    "quant": "Unsloth UD-Q2_K_XL v3.1 (74 GiB)",
    "kind": "stock",
    "uncensored": false,
-   "note": "Serving tuning toward 150 tok/s decode, then the daily driver (MTP draft head). Short-benchmark rates, except agent test 1 (2026-11-09): with engine-default sampling at 350 W, 120.6 tok/s agent-run decode but the CLI crashes on start; with Qwen thinking sampling at 300 W, 121.4 tok/s, first token median 0.37 s, every live check passes. Agent test 2 (Qwen thinking sampling, 300 W): full pass, 10 tools, its own 181 tests pass, 122.7 tok/s agent-run decode, first token median 0.64 s.",
+   "note": "Serving tuning toward 150 tok/s decode, then the daily driver (MTP draft head). Short-benchmark rates, except agent test 1 (2026-11-09): with engine-default sampling at 350 W, 120.6 tok/s agent-run decode but the CLI crashes on start; with Qwen thinking sampling at 300 W, 121.4 tok/s, first token median 0.37 s, every live check passes. Agent test 2 (Qwen thinking sampling, 300 W): full pass, 10 tools, its own 181 tests pass, 122.7 tok/s agent-run decode, first token median 0.64 s. Test 2T, the variant with planted wrong notes (Qwen thinking sampling, 300 W): full pass, 8 tools, its own 120 tests pass, and it checked the notes against the live API before trusting them; 121.6 tok/s agent-run decode, first token median 0.59 s. Test 7, the labyrinth: 9 of 10, 119.5 tok/s agent-run decode, first token median 0.41 s.",
    "vision": null
   },
   "strata0213-fnb-v31-udq3kxl-128k": {
@@ -4183,7 +4257,7 @@
    "quant": "Unsloth UD-Q3_K_XL v3.1 (83 GiB)",
    "kind": "stock",
    "uncensored": false,
-   "note": "Serving tuning toward 150 tok/s decode, short-benchmark rates; agent test 1 (2026-11-09, Qwen thinking sampling, 300 W): every live check passes, 17 subcommands, its own 298 tests pass, 106.8 tok/s agent-run decode, first token median 0.36 s.",
+   "note": "Serving tuning toward 150 tok/s decode, short-benchmark rates; agent test 1 (2026-11-09, Qwen thinking sampling, 300 W): every live check passes, 17 subcommands, its own 298 tests pass, 106.8 tok/s agent-run decode, first token median 0.36 s. Agent test 2: fail, the crate does not compile; after 12 minutes the agent called a tool OpenCode does not have and the session ended, 109.1 tok/s agent-run decode. Test 2T: full pass, 11 tools, its own 150 tests pass, notes checked against the live API, 108.5 tok/s agent-run decode, first token median 0.67 s.",
    "vision": null
   }
  },
@@ -7571,6 +7645,47 @@
    ],
    "quality": "Test 2 full pass (builds, initialize, 10 tools, real tool call, exits on end of input); UD-Q3_K_XL test 1 passes 5 of 5 live checks.",
    "caveat": "One agent run each (OpenCode, not T3 Code); one sample per quant, so not a ranking. Struggle counts for these runs use the grader fix for OpenCode 2.1's renamed shell tool."
+  },
+  {
+   "date": "2026-11-09",
+   "title": "Flash-Next daily driver passes the planted-notes test and scores 9 of 10 on the labyrinth; UD-Q3_K_XL fails test 2 but passes 2T",
+   "kind": "grading",
+   "summary": "Daily driver (UD-Q2_K_XL, MTP draft head, one 3090 at 300 W, Qwen thinking sampling): test 2T, the MCP server task with some planted wrong API notes, passes in 62 minutes at 121.6 tok/s agent-run decode with a 0.59 s median first token. It tried two planted endpoints, saw them fail, and shipped code that uses only real ones; earlier Flash-Next 2T runs hedged or avoided instead. Test 7, the three-floor labyrinth generator, scores 9 of 10 in 38 minutes at 119.5 tok/s; the earlier run of the same quant on older engine settings stopped to ask and scored 0. The larger UD-Q3_K_XL quant failed test 2: after 12 minutes it called a tool OpenCode does not have, the session ended mid-edit and the crate does not compile. On 2T it passed with 11 tools and 150 of its own tests at 108.5 tok/s.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Agent-run decode, test 2T, daily driver",
+     "before": null,
+     "after": 121.6,
+     "unit": "tok/s"
+    },
+    {
+     "label": "First token median, test 2T, daily driver",
+     "before": null,
+     "after": 0.59,
+     "unit": "s"
+    },
+    {
+     "label": "Test 7 total, UD-Q2_K_XL, older engine settings to daily driver",
+     "before": 0,
+     "after": 9,
+     "unit": "of 10"
+    },
+    {
+     "label": "Agent-run decode, test 7, daily driver",
+     "before": null,
+     "after": 119.5,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Agent-run decode, test 2T, UD-Q2_K_XL to UD-Q3_K_XL",
+     "before": 121.6,
+     "after": 108.5,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Test 2T full pass on both quants (builds, initialize, real tool call; 8 and 11 tools); test 7 A 2, B 2, C 2, D 1 (a comb of one-cell dead ends), E 2 (every claim in its notes reproduced); UD-Q3_K_XL test 2 fails to build.",
+   "caveat": "One agent run each (OpenCode, not T3 Code); one sample per quant, so not a ranking. The UD-Q3_K_XL test 2 failure is one undeclared tool call; no other daily-driver run made one. Test 7 D is judged from the map only, without walking it in Minecraft."
   }
  ],
  "amend": [
