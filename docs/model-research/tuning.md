@@ -588,3 +588,24 @@ early and late markers correctly.
   resident cells for agent serving: fastest second prompt and the V100 stays free.
 - Pinning about 9 GiB of host RAM for the streamed K/V can stall the load for minutes when
   the page cache is full; dropping the page cache cleared it at once.
+
+The picked profile with a 28 GiB session cache in host RAM (2026-11-10), short-benchmark
+rates, thinking on:
+
+| Test | First tokens | Decode, tok/s | Free VRAM |
+| --- | --- | --- | --- |
+| 4 then 6 sessions of ~155k in rotation, cold turns | 60.0 s median | - | 3.3 GiB |
+| Same, switch back to a parked session | **1.25 s** median (2.5 s max) | 85.3 median | 3.3 GiB |
+| Four 256k slots, two ~120k prompts at once | 45.8 / 113.7 s | 91.4 (47.5 / 37.3) | 3.1 GiB |
+| Four 256k slots, four ~120k prompts at once | 48.0 / 116.4 / 184.8 / 253.1 s | 95.8 (27.2 / 20.5 / 19.0 / 19.4) | 3.1 GiB |
+
+- All 30 switch recalls and all 6 concurrent streams were right. Each parked 155k session
+  holds about 3 GiB of host RAM; at 6 sessions the host's free memory fell from 40 to
+  13.6 GiB.
+- Four slots cost nothing in fit and keep the total rate; each stream gets a quarter. The
+  profile stays at two slots for two large sessions.
+- Agent run on the profile: OpenCode ran test 1 and test 2 at the same time on one load.
+  Test 2 passed in full (8 tools, 113 of its own tests, 70 minutes) at 39.2 tok/s agent-run
+  decode per session, about 77 summed, first token median 1.36 s with prompts up to 217k
+  tokens; sessions were parked and restored from host RAM inside the run. The test 1
+  session was cut by our own thermal check and is not graded.

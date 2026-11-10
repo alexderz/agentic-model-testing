@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-11-09 23:16 CST",
- "built": "2026-11-09 23:17 CST",
+ "generated": "2026-11-10 01:25 CST",
+ "built": "2026-11-10 01:26 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -116,6 +116,34 @@
   }
  ],
  "findings": [
+  {
+   "date": "2026-11-10",
+   "title": "Two OpenCode agents share one 3090: test 2 passes beside a second session; switching between parked 155k sessions takes 1.25 s",
+   "kind": "tuning",
+   "summary": "Agent serving profile (UD-Q2_K_XL, MTP draft head, one 3090 at 300 W): two 256k slots, 20,480 K/V cells per layer in VRAM, the rest in pinned host RAM, and a 28 GiB session cache in host RAM. Short-benchmark rates: with 4 and then 6 sessions of about 155k tokens served in rotation, a switch back to a parked session gives its first token in 1.25 s median instead of 60 s cold, all 30 recalls right, about 3 GiB of host RAM per parked session. Four 256k slots also fit and keep the total: four ~120k prompts at once decode 95.8 tok/s together (about 20-27 each). Agent run: OpenCode ran test 1 and test 2 at the same time on one load; test 2 passed in full (8 tools, 113 of its own tests) at 39.2 tok/s per session, about 77 summed, first token median 1.36 s with prompts up to 217k tokens, and the engine parked and restored sessions from host RAM inside the run. The test 1 session was cut by our own thermal check, not graded.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "First token on a switch back to a 155k session, cold to host-RAM cache",
+     "before": 60.0,
+     "after": 1.25,
+     "unit": "s"
+    },
+    {
+     "label": "Total decode, 120k prompts at once, two to four streams",
+     "before": 91.4,
+     "after": 95.8,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Agent-run decode per session, test 2 beside a second agent",
+     "before": null,
+     "after": 39.2,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Test 2 full pass (builds, initialize, 8 tools, real tool call, 113/0 own tests); all 30 switch recalls and all 6 concurrent streams correct."
+  },
   {
    "date": "2026-11-09",
    "title": "Flash-Next on one 3090: 162 tok/s on code and 203 on JSON with a DFlash2 draft model",
@@ -1867,6 +1895,13 @@
    "title": "Flash-Next toward 150 tok/s on one 3090",
    "what": "Strata 0.2.12: 98.8 to 128.6 tok/s short-benchmark decode (350 W, English draft vocabulary, stream draft-head norm, draft min-p 0.6); 120k prompts prefill at about 2,990 tok/s; adaptive fetch keeps decode at 124-127 tok/s right after a 120k prompt on the 3090 alone; four 128k slots with the V100 keep 109 tok/s per stream. Twenty more single-change runs did not beat it; UD-Q2_K_XL reaches 123.0 and UD-Q3_K_XL 112.0 on the same setup. A memory lock, Strata 0.2.13 and llamAmpere 0.6.3.8 changed nothing. On code and JSON the goal is met: a DFlash2 draft model on UD-Q2_K_XL gives 162 tok/s on code and 203 on JSON with the quality check passing; four streams together reach only about 125 tok/s on Strata, against 165 on llama.cpp; with a 3,072 MiB VRAM reserve four 30k slots (122.7 tok/s total) and two 100k slots (103.1 tok/s total) fit the 1.5 GiB rule.",
    "why": "Goal: 150 tok/s decode and 1,000+ tok/s prefill on a larger quant. Prefill is met; code and JSON decode are met; prose decode is at 86%, limited by the draft head."
+  },
+  {
+   "date": "2026-11-10",
+   "era": "Flash-Next",
+   "title": "Agent serving profile on one 3090",
+   "what": "Two 256k slots with a 20k K/V window in VRAM and a host-RAM session cache: parked 155k sessions come back in 1.25 s, four 120k streams fit at 95.8 tok/s total, and two OpenCode agents ran at once with test 2 passing.",
+   "why": "Alex wanted two large agent sessions served from the 3090 without re-reading long sessions on every switch."
   }
  ],
  "events": [],
@@ -3790,6 +3825,19 @@
    "kind": "stock",
    "uncensored": false,
    "note": "Serving tuning toward 150 tok/s decode, short-benchmark rates; agent test 1 (2026-11-09, Qwen thinking sampling, 300 W): every live check passes, 17 subcommands, its own 298 tests pass, 106.8 tok/s agent-run decode, first token median 0.36 s. Agent test 2: fail, the crate does not compile; after 12 minutes the agent called a tool OpenCode does not have and the session ended, 109.1 tok/s agent-run decode. Test 2T: full pass, 11 tools, its own 150 tests pass, notes checked against the live API, 108.5 tok/s agent-run decode, first token median 0.67 s.",
+   "vision": null
+  },
+  "qwen3.8-flash-next-agent": {
+   "id": "qwen3.8-flash-next-agent",
+   "family": "Qwen3.8 Flash-Next",
+   "label": "Flash-Next UD-Q2_K_XL (Unsloth Dynamic v3.1) · Strata 0.2.13, RTX 3090, agent profile: 2 × 256k slots, 8-bit KV, host-RAM session cache",
+   "base": "Qwen/Qwen3.8-Flash-Next",
+   "arch": "MoE",
+   "engine": "Strata 0.2.13",
+   "quant": "Unsloth UD-Q2_K_XL v3.1 (74 GiB)",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "Agent serving profile (2026-11-10): the daily-driver quant with two 256k slots, 20,480 K/V cells per layer in VRAM and the rest in pinned host RAM, and a 28 GiB host-RAM session cache, one 3090 at 300 W. Agent test 2 run at the same time as a test 1 session on the same load (Qwen thinking sampling): full pass, 8 tools, its own 113 tests pass, 70 minutes, 39.2 tok/s agent-run decode per session (about 77 summed with the other session), first token median 1.36 s with prompts up to 217k tokens. The test 1 session beside it was cut by a test-harness thermal check, not graded.",
    "vision": null
   }
  },
@@ -11674,6 +11722,30 @@
     "loc": 7361,
     "errors_per_kloc": 12.6
    }
+  },
+  {
+   "case": "mm-0g9-q2kxl0213-agent-profile-b2-kvres20k-park28g-hold-test1-test2-p2",
+   "model": "qwen3.8-flash-next-agent",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 113,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 39.2,
+   "minutes": 70,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-10 00:46",
+   "struggle": {
+    "compiles": 28,
+    "failed_compiles": 17,
+    "rust_errors": 52,
+    "loc": 6285,
+    "errors_per_kloc": 8.3
+   }
   }
  ],
  "test3": [
@@ -15056,6 +15128,36 @@
    "prefill": 1985.9,
    "vram": 21228,
    "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 at 300 W, UD-Q2_K_XL, the agent serving profile: two 256k slots (batch 2 with the MTP head), 8-bit K/V, 20,480 K/V cells per layer resident in VRAM and the rest in pinned host RAM, a 28 GiB session cache in host RAM, Qwen thinking sampling; 4 then 6 independent sessions of about 155k prompt tokens served in rotation, 3 turns each, all 30 marker recalls correct; a switch back to a parked session gives its first token in 1.25 s median (2.5 s max) at both 4 and 6 sessions instead of 60.0 s cold, 99.8% of the prompt reused; decode on switch turns 85.3 tok/s median (71-91, thinking on); about 3 GiB of host RAM per parked session, no VRAM; free 3.3 GiB (3090), fits",
+   "decode": 85.3,
+   "quote": null,
+   "prefill": 2558.6,
+   "vram": 21290,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 at 300 W, UD-Q2_K_XL, the agent serving profile: four 256k slots (batch 4 with the MTP head), 8-bit K/V, 20,480 K/V cells per layer resident in VRAM and the rest in pinned host RAM, a 28 GiB session cache in host RAM, Qwen thinking sampling; two ~120k prompts at once, both streams correct; first tokens 45.8 and 113.7 s; total decode 91.4 tok/s (47.5 and 37.3 per stream); free 3.1 GiB (3090), fits",
+   "decode": 91.37,
+   "quote": null,
+   "prefill": 2636.6,
+   "vram": 21480,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq2kxl-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 at 300 W, UD-Q2_K_XL, the agent serving profile: four 256k slots (batch 4 with the MTP head), 8-bit K/V, 20,480 K/V cells per layer resident in VRAM and the rest in pinned host RAM, a 28 GiB session cache in host RAM, Qwen thinking sampling; four ~120k prompts at once (480k live tokens), all four streams correct; first tokens 48.0, 116.4, 184.8 and 253.1 s (about 68 s per extra prompt); total decode 95.8 tok/s (27.2, 20.5, 19.0 and 19.4 per stream); four slots cost no fit and keep the total rate; free 3.1 GiB (3090), fits",
+   "decode": 95.8,
+   "quote": null,
+   "prefill": 2550.8,
+   "vram": 21480,
+   "error": ""
   }
  ],
  "engines": [
@@ -16800,11 +16902,17 @@
      "before": 51.5,
      "after": 101.2,
      "unit": "tok/s"
+    },
+    {
+     "label": "First token on a switch back to a 155k session, cold to 28 GiB host-RAM cache",
+     "before": 60.0,
+     "after": 1.25,
+     "unit": "s"
     }
    ],
    "chart": "bars",
-   "evidence": "2026-11-09, Strata 0.2.13, UD-Q2_K_XL, MTP draft head, 8-bit K/V, 3090 at 300 W, short-benchmark rates; every marker recall correct. Session switches: 0.93 s median with the cache (99.9% of the prompt reused, 2-2.8 GiB host RAM per parked session, no VRAM), 34.8 s without it, 35.9 s with four batch slots (finished slots do not keep a conversation). Two 256k slots with two ~240k prompts: 51.5 tok/s total with the whole K/V in 3090 VRAM (expert cache cut to 1,532 slots), 90.2 with 20,480 resident cells, 83.8 with 65,536 (99.7% of K/V reads already hit VRAM at 20,480), 101.2 with the V100 peer tier, 93.7 with both, 96.6 with the layers split 24/24 across the cards. All fit with at least 2.1 GiB free per card.",
-   "caveat": "One sample each, so 84-101 tok/s is one band. Second prompts wait for the first: first tokens 235 to 370 s at 240k. Pinning about 9 GiB of host RAM can stall the load for minutes when the page cache is full.",
+   "evidence": "2026-11-09, Strata 0.2.13, UD-Q2_K_XL, MTP draft head, 8-bit K/V, 3090 at 300 W, short-benchmark rates; every marker recall correct. Session switches: 0.93 s median with the cache (99.9% of the prompt reused, 2-2.8 GiB host RAM per parked session, no VRAM), 34.8 s without it, 35.9 s with four batch slots (finished slots do not keep a conversation). Two 256k slots with two ~240k prompts: 51.5 tok/s total with the whole K/V in 3090 VRAM (expert cache cut to 1,532 slots), 90.2 with 20,480 resident cells, 83.8 with 65,536 (99.7% of K/V reads already hit VRAM at 20,480), 101.2 with the V100 peer tier, 93.7 with both, 96.6 with the layers split 24/24 across the cards. All fit with at least 2.1 GiB free per card. 2026-11-10, the picked profile with a 28 GiB session cache: 4 then 6 sessions of about 155k tokens, switch first token 1.25 s median (60.0 s cold), 30 of 30 recalls, about 3 GiB host RAM per parked session, decode on switch turns 85 tok/s; four slots with four ~120k prompts at once: 95.8 tok/s total (91.4 with two), fits with 3.1 GiB free. Two OpenCode agents on one load: test 2 full pass at 39.2 tok/s agent-run per session.",
+   "caveat": "One sample each, so 84-101 tok/s is one band. Second prompts wait for the first: first tokens 235 to 370 s at 240k. Pinning about 9 GiB of host RAM can stall the load for minutes when the page cache is full. Six parked 155k sessions took host free memory from 40 to 13.6 GiB.",
    "doc": "https://github.com/alexderz/agentic-model-testing/blob/main/docs/model-research/tuning.md#session-switches-and-two-256k-agent-slots-2026-11-09"
   },
   {
@@ -20486,12 +20594,12 @@
   ]
  },
  "counts": {
-  "models": 124,
-  "runs": 339,
+  "models": 125,
+  "runs": 340,
   "test3": 86,
   "oneshots": 158,
   "frames": 310,
-  "pass": 250,
+  "pass": 251,
   "live": 100
  }
 }
