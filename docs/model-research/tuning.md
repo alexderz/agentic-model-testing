@@ -622,3 +622,8 @@ setup at 300 W (2026-11-10, short-benchmark rates, greedy): decode 122.4 tok/s a
 120.7, short-prompt first tokens 0.30-0.97 s against 0.35-1.15 s, 30k and 120k retrievals
 right in 10.6 / 42.7 s against 11.7 / 43.8 s, 2.2 GiB free on both. Speed is a tie, so its
 agent tests decide between the two.
+
+UD-Q2_0 on the agent serving profile shape (2026-11-10, two 256k slots, 20,480 resident
+K/V cells, two ~240k prompts at once, Qwen thinking sampling, short-benchmark rates): first
+tokens 93.7 / 230.5 s, total decode **104.3 tok/s** (62.1 / 32.2) against 90.2 for
+UD-Q2_K_XL, 3.1 GiB free. Both streams right. The agent-run edge (about 13%) holds here too.
