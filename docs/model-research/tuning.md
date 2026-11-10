@@ -551,3 +551,40 @@ Several streams at once: total decode while every stream is writing, about
   with ~100k prompts also fit (3.2 GiB free, 103 tok/s total, second first token 88.5 s).
 - With thinking on and Qwen's thinking sampling, the MTP head wins on prose (124.9
   tok/s) and DFlash2 on code and JSON (150.2 and 186.9).
+
+### Session switches and two 256k agent slots (2026-11-09)
+
+UD-Q2_K_XL, Strata 0.2.13, MTP draft head, 8-bit K/V, the 3090 at 300 W,
+short-benchmark rates.
+
+Session switches: sessions of about 93k prompt tokens served one request at a time in
+rotation, so each turn returns to a session another one displaced.
+
+| Setup | First token on a switch (median) | Prompt reused | Free VRAM |
+| --- | --- | --- | --- |
+| Session cache in host RAM, 12 GiB, 2 or 4 sessions | **0.93 s** | 99.9% | 2.2 GiB |
+| No session cache | 34.8 s | 0% | 2.2 GiB |
+| Four batch slots, no session cache | 35.9 s | 0% | 3.2 GiB |
+
+Two 256k slots, two ~240k prompts at once, Qwen thinking sampling, both streams recall
+early and late markers correctly.
+
+| Setup | First tokens | Total decode, tok/s (per stream) | Free VRAM |
+| --- | --- | --- | --- |
+| Whole K/V in 3090 VRAM | 137.6 / 344.7 s | 51.5 (19.3 / 25.1) | 3.2 GiB |
+| 20,480 K/V cells in VRAM, rest in pinned host RAM | 94.8 / 234.9 s | 90.2 (52.0 / 29.9) | 3.2 GiB |
+| 65,536 K/V cells in VRAM | 96.5 / 239.9 s | 83.8 (33.2 / 41.2) | 3.2 GiB |
+| Whole K/V in 3090 VRAM, V100 peer tier | 137.8 / 344.1 s | 101.2 (32.5 / 59.3) | 3.2 / 2.2 GiB |
+| 20,480 cells in VRAM, V100 peer tier | 105.6 / 264.5 s | 93.7 (34.6 / 47.4) | 3.2 / 2.1 GiB |
+| Layers split 24/24 with the V100, whole K/V in VRAM | 121.4 / 369.5 s | 96.6 (25.9 / 56.6) | 3.3 / 3.2 GiB |
+
+- A session cache in host RAM is what makes several long sessions cheap: 37 times faster
+  switches for 2-2.8 GiB of host RAM per parked session and no VRAM. Batch slots do not
+  hold a finished conversation.
+- Keeping the whole K/V of two 256k slots in 3090 VRAM costs about 80% of the expert
+  cache. With 20,480 cells per layer resident, 99.7% of K/V reads already hit VRAM, so a
+  larger window only takes expert-cache room.
+- One sample each, so 84-101 tok/s is one band. We picked the 3090 alone with 20,480
+  resident cells for agent serving: fastest second prompt and the V100 stays free.
+- Pinning about 9 GiB of host RAM for the streamed K/V can stall the load for minutes when
+  the page cache is full; dropping the page cache cleared it at once.
