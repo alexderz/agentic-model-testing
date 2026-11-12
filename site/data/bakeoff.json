@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-11-10 16:27 CST",
- "built": "2026-11-10 16:28 CST",
+ "generated": "2026-11-11 21:11 CST",
+ "built": "2026-11-11 21:11 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -116,6 +116,29 @@
   }
  ],
  "findings": [
+  {
+   "date": "2026-11-11",
+   "title": "Tiel-Coder with thinking off spends 28.6 hours on the labyrinth and hands in nothing",
+   "kind": "model",
+   "summary": "Agent-run rates, OpenCode. Tiel-Coder-35B Q6 across the 3090 and V100 with thinking off ran test 7 for 28.6 hours without writing the generator, the maze or its notes, so it scored 0 of 10. The conversation filled to about 107k tokens about 80 times; each time OpenCode compacted it to about 7k and the model restarted its maze design from scratch, leaving about 700 lines of unfinished generator, 66 throwaway probe scripts and two design notes. It ran at 82.0 tok/s (first token median 0.44 s) over 9,584 requests and 5.25 million output tokens. We stopped it by hand and are rerunning the same case with OpenCode's dynamic context pruning plugin to see whether pruning breaks the loop.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Labyrinth score, GSQ IQ3_XXS to Tiel-Coder thinking off",
+     "before": 8,
+     "after": 0,
+     "unit": "of 10"
+    },
+    {
+     "label": "Labyrinth wall time, GSQ IQ3_XXS to Tiel-Coder thinking off",
+     "before": 46,
+     "after": 1715,
+     "unit": "minutes"
+    }
+   ],
+   "quality": "Tiel-Coder thinking off, test 7: A 0, B 0, C 0 (no maze, no generator), D 0 and E 0 (nothing to walk, no notes).",
+   "caveat": "One run. OpenCode, not T3 Code. Stopped by hand at 28.6 hours; the brief allows three hours, but our agent runs have no time cap."
+  },
   {
    "date": "2026-11-10",
    "title": "Two OpenCode agents share one 3090: test 2 passes beside a second session; switching between parked 155k sessions takes 1.25 s",
@@ -3968,7 +3991,7 @@
    "quant": "Unsloth UD-Q6_K_XL",
    "kind": "stock",
    "uncensored": false,
-   "note": "Serving tuning only: the whole Q6 model in VRAM across both cards (the V100 half empty). Short-benchmark rates. Agent test 1 (2026-11-10, thinking on, Qwen thinking sampling, OpenCode): it wrote eight files, then replied \"Stopped.\" after 5 minutes as if interrupted (nothing interrupted it), with no entry point and no tests, so no live check could run; 103.5 tok/s agent-run decode, first token median 0.15 s; 5.2 GiB free on the 3090. Agent test 1 again with thinking off (Qwen non-thinking sampling): every live check passes, 10 subcommands, 27 of its own tests pass, in 8 minutes at 98.3 tok/s agent-run decode, first token median 0.31 s; 5.2 GiB free on the 3090. A small tool, but a working one. Agent test 2 with thinking off: the server does not build (9 errors left). At a 104k prompt the model wrote its next tool call as plain text instead of a real call, so the agent took it as a final answer and stopped after 11 minutes; 80.3 tok/s agent-run decode, first token median 0.17 s.",
+   "note": "Serving tuning only: the whole Q6 model in VRAM across both cards (the V100 half empty). Short-benchmark rates. Agent test 1 (2026-11-10, thinking on, Qwen thinking sampling, OpenCode): it wrote eight files, then replied \"Stopped.\" after 5 minutes as if interrupted (nothing interrupted it), with no entry point and no tests, so no live check could run; 103.5 tok/s agent-run decode, first token median 0.15 s; 5.2 GiB free on the 3090. Agent test 1 again with thinking off (Qwen non-thinking sampling): every live check passes, 10 subcommands, 27 of its own tests pass, in 8 minutes at 98.3 tok/s agent-run decode, first token median 0.31 s; 5.2 GiB free on the 3090. A small tool, but a working one. Agent test 2 with thinking off: the server does not build (9 errors left). At a 104k prompt the model wrote its next tool call as plain text instead of a real call, so the agent took it as a final answer and stopped after 11 minutes; 80.3 tok/s agent-run decode, first token median 0.17 s. The labyrinth (test 7) with thinking off scored 0 of 10: after 28.6 hours it had handed in nothing (no generator, maze or notes). The conversation kept filling to about 107k tokens, OpenCode compacted it to about 7k about 80 times, and each time the model lost its progress on the maze design. We stopped it by hand; 82.0 tok/s agent-run decode, first token median 0.44 s.",
    "vision": null
   },
   "llamampere0638-fnb-v31-udiq3xxs-108k": {
@@ -21313,6 +21336,26 @@
     "note": "Halls of the Turned Corner. Showcase reproduces, 10 of 10 hidden seeds give distinct passing mazes, extra credit met, and unlike the IQ3_S run the route changes with each seed. D 0 from the map checker only: the route shuttles back and forth at exactly the length limit and almost everything else hangs off it as teeth: of 201 side openings 118 are one-cell dead ends and only 10 run six cells or more. No entrance tunnel and the stairs are spread out, which was not enough for 1. E 2: every claim in its notes reproduced. Agent-run decode 129.2 tok/s, first token median 0.42 s; tok_s here is output tokens over wall time. One round.",
     "frames": [],
     "live": null
+   },
+   {
+    "case": "mm-0ia-dual-tiel35b-q6kxl-ctx128k-test7-agent-nothink-qwensampling",
+    "entry": "lcpp-tiel35b-q6kxl-3090-v100",
+    "test": 7,
+    "finish": "stopped by hand",
+    "tokens": 5251931.0,
+    "wall_s": 102917.7,
+    "tok_s": 49.51,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "Thinking off. Stopped by hand after 28.6 hours with nothing handed in: no generator, maze or notes, so 0 of 10 hidden seeds. The conversation filled to about 107k tokens about 80 times, OpenCode compacted it to about 7k each time, and the model restarted its maze design, leaving an unfinished generator and 66 probe scripts. Agent-run decode 82.0 tok/s, first token median 0.44 s; tok_s here is output tokens over wall time. One round.",
+    "frames": [],
+    "live": null
    }
   ]
  },
@@ -21320,7 +21363,7 @@
   "models": 128,
   "runs": 353,
   "test3": 86,
-  "oneshots": 163,
+  "oneshots": 164,
   "frames": 310,
   "pass": 262,
   "live": 100
