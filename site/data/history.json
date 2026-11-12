@@ -1,7 +1,7 @@
 {
  "schema": "history/1",
- "generated_from": "private bake-off grades through 2026-11-08: Flash-Next Unsloth v3.1 round 1, the 3090 + V100 serving tuning and the Flash-Next 150 tok/s serving goal (Strata 0.2.12 through round 21 and a Strata 0.2.13 engine check, code and JSON benchmarks with a quality check, a 256k slot and four-stream totals, DFlash2 window and confidence, sampled decoding, llamAmpere with four slots, K/V cache in host RAM, parallel slots that fit, thinking-on sampled decoding, a dual-card Tiel-Coder Q6 serving check, llamAmpere 0.6.3.2 and 0.6.3.8, the daily driver's agent test 1, 2, 2T and 7 runs, UD-Q3_K_XL test 1, 2 and 2T runs, session switching with a host-RAM session cache, two 256k agent slots, the agent serving profile (parked 155k sessions, four 120k streams, two agents at once on tests 1 and 2, a 30-minute idle resume), the UD-Q3_K_XL test 7 run, Arete-27B test 1 on the V100, the V100 peer tier with four agent slots, the UD-Q2_0 speed check, its agent test 1, 2, 2T and 7 runs and its agent-profile check, GSQ IQ3_S agent tests 1, 2 and 7, GSQ IQ3_XXS agent tests 1, 2 and 7, Arete-27B test 2 on the V100, Tiel-Coder Q6 agent test 1 with thinking on and off and tests 2 and 7 with thinking off, test 7 again with context pruning and test 2T with thinking off, the TensorFold 1.2.7 release at 128k and 176k and Nemotron 3.5 Lightning NVFP4 on its RTX 30 fallback, Arete-27B test 7 on the V100, the largest contexts on the V100 alone for Arete Q6_K and Q8_0, Tiel-Coder Q6 and Flash-Next UD-Q2_0 on Strata, Flash-Next UD-Q2_0 with eight and four ~240k sessions at once across both cards, the Unsloth Dynamic V3.1 re-upload of Qwen3.8-27B UD-Q4_K_M against the old file, one-shot pagodas and eight- and four-slot fits); runs from 2026-10-07 on",
- "generated": "2026-11-12 07:39 CST",
+ "generated_from": "private bake-off grades through 2026-11-08: Flash-Next Unsloth v3.1 round 1, the 3090 + V100 serving tuning and the Flash-Next 150 tok/s serving goal (Strata 0.2.12 through round 21 and a Strata 0.2.13 engine check, code and JSON benchmarks with a quality check, a 256k slot and four-stream totals, DFlash2 window and confidence, sampled decoding, llamAmpere with four slots, K/V cache in host RAM, parallel slots that fit, thinking-on sampled decoding, a dual-card Tiel-Coder Q6 serving check, llamAmpere 0.6.3.2 and 0.6.3.8, the daily driver's agent test 1, 2, 2T and 7 runs, UD-Q3_K_XL test 1, 2 and 2T runs, session switching with a host-RAM session cache, two 256k agent slots, the agent serving profile (parked 155k sessions, four 120k streams, two agents at once on tests 1 and 2, a 30-minute idle resume), the UD-Q3_K_XL test 7 run, Arete-27B test 1 on the V100, the V100 peer tier with four agent slots, the UD-Q2_0 speed check, its agent test 1, 2, 2T and 7 runs and its agent-profile check, GSQ IQ3_S agent tests 1, 2 and 7, GSQ IQ3_XXS agent tests 1, 2 and 7, Arete-27B test 2 on the V100, Tiel-Coder Q6 agent test 1 with thinking on and off and tests 2 and 7 with thinking off, test 7 again with context pruning and test 2T with thinking off, the TensorFold 1.2.7 release at 128k and 176k and Nemotron 3.5 Lightning NVFP4 on its RTX 30 fallback, Arete-27B test 7 on the V100, the largest contexts on the V100 alone for Arete Q6_K and Q8_0, Tiel-Coder Q6 and Flash-Next UD-Q2_0 on Strata, Flash-Next UD-Q2_0 with eight and four ~240k sessions at once across both cards, the Unsloth Dynamic V3.1 re-upload of Qwen3.8-27B UD-Q4_K_M against the old file on short benchmarks and agent test 1, one-shot pagodas and eight- and four-slot fits); runs from 2026-10-07 on",
+ "generated": "2026-11-12 09:47 CST",
  "runs_new": [
   {
    "case": "wa-saluki-27b-iq2",
@@ -3607,6 +3607,54 @@
     "loc": 1141,
     "errors_per_kloc": 163.9
    }
+  },
+  {
+   "case": "mm-0jb-3090-qwen38-27b-v31-udq4km-ctx96k-test1-agent-thinking-qwensampling-iris",
+   "model": "lcpp-qwen38-27b-v31-udq4km-3090",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 58,
+   "tests_fail": 0,
+   "subcmds": 7,
+   "tps": 17.6,
+   "minutes": 57,
+   "compactions": null,
+   "ctx": 98304,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-12 07:52",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 1323,
+    "errors_per_kloc": 0.0
+   }
+  },
+  {
+   "case": "mm-0jb2-3090-qwen38-27b-udq4km-ctx96k-test1-agent-thinking-qwensampling-iris-control-r3",
+   "model": "lcpp-qwen38-27b-udq4km-3090",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 94,
+   "tests_fail": 0,
+   "subcmds": 8,
+   "tps": 21.6,
+   "minutes": 68,
+   "compactions": null,
+   "ctx": 98304,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-12 09:34",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 1916,
+    "errors_per_kloc": 1.0
+   }
   }
  ],
  "test3_new": [
@@ -4724,7 +4772,7 @@
    "id": "lcpp-qwen38-27b-udq4km-3090",
    "label": "Qwen3.8-27B UD-Q4_K_M (Unsloth, September 2026 file) \u00b7 llama.cpp (Clover 4838ffb), RTX 3090, 96k, 8-bit KV",
    "quant": "Unsloth UD-Q4_K_M (pre-V3.1)",
-   "note": "The control for the Unsloth Dynamic V3.1 re-upload: the older file on the 3090 alone at 250 W. Short-benchmark rates: 32.1 tok/s decode, short-prompt first token 0.23-0.61 s, 30k and 90k retrievals correct, quality check 3 of 3, 5.4 GiB free. Agent test 1 pending."
+   "note": "The control for the Unsloth Dynamic V3.1 re-upload: the older file on the 3090 alone at 250 W. Short-benchmark rates: 32.1 tok/s decode, short-prompt first token 0.23-0.61 s, 30k and 90k retrievals correct, quality check 3 of 3, 5.4 GiB free. Agent test 1 with thinking on (agent run): passes all five checks with 94 tests passing, 8 subcommands, 68 minutes, engine decode 23.5 tok/s, median first token 0.38 s."
   },
   "lcpp-qwen38-27b-v31-udq4km-3090": {
    "family": "Qwen3.8 27B",
@@ -4737,7 +4785,7 @@
    "id": "lcpp-qwen38-27b-v31-udq4km-3090",
    "label": "Qwen3.8-27B UD-Q4_K_M (Unsloth Dynamic V3.1) \u00b7 llama.cpp (Clover 4838ffb), RTX 3090, 96k, 8-bit KV",
    "quant": "Unsloth UD-Q4_K_M, Dynamic V3.1 re-upload",
-   "note": "Unsloth re-uploaded its Qwen3.8-27B quants as Dynamic V3.1 and claims 5-10% better agentic scores. Same flags as the old file, only the file changes. Short-benchmark rates: 32.3 tok/s decode (old file 32.1), short-prompt first token 0.21-0.61 s, 30k and 90k retrievals correct, quality check 3 of 3, 5.3 GiB free (94 MiB less than the old file). On short benchmarks it is the same; the claimed agentic gain needs the paired agent runs, now under way."
+   "note": "Unsloth re-uploaded its Qwen3.8-27B quants as Dynamic V3.1 and claims 5-10% better agentic scores. Same flags as the old file, only the file changes. Short-benchmark rates: 32.3 tok/s decode (old file 32.1), short-prompt first token 0.21-0.61 s, 30k and 90k retrievals correct, quality check 3 of 3, 5.3 GiB free (94 MiB less than the old file). Agent test 1 with thinking on (agent run): passes all five checks with 58 tests passing, 7 subcommands, 57 minutes, engine decode 23.9 tok/s, median first token 0.41 s. The old file on the same flags passed with 94 tests and 8 subcommands in 68 minutes (23.5 tok/s), so one paired run shows no agentic gain on test 1."
   }
  },
  "ab_new": [

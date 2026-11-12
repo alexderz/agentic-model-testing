@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-11-12 07:39 CST",
- "built": "2026-11-12 07:39 CST",
+ "generated": "2026-11-12 09:47 CST",
+ "built": "2026-11-12 09:47 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -4235,7 +4235,7 @@
    "quant": "Unsloth UD-Q4_K_M (pre-V3.1)",
    "kind": "stock",
    "uncensored": false,
-   "note": "The control for the Unsloth Dynamic V3.1 re-upload: the older file on the 3090 alone at 250 W. Short-benchmark rates: 32.1 tok/s decode, short-prompt first token 0.23-0.61 s, 30k and 90k retrievals correct, quality check 3 of 3, 5.4 GiB free. Agent test 1 pending.",
+   "note": "The control for the Unsloth Dynamic V3.1 re-upload: the older file on the 3090 alone at 250 W. Short-benchmark rates: 32.1 tok/s decode, short-prompt first token 0.23-0.61 s, 30k and 90k retrievals correct, quality check 3 of 3, 5.4 GiB free. Agent test 1 with thinking on (agent run): passes all five checks with 94 tests passing, 8 subcommands, 68 minutes, engine decode 23.5 tok/s, median first token 0.38 s.",
    "vision": null
   },
   "lcpp-qwen38-27b-v31-udq4km-3090": {
@@ -4248,7 +4248,7 @@
    "quant": "Unsloth UD-Q4_K_M, Dynamic V3.1 re-upload",
    "kind": "stock",
    "uncensored": false,
-   "note": "Unsloth re-uploaded its Qwen3.8-27B quants as Dynamic V3.1 and claims 5-10% better agentic scores. Same flags as the old file, only the file changes. Short-benchmark rates: 32.3 tok/s decode (old file 32.1), short-prompt first token 0.21-0.61 s, 30k and 90k retrievals correct, quality check 3 of 3, 5.3 GiB free (94 MiB less than the old file). On short benchmarks it is the same; the claimed agentic gain needs the paired agent runs, now under way.",
+   "note": "Unsloth re-uploaded its Qwen3.8-27B quants as Dynamic V3.1 and claims 5-10% better agentic scores. Same flags as the old file, only the file changes. Short-benchmark rates: 32.3 tok/s decode (old file 32.1), short-prompt first token 0.21-0.61 s, 30k and 90k retrievals correct, quality check 3 of 3, 5.3 GiB free (94 MiB less than the old file). Agent test 1 with thinking on (agent run): passes all five checks with 58 tests passing, 7 subcommands, 57 minutes, engine decode 23.9 tok/s, median first token 0.41 s. The old file on the same flags passed with 94 tests and 8 subcommands in 68 minutes (23.5 tok/s), so one paired run shows no agentic gain on test 1.",
    "vision": null
   }
  },
@@ -12494,6 +12494,54 @@
     "rust_errors": 187,
     "loc": 1141,
     "errors_per_kloc": 163.9
+   }
+  },
+  {
+   "case": "mm-0jb-3090-qwen38-27b-v31-udq4km-ctx96k-test1-agent-thinking-qwensampling-iris",
+   "model": "lcpp-qwen38-27b-v31-udq4km-3090",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 58,
+   "tests_fail": 0,
+   "subcmds": 7,
+   "tps": 17.6,
+   "minutes": 57,
+   "compactions": null,
+   "ctx": 98304,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-12 07:52",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 1323,
+    "errors_per_kloc": 0.0
+   }
+  },
+  {
+   "case": "mm-0jb2-3090-qwen38-27b-udq4km-ctx96k-test1-agent-thinking-qwensampling-iris-control-r3",
+   "model": "lcpp-qwen38-27b-udq4km-3090",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 94,
+   "tests_fail": 0,
+   "subcmds": 8,
+   "tps": 21.6,
+   "minutes": 68,
+   "compactions": null,
+   "ctx": 98304,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-12 09:34",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 1916,
+    "errors_per_kloc": 1.0
    }
   }
  ],
@@ -21736,11 +21784,11 @@
  },
  "counts": {
   "models": 133,
-  "runs": 354,
+  "runs": 356,
   "test3": 86,
   "oneshots": 166,
   "frames": 310,
-  "pass": 263,
+  "pass": 265,
   "live": 100
  }
 }
