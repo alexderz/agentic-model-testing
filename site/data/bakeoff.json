@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-11-12 09:47 CST",
- "built": "2026-11-12 09:50 CST",
+ "generated": "2026-11-12 11:57 CST",
+ "built": "2026-11-12 11:57 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -184,6 +184,29 @@
    ],
    "quality": "Every needle correct (8 of 8 and 4 of 4); both Qwen3.8-27B files 3 of 3 on the quality check.",
    "caveat": "One run each. The 104.3 tok/s baseline is two ~240k prompts on the 3090 alone. Per-session first tokens at 240k range from about 2 to 20 minutes because prefill is serialised."
+  },
+  {
+   "date": "2026-11-12",
+   "title": "webAI's TwIL-8B is fast and right once it may think long; Nex-N2.6 is correct but too slow to prefill; the RustingStrata engine works at about a third of Strata's speed",
+   "kind": "model",
+   "summary": "Short-benchmark rates. TwIL-8B, webAI's new 8B reasoning model, runs on one 3090 at its native 128k: the balanced Q4_K_M file decodes 96.4 tok/s with first tokens under 0.1 s and both retrievals correct, and scores 3 of 3 on the quality check once the token cap is 16k (it used up to 5k tokens of thinking on a short Python task; at our usual caps every answer was cut off mid-thought). The verbose Q8_0 file decodes 72.6 tok/s, overthinks past 16k tokens on the same task and scores 1 of 3. Nex-N2.6, an agent post-train of GLM-5.3-Flash, at Q2_K across both cards with experts in RAM decodes 10.6 tok/s and answers correctly, but prefills at about 50 tok/s, so a 30k prompt waits about 10 minutes. RustingStrata 1.2.1, a pure-Rust engine, serves Flash-Next UD-Q2_K_XL on the 3090 at 34.7 tok/s (36.7 with its draft head) against 120.7 for Strata 0.2.13 on the same file, with both retrievals correct. Arete-27B Q6_K with three 256k slots does not fit on our two cards.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "TwIL-8B balanced quality check, out of 3, usual caps to a 16k token cap",
+     "before": 0,
+     "after": 3,
+     "unit": "tasks"
+    },
+    {
+     "label": "Flash-Next UD-Q2_K_XL decode on the 3090, Strata 0.2.13 to RustingStrata 1.2.1 (draft on)",
+     "before": 120.7,
+     "after": 36.7,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "TwIL-8B balanced 3 of 3 and verbose 1 of 3 with a 16k cap; Nex-N2.6 3 of 3; every retrieval correct except the verbose TwIL file at 120k, which found both markers but added their names.",
+   "caveat": "One run each. TwIL-8B is under a non-commercial licence. RustingStrata rates are measured at the client because the engine reports no server timings."
   },
   {
    "date": "2026-11-11",
@@ -4249,6 +4272,58 @@
    "kind": "stock",
    "uncensored": false,
    "note": "Unsloth re-uploaded its Qwen3.8-27B quants as Dynamic V3.1 and claims 5-10% better agentic scores. Same flags as the old file, only the file changes. Short-benchmark rates: 32.3 tok/s decode (old file 32.1), short-prompt first token 0.21-0.61 s, 30k and 90k retrievals correct, quality check 3 of 3, 5.3 GiB free (94 MiB less than the old file). Agent test 1 with thinking on (agent run): passes all five checks with 58 tests passing, 7 subcommands, 57 minutes, engine decode 23.9 tok/s, median first token 0.41 s. The old file on the same flags passed with 94 tests and 8 subcommands in 68 minutes (23.5 tok/s), so one paired run shows no agentic gain on test 1.",
+   "vision": null
+  },
+  "lcpp-twil8b-balanced-q4km-3090": {
+   "id": "lcpp-twil8b-balanced-q4km-3090",
+   "family": "TwIL 8B",
+   "label": "TwIL-8B balanced Q4_K_M (webAI official) · llama.cpp (Clover 4838ffb), RTX 3090, 128k, 8-bit KV",
+   "base": "webAI-Official/TwIL-8B",
+   "arch": "dense 8B",
+   "engine": "llama.cpp Clover 4838ffb",
+   "quant": "official balanced Q4_K_M (5.3 GB)",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "webAI's new 8B reasoning model (a Granite 4.2-8B post-train, webAI non-commercial licence), on the 3090 alone at its native 128k context with thinking on. Short-benchmark rates: 96.4 tok/s decode, short-prompt first token 0.04-0.08 s, 30k and 120k retrievals correct (first token 13.9 s and 122.3 s), 7.6 GiB free. The quality check scored 0 of 3 at our usual token caps because every answer was still thinking when the cap hit; with a 16k cap it scores 3 of 3, using up to 5k tokens of thinking on a short Python task. No agent tests yet.",
+   "vision": null
+  },
+  "lcpp-twil8b-verbose-q8-3090": {
+   "id": "lcpp-twil8b-verbose-q8-3090",
+   "family": "TwIL 8B",
+   "label": "TwIL-8B verbose Q8_0 (webAI official) · llama.cpp (Clover 4838ffb), RTX 3090, 128k, 8-bit KV",
+   "base": "webAI-Official/TwIL-8B",
+   "arch": "dense 8B",
+   "engine": "llama.cpp Clover 4838ffb",
+   "quant": "official verbose Q8_0 (9.3 GB)",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "The verbose variant of TwIL-8B, the largest official quant that fits the 3090 with 128k of 8-bit K/V. Short-benchmark rates: 72.6 tok/s decode, short-prompt first token 0.04-0.08 s, 30k retrieval correct; at 120k it found both markers but wrote them with their names attached, which our strict check scores as a miss. 4.1 GiB free. With a 16k token cap the quality check scores 1 of 3: it thought past 16k tokens on a short Python task without answering and got the JSON task wrong. It thinks longer than the balanced variant and scores lower. No agent tests yet.",
+   "vision": null
+  },
+  "lcpp-nex-n26-q2k-3090-v100": {
+   "id": "lcpp-nex-n26-q2k-3090-v100",
+   "family": "Nex N2.6",
+   "label": "Nex-N2.6 Q2_K (bartowski) · llama.cpp (Clover 4838ffb), RTX 3090 + V100, experts in RAM, 96k, 8-bit KV",
+   "base": "nex-agi/Nex-N2.6 (GLM-5.3-Flash post-train)",
+   "arch": "MoE 321B / 18B active",
+   "engine": "llama.cpp Clover 4838ffb",
+   "quant": "bartowski Q2_K (125.7 GB)",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "nex-agi's agent-focused post-train of GLM-5.3-Flash (Apache-2.0), across both cards with llama.cpp placing the experts itself and the rest in system RAM. Short-benchmark rates: 10.6 tok/s decode, short-prompt first token 15-24 s, 30k and 90k retrievals correct but slow (first token 621 s and 1,640 s, about 50 tok/s prefill), quality check 3 of 3, 2.8 GiB free on the 3090 and 3.0 GiB on the V100. Correct and it fits, but a 30k agent prompt would wait about 10 minutes, so no agent tests at this size and placement.",
+   "vision": null
+  },
+  "rustingstrata121-fnb-v31-udq2kxl-3090": {
+   "id": "rustingstrata121-fnb-v31-udq2kxl-3090",
+   "family": "Qwen3.8 Flash-Next",
+   "label": "Flash-Next UD-Q2_K_XL (Unsloth Dynamic v3.1) · RustingStrata 1.2.1, RTX 3090, 128k, 8-bit KV",
+   "base": "Qwen/Qwen3.8-Flash-Next",
+   "arch": "MoE",
+   "engine": "RustingStrata 1.2.1",
+   "quant": "Unsloth UD-Q2_K_XL v3.1 (74 GiB)",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "RustingStrata is a new pure-Rust engine for Qwen GGUF files (experts that miss VRAM run on the CPU). Same file, card and 300 W as our Strata 0.2.13 daily-driver control, thinking off, greedy. Short-benchmark, client-side rates (the engine reports no server timings): 34.7 tok/s decode without drafting and 36.7 with its one-token MTP draft, against 120.7 for Strata 0.2.13 on the same file; 30k and 120k retrievals correct (first token about 30 s and 136 s), 2.2 GiB free. A working engine, about 3.5 times slower than Strata.",
    "vision": null
   }
  },
@@ -16125,6 +16200,66 @@
    "prefill": 851.0,
    "vram": 19142,
    "error": ""
+  },
+  {
+   "model": "lcpp-twil8b-balanced-q4km-3090",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "3090 alone at 250 W, official balanced Q4_K_M, 128k context, 8-bit K/V, thinking on (retrievals with thinking off); short benchmark; decode 100.7 / 98.8 / 89.6 tok/s on prose, code and JSON; short prompts first token 0.04-0.08 s; 30,236-token retrieval correct, first token 13.9 s; 120,216-token retrieval correct, first token 122.3 s (983 tok/s prefill); quality check 3 of 3 with a 16k token cap (0 of 3 at the usual caps, all answers cut off while thinking); free 7.6 GiB (3090), fits",
+   "decode": 96.4,
+   "quote": null,
+   "prefill": 983.0,
+   "vram": 16804,
+   "error": ""
+  },
+  {
+   "model": "lcpp-twil8b-verbose-q8-3090",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "3090 alone at 250 W, official verbose Q8_0, 128k context, 8-bit K/V, thinking on (retrievals with thinking off); short benchmark; decode 74.9 / 74.0 / 69.0 tok/s on prose, code and JSON; short prompts first token 0.04-0.08 s; 30,236-token retrieval correct, first token 13.5 s; 120,216-token retrieval found both markers but wrote them with their names attached, a miss by our strict check, first token 120.6 s (997 tok/s prefill); quality check 1 of 3 with a 16k token cap; free 4.1 GiB (3090), fits",
+   "decode": 72.6,
+   "quote": null,
+   "prefill": 997.0,
+   "vram": 20418,
+   "error": ""
+  },
+  {
+   "model": "lcpp-nex-n26-q2k-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "3090 + V100 at 300 W, llama.cpp --fit with a 2 GiB margin per card, experts in system RAM, 96k context, 8-bit K/V, thinking off; short benchmark; load 769 s; decode 10.0 / 10.7 / 11.0 tok/s on prose, code and JSON; short prompts first token 15-24 s; 30,211-token retrieval correct, first token 621 s (49 tok/s prefill); 90,291-token retrieval correct, first token 1,640 s (55 tok/s prefill); quality check 3 of 3; free 2.8 GiB (3090) / 3.0 GiB (V100), fits",
+   "decode": 10.6,
+   "quote": null,
+   "prefill": 55.0,
+   "vram": 21744,
+   "error": ""
+  },
+  {
+   "model": "rustingstrata121-fnb-v31-udq2kxl-3090",
+   "engine": "RustingStrata 1.2.1",
+   "variant": "3090 alone at 300 W, UD-Q2_K_XL, 128k context, 8-bit K/V, 2 GiB VRAM margin, no drafting, thinking off, greedy; short benchmark, client-side rates; decode 43.1 tok/s on a short prose prompt and 26.2 at a 1.2k prompt; short prompts first token 1.4-7.0 s (11.4 s cold); 30,061-token retrieval correct, first token 31.7 s; 120,031-token retrieval correct, first token 136.4 s (880 tok/s prefill); free 2.2 GiB (3090), fits",
+   "decode": 34.7,
+   "quote": null,
+   "prefill": 880.0,
+   "vram": 22334,
+   "error": ""
+  },
+  {
+   "model": "rustingstrata121-fnb-v31-udq2kxl-3090",
+   "engine": "RustingStrata 1.2.1",
+   "variant": "Same as above with the engine's one-token MTP draft; decode 46.2 / 27.1 tok/s; short prompts first token 1.0-4.3 s; 30,061-token retrieval correct, first token 28.7 s; 120,031-token retrieval correct, first token 136.4 s (880 tok/s prefill); free 2.2 GiB (3090), fits",
+   "decode": 36.7,
+   "quote": null,
+   "prefill": 880.0,
+   "vram": 22334,
+   "error": ""
+  },
+  {
+   "model": "lcpp-arete27b-q6k",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "3090 + V100, layers split 3:2 (60% on the V100), three 256k slots (768k tokens) of 8-bit K/V; does not load: the 3090 could not allocate a 4.1 GiB compute buffer with both cards full (23.9 GiB / 31.5 GiB at the failure)",
+   "decode": null,
+   "quote": null,
+   "prefill": null,
+   "vram": 23926,
+   "error": "does not fit: three 256k slots run out of memory on both cards while loading"
   }
  ],
  "engines": [
@@ -21783,7 +21918,7 @@
   ]
  },
  "counts": {
-  "models": 133,
+  "models": 137,
   "runs": 356,
   "test3": 86,
   "oneshots": 166,
