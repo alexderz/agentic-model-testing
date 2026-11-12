@@ -453,10 +453,12 @@
         {"label": "Same, prefill of a 30k prompt, ubatch 512 to 2048", "before": 35.3, "after": 83.3, "unit": "tok/s"},
         {"label": "Same, prefill of a 90k prompt, ubatch 512 to 2048 (cache 28 to 30 GiB)", "before": 31.0, "after": 69.2, "unit": "tok/s"},
         {"label": "Same, decode with flash attention off to on", "before": 13.3, "after": 15.5, "unit": "tok/s"},
-        {"label": "Qwopus 27B Q6_K decode on the V100 alone, 96k context", "before": null, "after": 27.0, "unit": "tok/s"}
+        {"label": "Qwopus 27B Q6_K decode on the V100 alone, 96k context", "before": null, "after": 27.0, "unit": "tok/s"},
+        {"label": "Arete-27B Q6_K largest context that fits on the V100 alone", "before": 96, "after": 240, "unit": "k tokens"},
+        {"label": "Tiel-Coder-35B Q6 decode on the V100 alone, 64k context", "before": null, "after": 92.0, "unit": "tok/s"}
       ],
       "chart": "bars",
-      "evidence": "2026-11-08, llama.cpp Clover 4838ffb, 3090 at 250 W, short-benchmark rates: 90,230-token retrievals at 96k context were correct on DeepSeek in every config, with the first token after 48.5 min at ubatch 512 and 21.7 min at ubatch 2048; splitting 3:2 to free the 3090 costs about 1.4 tok/s decode; a 40 GiB cache does not load.",
+      "evidence": "2026-11-08, llama.cpp Clover 4838ffb, 3090 at 250 W, short-benchmark rates: 90,230-token retrievals at 96k context were correct on DeepSeek in every config, with the first token after 48.5 min at ubatch 512 and 21.7 min at ubatch 2048; splitting 3:2 to free the 3090 costs about 1.4 tok/s decode; a 40 GiB cache does not load. 2026-11-12, the V100 alone (512 MiB floor, no display): Arete-27B Q6_K fits 240k with 1.0 GiB free (256k retrieves but leaves 440 MiB), Q8_0 fits 128k, Tiel-Coder Q6 fits 64k at 92 tok/s, and Flash-Next UD-Q2_0 on Strata holds two 256k slots with all K/V on the card and 3.1 GiB free.",
       "caveat": "Short-benchmark rates, not agent runs. Without flash attention, ubatch 512 left only 1.2 GiB on the 3090 and broke the fit rule.",
       "doc": "docs/model-research/tuning.md#12-two-different-cards-a-3090-and-a-v100"
     },

@@ -1,7 +1,7 @@
 {
  "schema": "history/1",
- "generated_from": "private bake-off grades through 2026-11-08: Flash-Next Unsloth v3.1 round 1, the 3090 + V100 serving tuning and the Flash-Next 150 tok/s serving goal (Strata 0.2.12 through round 21 and a Strata 0.2.13 engine check, code and JSON benchmarks with a quality check, a 256k slot and four-stream totals, DFlash2 window and confidence, sampled decoding, llamAmpere with four slots, K/V cache in host RAM, parallel slots that fit, thinking-on sampled decoding, a dual-card Tiel-Coder Q6 serving check, llamAmpere 0.6.3.2 and 0.6.3.8, the daily driver's agent test 1, 2, 2T and 7 runs, UD-Q3_K_XL test 1, 2 and 2T runs, session switching with a host-RAM session cache, two 256k agent slots, the agent serving profile (parked 155k sessions, four 120k streams, two agents at once on tests 1 and 2, a 30-minute idle resume), the UD-Q3_K_XL test 7 run, Arete-27B test 1 on the V100, the V100 peer tier with four agent slots, the UD-Q2_0 speed check, its agent test 1, 2, 2T and 7 runs and its agent-profile check, GSQ IQ3_S agent tests 1, 2 and 7, GSQ IQ3_XXS agent tests 1, 2 and 7, Arete-27B test 2 on the V100, Tiel-Coder Q6 agent test 1 with thinking on and off and tests 2 and 7 with thinking off, test 7 again with context pruning and test 2T with thinking off, the TensorFold 1.2.7 release at 128k and 176k and Nemotron 3.5 Lightning NVFP4 on its RTX 30 fallback, one-shot pagodas and eight- and four-slot fits); runs from 2026-10-07 on",
- "generated": "2026-11-12 01:24 CST",
+ "generated_from": "private bake-off grades through 2026-11-08: Flash-Next Unsloth v3.1 round 1, the 3090 + V100 serving tuning and the Flash-Next 150 tok/s serving goal (Strata 0.2.12 through round 21 and a Strata 0.2.13 engine check, code and JSON benchmarks with a quality check, a 256k slot and four-stream totals, DFlash2 window and confidence, sampled decoding, llamAmpere with four slots, K/V cache in host RAM, parallel slots that fit, thinking-on sampled decoding, a dual-card Tiel-Coder Q6 serving check, llamAmpere 0.6.3.2 and 0.6.3.8, the daily driver's agent test 1, 2, 2T and 7 runs, UD-Q3_K_XL test 1, 2 and 2T runs, session switching with a host-RAM session cache, two 256k agent slots, the agent serving profile (parked 155k sessions, four 120k streams, two agents at once on tests 1 and 2, a 30-minute idle resume), the UD-Q3_K_XL test 7 run, Arete-27B test 1 on the V100, the V100 peer tier with four agent slots, the UD-Q2_0 speed check, its agent test 1, 2, 2T and 7 runs and its agent-profile check, GSQ IQ3_S agent tests 1, 2 and 7, GSQ IQ3_XXS agent tests 1, 2 and 7, Arete-27B test 2 on the V100, Tiel-Coder Q6 agent test 1 with thinking on and off and tests 2 and 7 with thinking off, test 7 again with context pruning and test 2T with thinking off, the TensorFold 1.2.7 release at 128k and 176k and Nemotron 3.5 Lightning NVFP4 on its RTX 30 fallback, Arete-27B test 7 on the V100, the largest contexts on the V100 alone for Arete Q6_K and Q8_0, Tiel-Coder Q6 and Flash-Next UD-Q2_0 on Strata, one-shot pagodas and eight- and four-slot fits); runs from 2026-10-07 on",
+ "generated": "2026-11-12 05:32 CST",
  "runs_new": [
   {
    "case": "wa-saluki-27b-iq2",
@@ -4515,7 +4515,7 @@
    "quant": "Q6_K",
    "kind": "tune",
    "uncensored": false,
-   "note": "Nous Research fine-tune of Qwen3.8-27B. Fits the V100 alone, not the RTX 3090. Serving tuning is short-benchmark rates. Agent test 1 on the V100 alone (2026-11-10, Qwen thinking sampling): every live check passes, 11 subcommands, its own 59 tests pass, 60 minutes, 18.4 tok/s agent-run decode, first token median 0.61 s. Agent test 2 (same setup): builds, 8 tools, the handshake and the tool call work, 48 of its own tests pass, 81 minutes at 20.7 tok/s agent-run decode, first token median 1.11 s; 6.5 GiB free.",
+   "note": "Nous Research fine-tune of Qwen3.8-27B. Fits the V100 alone, not the RTX 3090. Serving tuning is short-benchmark rates. Agent test 1 on the V100 alone (2026-11-10, Qwen thinking sampling): every live check passes, 11 subcommands, its own 59 tests pass, 60 minutes, 18.4 tok/s agent-run decode, first token median 0.61 s. Agent test 2 (same setup): builds, 8 tools, the handshake and the tool call work, 48 of its own tests pass, 81 minutes at 20.7 tok/s agent-run decode, first token median 1.11 s; 6.5 GiB free. The labyrinth (test 7, same setup, thinking on): A-C full marks (round trip, 10 of 10 distinct hidden-seed mazes, worst path 325 with 6 floor changes), D 1, E 1, total 8 of 10, in 4.4 hours at 21.0 tok/s agent-run decode, first token median 0.61 s, 6.5 GiB free; the first dense 27B to take full A-C marks on the labyrinth, at about a sixth of Flash-Next's speed. Largest context on the V100 alone: 240k (1.0 GiB free, a 235k retrieval correct); 256k leaves 440 MiB, under our 512 MiB V100 floor.",
    "vision": null
   },
   "strata0212-fnb-v31-udq2kxl-3090-v100": {
@@ -4554,7 +4554,7 @@
    "quant": "Unsloth UD-Q6_K_XL",
    "kind": "stock",
    "uncensored": false,
-   "note": "Serving tuning only: the whole Q6 model in VRAM across both cards (the V100 half empty). Short-benchmark rates. Agent test 1 (2026-11-10, thinking on, Qwen thinking sampling, OpenCode): it wrote eight files, then replied \"Stopped.\" after 5 minutes as if interrupted (nothing interrupted it), with no entry point and no tests, so no live check could run; 103.5 tok/s agent-run decode, first token median 0.15 s; 5.2 GiB free on the 3090. Agent test 1 again with thinking off (Qwen non-thinking sampling): every live check passes, 10 subcommands, 27 of its own tests pass, in 8 minutes at 98.3 tok/s agent-run decode, first token median 0.31 s; 5.2 GiB free on the 3090. A small tool, but a working one. Agent test 2 with thinking off: the server does not build (9 errors left). At a 104k prompt the model wrote its next tool call as plain text instead of a real call, so the agent took it as a final answer and stopped after 11 minutes; 80.3 tok/s agent-run decode, first token median 0.17 s. The labyrinth (test 7) with thinking off scored 0 of 10: after 28.6 hours it had handed in nothing (no generator, maze or notes). The conversation kept filling to about 107k tokens, OpenCode compacted it to about 7k about 80 times, and each time the model lost its progress on the maze design. We stopped it by hand; 82.0 tok/s agent-run decode, first token median 0.44 s. A rerun of test 7 with OpenCode's dynamic context pruning plugin ended the compaction loop (13 prunes, no compactions) but still scored 0 of 10: after 2.5 hours the model wrote a file-write tool call as plain text and the session ended; 84.7 tok/s agent-run decode, first token median 0.51 s. Test 2T with thinking off passes in 11 minutes: it builds, 6 tools, the handshake and the tool call work, 8 of its own tests pass, and it called only the real Home Assistant endpoints after testing the documented ones (82.1 tok/s agent-run decode, first token median 0.52 s); a thin server that fought the compiler (187 Rust errors over 23 builds).",
+   "note": "Serving tuning only: the whole Q6 model in VRAM across both cards (the V100 half empty). Short-benchmark rates. Agent test 1 (2026-11-10, thinking on, Qwen thinking sampling, OpenCode): it wrote eight files, then replied \"Stopped.\" after 5 minutes as if interrupted (nothing interrupted it), with no entry point and no tests, so no live check could run; 103.5 tok/s agent-run decode, first token median 0.15 s; 5.2 GiB free on the 3090. Agent test 1 again with thinking off (Qwen non-thinking sampling): every live check passes, 10 subcommands, 27 of its own tests pass, in 8 minutes at 98.3 tok/s agent-run decode, first token median 0.31 s; 5.2 GiB free on the 3090. A small tool, but a working one. Agent test 2 with thinking off: the server does not build (9 errors left). At a 104k prompt the model wrote its next tool call as plain text instead of a real call, so the agent took it as a final answer and stopped after 11 minutes; 80.3 tok/s agent-run decode, first token median 0.17 s. The labyrinth (test 7) with thinking off scored 0 of 10: after 28.6 hours it had handed in nothing (no generator, maze or notes). The conversation kept filling to about 107k tokens, OpenCode compacted it to about 7k about 80 times, and each time the model lost its progress on the maze design. We stopped it by hand; 82.0 tok/s agent-run decode, first token median 0.44 s. A rerun of test 7 with OpenCode's dynamic context pruning plugin ended the compaction loop (13 prunes, no compactions) but still scored 0 of 10: after 2.5 hours the model wrote a file-write tool call as plain text and the session ended; 84.7 tok/s agent-run decode, first token median 0.51 s. Test 2T with thinking off passes in 11 minutes: it builds, 6 tools, the handshake and the tool call work, 8 of its own tests pass, and it called only the real Home Assistant endpoints after testing the documented ones (82.1 tok/s agent-run decode, first token median 0.52 s); a thin server that fought the compiler (187 Rust errors over 23 builds). On the V100 alone (short benchmark, thinking off) it fits 64k at 92 tok/s decode with a 60k retrieval correct and 1.5 GiB free, which leaves the 3090 free for another model.",
    "vision": null
   },
   "llamampere0638-fnb-v31-udiq3xxs-108k": {
@@ -4645,7 +4645,7 @@
    "quant": "Unsloth UD-Q2_0 v3.1 (65.7 GiB)",
    "kind": "stock",
    "uncensored": false,
-   "note": "The smaller 2-bit quant on the daily-driver setup (MTP draft head, one 3090 at 300 W), tried because smaller weights leave more expert-cache room in VRAM. Short-benchmark decode ties UD-Q2_K_XL (122.4 against 120.7 tok/s). Agent runs (2026-11-10, Qwen thinking sampling, OpenCode): test 1 passes with 471 of its own tests at 136.6 tok/s; test 2T passes with 9 tools and 85 tests at 137.0 tok/s and uses only the real endpoints; the labyrinth (test 7) scores 9 of 10 at 135.3 tok/s. First token median 0.25-0.39 s. Test 2 passes in full with 14 tools and 136 of its own tests at 137.8 tok/s (first token median 0.30 s), so it passes all four agent tests. On the agent serving profile (two 256k slots, two ~240k prompts at once, short benchmark) it decodes 104.3 tok/s total against 90.2 for UD-Q2_K_XL, with 3.1 GiB free.",
+   "note": "The smaller 2-bit quant on the daily-driver setup (MTP draft head, one 3090 at 300 W), tried because smaller weights leave more expert-cache room in VRAM. Short-benchmark decode ties UD-Q2_K_XL (122.4 against 120.7 tok/s). Agent runs (2026-11-10, Qwen thinking sampling, OpenCode): test 1 passes with 471 of its own tests at 136.6 tok/s; test 2T passes with 9 tools and 85 tests at 137.0 tok/s and uses only the real endpoints; the labyrinth (test 7) scores 9 of 10 at 135.3 tok/s. First token median 0.25-0.39 s. Test 2 passes in full with 14 tools and 136 of its own tests at 137.8 tok/s (first token median 0.30 s), so it passes all four agent tests. On the agent serving profile (two 256k slots, two ~240k prompts at once, short benchmark) it decodes 104.3 tok/s total against 90.2 for UD-Q2_K_XL, with 3.1 GiB free. On the V100 as the only card (Strata 0.2.13 built for it, experts streamed from RAM), two 256k slots with all K/V on the card fit with 3.1 GiB free and hold two ~240k prompts at once (both needles correct), but the engine prefills one session at a time and turns drafting off for a session decoding beside a prefill: 31.7 tok/s for one drafted stream, 49.9 tok/s total.",
    "vision": null
   },
   "strata0213-fnb-gsq-iq3s-128k": {
@@ -4698,6 +4698,19 @@
    "kind": "stock",
    "uncensored": false,
    "note": "NVFP4 weights on a 3090, which has no FP4 hardware, through TensorFold's fallback path; it drafts with the export's own MTP head. Short-benchmark rates: 152 to 157 tok/s on prose and 181 to 194 on code, first token 0.04 s on short prompts; 30k retrieval correct with a 4.8 s first token (about 6,300 tok/s prefill). Quality check 1 of 3 (the code task passes; one wrong total and one answer in the wrong format), and we have no same-prompt run on another card to tell model from fallback arithmetic. 3.7 GiB free, fits.",
+   "vision": null
+  },
+  "lcpp-arete27b-q8": {
+   "id": "lcpp-arete27b-q8",
+   "family": "Qwen3.8 27B",
+   "label": "Arete-27B Q8_0 \u00b7 llama.cpp (Clover 4838ffb), V100 alone, 128k, 8-bit KV",
+   "base": "Qwen/Qwen3.8-27B",
+   "arch": "dense 27B",
+   "engine": "llama.cpp Clover 4838ffb",
+   "quant": "Q8_0",
+   "kind": "tune",
+   "uncensored": false,
+   "note": "The 8-bit quant of the Nous Research fine-tune, on the V100 alone. Serving tuning only (short-benchmark rates): 23.1 tok/s decode against 26.2 for Q6_K; 128k is the largest context that fits (a 120k retrieval correct, 0.9 GiB free). No agent tests yet.",
    "vision": null
   }
  },
@@ -6821,6 +6834,56 @@
    "prefill": 6300.0,
    "vram": 20738,
    "error": ""
+  },
+  {
+   "model": "lcpp-arete27b-q6k",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "V100 alone, 256k context, 8-bit K/V, greedy; short benchmark; decode 26.2 and 26.1 tok/s; short prompts first token 0.50-0.83 s; 30,085-token retrieval correct, first token 42.5 s (714 tok/s prefill); 250,288-token retrieval correct, first token 1,002.6 s (250 tok/s prefill); free 440 MiB (V100), under our 512 MiB floor for the V100 (no display), so it does not count as fitting",
+   "decode": 26.15,
+   "quote": null,
+   "prefill": 250.0,
+   "vram": 32328,
+   "error": "fit rule miss: 440 MiB free on the V100 after the 250k prefill, under the 512 MiB floor"
+  },
+  {
+   "model": "lcpp-arete27b-q6k",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "V100 alone, 240k context (245,760), 8-bit K/V, greedy; short benchmark; decode 26.2 and 26.1 tok/s; short prompts first token 0.50-0.83 s; 30,085-token retrieval correct, first token 42.4 s (710 tok/s prefill); 235,221-token retrieval correct, first token 898.6 s (262 tok/s prefill); free 1.0 GiB (V100), fits; the largest context for Q6_K on the V100 alone",
+   "decode": 26.15,
+   "quote": null,
+   "prefill": 262.0,
+   "vram": 31704,
+   "error": ""
+  },
+  {
+   "model": "lcpp-arete27b-q8",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "V100 alone, Q8_0, 128k context, 8-bit K/V, greedy; short benchmark; decode 23.2 and 23.0 tok/s; short prompts first token 0.46-0.83 s; 30,085-token retrieval correct, first token 40.4 s (752 tok/s prefill); 120,055-token retrieval correct, first token 286.9 s (420 tok/s prefill); free 0.9 GiB (V100), fits",
+   "decode": 23.1,
+   "quote": null,
+   "prefill": 420.0,
+   "vram": 31850,
+   "error": ""
+  },
+  {
+   "model": "lcpp-tiel35b-q6kxl-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "V100 alone (not split across both cards), 64k context, 8-bit K/V, thinking off, greedy; short benchmark; decode 92.3 and 91.7 tok/s; short prompts first token 0.52-0.73 s; 30,263-token retrieval correct, first token 45.2 s (670 tok/s prefill); 60,230-token retrieval correct, first token 98.5 s (610 tok/s prefill); free 1.5 GiB (V100), fits",
+   "decode": 92.0,
+   "quote": null,
+   "prefill": 610.0,
+   "vram": 31258,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq20-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "V100 as the only card (Strata 0.2.13 built for sm_70, experts streamed from RAM over PCIe 3.0 x4), two 256k slots with all int8 K/V on the card, batch 2, MTP draft head, Qwen thinking sampling; two ~240,190-token prompts at once, both needles correct; prefill runs one session at a time: first tokens 305 s (788 tok/s) and 761 s; one stream decoded 12.5 tok/s undrafted while the other prefilled, the other 31.7 tok/s with drafts (69% accepted); 49.9 tok/s total; short prompt first token 2.7 s; free 3.1 GiB (V100), fits",
+   "decode": 49.9,
+   "quote": null,
+   "prefill": 788.0,
+   "vram": 29614,
+   "error": ""
   }
  ],
  "tests": [
@@ -8649,6 +8712,29 @@
    ],
    "quality": "Qwen3.8-27B 3 of 3 on the quality check; Nemotron NVFP4 1 of 3.",
    "caveat": "One run each, short benchmarks, no agent test yet. The October and November runs use different quants (4-bit then, 3-bit now)."
+  },
+  {
+   "date": "2026-11-12",
+   "title": "Arete-27B takes full marks on the labyrinth's A-C on the V100 alone; the V100 alone holds 240k for Arete and 2 x 256k for Flash-Next",
+   "kind": "model",
+   "summary": "Agent-run rates for the labyrinth, short-benchmark rates for the rest. Arete-27B Q6_K (a Nous Research fine-tune of Qwen3.8-27B) on the V100 alone, thinking on, OpenCode: a working generator with 10 of 10 distinct hidden-seed mazes and the round trip, so full A-C marks, then D 1 (a comb-shaped maze with stairs bunched at both ends) and E 1 (its notes claim 65 distinct files from a list with one seed twice), 8 of 10 in 4.4 hours at 21.0 tok/s, first token median 0.61 s. It is the first dense 27B to reach full A-C marks, at about a sixth of Flash-Next's speed. On the same card alone Arete Q6_K fits up to 240k (235k retrieval correct, first token 15 min) and Q8_0 up to 128k; Tiel-Coder-35B Q6 fits 64k at 92 tok/s; and Flash-Next UD-Q2_0 on Strata holds two 256k sessions with all K/V on the card and 3.1 GiB spare, though it prefills one session at a time.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Arete-27B Q6_K largest working context on the V100 alone",
+     "before": 96,
+     "after": 240,
+     "unit": "k tokens"
+    },
+    {
+     "label": "Arete-27B labyrinth score (test 7), out of 10",
+     "before": null,
+     "after": 8,
+     "unit": "points"
+    }
+   ],
+   "quality": "Labyrinth A 2, B 2, C 2, D 1, E 1; every retrieval needle correct.",
+   "caveat": "One run each. The 256k Arete run retrieved correctly but missed our 512 MiB V100 floor by 72 MiB, so 240k is the published maximum."
   }
  ],
  "amend": [

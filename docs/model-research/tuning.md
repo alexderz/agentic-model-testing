@@ -329,6 +329,23 @@ decode 26.1 tok/s; 30,125 tokens correct in 43 s (709 tok/s) and 90,105 tokens i
 191 s (476 tok/s); 6.5 GiB free. On the 3090 alone it does not load: 22 GiB of
 weights plus the 96k Q8 KV cache is more than 24 GiB.
 
+**Largest contexts on the V100 alone** (2026-11-12, Q8 KV, short-benchmark
+rates; the V100 drives no display, so its floor is 512 MiB free after the longest
+prefill):
+
+- Arete-27B Q6_K: 240k fits with 1.0 GiB free (26.2 tok/s decode; 235k tokens
+  correct, first token 899 s at 262 tok/s). 256k also retrieves 250k tokens
+  correctly (1,003 s) but leaves 440 MiB, 72 MiB under the floor.
+- Arete-27B Q8_0: 128k fits with 0.9 GiB free (23.1 tok/s; 120k tokens correct
+  in 287 s, 420 tok/s).
+- Tiel-Coder-35B-A3B UD-Q6_K_XL, thinking off: 64k fits with 1.5 GiB free at
+  92 tok/s (60k tokens correct in 98 s), so it no longer needs the 3090.
+- Flash-Next UD-Q2_0 on Strata 0.2.13 built for the V100, experts streamed from
+  RAM: two 256k slots with all K/V on the card fit with 3.1 GiB free and hold
+  two ~240k prompts at once (both correct). Prefill runs one session at a time
+  (first tokens 305 s and 761 s), and a session decoding beside a prefill gets no
+  drafts (12.5 tok/s); alone with drafts it runs 31.7 tok/s.
+
 **Qwopus 27B Q4_K_M, 3090 against V100**, 96k, Q8 KV: decode is the same on both
 cards (33.0 tok/s), but the V100 prefills at about 60% of the 3090's rate (662
 against 1,095 tok/s at 30k; 90k first token 200 s against 110 s). The 3090 rerun
