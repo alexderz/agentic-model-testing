@@ -216,19 +216,23 @@
       "kind": "dense model server with DFlash2 drafting",
       "versions": [
         {"version": "0.6.6 (Python engine)", "date": "2026-10-13", "note": "Fastest writer measured for Qwen3.8-27B on the 3090; Python line frozen upstream."},
-        {"version": "1.1.0 (upstream)", "date": "2026-10-18", "note": "Reports native RTX 30 support; we have not built or run it."}
+        {"version": "1.1.0 (upstream)", "date": "2026-10-18", "note": "Reports native RTX 30 support; we have not built or run it."},
+        {"version": "1.2.7 (release)", "date": "2026-11-11", "note": "Release archive runs unchanged on the 3090 with an 8-bit cache: Qwen3.8-27B to 176k, lossless DFlash2 drafts; NVFP4 Nemotron on the RTX 30 fallback."}
       ],
       "good_at": "Raw decode speed; exact replies at temperature 0",
-      "watch_out": "Needs a local patch below compute capability 8.9; bf16 cache only",
+      "watch_out": "Before 1.2.7: a local patch below compute capability 8.9 and a bf16-only cache; NVFP4 on RTX 30 is a fallback path (1 of 3 quality prompts on Nemotron)",
       "multi_session": {"ok": null, "note": "Not measured"},
       "speeds": [
         {"model": "Qwen3.8-27B", "config": "DFlash2 drafter, short code (167-170 across runs)", "decode": 170, "prefill": null, "unit": "tok/s", "context": null, "date": "2026-10-13"},
         {"model": "Qwen3.8-27B", "config": "DFlash2 drafter, prose (81-84 across runs)", "decode": 84, "prefill": null, "unit": "tok/s", "context": null, "date": "2026-10-13"},
-        {"model": "Qwen3.8-27B", "config": "DFlash2 drafter, structured output (209-211 across runs)", "decode": 211, "prefill": null, "unit": "tok/s", "context": null, "date": "2026-10-13"}
+        {"model": "Qwen3.8-27B", "config": "DFlash2 drafter, structured output (209-211 across runs)", "decode": 211, "prefill": null, "unit": "tok/s", "context": null, "date": "2026-10-13"},
+        {"model": "Qwen3.8-27B EXL3 3-bit", "config": "1.2.7, DFlash2 drafter, fp8 cache, code (210-217)", "decode": 217, "prefill": 515, "unit": "tok/s", "context": "128k", "date": "2026-11-11"},
+        {"model": "Qwen3.8-27B EXL3 3-bit", "config": "1.2.7, DFlash2 drafter, fp8 cache, prose (79-87)", "decode": 87, "prefill": 453, "unit": "tok/s", "context": "176k", "date": "2026-11-11"},
+        {"model": "Nemotron 3.5 Lightning NVFP4", "config": "1.2.7, RTX 30 fallback, MTP drafts, code (181-194)", "decode": 194, "prefill": 6300, "unit": "tok/s", "context": "32k", "date": "2026-11-11"}
       ],
       "bugs": [
-        {"text": "Needed a local patch to run below compute capability 8.9", "status": "worked around", "date": null},
-        {"text": "Cache is bf16 only: 42k window by default, 73k at the edge", "status": "open", "date": null},
+        {"text": "Needed a local patch to run below compute capability 8.9", "status": "fixed", "date": "2026-11-11"},
+        {"text": "Cache is bf16 only: 42k window by default, 73k at the edge", "status": "fixed", "date": "2026-11-11"},
         {"text": "Python line is frozen upstream; engine parked, not in the router", "status": "open", "date": null}
       ],
       "doc": "docs/model-research/engines.md#tensorfold"
