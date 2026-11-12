@@ -1,7 +1,7 @@
 {
  "schema": "history/1",
- "generated_from": "private bake-off grades through 2026-11-08: Flash-Next Unsloth v3.1 round 1, the 3090 + V100 serving tuning and the Flash-Next 150 tok/s serving goal (Strata 0.2.12 through round 21 and a Strata 0.2.13 engine check, code and JSON benchmarks with a quality check, a 256k slot and four-stream totals, DFlash2 window and confidence, sampled decoding, llamAmpere with four slots, K/V cache in host RAM, parallel slots that fit, thinking-on sampled decoding, a dual-card Tiel-Coder Q6 serving check, llamAmpere 0.6.3.2 and 0.6.3.8, the daily driver's agent test 1, 2, 2T and 7 runs, UD-Q3_K_XL test 1, 2 and 2T runs, session switching with a host-RAM session cache, two 256k agent slots, the agent serving profile (parked 155k sessions, four 120k streams, two agents at once on tests 1 and 2, a 30-minute idle resume), the UD-Q3_K_XL test 7 run, Arete-27B test 1 on the V100, the V100 peer tier with four agent slots, the UD-Q2_0 speed check, its agent test 1, 2, 2T and 7 runs and its agent-profile check, GSQ IQ3_S agent tests 1, 2 and 7, GSQ IQ3_XXS agent tests 1, 2 and 7, Arete-27B test 2 on the V100, Tiel-Coder Q6 agent test 1 with thinking on and off and tests 2 and 7 with thinking off, test 7 again with context pruning and test 2T with thinking off, the TensorFold 1.2.7 release at 128k and 176k and Nemotron 3.5 Lightning NVFP4 on its RTX 30 fallback, Arete-27B test 7 on the V100, the largest contexts on the V100 alone for Arete Q6_K and Q8_0, Tiel-Coder Q6 and Flash-Next UD-Q2_0 on Strata, Flash-Next UD-Q2_0 with eight and four ~240k sessions at once across both cards, the Unsloth Dynamic V3.1 re-upload of Qwen3.8-27B UD-Q4_K_M against the old file on short benchmarks and agent test 1, webAI's TwIL-8B balanced Q4_K_M and verbose Q8_0 on one 3090, Nex-N2.6 Q2_K across both cards with experts in RAM, the RustingStrata 1.2.1 engine on Flash-Next UD-Q2_K_XL, Arete-27B Q6_K with three 256k slots across both cards, Arete-27B Q8_0 with two 256k slots across both cards, Tiel-Coder Q6 and the abliterated Cyber-Tiel-Coder with four 256k slots across both cards at ~240k, ~120k and ~60k, one-shot pagodas and eight- and four-slot fits); runs from 2026-10-07 on",
- "generated": "2026-11-12 14:05 CST",
+ "generated_from": "private bake-off grades through 2026-11-08: Flash-Next Unsloth v3.1 round 1, the 3090 + V100 serving tuning and the Flash-Next 150 tok/s serving goal (Strata 0.2.12 through round 21 and a Strata 0.2.13 engine check, code and JSON benchmarks with a quality check, a 256k slot and four-stream totals, DFlash2 window and confidence, sampled decoding, llamAmpere with four slots, K/V cache in host RAM, parallel slots that fit, thinking-on sampled decoding, a dual-card Tiel-Coder Q6 serving check, llamAmpere 0.6.3.2 and 0.6.3.8, the daily driver's agent test 1, 2, 2T and 7 runs, UD-Q3_K_XL test 1, 2 and 2T runs, session switching with a host-RAM session cache, two 256k agent slots, the agent serving profile (parked 155k sessions, four 120k streams, two agents at once on tests 1 and 2, a 30-minute idle resume), the UD-Q3_K_XL test 7 run, Arete-27B test 1 on the V100, the V100 peer tier with four agent slots, the UD-Q2_0 speed check, its agent test 1, 2, 2T and 7 runs and its agent-profile check, GSQ IQ3_S agent tests 1, 2 and 7, GSQ IQ3_XXS agent tests 1, 2 and 7, Arete-27B test 2 on the V100, Tiel-Coder Q6 agent test 1 with thinking on and off and tests 2 and 7 with thinking off, test 7 again with context pruning and test 2T with thinking off, the TensorFold 1.2.7 release at 128k and 176k and Nemotron 3.5 Lightning NVFP4 on its RTX 30 fallback, Arete-27B test 7 on the V100, the largest contexts on the V100 alone for Arete Q6_K and Q8_0, Tiel-Coder Q6 and Flash-Next UD-Q2_0 on Strata, Flash-Next UD-Q2_0 with eight and four ~240k sessions at once across both cards, the Unsloth Dynamic V3.1 re-upload of Qwen3.8-27B UD-Q4_K_M against the old file on short benchmarks and agent test 1, webAI's TwIL-8B balanced Q4_K_M and verbose Q8_0 on one 3090, Nex-N2.6 Q2_K across both cards with experts in RAM, the RustingStrata 1.2.1 engine on Flash-Next UD-Q2_K_XL, Arete-27B Q6_K with three 256k slots across both cards, Arete-27B Q8_0 with two 256k slots across both cards, Tiel-Coder Q6 and the abliterated Cyber-Tiel-Coder with four 256k slots across both cards at ~240k, ~120k and ~60k, 16-bit K/V on four sessions for Tiel-Coder Q6 and Q4 and Nemotron 3.5 Lightning Q8_0, ThinkingCap-27B Heretic with four 256k slots, one-shot pagodas and eight- and four-slot fits); runs from 2026-10-07 on",
+ "generated": "2026-11-12 16:11 CST",
  "runs_new": [
   {
    "case": "wa-saluki-27b-iq2",
@@ -4851,6 +4851,45 @@
    "uncensored": true,
    "vision": null,
    "note": "An abliterated (refusal-removed, uncensored) Tiel-Coder-35B-A3B, tested as a candidate agent backend serving four ~250k sessions at once on both cards, with the same settings as Tiel-Coder for a direct pair. Short-benchmark rates: 107.5 tok/s decode on short prompts, first token 0.37-1.30 s, 250k retrieval correct (first token 344 s, about 728 tok/s prefill, 39.6 tok/s decode at that depth). Four ~240k prompts at once: all four correct, 43.4 tok/s in total while all four decode, about 10.9 tok/s per stream; 4.0 GiB free on the 3090 and 2.9 GiB on the V100. The same speed as Tiel-Coder: abliteration costs nothing, and neither reaches 40 tok/s per stream at this depth. No agent tests yet."
+  },
+  "lcpp-nemotron35-lightning-q8-3090-v100": {
+   "id": "lcpp-nemotron35-lightning-q8-3090-v100",
+   "family": "Nemotron 3.5 Lightning",
+   "label": "Nemotron 3.5 Lightning 30B-A3B Q8_0 \u00b7 llama.cpp (Clover 4838ffb), RTX 3090 + V100, four 256k slots",
+   "base": "nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B",
+   "arch": "MoE 30B / 3B active",
+   "engine": "llama.cpp Clover 4838ffb",
+   "quant": "Q8_0",
+   "kind": "stock",
+   "uncensored": false,
+   "vision": null,
+   "note": "Tested as a candidate agent backend serving four ~250k sessions at once on both cards, thinking off, greedy, power-capped. Short-benchmark rates: 131-136 tok/s decode on short prompts, first token 0.23-0.68 s; 250k retrieval correct with a 147 s first token (1,705 tok/s prefill) and 63.5 tok/s decode at that depth, the fastest long-prompt reader we have tried on these cards. Four ~240k prompts at once with 8-bit K/V: all four correct, about 18.8 tok/s per session. With 16-bit (F16) K/V: about 35 tok/s per session at ~240k and about 45 at ~120k, all correct, 7.0 GiB free on the 3090 and 6.5 GiB on the V100. The best four-session result so far; agent tests with four OpenCode sessions at once are running."
+  },
+  "lcpp-tiel35b-udq4kxl-3090-v100": {
+   "id": "lcpp-tiel35b-udq4kxl-3090-v100",
+   "family": "Tiel Coder 35B",
+   "label": "Tiel-Coder-35B-A3B UD-Q4_K_XL \u00b7 llama.cpp (Clover 4838ffb), RTX 3090 + V100, four 256k slots, F16 KV",
+   "base": "Tiel-Coder-35B-A3B",
+   "arch": "MoE 35B / 3B active",
+   "engine": "llama.cpp Clover 4838ffb",
+   "quant": "Unsloth UD-Q4_K_XL",
+   "kind": "stock",
+   "uncensored": false,
+   "vision": null,
+   "note": "The 4-bit file, used because the 6-bit one with four 256k slots of 16-bit (F16) K/V does not fit on both cards. Short-benchmark rates: 113.6 tok/s decode on short prompts, first token 0.38-1.35 s. Four ~240k prompts at once: all four correct, 100.9 tok/s in total while all four decode, about 25 per session; prefill about 710 tok/s, one session at a time, so the fourth waits about 24 minutes for its first token; 5.4 GiB free on the 3090 and 4.7 GiB on the V100. Faster than the 6-bit file with 8-bit K/V (about 11 per session), slower than Nemotron 3.5 Lightning (about 35)."
+  },
+  "lcpp-thinkingcap27b-heretic-q4km-3090-v100": {
+   "id": "lcpp-thinkingcap27b-heretic-q4km-3090-v100",
+   "family": "Qwen3.8 27B",
+   "label": "ThinkingCap-Qwen3.8-27B Heretic Q4_K_M (uncensored) \u00b7 llama.cpp (Clover 4838ffb), RTX 3090 + V100, four 256k slots",
+   "base": "Qwen3.8-27B (ThinkingCap fine-tune, Heretic uncensored)",
+   "arch": "dense 27B",
+   "engine": "llama.cpp Clover 4838ffb",
+   "quant": "Q4_K_M",
+   "kind": "uncensored-tune",
+   "uncensored": true,
+   "vision": null,
+   "note": "Tried as a candidate agent backend with four 256k slots of 8-bit K/V across both cards: it does not fit. Loading runs out of memory on the V100 for a 4.5-5.3 GiB compute buffer even with the layers split 4:3 and smaller batches. A dense 27B across both cards decodes about 25 tok/s on one session, so it was not pursued with fewer slots."
   }
  },
  "ab_new": [
@@ -7173,6 +7212,66 @@
    "prefill": 1157.0,
    "vram": 20530,
    "error": ""
+  },
+  {
+   "model": "lcpp-tiel35b-q6kxl-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "3090 + V100, layers split 3:2, --parallel 4 (four 128k slots, 512k tokens) of 16-bit (F16) K/V, flash attention on, thinking off, greedy, 3090 at 250 W with clocks locked to 210-1650 MHz, V100 at 200 W; short benchmark; decode 111.9 tok/s on short prompts, first token 0.37-1.30 s; four ~120k prompts at once, all four correct; prefill one session at a time: first tokens 125, 254, 385 and 512 s (965 tok/s prefill for the first); 137.7 tok/s total while all four decode, about 34 per session (18.7 with 8-bit K/V on the same prompts); free 7.1 GiB (3090) / 6.2 GiB (V100), fits",
+   "decode": 137.71,
+   "quote": null,
+   "prefill": 965.0,
+   "vram": 17286,
+   "error": ""
+  },
+  {
+   "model": "lcpp-nemotron35-lightning-q8-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "3090 + V100, layers split 3:2, --parallel 4 (four 256k slots, 1M tokens) of 8-bit K/V, flash attention on, thinking off, greedy, 3,000-token replies, 3090 at 250 W with clocks locked to 210-1650 MHz, V100 at 200 W; short benchmark; load 20 s; decode 131.3 tok/s on short prompts, first token 0.23-0.68 s; 250,277-token retrieval correct (separate load, same settings), first token 147 s (1,705 tok/s prefill), 63.5 tok/s decode at that depth; four ~240k prompts at once, all four correct; first tokens 144, 304, 463 and 621 s; 75.4 tok/s total while all four decode, about 18.8 per session; free 7.0 GiB (3090) / 7.4 GiB (V100), fits",
+   "decode": 75.36,
+   "quote": null,
+   "prefill": 1675.0,
+   "vram": 17366,
+   "error": ""
+  },
+  {
+   "model": "lcpp-nemotron35-lightning-q8-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "Same four 256k slots with 16-bit (F16) K/V (3090 at 250 W with clocks locked to 210-1650 MHz, V100 at 200 W); short benchmark; load 20 s; decode 135.5 tok/s on short prompts, first token 0.23-0.67 s; four ~240k prompts at once, all four correct; first tokens 143, 302, 461 and 618 s (1,682 tok/s prefill for the first); 140.9 tok/s total while all four decode, about 35 per session; free 7.0 GiB (3090) / 6.5 GiB (V100), fits",
+   "decode": 140.86,
+   "quote": null,
+   "prefill": 1682.0,
+   "vram": 17432,
+   "error": ""
+  },
+  {
+   "model": "lcpp-nemotron35-lightning-q8-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "Same four 256k slots with 16-bit (F16) K/V (3090 at 250 W with clocks locked to 210-1650 MHz, V100 at 200 W); short benchmark; four ~120k prompts at once, all four correct; first tokens 54, 112, 171 and 228 s (2,251 tok/s prefill for the first); 181.7 tok/s total while all four decode, about 45 per session; free 7.0 GiB (3090) / 6.5 GiB (V100), fits",
+   "decode": 181.74,
+   "quote": null,
+   "prefill": 2251.0,
+   "vram": 17432,
+   "error": ""
+  },
+  {
+   "model": "lcpp-tiel35b-udq4kxl-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "3090 + V100, layers split 3:2, --parallel 4 (four 256k slots, 1M tokens) of 16-bit (F16) K/V, flash attention on, thinking off, greedy, 3,000-token replies, 3090 at 250 W with clocks locked to 210-1650 MHz, V100 at 200 W; short benchmark; load 132 s; decode 113.6 tok/s on short prompts, first token 0.38-1.35 s; four ~240k prompts at once, all four correct; first tokens 338, 701, 1,062 and 1,422 s (711 tok/s prefill for the first); 100.9 tok/s total while all four decode, about 25 per session; free 5.4 GiB (3090) / 4.7 GiB (V100), fits",
+   "decode": 100.89,
+   "quote": null,
+   "prefill": 711.0,
+   "vram": 19092,
+   "error": ""
+  },
+  {
+   "model": "lcpp-thinkingcap27b-heretic-q4km-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "3090 + V100, layers split 4:3, --parallel 4 (four 256k slots, 1M tokens) of 8-bit K/V, batch 1024 / ubatch 512, 3090 at 250 W with clocks locked to 210-1650 MHz, V100 at 200 W",
+   "decode": null,
+   "quote": null,
+   "prefill": null,
+   "vram": 28242,
+   "error": "does not fit: four 256k slots run out of memory on the V100 while loading"
   }
  ],
  "tests": [
@@ -9093,6 +9192,29 @@
    ],
    "quality": "Every marker correct: the 250k retrievals and all four streams in every run.",
    "caveat": "One run each, greedy, thinking off, power-capped until a bigger power supply is in. Per-session rates are totals while all streams decode, divided by four."
+  },
+  {
+   "date": "2026-11-12",
+   "title": "Four ~250k agent sessions at once: 16-bit K/V nearly doubles decode, and Nemotron 3.5 Lightning reaches about 35 tok/s per session",
+   "kind": "tuning",
+   "summary": "Short-benchmark rates, with the 3090 capped at 250 W and the V100 at 200 W, four sessions on both cards, thinking off. The 8-bit K/V cache was the bottleneck at depth: Tiel-Coder with four ~120k prompts goes from about 19 tok/s per session with 8-bit K/V to about 34 with 16-bit (F16), and F16 also needs less memory than 8-bit for the same slots on this engine. Nemotron 3.5 Lightning 30B-A3B Q8_0 with F16 K/V gives about 35 tok/s per session with four ~240k prompts and about 45 with four ~120k, every answer correct, with 7 GiB free on the 3090 and 6.5 GiB on the V100. It also reads long prompts more than twice as fast as Tiel-Coder (about 1,680 against 710 tok/s), so the fourth 240k session gets its first token after about 10 minutes instead of 24. Tiel-Coder UD-Q4_K_XL with F16 K/V reaches about 25 per session at ~240k. ThinkingCap-27B Heretic does not fit four 256k slots. None reaches 40 tok/s per session at ~240k; Nemotron is the pick for the next step, four OpenCode agents at once.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Tiel-Coder Q6 four ~120k sessions, per-session decode, 8-bit to 16-bit K/V",
+     "before": 18.7,
+     "after": 34.4,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Four ~240k sessions, per-session decode, Tiel-Coder Q6 8-bit K/V to Nemotron Lightning F16 K/V",
+     "before": 10.7,
+     "after": 35.2,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Every marker correct in all four streams of every run, and Nemotron's 250k retrieval correct.",
+   "caveat": "One run each, greedy, thinking off, power-capped until a bigger power supply is in. Per-session rates are totals while all streams decode, divided by four. Agent quality with four sessions at once is not measured yet."
   }
  ],
  "amend": [
