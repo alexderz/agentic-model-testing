@@ -1,7 +1,7 @@
 {
  "schema": "history/1",
- "generated_from": "private bake-off grades through 2026-11-08: Flash-Next Unsloth v3.1 round 1, the 3090 + V100 serving tuning and the Flash-Next 150 tok/s serving goal (Strata 0.2.12 through round 21 and a Strata 0.2.13 engine check, code and JSON benchmarks with a quality check, a 256k slot and four-stream totals, DFlash2 window and confidence, sampled decoding, llamAmpere with four slots, K/V cache in host RAM, parallel slots that fit, thinking-on sampled decoding, a dual-card Tiel-Coder Q6 serving check, llamAmpere 0.6.3.2 and 0.6.3.8, the daily driver's agent test 1, 2, 2T and 7 runs, UD-Q3_K_XL test 1, 2 and 2T runs, session switching with a host-RAM session cache, two 256k agent slots, the agent serving profile (parked 155k sessions, four 120k streams, two agents at once on tests 1 and 2, a 30-minute idle resume), the UD-Q3_K_XL test 7 run, Arete-27B test 1 on the V100, the V100 peer tier with four agent slots, the UD-Q2_0 speed check, its agent test 1, 2, 2T and 7 runs and its agent-profile check, GSQ IQ3_S agent tests 1, 2 and 7, GSQ IQ3_XXS agent tests 1, 2 and 7, Arete-27B test 2 on the V100, Tiel-Coder Q6 agent test 1 with thinking on and off and tests 2 and 7 with thinking off, test 7 again with context pruning and test 2T with thinking off, the TensorFold 1.2.7 release at 128k and 176k and Nemotron 3.5 Lightning NVFP4 on its RTX 30 fallback, Arete-27B test 7 on the V100, the largest contexts on the V100 alone for Arete Q6_K and Q8_0, Tiel-Coder Q6 and Flash-Next UD-Q2_0 on Strata, one-shot pagodas and eight- and four-slot fits); runs from 2026-10-07 on",
- "generated": "2026-11-12 05:32 CST",
+ "generated_from": "private bake-off grades through 2026-11-08: Flash-Next Unsloth v3.1 round 1, the 3090 + V100 serving tuning and the Flash-Next 150 tok/s serving goal (Strata 0.2.12 through round 21 and a Strata 0.2.13 engine check, code and JSON benchmarks with a quality check, a 256k slot and four-stream totals, DFlash2 window and confidence, sampled decoding, llamAmpere with four slots, K/V cache in host RAM, parallel slots that fit, thinking-on sampled decoding, a dual-card Tiel-Coder Q6 serving check, llamAmpere 0.6.3.2 and 0.6.3.8, the daily driver's agent test 1, 2, 2T and 7 runs, UD-Q3_K_XL test 1, 2 and 2T runs, session switching with a host-RAM session cache, two 256k agent slots, the agent serving profile (parked 155k sessions, four 120k streams, two agents at once on tests 1 and 2, a 30-minute idle resume), the UD-Q3_K_XL test 7 run, Arete-27B test 1 on the V100, the V100 peer tier with four agent slots, the UD-Q2_0 speed check, its agent test 1, 2, 2T and 7 runs and its agent-profile check, GSQ IQ3_S agent tests 1, 2 and 7, GSQ IQ3_XXS agent tests 1, 2 and 7, Arete-27B test 2 on the V100, Tiel-Coder Q6 agent test 1 with thinking on and off and tests 2 and 7 with thinking off, test 7 again with context pruning and test 2T with thinking off, the TensorFold 1.2.7 release at 128k and 176k and Nemotron 3.5 Lightning NVFP4 on its RTX 30 fallback, Arete-27B test 7 on the V100, the largest contexts on the V100 alone for Arete Q6_K and Q8_0, Tiel-Coder Q6 and Flash-Next UD-Q2_0 on Strata, Flash-Next UD-Q2_0 with eight and four ~240k sessions at once across both cards, the Unsloth Dynamic V3.1 re-upload of Qwen3.8-27B UD-Q4_K_M against the old file, one-shot pagodas and eight- and four-slot fits); runs from 2026-10-07 on",
+ "generated": "2026-11-12 07:39 CST",
  "runs_new": [
   {
    "case": "wa-saluki-27b-iq2",
@@ -4645,7 +4645,7 @@
    "quant": "Unsloth UD-Q2_0 v3.1 (65.7 GiB)",
    "kind": "stock",
    "uncensored": false,
-   "note": "The smaller 2-bit quant on the daily-driver setup (MTP draft head, one 3090 at 300 W), tried because smaller weights leave more expert-cache room in VRAM. Short-benchmark decode ties UD-Q2_K_XL (122.4 against 120.7 tok/s). Agent runs (2026-11-10, Qwen thinking sampling, OpenCode): test 1 passes with 471 of its own tests at 136.6 tok/s; test 2T passes with 9 tools and 85 tests at 137.0 tok/s and uses only the real endpoints; the labyrinth (test 7) scores 9 of 10 at 135.3 tok/s. First token median 0.25-0.39 s. Test 2 passes in full with 14 tools and 136 of its own tests at 137.8 tok/s (first token median 0.30 s), so it passes all four agent tests. On the agent serving profile (two 256k slots, two ~240k prompts at once, short benchmark) it decodes 104.3 tok/s total against 90.2 for UD-Q2_K_XL, with 3.1 GiB free. On the V100 as the only card (Strata 0.2.13 built for it, experts streamed from RAM), two 256k slots with all K/V on the card fit with 3.1 GiB free and hold two ~240k prompts at once (both needles correct), but the engine prefills one session at a time and turns drafting off for a session decoding beside a prefill: 31.7 tok/s for one drafted stream, 49.9 tok/s total.",
+   "note": "The smaller 2-bit quant on the daily-driver setup (MTP draft head, one 3090 at 300 W), tried because smaller weights leave more expert-cache room in VRAM. Short-benchmark decode ties UD-Q2_K_XL (122.4 against 120.7 tok/s). Agent runs (2026-11-10, Qwen thinking sampling, OpenCode): test 1 passes with 471 of its own tests at 136.6 tok/s; test 2T passes with 9 tools and 85 tests at 137.0 tok/s and uses only the real endpoints; the labyrinth (test 7) scores 9 of 10 at 135.3 tok/s. First token median 0.25-0.39 s. Test 2 passes in full with 14 tools and 136 of its own tests at 137.8 tok/s (first token median 0.30 s), so it passes all four agent tests. On the agent serving profile (two 256k slots, two ~240k prompts at once, short benchmark) it decodes 104.3 tok/s total against 90.2 for UD-Q2_K_XL, with 3.1 GiB free. On the V100 as the only card (Strata 0.2.13 built for it, experts streamed from RAM), two 256k slots with all K/V on the card fit with 3.1 GiB free and hold two ~240k prompts at once (both needles correct), but the engine prefills one session at a time and turns drafting off for a session decoding beside a prefill: 31.7 tok/s for one drafted stream, 49.9 tok/s total. Across both cards (Strata 0.2.13, short benchmark, thinking on): eight 256k slots with 20k K/V cells per layer on the cards and the rest in pinned RAM hold eight ~240k prompts at once, all needles correct, 89.4 tok/s total and 9-15 tok/s per session, 2.5 GiB free on the 3090; four 256k slots with all K/V on the cards (layers split 24/24) hold four, all correct, 111.4 tok/s total, 3.2 GiB free. Prefill still runs one session at a time, so the eighth session waits about 20 minutes for its first token.",
    "vision": null
   },
   "strata0213-fnb-gsq-iq3s-128k": {
@@ -4712,6 +4712,32 @@
    "uncensored": false,
    "note": "The 8-bit quant of the Nous Research fine-tune, on the V100 alone. Serving tuning only (short-benchmark rates): 23.1 tok/s decode against 26.2 for Q6_K; 128k is the largest context that fits (a 120k retrieval correct, 0.9 GiB free). No agent tests yet.",
    "vision": null
+  },
+  "lcpp-qwen38-27b-udq4km-3090": {
+   "family": "Qwen3.8 27B",
+   "base": "Qwen/Qwen3.8-27B",
+   "arch": "dense 27B",
+   "engine": "llama.cpp Clover 4838ffb",
+   "kind": "stock",
+   "uncensored": false,
+   "vision": null,
+   "id": "lcpp-qwen38-27b-udq4km-3090",
+   "label": "Qwen3.8-27B UD-Q4_K_M (Unsloth, September 2026 file) \u00b7 llama.cpp (Clover 4838ffb), RTX 3090, 96k, 8-bit KV",
+   "quant": "Unsloth UD-Q4_K_M (pre-V3.1)",
+   "note": "The control for the Unsloth Dynamic V3.1 re-upload: the older file on the 3090 alone at 250 W. Short-benchmark rates: 32.1 tok/s decode, short-prompt first token 0.23-0.61 s, 30k and 90k retrievals correct, quality check 3 of 3, 5.4 GiB free. Agent test 1 pending."
+  },
+  "lcpp-qwen38-27b-v31-udq4km-3090": {
+   "family": "Qwen3.8 27B",
+   "base": "Qwen/Qwen3.8-27B",
+   "arch": "dense 27B",
+   "engine": "llama.cpp Clover 4838ffb",
+   "kind": "stock",
+   "uncensored": false,
+   "vision": null,
+   "id": "lcpp-qwen38-27b-v31-udq4km-3090",
+   "label": "Qwen3.8-27B UD-Q4_K_M (Unsloth Dynamic V3.1) \u00b7 llama.cpp (Clover 4838ffb), RTX 3090, 96k, 8-bit KV",
+   "quant": "Unsloth UD-Q4_K_M, Dynamic V3.1 re-upload",
+   "note": "Unsloth re-uploaded its Qwen3.8-27B quants as Dynamic V3.1 and claims 5-10% better agentic scores. Same flags as the old file, only the file changes. Short-benchmark rates: 32.3 tok/s decode (old file 32.1), short-prompt first token 0.21-0.61 s, 30k and 90k retrievals correct, quality check 3 of 3, 5.3 GiB free (94 MiB less than the old file). On short benchmarks it is the same; the claimed agentic gain needs the paired agent runs, now under way."
   }
  },
  "ab_new": [
@@ -6884,6 +6910,46 @@
    "prefill": 788.0,
    "vram": 29614,
    "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq20-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 at 300 W plus the V100 peer tier, eight 256k slots (batch 8 with the MTP head), 20,480 K/V cells per layer on the cards and the rest in pinned host RAM, Qwen thinking sampling; eight ~240,190-token prompts at once (about 1.92M tokens live), all eight needles correct; prefill runs one session at a time at about 1,520 tok/s each: first tokens 108, 264, 421, 579, 737, 896, 1,054 and 1,212 s; per-session decode 9.0-14.9 tok/s (drafting mostly off beside a prefill), 89.4 tok/s total, 49.3 tok/s over the 31-minute wall; short prompt first token 0.46 s; free 2.5 GiB (3090) / 3.8 GiB (V100), fits; short benchmark",
+   "decode": 89.4,
+   "quote": null,
+   "prefill": 1520.0,
+   "vram": 22104,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq20-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 at 300 W plus the V100, layers split 24/24, four 256k slots with all int8 K/V in VRAM, MTP head, Qwen thinking sampling; four ~240,190-token prompts at once (about 960k tokens live), all four needles correct; prefill one session at a time at about 980 tok/s each: first tokens 121, 366, 610 and 855 s; per-session decode 11.6-35.5 tok/s, 111.4 tok/s total, 35.9 tok/s over the 19-minute wall; short prompt first token 0.69 s; free 3.3 GiB (3090) / 3.2 GiB (V100), fits; short benchmark",
+   "decode": 111.4,
+   "quote": null,
+   "prefill": 983.0,
+   "vram": 21278,
+   "error": ""
+  },
+  {
+   "model": "lcpp-qwen38-27b-udq4km-3090",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "3090 alone at 250 W, September 2026 Unsloth UD-Q4_K_M, 96k context, 8-bit K/V, thinking off, greedy; short benchmark; decode 32.7 / 32.3 / 31.2 tok/s; short prompts first token 0.23-0.61 s; 30,085-token retrieval correct, first token 27.3 s (1,113 tok/s prefill); 90,065-token retrieval correct, first token 107.5 s (844 tok/s prefill); quality check 3 of 3; free 5.4 GiB (3090), fits",
+   "decode": 32.1,
+   "quote": null,
+   "prefill": 844.0,
+   "vram": 19048,
+   "error": ""
+  },
+  {
+   "model": "lcpp-qwen38-27b-v31-udq4km-3090",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "3090 alone at 250 W, Unsloth Dynamic V3.1 UD-Q4_K_M, same flags as the old file, 96k context, 8-bit K/V, thinking off, greedy; short benchmark; decode 32.8 / 32.8 / 31.4 tok/s; short prompts first token 0.21-0.61 s; 30,085-token retrieval correct, first token 27.0 s (1,126 tok/s prefill); 90,065-token retrieval correct, first token 106.6 s (851 tok/s prefill); quality check 3 of 3; free 5.3 GiB (3090), fits",
+   "decode": 32.3,
+   "quote": null,
+   "prefill": 851.0,
+   "vram": 19142,
+   "error": ""
   }
  ],
  "tests": [
@@ -8735,6 +8801,29 @@
    ],
    "quality": "Labyrinth A 2, B 2, C 2, D 1, E 1; every retrieval needle correct.",
    "caveat": "One run each. The 256k Arete run retrieved correctly but missed our 512 MiB V100 floor by 72 MiB, so 240k is the published maximum."
+  },
+  {
+   "date": "2026-11-12",
+   "title": "Flash-Next UD-Q2_0 holds eight ~240k sessions at once across our two cards; Unsloth's V3.1 Qwen3.8-27B file is the same speed as the old one",
+   "kind": "tuning",
+   "summary": "Short-benchmark rates. Flash-Next UD-Q2_0 on Strata 0.2.13 across the 3090 and the V100, thinking on: with 20k K/V cells per layer on the cards and the rest in pinned host RAM, eight 256k slots took eight ~240k prompts at once (about 1.9M tokens live), all needles correct, 89.4 tok/s total with 2.5 GiB free on the 3090. With all K/V on the cards, four slots gave 111.4 tok/s total and 3.2 GiB free. The cost is the wait: the engine prefills one session at a time, so the eighth session got its first token after about 20 minutes, and each session decodes at 9-35 tok/s while it shares the cards. Separately, Unsloth's Dynamic V3.1 re-upload of Qwen3.8-27B UD-Q4_K_M runs 32.3 tok/s against 32.1 for the old file on one 3090, with the same retrievals and quality check; whether its claimed agentic gain is real waits on the paired agent runs.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Flash-Next UD-Q2_0 ~240k sessions held at once, both cards",
+     "before": 2,
+     "after": 8,
+     "unit": "sessions"
+    },
+    {
+     "label": "Total decode, four ~240k prompts at once, all K/V on the cards",
+     "before": 104.3,
+     "after": 111.4,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Every needle correct (8 of 8 and 4 of 4); both Qwen3.8-27B files 3 of 3 on the quality check.",
+   "caveat": "One run each. The 104.3 tok/s baseline is two ~240k prompts on the 3090 alone. Per-session first tokens at 240k range from about 2 to 20 minutes because prefill is serialised."
   }
  ],
  "amend": [

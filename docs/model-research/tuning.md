@@ -644,3 +644,18 @@ UD-Q2_0 on the agent serving profile shape (2026-11-10, two 256k slots, 20,480 r
 K/V cells, two ~240k prompts at once, Qwen thinking sampling, short-benchmark rates): first
 tokens 93.7 / 230.5 s, total decode **104.3 tok/s** (62.1 / 32.2) against 90.2 for
 UD-Q2_K_XL, 3.1 GiB free. Both streams right. The agent-run edge (about 13%) holds here too.
+
+UD-Q2_0 with many long sessions across both cards (2026-11-12, Strata 0.2.13, MTP draft
+head, int8 K/V, Qwen thinking sampling, ~240k prompts all at once, short-benchmark rates):
+
+| Setup | Sessions | First tokens | Total decode, tok/s (per session) | Free VRAM |
+| --- | --- | --- | --- | --- |
+| 3090 + V100 peer tier, 20,480 K/V cells on the cards, rest in pinned host RAM | 8 | 108 s to 1,212 s, one after another | 89.4 (9.0-14.9) | 2.5 / 3.8 GiB |
+| Layers split 24/24, all K/V in VRAM | 4 | 121 / 366 / 610 / 855 s | **111.4** (11.6-35.5) | 3.3 / 3.2 GiB |
+
+- Every needle was right: 8 of 8 and 4 of 4, about 1.9M and 960k tokens live.
+- Prefill runs one session at a time (about 1,520 tok/s each with the 3090 primary, about
+  980 with the split), and drafting is mostly off for a session decoding beside a prefill.
+  More sessions cost waiting time, not fit.
+- Holding all K/V in VRAM gives more total decode at four sessions; the host-RAM tier holds
+  twice as many sessions with similar free VRAM. One sample each.
