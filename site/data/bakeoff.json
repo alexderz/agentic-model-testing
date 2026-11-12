@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
  "generated": "2026-11-12 09:47 CST",
- "built": "2026-11-12 09:47 CST",
+ "built": "2026-11-12 09:50 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -12505,7 +12505,7 @@
    "tests_pass": 58,
    "tests_fail": 0,
    "subcmds": 7,
-   "tps": 17.6,
+   "tps": 23.9,
    "minutes": 57,
    "compactions": null,
    "ctx": 98304,
@@ -12529,7 +12529,7 @@
    "tests_pass": 94,
    "tests_fail": 0,
    "subcmds": 8,
-   "tps": 21.6,
+   "tps": 23.5,
    "minutes": 68,
    "compactions": null,
    "ctx": 98304,
