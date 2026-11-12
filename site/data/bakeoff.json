@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-11-11 21:11 CST",
- "built": "2026-11-11 21:11 CST",
+ "generated": "2026-11-11 23:17 CST",
+ "built": "2026-11-11 23:17 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -138,6 +138,12 @@
    ],
    "quality": "Tiel-Coder thinking off, test 7: A 0, B 0, C 0 (no maze, no generator), D 0 and E 0 (nothing to walk, no notes).",
    "caveat": "One run. OpenCode, not T3 Code. Stopped by hand at 28.6 hours; the brief allows three hours, but our agent runs have no time cap."
+  },
+  {
+   "date": "2026-11-11",
+   "title": "Context pruning ends Tiel-Coder's compaction loop, but the labyrinth still scores 0",
+   "kind": "model",
+   "summary": "Agent-run rates, OpenCode. We reran Tiel-Coder-35B Q6 (3090 + V100, thinking off) on test 7 with OpenCode's dynamic context pruning plugin. The loop that sank the first run is gone: the model pruned its own history 13 times, OpenCode never compacted, and the prompt peaked near 107k tokens. It ran at 84.7 tok/s (first token median 0.51 s) over 1,062 requests. After 2.5 hours it wrote a file-write tool call as plain text, OpenCode read that as the final reply, and the run ended with an unfinished generator and no maze, so it scored 0 of 10 again."
   },
   {
    "date": "2026-11-10",
@@ -21356,6 +21362,26 @@
     "note": "Thinking off. Stopped by hand after 28.6 hours with nothing handed in: no generator, maze or notes, so 0 of 10 hidden seeds. The conversation filled to about 107k tokens about 80 times, OpenCode compacted it to about 7k each time, and the model restarted its maze design, leaving an unfinished generator and 66 probe scripts. Agent-run decode 82.0 tok/s, first token median 0.44 s; tok_s here is output tokens over wall time. One round.",
     "frames": [],
     "live": null
+   },
+   {
+    "case": "mm-0ia2-dual-tiel35b-q6kxl-ctx128k-test7-agent-nothink-qwensampling-dcp",
+    "entry": "lcpp-tiel35b-q6kxl-3090-v100",
+    "test": 7,
+    "finish": "agent ended its turn",
+    "tokens": 607556.0,
+    "wall_s": 9105.5,
+    "tok_s": 66.72,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "Thinking off, rerun of the 28.6-hour run with OpenCode's dynamic context pruning plugin. Pruning worked: the model pruned its own history 13 times and OpenCode never had to compact. After 2.5 hours, though, it wrote its next file-write call as plain text instead of a real tool call, so OpenCode took that as the final reply and the run ended with nothing handed in: no generator, maze or notes, 0 of 10 hidden seeds. Agent-run decode 84.7 tok/s, first token median 0.51 s; tok_s here is output tokens over wall time. One round.",
+    "frames": [],
+    "live": null
    }
   ]
  },
@@ -21363,7 +21389,7 @@
   "models": 128,
   "runs": 353,
   "test3": 86,
-  "oneshots": 164,
+  "oneshots": 165,
   "frames": 310,
   "pass": 262,
   "live": 100

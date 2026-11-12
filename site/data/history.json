@@ -1,7 +1,7 @@
 {
  "schema": "history/1",
- "generated_from": "private bake-off grades through 2026-11-08: Flash-Next Unsloth v3.1 round 1, the 3090 + V100 serving tuning and the Flash-Next 150 tok/s serving goal (Strata 0.2.12 through round 21 and a Strata 0.2.13 engine check, code and JSON benchmarks with a quality check, a 256k slot and four-stream totals, DFlash2 window and confidence, sampled decoding, llamAmpere with four slots, K/V cache in host RAM, parallel slots that fit, thinking-on sampled decoding, a dual-card Tiel-Coder Q6 serving check, llamAmpere 0.6.3.2 and 0.6.3.8, the daily driver's agent test 1, 2, 2T and 7 runs, UD-Q3_K_XL test 1, 2 and 2T runs, session switching with a host-RAM session cache, two 256k agent slots, the agent serving profile (parked 155k sessions, four 120k streams, two agents at once on tests 1 and 2, a 30-minute idle resume), the UD-Q3_K_XL test 7 run, Arete-27B test 1 on the V100, the V100 peer tier with four agent slots, the UD-Q2_0 speed check, its agent test 1, 2, 2T and 7 runs and its agent-profile check, GSQ IQ3_S agent tests 1, 2 and 7, GSQ IQ3_XXS agent tests 1, 2 and 7, Arete-27B test 2 on the V100, Tiel-Coder Q6 agent test 1 with thinking on and off and tests 2 and 7 with thinking off, one-shot pagodas and eight- and four-slot fits); runs from 2026-10-07 on",
- "generated": "2026-11-11 21:11 CST",
+ "generated_from": "private bake-off grades through 2026-11-08: Flash-Next Unsloth v3.1 round 1, the 3090 + V100 serving tuning and the Flash-Next 150 tok/s serving goal (Strata 0.2.12 through round 21 and a Strata 0.2.13 engine check, code and JSON benchmarks with a quality check, a 256k slot and four-stream totals, DFlash2 window and confidence, sampled decoding, llamAmpere with four slots, K/V cache in host RAM, parallel slots that fit, thinking-on sampled decoding, a dual-card Tiel-Coder Q6 serving check, llamAmpere 0.6.3.2 and 0.6.3.8, the daily driver's agent test 1, 2, 2T and 7 runs, UD-Q3_K_XL test 1, 2 and 2T runs, session switching with a host-RAM session cache, two 256k agent slots, the agent serving profile (parked 155k sessions, four 120k streams, two agents at once on tests 1 and 2, a 30-minute idle resume), the UD-Q3_K_XL test 7 run, Arete-27B test 1 on the V100, the V100 peer tier with four agent slots, the UD-Q2_0 speed check, its agent test 1, 2, 2T and 7 runs and its agent-profile check, GSQ IQ3_S agent tests 1, 2 and 7, GSQ IQ3_XXS agent tests 1, 2 and 7, Arete-27B test 2 on the V100, Tiel-Coder Q6 agent test 1 with thinking on and off and tests 2 and 7 with thinking off, test 7 again with context pruning, one-shot pagodas and eight- and four-slot fits); runs from 2026-10-07 on",
+ "generated": "2026-11-11 23:17 CST",
  "runs_new": [
   {
    "case": "wa-saluki-27b-iq2",
@@ -8539,6 +8539,12 @@
    ],
    "quality": "Tiel-Coder thinking off, test 7: A 0, B 0, C 0 (no maze, no generator), D 0 and E 0 (nothing to walk, no notes).",
    "caveat": "One run. OpenCode, not T3 Code. Stopped by hand at 28.6 hours; the brief allows three hours, but our agent runs have no time cap."
+  },
+  {
+   "date": "2026-11-11",
+   "title": "Context pruning ends Tiel-Coder's compaction loop, but the labyrinth still scores 0",
+   "kind": "model",
+   "summary": "Agent-run rates, OpenCode. We reran Tiel-Coder-35B Q6 (3090 + V100, thinking off) on test 7 with OpenCode's dynamic context pruning plugin. The loop that sank the first run is gone: the model pruned its own history 13 times, OpenCode never compacted, and the prompt peaked near 107k tokens. It ran at 84.7 tok/s (first token median 0.51 s) over 1,062 requests. After 2.5 hours it wrote a file-write tool call as plain text, OpenCode read that as the final reply, and the run ended with an unfinished generator and no maze, so it scored 0 of 10 again."
   }
  ],
  "amend": [
