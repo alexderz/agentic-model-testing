@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-11-12 18:23 CST",
- "built": "2026-11-12 18:24 CST",
+ "generated": "2026-11-12 20:32 CST",
+ "built": "2026-11-12 20:32 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -4484,6 +4484,19 @@
    "kind": "stock",
    "uncensored": false,
    "note": "Huawei CSL's MACaQ-R rewrites the 4-, 5- and 6-bit weight codes of an existing GGUF with calibration and loads in stock llama.cpp; the vendor reports a smaller divergence from the full-precision model than the Unsloth file it starts from. Same settings as the control: 109.6 tok/s decode (control 109.9), first token 0.20-0.41 s, 30k and 90k retrieval correct (90k first token 80 s), quality check 2 of 3 with the same miss. No difference shown on our short checks; a finer quality comparison is the next step.",
+   "vision": null
+  },
+  "lcpp-ernie55-flash-base-abl-mix122g-3090-v100": {
+   "id": "lcpp-ernie55-flash-base-abl-mix122g-3090-v100",
+   "family": "ERNIE 5.5",
+   "label": "ERNIE 5.5 Flash Base abliterated Mix-122G · llama.cpp (PR #31925), RTX 3090 + V100 + system RAM, 96k",
+   "base": "baidu ERNIE 5.5 Flash Base (orcarouter abliterated GGUF)",
+   "arch": "MoE about 280B / 14B active",
+   "engine": "llama.cpp PR #31925 7d9d5c3",
+   "quant": "Mix-122G (122 GB)",
+   "kind": "abliterated",
+   "uncensored": true,
+   "note": "A 122 GB base checkpoint run with its experts in system RAM on both cards. Short-benchmark rates: 14.5-14.8 tok/s decode, first token 5-11 s on short prompts, about 66 tok/s prefill at 30k. It fails the format check by repeating the chat prompt as a new user turn, gets the 30k retrieval wrong, and runs every reply on into an invented next turn, as an untuned base model does. Not usable for agent work on these cards.",
    "vision": null
   }
  },
@@ -16632,6 +16645,36 @@
    "prefill": 1136.5,
    "vram": 10062,
    "error": ""
+  },
+  {
+   "model": "lcpp-nemotron35-lightning-q8-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "Same four 256k slots with 16-bit (F16) K/V, layers split evenly 1:1 instead of 3:2 (3090 at 250 W with clocks locked to 210-1650 MHz, V100 at 200 W); short benchmark; load 213 s (cold cache); decode 138.9 tok/s on short prompts, first token 0.22-0.63 s; four ~240k prompts at once, all four correct; first tokens 117, 259, 400 and 541 s (2,070 tok/s prefill for the first, against 1,680 on 3:2); 141.7 tok/s total while all four decode, about 35 per session, the same as 3:2; free 3.0 GiB (3090) / 10.4 GiB (V100), fits. The split only changes prefill; 3:2 stays the default for more 3090 headroom",
+   "decode": 141.66,
+   "quote": null,
+   "prefill": 2070.0,
+   "vram": 21460,
+   "error": ""
+  },
+  {
+   "model": "lcpp-nemotron35-lightning-q8-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "Same four 256k slots with 16-bit (F16) K/V, split 3:2, plus the MTP draft head (3 draft tokens, F16 draft K/V; 3090 at 250 W with clocks locked to 210-1650 MHz, V100 at 200 W); short benchmark; load 223 s (cold cache); decode 152.7-160.7 tok/s on short prompts (+16% over no drafter, 54% of drafts accepted), first token 0.28-0.73 s; four ~240k prompts at once, all four correct; first tokens 187, 371, 555 and 736 s (slower prefill than without the drafter: 143-618 s); 128.1 tok/s total while all four decode, about 32 per session (without the drafter about 35; 45% of drafts accepted at that depth); free 2.0 GiB (3090) / 6.1 GiB (V100), fits. The drafter helps one session but costs about 9% with four sessions at ~240k",
+   "decode": 128.07,
+   "quote": null,
+   "prefill": 1283.0,
+   "vram": 22564,
+   "error": ""
+  },
+  {
+   "model": "lcpp-ernie55-flash-base-abl-mix122g-3090-v100",
+   "engine": "llama.cpp PR #31925 7d9d5c3",
+   "variant": "3090 + V100 with experts in system RAM (fit with 2 GiB margin per card), 96k of 16-bit K/V, flash attention on, greedy, 3090 at 250 W with clocks locked to 210-1650 MHz, V100 at 200 W; short benchmark (mixed set); load 739 s; decode 14.5-14.8 tok/s, first token 5.4-10.8 s on short prompts; the format check failed (it repeats the chat prompt as a new user turn); 30k retrieval wrong, first token 456 s (about 66 tok/s prefill), so 90k was not run; quality check 2 of 3 but every reply runs on into an invented next user turn; free 2.8 GiB (3090) / 2.8 GiB (V100), fits. A base checkpoint without chat tuning: no use for agent work",
+   "decode": 14.67,
+   "quote": null,
+   "prefill": 66.0,
+   "vram": 21672,
+   "error": "base model: fails the format check and 30k retrieval"
   }
  ],
  "engines": [
@@ -22310,7 +22353,7 @@
   ]
  },
  "counts": {
-  "models": 144,
+  "models": 145,
   "runs": 359,
   "test3": 86,
   "oneshots": 167,
