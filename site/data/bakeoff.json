@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-11-12 16:11 CST",
- "built": "2026-11-12 16:11 CST",
+ "generated": "2026-11-12 18:23 CST",
+ "built": "2026-11-12 18:24 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -253,6 +253,29 @@
    ],
    "quality": "Every marker correct in all four streams of every run, and Nemotron's 250k retrieval correct.",
    "caveat": "One run each, greedy, thinking off, power-capped until a bigger power supply is in. Per-session rates are totals while all streams decode, divided by four. Agent quality with four sessions at once is not measured yet."
+  },
+  {
+   "date": "2026-11-12",
+   "title": "Four OpenCode agents at once on one Nemotron 3.5 Lightning load: the serving holds, the code mostly does not",
+   "kind": "tuning",
+   "summary": "Nemotron 3.5 Lightning 30B-A3B Q8_0 with 16-bit K/V and four 256k slots across both cards (power-capped) served four OpenCode agents at once for two hours: tests 1, 2, 7 and test 1 again, thinking off, temperature 0.6. Every session ran without a harness error. Agent-run rates while the others ran: 35.5, 38.1 and 41.8 tok/s per session, 61.1 for the labyrinth once it ran alone; server first token median 0.25 s over 890 requests; 7.1 GiB free on the 3090 and 6.6 GiB on the V100 throughout. One of four results is clean: the first test 1 passes every live check with 26 of its own tests passing in 13.5 minutes. The second test 1 never handled the login, test 2 builds and passes its own 7 tests but its server answers only after its input closes, and the labyrinth scored 0 on the automatic checks. In the same round Flint Preview 40B-A2.5B fit four 256k slots but lost recall at 250k (a repetition loop) and ran about 7 tok/s per session at ~240k, so Nemotron stays the pick of five candidates.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Agent-run decode per session, four OpenCode agents at once (lowest of the three that overlapped)",
+     "before": null,
+     "after": 35.5,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Server first token, median over 890 requests",
+     "before": null,
+     "after": 0.25,
+     "unit": "s"
+    }
+   ],
+   "quality": "1 of 4 agent results clean (test 1); test 7 graded on the automatic checks only, walk and notes not judged yet.",
+   "caveat": "One run, one load, power-capped until a bigger power supply is in. Nemotron's single-session agent results on these tests are not measured, so this does not show whether running four at once costs quality."
   },
   {
    "date": "2026-11-11",
@@ -4395,7 +4418,7 @@
    "quant": "Q8_0",
    "kind": "stock",
    "uncensored": false,
-   "note": "Tested as a candidate agent backend serving four ~250k sessions at once on both cards, thinking off, greedy, power-capped. Short-benchmark rates: 131-136 tok/s decode on short prompts, first token 0.23-0.68 s; 250k retrieval correct with a 147 s first token (1,705 tok/s prefill) and 63.5 tok/s decode at that depth, the fastest long-prompt reader we have tried on these cards. Four ~240k prompts at once with 8-bit K/V: all four correct, about 18.8 tok/s per session. With 16-bit (F16) K/V: about 35 tok/s per session at ~240k and about 45 at ~120k, all correct, 7.0 GiB free on the 3090 and 6.5 GiB on the V100. The best four-session result so far; agent tests with four OpenCode sessions at once are running.",
+   "note": "Tested as a candidate agent backend serving four ~250k sessions at once on both cards, thinking off, power-capped. Short-benchmark rates: 131-136 tok/s decode on short prompts, first token 0.23-0.68 s; 250k retrieval correct with a 147 s first token (1,705 tok/s prefill) and 63.5 tok/s decode at that depth, the fastest long-prompt reader we have tried on these cards. Four ~240k prompts at once with 8-bit K/V: all four correct, about 18.8 tok/s per session. With 16-bit (F16) K/V: about 35 tok/s per session at ~240k and about 45 at ~120k, all correct, 7.0 GiB free on the 3090 and 6.5 GiB on the V100. Four OpenCode agents at once on that load (tests 1, 2, 7 and 1 again, temperature 0.6): every session ran without a harness error at 35-42 tok/s each while the others ran, server first token median 0.25 s, 7 GiB still free per card. Quality was the weak side: one of four clean (the first test 1); the second test 1 never handled the login, test 2 builds but its server only answers after its input closes, and the labyrinth scored 0 on the automatic checks.",
    "vision": null
   },
   "lcpp-tiel35b-udq4kxl-3090-v100": {
@@ -4422,6 +4445,45 @@
    "kind": "uncensored-tune",
    "uncensored": true,
    "note": "Tried as a candidate agent backend with four 256k slots of 8-bit K/V across both cards: it does not fit. Loading runs out of memory on the V100 for a 4.5-5.3 GiB compute buffer even with the layers split 4:3 and smaller batches. A dense 27B across both cards decodes about 25 tok/s on one session, so it was not pursued with fewer slots.",
+   "vision": null
+  },
+  "lcpp-flint40b-udq4kxl-3090-v100": {
+   "id": "lcpp-flint40b-udq4kxl-3090-v100",
+   "family": "Flint",
+   "label": "Flint Preview 40B-A2.5B UD-Q4_K_XL · llama.cpp (Clover 4838ffb), RTX 3090 + V100, four 256k slots",
+   "base": "Flint Preview 40B-A2.5B",
+   "arch": "MoE 40B / 2.5B active",
+   "engine": "llama.cpp Clover 4838ffb",
+   "quant": "Unsloth UD-Q4_K_XL",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "Tried as a candidate agent backend serving four ~250k sessions at once on both cards, with 8-bit K/V and thinking on (it is not competent with thinking off: 7 x 8 = 28). Short-benchmark rates: 87-90 tok/s decode on one short prompt, first token 0.13-0.88 s. It fits (5.5 GiB free on the 3090, 3.3 GiB on the V100) but fails on recall: the 250k retrieval reply falls into a repetition loop, and with four ~240k prompts at once every reply ran to the 6,000-token cap with all four markers wrong, at about 7 tok/s per session. Dropped as a long-context agent backend.",
+   "vision": null
+  },
+  "lcpp-qwen36-35b-a3b-udq4kxl-3090-v100": {
+   "id": "lcpp-qwen36-35b-a3b-udq4kxl-3090-v100",
+   "family": "Qwen3.6",
+   "label": "Qwen3.6-35B-A3B UD-Q4_K_XL · llama.cpp (Clover 4838ffb), RTX 3090 + V100, 96k",
+   "base": "Qwen/Qwen3.6-35B-A3B",
+   "arch": "MoE 35B / 3B active",
+   "engine": "llama.cpp Clover 4838ffb",
+   "quant": "Unsloth UD-Q4_K_XL",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "The control for the MACaQ-R pair: the exact Unsloth file MACaQ-R was refined from. Short-benchmark rates, both cards, 96k 8-bit K/V, thinking off, greedy: 109.9 tok/s decode, first token 0.20-0.41 s on short prompts; 30k and 90k retrieval correct (90k first token 80 s, about 1,130 tok/s prefill); quality check 2 of 3 (the word problem missed).",
+   "vision": null
+  },
+  "lcpp-qwen36-35b-a3b-macaq-r-q4kxl-3090-v100": {
+   "id": "lcpp-qwen36-35b-a3b-macaq-r-q4kxl-3090-v100",
+   "family": "Qwen3.6",
+   "label": "Qwen3.6-35B-A3B MACaQ-R Q4_K_XL · llama.cpp (Clover 4838ffb), RTX 3090 + V100, 96k",
+   "base": "Qwen/Qwen3.6-35B-A3B (Huawei CSL MACaQ-R refinement of the Unsloth UD-Q4_K_XL file)",
+   "arch": "MoE 35B / 3B active",
+   "engine": "llama.cpp Clover 4838ffb",
+   "quant": "MACaQ-R Q4_K_XL",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "Huawei CSL's MACaQ-R rewrites the 4-, 5- and 6-bit weight codes of an existing GGUF with calibration and loads in stock llama.cpp; the vendor reports a smaller divergence from the full-precision model than the Unsloth file it starts from. Same settings as the control: 109.6 tok/s decode (control 109.9), first token 0.20-0.41 s, 30k and 90k retrieval correct (90k first token 80 s), quality check 2 of 3 with the same miss. No difference shown on our short checks; a finer quality comparison is the next step.",
    "vision": null
   }
  },
@@ -12716,6 +12778,78 @@
     "loc": 1916,
     "errors_per_kloc": 1.0
    }
+  },
+  {
+   "case": "mm-0k7cz-dual-nemotron35-lightning-30b-a3b-q8-ctx1m-par4-f16kv-hold-4agents-t1-t2-t7-t1-p1",
+   "model": "lcpp-nemotron35-lightning-q8-3090-v100",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 26,
+   "tests_fail": 0,
+   "subcmds": 5,
+   "tps": 35.5,
+   "minutes": 13,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "f16",
+   "verdict": "pass",
+   "finished": "2026-11-12 15:27",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 737,
+    "errors_per_kloc": 17.6
+   }
+  },
+  {
+   "case": "mm-0k7cz-dual-nemotron35-lightning-30b-a3b-q8-ctx1m-par4-f16kv-hold-4agents-t1-t2-t7-t1-p4",
+   "model": "lcpp-nemotron35-lightning-q8-3090-v100",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 2,
+   "tests_pass": null,
+   "tests_fail": null,
+   "subcmds": 5,
+   "tps": 38.1,
+   "minutes": 18,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "f16",
+   "verdict": "fail",
+   "finished": "2026-11-12 15:32",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 582,
+    "errors_per_kloc": null
+   }
+  },
+  {
+   "case": "mm-0k7cz-dual-nemotron35-lightning-30b-a3b-q8-ctx1m-par4-f16kv-hold-4agents-t1-t2-t7-t1-p2",
+   "model": "lcpp-nemotron35-lightning-q8-3090-v100",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 7,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 41.8,
+   "minutes": 39,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "f16",
+   "verdict": "fail",
+   "finished": "2026-11-12 15:53",
+   "struggle": {
+    "compiles": 55,
+    "failed_compiles": 34,
+    "rust_errors": 266,
+    "loc": 930,
+    "errors_per_kloc": 288.2
+   }
   }
  ],
  "test3": [
@@ -16468,6 +16602,36 @@
    "prefill": null,
    "vram": 28242,
    "error": "does not fit: four 256k slots run out of memory on the V100 while loading"
+  },
+  {
+   "model": "lcpp-flint40b-udq4kxl-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "3090 + V100, layers split 3:2, --parallel 4 (four 256k slots, 1M tokens) of 8-bit K/V, flash attention on, thinking on (checks get 4,096 tokens, concurrent replies 6,000), 3090 at 250 W with clocks locked to 210-1650 MHz, V100 at 200 W; short benchmark; load 10 s; decode 89.7 tok/s on one short prompt, first token 0.13-0.88 s; 250,255-token retrieval wrong (repetition loop), first token 280 s (about 895 tok/s prefill); four ~240k prompts at once: first tokens 276, 576, 879 and 1,180 s, every reply ran to the cap and all four markers were wrong; 28.5 tok/s total while all four decode, about 7.1 per session; free 5.5 GiB (3090) / 3.3 GiB (V100), fits",
+   "decode": 28.5,
+   "quote": null,
+   "prefill": 895.0,
+   "vram": 18950,
+   "error": ""
+  },
+  {
+   "model": "lcpp-qwen36-35b-a3b-udq4kxl-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "3090 + V100, layers split 3:2, 96k of 8-bit K/V, flash attention on, thinking off, greedy, 3090 at 250 W with clocks locked to 210-1650 MHz, V100 at 200 W; short benchmark (mixed set); load 152 s; decode 109.9 tok/s, first token 0.20-0.41 s on short prompts; 30k and 90k retrieval correct (first tokens 21.5 s and 80.2 s, 1,128 tok/s prefill at 90k); quality check 2 of 3; free 14.2 GiB (3090) / 17.4 GiB (V100); the control for MACaQ-R",
+   "decode": 109.91,
+   "quote": null,
+   "prefill": 1128.7,
+   "vram": 10060,
+   "error": ""
+  },
+  {
+   "model": "lcpp-qwen36-35b-a3b-macaq-r-q4kxl-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "Same settings as the Unsloth UD-Q4_K_XL control, only the file changed; short benchmark (mixed set); load 172 s; decode 109.6 tok/s, first token 0.20-0.41 s on short prompts; 30k and 90k retrieval correct (first tokens 21.1 s and 79.6 s, 1,136 tok/s prefill at 90k); quality check 2 of 3, the same miss as the control; free 14.2 GiB (3090) / 17.4 GiB (V100)",
+   "decode": 109.6,
+   "quote": null,
+   "prefill": 1136.5,
+   "vram": 10062,
+   "error": ""
   }
  ],
  "engines": [
@@ -22122,16 +22286,36 @@
     "note": "The Ancient Maze. Thinking on, on the V100 alone. Showcase reproduces, 10 of 10 hidden seeds give distinct passing mazes (routes 325-359), extra credit met. D 1 from the map checker only: an explicit backbone through six stairs plus a filled-in maze, checkpoints at route junctions and no entrance tunnel, but the stairs bunch early and late (a 134-step stretch with no floor change) and it leans comb: of 147 side openings 80 are one-cell dead ends and 14 run six cells or more. E 1: its core claims reproduce (the same output for the same seed, 65 seeds pass), but 'all 65 outputs were distinct files' cannot be true: seed 42 is listed twice, so 64 seeds. First dense 27B to reach full A-C marks. Agent-run decode 21.0 tok/s, first token median 0.61 s; tok_s here is output tokens over wall time. One round.",
     "frames": [],
     "live": null
+   },
+   {
+    "case": "mm-0k7cz-dual-nemotron35-lightning-30b-a3b-q8-ctx1m-par4-f16kv-hold-4agents-t1-t2-t7-t1-p3",
+    "entry": "lcpp-nemotron35-lightning-q8-3090-v100",
+    "test": 7,
+    "finish": "agent done",
+    "tokens": 427932.0,
+    "wall_s": 7008.0,
+    "tok_s": 61.06,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": null,
+     "E": null
+    },
+    "total": 0.0,
+    "note": "Thinking off, one of four OpenCode sessions at once on one load (tests 1, 2 and 1 again beside it for the first 40 minutes). It handed in a generator, a maze and notes after 117 minutes, but the maze fails the first rule: six cells on floor 2 have a wall on one side with no matching wall in the next cell, so the later rules were not checked, and none of 10 hidden seeds pass. Walk and notes not judged yet. Agent-run decode 61.1 tok/s.",
+    "frames": [],
+    "live": null
    }
   ]
  },
  "counts": {
-  "models": 141,
-  "runs": 356,
+  "models": 144,
+  "runs": 359,
   "test3": 86,
-  "oneshots": 166,
+  "oneshots": 167,
   "frames": 310,
-  "pass": 265,
+  "pass": 266,
   "live": 100
  }
 }
