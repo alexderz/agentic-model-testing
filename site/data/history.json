@@ -1,7 +1,7 @@
 {
  "schema": "history/1",
- "generated_from": "private bake-off grades through 2026-11-08: Flash-Next Unsloth v3.1 round 1, the 3090 + V100 serving tuning and the Flash-Next 150 tok/s serving goal (Strata 0.2.12 through round 21 and a Strata 0.2.13 engine check, code and JSON benchmarks with a quality check, a 256k slot and four-stream totals, DFlash2 window and confidence, sampled decoding, llamAmpere with four slots, K/V cache in host RAM, parallel slots that fit, thinking-on sampled decoding, a dual-card Tiel-Coder Q6 serving check, llamAmpere 0.6.3.2 and 0.6.3.8, the daily driver's agent test 1, 2, 2T and 7 runs, UD-Q3_K_XL test 1, 2 and 2T runs, session switching with a host-RAM session cache, two 256k agent slots, the agent serving profile (parked 155k sessions, four 120k streams, two agents at once on tests 1 and 2, a 30-minute idle resume), the UD-Q3_K_XL test 7 run, Arete-27B test 1 on the V100, the V100 peer tier with four agent slots, the UD-Q2_0 speed check, its agent test 1, 2, 2T and 7 runs and its agent-profile check, GSQ IQ3_S agent tests 1, 2 and 7, GSQ IQ3_XXS agent tests 1, 2 and 7, Arete-27B test 2 on the V100, Tiel-Coder Q6 agent test 1 with thinking on and off and tests 2 and 7 with thinking off, test 7 again with context pruning and test 2T with thinking off, the TensorFold 1.2.7 release at 128k and 176k and Nemotron 3.5 Lightning NVFP4 on its RTX 30 fallback, Arete-27B test 7 on the V100, the largest contexts on the V100 alone for Arete Q6_K and Q8_0, Tiel-Coder Q6 and Flash-Next UD-Q2_0 on Strata, Flash-Next UD-Q2_0 with eight and four ~240k sessions at once across both cards, the Unsloth Dynamic V3.1 re-upload of Qwen3.8-27B UD-Q4_K_M against the old file on short benchmarks and agent test 1, webAI's TwIL-8B balanced Q4_K_M and verbose Q8_0 on one 3090, Nex-N2.6 Q2_K across both cards with experts in RAM, the RustingStrata 1.2.1 engine on Flash-Next UD-Q2_K_XL, Arete-27B Q6_K with three 256k slots across both cards, Arete-27B Q8_0 with two 256k slots across both cards, Tiel-Coder Q6 and the abliterated Cyber-Tiel-Coder with four 256k slots across both cards at ~240k, ~120k and ~60k, 16-bit K/V on four sessions for Tiel-Coder Q6 and Q4 and Nemotron 3.5 Lightning Q8_0, ThinkingCap-27B Heretic with four 256k slots, four OpenCode agents at once on Nemotron 3.5 Lightning, Flint Preview with four 256k slots, the MACaQ-R refinement of Qwen3.6-35B-A3B UD-Q4_K_XL against its Unsloth parent, Flash-Next UD-Q2_0 with two active 256k sessions and four parked ~248k sessions in host RAM and with three 256k sessions across both cards, Nemotron 3.5 Lightning with four ~60k sessions, four OpenCode agents at once on Nemotron 3.5 Lightning with thinking on and on the abliterated Cyber-Tiel-Coder, four OpenCode agents at once on the Cyber 27B IQ4_XS on the V100 alone, one-shot pagodas and eight- and four-slot fits); runs from 2026-10-07 on",
- "generated": "2026-11-14 02:52 CST",
+ "generated_from": "private bake-off grades through 2026-11-08: Flash-Next Unsloth v3.1 round 1, the 3090 + V100 serving tuning and the Flash-Next 150 tok/s serving goal (Strata 0.2.12 through round 21 and a Strata 0.2.13 engine check, code and JSON benchmarks with a quality check, a 256k slot and four-stream totals, DFlash2 window and confidence, sampled decoding, llamAmpere with four slots, K/V cache in host RAM, parallel slots that fit, thinking-on sampled decoding, a dual-card Tiel-Coder Q6 serving check, llamAmpere 0.6.3.2 and 0.6.3.8, the daily driver's agent test 1, 2, 2T and 7 runs, UD-Q3_K_XL test 1, 2 and 2T runs, session switching with a host-RAM session cache, two 256k agent slots, the agent serving profile (parked 155k sessions, four 120k streams, two agents at once on tests 1 and 2, a 30-minute idle resume), the UD-Q3_K_XL test 7 run, Arete-27B test 1 on the V100, the V100 peer tier with four agent slots, the UD-Q2_0 speed check, its agent test 1, 2, 2T and 7 runs and its agent-profile check, GSQ IQ3_S agent tests 1, 2 and 7, GSQ IQ3_XXS agent tests 1, 2 and 7, Arete-27B test 2 on the V100, Tiel-Coder Q6 agent test 1 with thinking on and off and tests 2 and 7 with thinking off, test 7 again with context pruning and test 2T with thinking off, the TensorFold 1.2.7 release at 128k and 176k and Nemotron 3.5 Lightning NVFP4 on its RTX 30 fallback, Arete-27B test 7 on the V100, the largest contexts on the V100 alone for Arete Q6_K and Q8_0, Tiel-Coder Q6 and Flash-Next UD-Q2_0 on Strata, Flash-Next UD-Q2_0 with eight and four ~240k sessions at once across both cards, the Unsloth Dynamic V3.1 re-upload of Qwen3.8-27B UD-Q4_K_M against the old file on short benchmarks and agent test 1, webAI's TwIL-8B balanced Q4_K_M and verbose Q8_0 on one 3090, Nex-N2.6 Q2_K across both cards with experts in RAM, the RustingStrata 1.2.1 engine on Flash-Next UD-Q2_K_XL, Arete-27B Q6_K with three 256k slots across both cards, Arete-27B Q8_0 with two 256k slots across both cards, Tiel-Coder Q6 and the abliterated Cyber-Tiel-Coder with four 256k slots across both cards at ~240k, ~120k and ~60k, 16-bit K/V on four sessions for Tiel-Coder Q6 and Q4 and Nemotron 3.5 Lightning Q8_0, ThinkingCap-27B Heretic with four 256k slots, four OpenCode agents at once on Nemotron 3.5 Lightning, Flint Preview with four 256k slots, the MACaQ-R refinement of Qwen3.6-35B-A3B UD-Q4_K_XL against its Unsloth parent, Flash-Next UD-Q2_0 with two active 256k sessions and four parked ~248k sessions in host RAM and with three 256k sessions across both cards, Nemotron 3.5 Lightning with four ~60k sessions, four OpenCode agents at once on Nemotron 3.5 Lightning with thinking on and on the abliterated Cyber-Tiel-Coder, four OpenCode agents at once on the Cyber 27B IQ4_XS on the V100 alone, two long OpenCode agents at once (tests 2 and 7) on Flash-Next UD-Q2_0 with two 256k sessions, one-shot pagodas and eight- and four-slot fits); runs from 2026-10-07 on",
+ "generated": "2026-11-14 04:14 CST",
  "runs_new": [
   {
    "case": "wa-saluki-27b-iq2",
@@ -3979,6 +3979,30 @@
    "verdict": "fail",
    "finished": "2026-11-14 02:40",
    "struggle": null
+  },
+  {
+   "case": "mm-0m0-flashnext-udq20-b2-ctx256k-park28g-hold-longagents-t2-t7-p1",
+   "model": "strata0213-fnb-v31-udq20-128k",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 132,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 53.4,
+   "minutes": 50,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-14 03:37",
+   "struggle": {
+    "compiles": 48,
+    "failed_compiles": 19,
+    "rust_errors": 71,
+    "loc": 4996,
+    "errors_per_kloc": 14.8
+   }
   }
  ],
  "test3_new": [
@@ -9859,6 +9883,29 @@
    ],
    "quality": "1 of 4 clean (one test 1 pass); test 1, test 2 and test 7 failures at the caps.",
    "caveat": "One run. Thinking off, matching the Cyber-Tiel four-agent run. Rates are agent runs measured by the client, not short benchmarks; the four sessions shared one card the whole time."
+  },
+  {
+   "date": "2026-11-14",
+   "title": "Two long OpenCode agents at once on Flash-Next UD-Q2_0 on one 3090: both pass, about 54-61 tok/s each",
+   "kind": "model",
+   "summary": "Flash-Next UD-Q2_0 on the 3090 alone (two 256k sessions, 8-bit K/V, 28 GiB host-RAM session park, never disk) ran test 2 and the test 7 labyrinth at the same time with thinking on. Test 2 built its Rust MCP server with 8 tools and 132 of its own tests passing after 50 minutes; its largest prompt reached 217,795 tokens inside the 256k session with no compaction. Test 7 handed in after 69 minutes and scored 8 of 10: showcase, 10 of 10 hidden seeds and extra credit all full marks, the walk 1 (stairs spread and real side passages, but a 29-cell entrance before the first choice) and notes 1 (every test reproduces; one checkpoint misnamed). Agent-run decode 61.2 and 53.9 tok/s per session (client side), first token median 0.92 s and 0.73 s, no request errors. A parked test 2 session came back after 19 minutes idle with first token in 0.66 s. 3.1 GiB free on the 3090 at peak.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Agent-run decode per session, Flash-Next UD-Q2_0, test 2 beside test 7 on one 3090",
+     "before": null,
+     "after": 61.2,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Agent-run decode per session, Flash-Next UD-Q2_0, test 7 (beside test 2 for its first 50 minutes)",
+     "before": null,
+     "after": 53.9,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "2 of 2 handed in: test 2 full pass (8 tools, 132/0); test 7 8 of 10.",
+   "caveat": "One run. Rates are agent runs measured by the client, not short benchmarks. Same model and serving shape as the earlier tests 1 and 2 pair; this run adds the longer test 7 and the largest prompts so far."
   }
  ],
  "amend": [

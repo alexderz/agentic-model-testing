@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-11-14 02:52 CST",
- "built": "2026-11-14 02:52 CST",
+ "generated": "2026-11-14 04:14 CST",
+ "built": "2026-11-14 04:14 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -132,6 +132,29 @@
    ],
    "quality": "1 of 4 clean (one test 1 pass); test 1, test 2 and test 7 failures at the caps.",
    "caveat": "One run. Thinking off, matching the Cyber-Tiel four-agent run. Rates are agent runs measured by the client, not short benchmarks; the four sessions shared one card the whole time."
+  },
+  {
+   "date": "2026-11-14",
+   "title": "Two long OpenCode agents at once on Flash-Next UD-Q2_0 on one 3090: both pass, about 54-61 tok/s each",
+   "kind": "model",
+   "summary": "Flash-Next UD-Q2_0 on the 3090 alone (two 256k sessions, 8-bit K/V, 28 GiB host-RAM session park, never disk) ran test 2 and the test 7 labyrinth at the same time with thinking on. Test 2 built its Rust MCP server with 8 tools and 132 of its own tests passing after 50 minutes; its largest prompt reached 217,795 tokens inside the 256k session with no compaction. Test 7 handed in after 69 minutes and scored 8 of 10: showcase, 10 of 10 hidden seeds and extra credit all full marks, the walk 1 (stairs spread and real side passages, but a 29-cell entrance before the first choice) and notes 1 (every test reproduces; one checkpoint misnamed). Agent-run decode 61.2 and 53.9 tok/s per session (client side), first token median 0.92 s and 0.73 s, no request errors. A parked test 2 session came back after 19 minutes idle with first token in 0.66 s. 3.1 GiB free on the 3090 at peak.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Agent-run decode per session, Flash-Next UD-Q2_0, test 2 beside test 7 on one 3090",
+     "before": null,
+     "after": 61.2,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Agent-run decode per session, Flash-Next UD-Q2_0, test 7 (beside test 2 for its first 50 minutes)",
+     "before": null,
+     "after": 53.9,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "2 of 2 handed in: test 2 full pass (8 tools, 132/0); test 7 8 of 10.",
+   "caveat": "One run. Rates are agent runs measured by the client, not short benchmarks. Same model and serving shape as the earlier tests 1 and 2 pair; this run adds the longer test 7 and the largest prompts so far."
   },
   {
    "date": "2026-11-13",
@@ -13220,6 +13243,30 @@
    "verdict": "fail",
    "finished": "2026-11-14 02:40",
    "struggle": null
+  },
+  {
+   "case": "mm-0m0-flashnext-udq20-b2-ctx256k-park28g-hold-longagents-t2-t7-p1",
+   "model": "strata0213-fnb-v31-udq20-128k",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 132,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 53.4,
+   "minutes": 50,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-14 03:37",
+   "struggle": {
+    "compiles": 48,
+    "failed_compiles": 19,
+    "rust_errors": 71,
+    "loc": 4996,
+    "errors_per_kloc": 14.8
+   }
   }
  ],
  "test3": [
@@ -22846,16 +22893,36 @@
     "note": "Thinking off, on the V100 alone, one of four OpenCode sessions at once on one load (tests 1, 2 and 1 again beside it). Stopped automatically at the 3-hour cap. It wrote a ./generate program, but it crashes on all 10 hidden seeds, and there is no maze or notes. Agent-run decode 8.7 tok/s per request (client side), first token median 8.0 s.",
     "frames": [],
     "live": null
+   },
+   {
+    "case": "mm-0m0-flashnext-udq20-b2-ctx256k-park28g-hold-longagents-t2-t7-p2",
+    "entry": "strata0213-fnb-v31-udq20-128k",
+    "test": 7,
+    "finish": "agent done",
+    "tokens": 129513.0,
+    "wall_s": 4130.8,
+    "tok_s": 31.35,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 1.0,
+     "E": 1.0
+    },
+    "total": 8.0,
+    "note": "Vaults of the Turned Stair. Thinking on, one of two OpenCode sessions at once on one load (test 2 beside it for the first 50 minutes), 256k session. Showcase reproduces, 10 of 10 hidden seeds give distinct passing mazes, extra credit met. D 1 from the map checker only: stairs evenly spread, checkpoints at junctions and real side passages (16 of 106 side openings run six cells or more, the deepest 18), but the entrance runs 29 cells before the first choice. E 1: the pasted verifier output, the showcase and every stated test command reproduce (6000 of 6000 seeds), but the notes name the third checkpoint wrongly. Agent-run decode 53.9 tok/s per request (client side), first token median 0.73 s; tok_s here is output tokens over wall time. One round.",
+    "frames": [],
+    "live": null
    }
   ]
  },
  "counts": {
   "models": 146,
-  "runs": 370,
+  "runs": 371,
   "test3": 86,
-  "oneshots": 170,
+  "oneshots": 171,
   "frames": 310,
-  "pass": 272,
+  "pass": 273,
   "live": 100
  }
 }
