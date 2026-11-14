@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-11-13 23:30 CST",
- "built": "2026-11-13 23:30 CST",
+ "generated": "2026-11-13 23:58 CST",
+ "built": "2026-11-13 23:58 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -172,7 +172,7 @@
    "date": "2026-11-13",
    "title": "Flash-Next on the 3090 passes two OpenCode agents at once at 256k; a Cyber 27B fits four ~90k sessions on the V100 alone, slowly",
    "kind": "tuning",
-   "summary": "Alex now wants two separate backends: a smart model on the 3090 with system RAM, and an uncensored Cyber model fully on the V100 with four sessions and as much context as practical. Smart lane: Flash-Next UD-Q2_0 on the 3090 alone (two 256k slots, 8-bit K/V, a 28 GiB session cache in host RAM, never disk) ran OpenCode test 1 and test 2 at the same time with thinking on. Test 1 passes all five live checks with 17 subcommands (our grader could not import its own test suite, so its tests are not counted); test 2 builds, exposes 9 tools, returns recorded data and passes 168 of its own tests. Both finished on their own inside the time caps: 64 and 71 minutes, 37.6 and 50.5 tok/s agent-run (48.1 and 57.3 tok/s decode), first token median 0.94 and 0.74 s, largest prompts about 189k and 217k tokens. A parked 189k-token session came back from host RAM with its first token in 0.89 s. Cyber lane, short benchmarks on the V100 alone: Qwen3.8-27B Cyber Q5_K_M fits four 64k slots (2.2 GiB free) and four 72k (1.0 GiB free) but not four 80k; the IQ4_XS quant fits four 96k slots (2.7 GiB free) and is faster (36.3 vs 28.6 tok/s on one session). With four long prompts the card reads them one at a time at about 400-490 tok/s, so the last of four ~90k prompts waits 14 minutes for its first token, and four sessions decode at about 8-9.5 tok/s each.",
+   "summary": "Alex now wants two separate backends: a smart model on the 3090 with system RAM, and an uncensored Cyber model fully on the V100 with four sessions and as much context as practical. Smart lane: Flash-Next UD-Q2_0 on the 3090 alone (two 256k slots, 8-bit K/V, a 28 GiB session cache in host RAM, never disk) ran OpenCode test 1 and test 2 at the same time with thinking on. Test 1 passes all five live checks with 17 subcommands (our grader could not import its own test suite, so its tests are not counted); test 2 builds, exposes 9 tools, returns recorded data and passes 168 of its own tests. Both finished on their own inside the time caps: 64 and 71 minutes, 37.6 and 50.5 tok/s agent-run (48.1 and 57.3 tok/s decode), first token median 0.94 and 0.74 s, largest prompts about 189k and 217k tokens. A parked 189k-token session came back from host RAM with its first token in 0.89 s. Cyber lane, short benchmarks on the V100 alone: Qwen3.8-27B Cyber Q5_K_M fits four 64k slots (2.2 GiB free) and four 72k (1.0 GiB free) but not four 80k; the IQ4_XS quant fits four 96k slots (2.7 GiB free; four 112k loads and answers correctly but leaves only 332 MiB, under our 512 MiB floor) and is faster (36.3 vs 28.6 tok/s on one session). With four long prompts the card reads them one at a time at about 400-490 tok/s, so the last of four ~90k prompts waits 14 minutes for its first token, and four sessions decode at about 8-9.5 tok/s each.",
    "settings": null,
    "metrics": [
     {
@@ -17012,6 +17012,16 @@
    "prefill": 473.1,
    "vram": 31736,
    "error": ""
+  },
+  {
+   "model": "lcpp6-q38-27b-cyber-mtp",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "V100 alone, everything on the GPU, IQ4_XS (MTP draft head present but not used), four 112k slots with 8-bit K/V, flash attention on, greedy, V100 at 200 W; short benchmark; decode 36.3 tok/s, first token 0.45-0.54 s on short prompts; 106k retrieval correct (first token 265 s, about 400 tok/s prefill); quality check 3 of 3; four ~106k prompts at once, all four correct, read one after another (about 370-390 tok/s each), first tokens 273, 544, 818 and 1,085 s, then 26.7 tok/s total while all four decode (about 6.7 per session, over a 38 s overlap); only 332 MiB free after the longest prefill, so it misses our 512 MiB floor. Four 96k is the largest four-slot IQ4_XS context that meets the rule",
+   "decode": 36.31,
+   "quote": null,
+   "prefill": 400.7,
+   "vram": 32436,
+   "error": "fit rule miss: 332 MiB free on the V100 after four ~106k prefills, under the 512 MiB floor"
   }
  ],
  "engines": [
