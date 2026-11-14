@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-11-12 20:32 CST",
- "built": "2026-11-12 20:32 CST",
+ "generated": "2026-11-13 19:07 CST",
+ "built": "2026-11-13 19:07 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -116,6 +116,35 @@
   }
  ],
  "findings": [
+  {
+   "date": "2026-11-13",
+   "title": "Flash-Next at 500k to 1M total context: it fits and recalls, but no shape gives every session 40 tok/s yet",
+   "kind": "tuning",
+   "summary": "Alex's target is Flash-Next (UD-Q2_0) with 500k to 1M tokens in total across several sessions at about 40 tok/s each. Two active 256k sessions on the 3090 alone hold about 480k live tokens: both recalled their markers, 104.9 tok/s in total but split 55.0 and 35.0 per stream. Parking adds the rest: four ~248k sessions (about 1M kept) in a 28 GiB host-RAM cache all recalled correctly and came back in 1.30 s median, though the cache evicted 3 entries. Three active 256k sessions across both cards (about 720k live, power-capped) also fit and recalled, but split 18.8, 25.3 and 45.4 tok/s. In the same round Nemotron 3.5 Lightning reached 211.8 tok/s in total with four ~60k sessions, again unevenly (23.5-53.3 per session).",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Slower of two active ~240k sessions, Flash-Next on the 3090 (short benchmark)",
+     "before": null,
+     "after": 35.0,
+     "unit": "tok/s"
+    },
+    {
+     "label": "First token after switching back to a parked ~248k session, median",
+     "before": null,
+     "after": 1.3,
+     "unit": "s"
+    },
+    {
+     "label": "Slowest of three active ~240k sessions across both cards (short benchmark)",
+     "before": null,
+     "after": 18.8,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Marker recall only; no agent work graded on these shapes yet. Two OpenCode agents on the two-slot shape are queued.",
+   "caveat": "Short benchmarks, one run each, cards power-capped until a bigger power supply is in. A total rate divided by the session count is not a per-session rate."
+  },
   {
    "date": "2026-11-12",
    "title": "TensorFold 1.2.7 runs Qwen3.8-27B at 176k on one 3090 with lossless drafting",
@@ -16675,6 +16704,36 @@
    "prefill": 66.0,
    "vram": 21672,
    "error": "base model: fails the format check and 30k retrieval"
+  },
+  {
+   "model": "strata0213-fnb-v31-udq20-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 alone at 300 W, UD-Q2_0, two 256k slots (batch 2 with the MTP head), 8-bit K/V, a 28 GiB session cache in host RAM (never disk); short benchmark; decode 74.9 tok/s, first token 0.63 s on a short prompt; two ~240k prompts at once (about 480k tokens live), both correct; first tokens 93.9 and 232.3 s; 104.9 tok/s total while both write, 55.0 and 35.0 per stream, so the slower session is under 40; then four parked ~248k sessions (about 1M tokens kept) served in rotation, all 12 recall checks correct, a switch back gives its first token in 1.30 s median (1.72 s max, 99.9% reused) at 97-110 tok/s, but the cache evicted 3 entries to stay inside 28 GiB; free 3.1 GiB (3090), fits",
+   "decode": 104.87,
+   "quote": null,
+   "prefill": 2572.0,
+   "vram": 21356,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq20-128k",
+   "engine": "Strata 0.2.13",
+   "variant": "3090 at 250 W with clocks locked to 210-1650 MHz plus the V100 at 200 W, UD-Q2_0, layers split 24/24, three 256k slots with all int8 K/V in VRAM, MTP head; short benchmark; decode 77.1 tok/s, first token 0.60 s on a short prompt; three ~240k prompts at once (about 720k tokens live), all three correct; first tokens 120, 371 and 621 s; 107.3 tok/s total while all three write, 18.8, 25.3 and 45.4 per stream, so only one session reaches 40; free 3.3 GiB (3090) / 3.2 GiB (V100), fits",
+   "decode": 107.31,
+   "quote": null,
+   "prefill": 2014.0,
+   "vram": 21244,
+   "error": ""
+  },
+  {
+   "model": "lcpp-nemotron35-lightning-q8-3090-v100",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "Same four 256k slots with 16-bit (F16) K/V (3090 at 250 W with clocks locked to 210-1650 MHz, V100 at 200 W), thinking off; short benchmark; decode 135.4 tok/s, first token 0.23-0.68 s on short prompts; four ~60k prompts at once, all four correct; first tokens 23, 48, 72 and 95 s (2,648 tok/s prefill for the first); 211.8 tok/s total while all four decode, more than at ~120k (181.7) and ~240k (141.7), but uneven: 23.5-53.3 tok/s per session over each whole request; free 7.0 GiB (3090) / 6.5 GiB (V100), fits",
+   "decode": 211.8,
+   "quote": null,
+   "prefill": 2647.6,
+   "vram": 17432,
+   "error": ""
   }
  ],
  "engines": [
