@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-11-13 21:21 CST",
- "built": "2026-11-13 21:21 CST",
+ "generated": "2026-11-13 23:04 CST",
+ "built": "2026-11-13 23:04 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -167,6 +167,29 @@
    ],
    "quality": "Cyber-Tiel: 2 of 4 clean (both test 1); Nemotron thinking on: 1 of 4 clean (test 2). Both labyrinths 0/10 after a time stop.",
    "caveat": "One run per shape. A clean harness finish is not proof of competence; the labyrinth results are graded as they stood at the stop."
+  },
+  {
+   "date": "2026-11-13",
+   "title": "Flash-Next on the 3090 passes two OpenCode agents at once at 256k; a Cyber 27B fits four ~90k sessions on the V100 alone, slowly",
+   "kind": "tuning",
+   "summary": "Alex now wants two separate backends: a smart model on the 3090 with system RAM, and an uncensored Cyber model fully on the V100 with four sessions and as much context as practical. Smart lane: Flash-Next UD-Q2_0 on the 3090 alone (two 256k slots, 8-bit K/V, a 28 GiB session cache in host RAM, never disk) ran OpenCode test 1 and test 2 at the same time with thinking on. Test 1 passes all five live checks with 17 subcommands (our grader could not import its own test suite, so its tests are not counted); test 2 builds, exposes 9 tools, returns recorded data and passes 168 of its own tests. Both finished on their own inside the time caps: 64 and 71 minutes, 37.6 and 50.5 tok/s agent-run (48.1 and 57.3 tok/s decode), first token median 0.94 and 0.74 s, largest prompts about 189k and 217k tokens. A parked 189k-token session came back from host RAM with its first token in 0.89 s. Cyber lane, short benchmarks on the V100 alone: Qwen3.8-27B Cyber Q5_K_M fits four 64k slots (2.2 GiB free) but not four 80k; the IQ4_XS quant fits four 96k slots (2.7 GiB free) and is faster (36.3 vs 28.6 tok/s on one session). With four long prompts the card reads them one at a time at about 400-490 tok/s, so the last of four ~90k prompts waits 14 minutes for its first token, and four sessions decode at about 8-9.5 tok/s each.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Agent-run decode per session, Flash-Next UD-Q2_0, two OpenCode agents at once on the 3090 (lowest)",
+     "before": null,
+     "after": 48.1,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Cyber 27B IQ4_XS on the V100, four ~90k sessions decoding at once (total)",
+     "before": null,
+     "after": 32.0,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Flash-Next: 2 of 2 clean (test 1 all live checks, test 2 with recorded data). Cyber 27B: quick quality check 3 of 3 and long-context recall correct on both quants; no agent tests yet.",
+   "caveat": "One run per shape. The two lanes were tested one at a time, not running together yet. Cyber four-session rates are short benchmarks, not agent runs."
   },
   {
    "date": "2026-11-12",
@@ -13059,6 +13082,54 @@
     "loc": 1376,
     "errors_per_kloc": 456.4
    }
+  },
+  {
+   "case": "mm-0l6-flashnext-udq20-b2-ctx256k-park28g-hold-2agents-t1-t2-p1",
+   "model": "strata0213-fnb-v31-udq20-128k",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 0,
+   "tests_fail": 0,
+   "subcmds": 17,
+   "tps": 37.6,
+   "minutes": 64,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-13 22:22",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 4224,
+    "errors_per_kloc": 0.2
+   }
+  },
+  {
+   "case": "mm-0l6-flashnext-udq20-b2-ctx256k-park28g-hold-2agents-t1-t2-p2",
+   "model": "strata0213-fnb-v31-udq20-128k",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 168,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 50.5,
+   "minutes": 71,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-13 22:29",
+   "struggle": {
+    "compiles": 39,
+    "failed_compiles": 17,
+    "rust_errors": 45,
+    "loc": 7555,
+    "errors_per_kloc": 6.1
+   }
   }
  ],
  "test3": [
@@ -16900,6 +16971,36 @@
    "quote": null,
    "prefill": 2647.6,
    "vram": 17432,
+   "error": ""
+  },
+  {
+   "model": "lcpp6-q38-27b-cyber-q5",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "V100 alone, everything on the GPU (no system RAM), Q5_K_M, four 64k slots with 8-bit K/V, flash attention on, greedy, V100 at 200 W; short benchmark; decode 28.6 tok/s, first token 0.47-0.53 s on short prompts; 60k retrieval correct (first token 111 s, about 543 tok/s prefill); quality check 3 of 3; four ~60k prompts at once, all four correct, but the prompts are read one after another (about 490 tok/s each), so first tokens are 119, 232, 346 and 456 s, and 37.9 tok/s total while all four decode (about 9.5 per session); free 2.2 GiB after the longest prefill, fits",
+   "decode": 37.93,
+   "quote": null,
+   "prefill": 490.9,
+   "vram": 30512,
+   "error": ""
+  },
+  {
+   "model": "lcpp6-q38-27b-cyber-q5",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "V100 alone, Q5_K_M, four 80k slots with 8-bit K/V; the load fails: no room for the 1.46 GiB prompt-processing buffer after weights and cache (out of memory)",
+   "decode": null,
+   "quote": null,
+   "prefill": null,
+   "vram": null,
+   "error": "does not fit: out of memory at load"
+  },
+  {
+   "model": "lcpp6-q38-27b-cyber-mtp",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "V100 alone, everything on the GPU, IQ4_XS (MTP draft head present but not used), four 96k slots with 8-bit K/V, flash attention on, greedy, V100 at 200 W; short benchmark; decode 36.3 tok/s, first token 0.45-0.54 s on short prompts; 90k retrieval correct (first token 208 s, about 434 tok/s prefill); quality check 3 of 3; four ~90k prompts at once, all four correct, read one after another (about 400 tok/s each), first tokens 214, 427, 640 and 850 s, then 32.0 tok/s total while all four decode (about 8 per session); free 2.7 GiB after the longest prefill, fits. Four-bit gives more context and more speed than Q5 on this card; whether it is as competent is not yet measured",
+   "decode": 32.01,
+   "quote": null,
+   "prefill": 421.3,
+   "vram": 29988,
    "error": ""
   }
  ],
@@ -22620,11 +22721,11 @@
  },
  "counts": {
   "models": 145,
-  "runs": 365,
+  "runs": 367,
   "test3": 86,
   "oneshots": 169,
   "frames": 310,
-  "pass": 269,
+  "pass": 271,
   "live": 100
  }
 }

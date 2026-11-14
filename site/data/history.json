@@ -1,7 +1,7 @@
 {
  "schema": "history/1",
  "generated_from": "private bake-off grades through 2026-11-08: Flash-Next Unsloth v3.1 round 1, the 3090 + V100 serving tuning and the Flash-Next 150 tok/s serving goal (Strata 0.2.12 through round 21 and a Strata 0.2.13 engine check, code and JSON benchmarks with a quality check, a 256k slot and four-stream totals, DFlash2 window and confidence, sampled decoding, llamAmpere with four slots, K/V cache in host RAM, parallel slots that fit, thinking-on sampled decoding, a dual-card Tiel-Coder Q6 serving check, llamAmpere 0.6.3.2 and 0.6.3.8, the daily driver's agent test 1, 2, 2T and 7 runs, UD-Q3_K_XL test 1, 2 and 2T runs, session switching with a host-RAM session cache, two 256k agent slots, the agent serving profile (parked 155k sessions, four 120k streams, two agents at once on tests 1 and 2, a 30-minute idle resume), the UD-Q3_K_XL test 7 run, Arete-27B test 1 on the V100, the V100 peer tier with four agent slots, the UD-Q2_0 speed check, its agent test 1, 2, 2T and 7 runs and its agent-profile check, GSQ IQ3_S agent tests 1, 2 and 7, GSQ IQ3_XXS agent tests 1, 2 and 7, Arete-27B test 2 on the V100, Tiel-Coder Q6 agent test 1 with thinking on and off and tests 2 and 7 with thinking off, test 7 again with context pruning and test 2T with thinking off, the TensorFold 1.2.7 release at 128k and 176k and Nemotron 3.5 Lightning NVFP4 on its RTX 30 fallback, Arete-27B test 7 on the V100, the largest contexts on the V100 alone for Arete Q6_K and Q8_0, Tiel-Coder Q6 and Flash-Next UD-Q2_0 on Strata, Flash-Next UD-Q2_0 with eight and four ~240k sessions at once across both cards, the Unsloth Dynamic V3.1 re-upload of Qwen3.8-27B UD-Q4_K_M against the old file on short benchmarks and agent test 1, webAI's TwIL-8B balanced Q4_K_M and verbose Q8_0 on one 3090, Nex-N2.6 Q2_K across both cards with experts in RAM, the RustingStrata 1.2.1 engine on Flash-Next UD-Q2_K_XL, Arete-27B Q6_K with three 256k slots across both cards, Arete-27B Q8_0 with two 256k slots across both cards, Tiel-Coder Q6 and the abliterated Cyber-Tiel-Coder with four 256k slots across both cards at ~240k, ~120k and ~60k, 16-bit K/V on four sessions for Tiel-Coder Q6 and Q4 and Nemotron 3.5 Lightning Q8_0, ThinkingCap-27B Heretic with four 256k slots, four OpenCode agents at once on Nemotron 3.5 Lightning, Flint Preview with four 256k slots, the MACaQ-R refinement of Qwen3.6-35B-A3B UD-Q4_K_XL against its Unsloth parent, Flash-Next UD-Q2_0 with two active 256k sessions and four parked ~248k sessions in host RAM and with three 256k sessions across both cards, Nemotron 3.5 Lightning with four ~60k sessions, four OpenCode agents at once on Nemotron 3.5 Lightning with thinking on and on the abliterated Cyber-Tiel-Coder, one-shot pagodas and eight- and four-slot fits); runs from 2026-10-07 on",
- "generated": "2026-11-13 21:21 CST",
+ "generated": "2026-11-13 23:04 CST",
  "runs_new": [
   {
    "case": "wa-saluki-27b-iq2",
@@ -3871,6 +3871,54 @@
     "loc": 1376,
     "errors_per_kloc": 456.4
    }
+  },
+  {
+   "case": "mm-0l6-flashnext-udq20-b2-ctx256k-park28g-hold-2agents-t1-t2-p1",
+   "model": "strata0213-fnb-v31-udq20-128k",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 0,
+   "tests_fail": 0,
+   "subcmds": 17,
+   "tps": 37.6,
+   "minutes": 64,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-13 22:22",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 4224,
+    "errors_per_kloc": 0.2
+   }
+  },
+  {
+   "case": "mm-0l6-flashnext-udq20-b2-ctx256k-park28g-hold-2agents-t1-t2-p2",
+   "model": "strata0213-fnb-v31-udq20-128k",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 168,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 50.5,
+   "minutes": 71,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-13 22:29",
+   "struggle": {
+    "compiles": 39,
+    "failed_compiles": 17,
+    "rust_errors": 45,
+    "loc": 7555,
+    "errors_per_kloc": 6.1
+   }
   }
  ],
  "test3_new": [
@@ -7630,6 +7678,36 @@
    "prefill": 2647.6,
    "vram": 17432,
    "error": ""
+  },
+  {
+   "model": "lcpp6-q38-27b-cyber-q5",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "V100 alone, everything on the GPU (no system RAM), Q5_K_M, four 64k slots with 8-bit K/V, flash attention on, greedy, V100 at 200 W; short benchmark; decode 28.6 tok/s, first token 0.47-0.53 s on short prompts; 60k retrieval correct (first token 111 s, about 543 tok/s prefill); quality check 3 of 3; four ~60k prompts at once, all four correct, but the prompts are read one after another (about 490 tok/s each), so first tokens are 119, 232, 346 and 456 s, and 37.9 tok/s total while all four decode (about 9.5 per session); free 2.2 GiB after the longest prefill, fits",
+   "decode": 37.93,
+   "quote": null,
+   "prefill": 490.9,
+   "vram": 30512,
+   "error": ""
+  },
+  {
+   "model": "lcpp6-q38-27b-cyber-q5",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "V100 alone, Q5_K_M, four 80k slots with 8-bit K/V; the load fails: no room for the 1.46 GiB prompt-processing buffer after weights and cache (out of memory)",
+   "decode": null,
+   "quote": null,
+   "prefill": null,
+   "vram": null,
+   "error": "does not fit: out of memory at load"
+  },
+  {
+   "model": "lcpp6-q38-27b-cyber-mtp",
+   "engine": "llama.cpp Clover 4838ffb",
+   "variant": "V100 alone, everything on the GPU, IQ4_XS (MTP draft head present but not used), four 96k slots with 8-bit K/V, flash attention on, greedy, V100 at 200 W; short benchmark; decode 36.3 tok/s, first token 0.45-0.54 s on short prompts; 90k retrieval correct (first token 208 s, about 434 tok/s prefill); quality check 3 of 3; four ~90k prompts at once, all four correct, read one after another (about 400 tok/s each), first tokens 214, 427, 640 and 850 s, then 32.0 tok/s total while all four decode (about 8 per session); free 2.7 GiB after the longest prefill, fits. Four-bit gives more context and more speed than Q5 on this card; whether it is as competent is not yet measured",
+   "decode": 32.01,
+   "quote": null,
+   "prefill": 421.3,
+   "vram": 29988,
+   "error": ""
   }
  ],
  "tests": [
@@ -9648,6 +9726,29 @@
    ],
    "quality": "Cyber-Tiel: 2 of 4 clean (both test 1); Nemotron thinking on: 1 of 4 clean (test 2). Both labyrinths 0/10 after a time stop.",
    "caveat": "One run per shape. A clean harness finish is not proof of competence; the labyrinth results are graded as they stood at the stop."
+  },
+  {
+   "date": "2026-11-13",
+   "title": "Flash-Next on the 3090 passes two OpenCode agents at once at 256k; a Cyber 27B fits four ~90k sessions on the V100 alone, slowly",
+   "kind": "tuning",
+   "summary": "Alex now wants two separate backends: a smart model on the 3090 with system RAM, and an uncensored Cyber model fully on the V100 with four sessions and as much context as practical. Smart lane: Flash-Next UD-Q2_0 on the 3090 alone (two 256k slots, 8-bit K/V, a 28 GiB session cache in host RAM, never disk) ran OpenCode test 1 and test 2 at the same time with thinking on. Test 1 passes all five live checks with 17 subcommands (our grader could not import its own test suite, so its tests are not counted); test 2 builds, exposes 9 tools, returns recorded data and passes 168 of its own tests. Both finished on their own inside the time caps: 64 and 71 minutes, 37.6 and 50.5 tok/s agent-run (48.1 and 57.3 tok/s decode), first token median 0.94 and 0.74 s, largest prompts about 189k and 217k tokens. A parked 189k-token session came back from host RAM with its first token in 0.89 s. Cyber lane, short benchmarks on the V100 alone: Qwen3.8-27B Cyber Q5_K_M fits four 64k slots (2.2 GiB free) but not four 80k; the IQ4_XS quant fits four 96k slots (2.7 GiB free) and is faster (36.3 vs 28.6 tok/s on one session). With four long prompts the card reads them one at a time at about 400-490 tok/s, so the last of four ~90k prompts waits 14 minutes for its first token, and four sessions decode at about 8-9.5 tok/s each.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Agent-run decode per session, Flash-Next UD-Q2_0, two OpenCode agents at once on the 3090 (lowest)",
+     "before": null,
+     "after": 48.1,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Cyber 27B IQ4_XS on the V100, four ~90k sessions decoding at once (total)",
+     "before": null,
+     "after": 32.0,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Flash-Next: 2 of 2 clean (test 1 all live checks, test 2 with recorded data). Cyber 27B: quick quality check 3 of 3 and long-context recall correct on both quants; no agent tests yet.",
+   "caveat": "One run per shape. The two lanes were tested one at a time, not running together yet. Cyber four-session rates are short benchmarks, not agent runs."
   }
  ],
  "amend": [
