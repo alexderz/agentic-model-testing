@@ -1,7 +1,7 @@
 {
  "schema": "history/1",
- "generated_from": "private bake-off grades through 2026-11-08: Flash-Next Unsloth v3.1 round 1, the 3090 + V100 serving tuning and the Flash-Next 150 tok/s serving goal (Strata 0.2.12 through round 21 and a Strata 0.2.13 engine check, code and JSON benchmarks with a quality check, a 256k slot and four-stream totals, DFlash2 window and confidence, sampled decoding, llamAmpere with four slots, K/V cache in host RAM, parallel slots that fit, thinking-on sampled decoding, a dual-card Tiel-Coder Q6 serving check, llamAmpere 0.6.3.2 and 0.6.3.8, the daily driver's agent test 1, 2, 2T and 7 runs, UD-Q3_K_XL test 1, 2 and 2T runs, session switching with a host-RAM session cache, two 256k agent slots, the agent serving profile (parked 155k sessions, four 120k streams, two agents at once on tests 1 and 2, a 30-minute idle resume), the UD-Q3_K_XL test 7 run, Arete-27B test 1 on the V100, the V100 peer tier with four agent slots, the UD-Q2_0 speed check, its agent test 1, 2, 2T and 7 runs and its agent-profile check, GSQ IQ3_S agent tests 1, 2 and 7, GSQ IQ3_XXS agent tests 1, 2 and 7, Arete-27B test 2 on the V100, Tiel-Coder Q6 agent test 1 with thinking on and off and tests 2 and 7 with thinking off, test 7 again with context pruning and test 2T with thinking off, the TensorFold 1.2.7 release at 128k and 176k and Nemotron 3.5 Lightning NVFP4 on its RTX 30 fallback, Arete-27B test 7 on the V100, the largest contexts on the V100 alone for Arete Q6_K and Q8_0, Tiel-Coder Q6 and Flash-Next UD-Q2_0 on Strata, Flash-Next UD-Q2_0 with eight and four ~240k sessions at once across both cards, the Unsloth Dynamic V3.1 re-upload of Qwen3.8-27B UD-Q4_K_M against the old file on short benchmarks and agent test 1, webAI's TwIL-8B balanced Q4_K_M and verbose Q8_0 on one 3090, Nex-N2.6 Q2_K across both cards with experts in RAM, the RustingStrata 1.2.1 engine on Flash-Next UD-Q2_K_XL, Arete-27B Q6_K with three 256k slots across both cards, Arete-27B Q8_0 with two 256k slots across both cards, Tiel-Coder Q6 and the abliterated Cyber-Tiel-Coder with four 256k slots across both cards at ~240k, ~120k and ~60k, 16-bit K/V on four sessions for Tiel-Coder Q6 and Q4 and Nemotron 3.5 Lightning Q8_0, ThinkingCap-27B Heretic with four 256k slots, four OpenCode agents at once on Nemotron 3.5 Lightning, Flint Preview with four 256k slots, the MACaQ-R refinement of Qwen3.6-35B-A3B UD-Q4_K_XL against its Unsloth parent, Flash-Next UD-Q2_0 with two active 256k sessions and four parked ~248k sessions in host RAM and with three 256k sessions across both cards, Nemotron 3.5 Lightning with four ~60k sessions, one-shot pagodas and eight- and four-slot fits); runs from 2026-10-07 on",
- "generated": "2026-11-13 19:07 CST",
+ "generated_from": "private bake-off grades through 2026-11-08: Flash-Next Unsloth v3.1 round 1, the 3090 + V100 serving tuning and the Flash-Next 150 tok/s serving goal (Strata 0.2.12 through round 21 and a Strata 0.2.13 engine check, code and JSON benchmarks with a quality check, a 256k slot and four-stream totals, DFlash2 window and confidence, sampled decoding, llamAmpere with four slots, K/V cache in host RAM, parallel slots that fit, thinking-on sampled decoding, a dual-card Tiel-Coder Q6 serving check, llamAmpere 0.6.3.2 and 0.6.3.8, the daily driver's agent test 1, 2, 2T and 7 runs, UD-Q3_K_XL test 1, 2 and 2T runs, session switching with a host-RAM session cache, two 256k agent slots, the agent serving profile (parked 155k sessions, four 120k streams, two agents at once on tests 1 and 2, a 30-minute idle resume), the UD-Q3_K_XL test 7 run, Arete-27B test 1 on the V100, the V100 peer tier with four agent slots, the UD-Q2_0 speed check, its agent test 1, 2, 2T and 7 runs and its agent-profile check, GSQ IQ3_S agent tests 1, 2 and 7, GSQ IQ3_XXS agent tests 1, 2 and 7, Arete-27B test 2 on the V100, Tiel-Coder Q6 agent test 1 with thinking on and off and tests 2 and 7 with thinking off, test 7 again with context pruning and test 2T with thinking off, the TensorFold 1.2.7 release at 128k and 176k and Nemotron 3.5 Lightning NVFP4 on its RTX 30 fallback, Arete-27B test 7 on the V100, the largest contexts on the V100 alone for Arete Q6_K and Q8_0, Tiel-Coder Q6 and Flash-Next UD-Q2_0 on Strata, Flash-Next UD-Q2_0 with eight and four ~240k sessions at once across both cards, the Unsloth Dynamic V3.1 re-upload of Qwen3.8-27B UD-Q4_K_M against the old file on short benchmarks and agent test 1, webAI's TwIL-8B balanced Q4_K_M and verbose Q8_0 on one 3090, Nex-N2.6 Q2_K across both cards with experts in RAM, the RustingStrata 1.2.1 engine on Flash-Next UD-Q2_K_XL, Arete-27B Q6_K with three 256k slots across both cards, Arete-27B Q8_0 with two 256k slots across both cards, Tiel-Coder Q6 and the abliterated Cyber-Tiel-Coder with four 256k slots across both cards at ~240k, ~120k and ~60k, 16-bit K/V on four sessions for Tiel-Coder Q6 and Q4 and Nemotron 3.5 Lightning Q8_0, ThinkingCap-27B Heretic with four 256k slots, four OpenCode agents at once on Nemotron 3.5 Lightning, Flint Preview with four 256k slots, the MACaQ-R refinement of Qwen3.6-35B-A3B UD-Q4_K_XL against its Unsloth parent, Flash-Next UD-Q2_0 with two active 256k sessions and four parked ~248k sessions in host RAM and with three 256k sessions across both cards, Nemotron 3.5 Lightning with four ~60k sessions, four OpenCode agents at once on Nemotron 3.5 Lightning with thinking on and on the abliterated Cyber-Tiel-Coder, one-shot pagodas and eight- and four-slot fits); runs from 2026-10-07 on",
+ "generated": "2026-11-13 21:21 CST",
  "runs_new": [
   {
    "case": "wa-saluki-27b-iq2",
@@ -3726,6 +3726,150 @@
     "rust_errors": 266,
     "loc": 930,
     "errors_per_kloc": 288.2
+   }
+  },
+  {
+   "case": "mm-0l3-dual-nemotron35-lightning-30b-a3b-q8-ctx1m-par4-f16kv-hold-4agents-think-t1-t2-t7-t1-p1",
+   "model": "lcpp-nemotron35-lightning-q8-3090-v100",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 0,
+   "tests_pass": 13,
+   "tests_fail": 0,
+   "subcmds": 0,
+   "tps": 30.2,
+   "minutes": 17,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "f16",
+   "verdict": "fail",
+   "finished": "2026-11-12 19:37",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 780,
+    "errors_per_kloc": 1.3
+   }
+  },
+  {
+   "case": "mm-0l3-dual-nemotron35-lightning-30b-a3b-q8-ctx1m-par4-f16kv-hold-4agents-think-t1-t2-t7-t1-p4",
+   "model": "lcpp-nemotron35-lightning-q8-3090-v100",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 2,
+   "tests_pass": 17,
+   "tests_fail": 0,
+   "subcmds": 5,
+   "tps": 31.4,
+   "minutes": 22,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "f16",
+   "verdict": "fail",
+   "finished": "2026-11-12 19:42",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 663,
+    "errors_per_kloc": 13.6
+   }
+  },
+  {
+   "case": "mm-0l3-dual-nemotron35-lightning-30b-a3b-q8-ctx1m-par4-f16kv-hold-4agents-think-t1-t2-t7-t1-p2",
+   "model": "lcpp-nemotron35-lightning-q8-3090-v100",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 12,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 38.0,
+   "minutes": 29,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "f16",
+   "verdict": "pass",
+   "finished": "2026-11-12 19:49",
+   "struggle": {
+    "compiles": 40,
+    "failed_compiles": 12,
+    "rust_errors": 87,
+    "loc": 652,
+    "errors_per_kloc": 133.4
+   }
+  },
+  {
+   "case": "mm-0l5-dual-cybertiel35b-abl-q6kxl-ctx512k-par4-f16kv-hold-4agents-nothink-t1-t2-t7-t1-p1",
+   "model": "lcpp-cybertiel35b-abl-q6kxl-3090-v100",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 18,
+   "tests_fail": 0,
+   "subcmds": 7,
+   "tps": 33.0,
+   "minutes": 10,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "f16",
+   "verdict": "pass",
+   "finished": "2026-11-13 18:27",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 857,
+    "errors_per_kloc": 2.3
+   }
+  },
+  {
+   "case": "mm-0l5-dual-cybertiel35b-abl-q6kxl-ctx512k-par4-f16kv-hold-4agents-nothink-t1-t2-t7-t1-p4",
+   "model": "lcpp-cybertiel35b-abl-q6kxl-3090-v100",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 31,
+   "tests_fail": 0,
+   "subcmds": 7,
+   "tps": 28.9,
+   "minutes": 21,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "f16",
+   "verdict": "pass",
+   "finished": "2026-11-13 18:39",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 977,
+    "errors_per_kloc": 2.0
+   }
+  },
+  {
+   "case": "mm-0l5-dual-cybertiel35b-abl-q6kxl-ctx512k-par4-f16kv-hold-4agents-nothink-t1-t2-t7-t1-p2",
+   "model": "lcpp-cybertiel35b-abl-q6kxl-3090-v100",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 18,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 35.2,
+   "minutes": 21,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "f16",
+   "verdict": "partial",
+   "finished": "2026-11-13 18:38",
+   "struggle": {
+    "compiles": 25,
+    "failed_compiles": 20,
+    "rust_errors": 628,
+    "loc": 1376,
+    "errors_per_kloc": 456.4
    }
   }
  ],
@@ -9481,6 +9625,29 @@
    ],
    "quality": "Marker recall only; no agent work graded on these shapes yet. Two OpenCode agents on the two-slot shape are queued.",
    "caveat": "Short benchmarks, one run each, cards power-capped until a bigger power supply is in. A total rate divided by the session count is not a per-session rate."
+  },
+  {
+   "date": "2026-11-13",
+   "title": "Four agents at once again: Cyber-Tiel-Coder passes both test 1 runs, Nemotron with thinking on passes test 2, and neither finishes the labyrinth inside the new time cap",
+   "kind": "tuning",
+   "summary": "Two more four-agent rounds on one load across both cards (OpenCode, tests 1, 2, 7 and test 1 again). Nemotron 3.5 Lightning Q8_0 with thinking on: test 2 builds, returns recorded data and passes its own 12 tests, but both test 1 runs miss most live checks, and the labyrinth agent was still looping after 22 hours, so it was stopped under Alex's new duration policy and scored 0 (its generator never finds a path). Cyber-Tiel-Coder 35B-A3B abliterated UD-Q6_K_XL with thinking off: both test 1 runs pass every live check (18 and 31 of their own tests), test 2 builds and passes 18 tests but its main read tool returns no recorded data, and the labyrinth agent was stopped automatically at the 3-hour cap having written a generator script but never the required ./generate program, so it scored 0. Agent-run rates: Cyber-Tiel sessions 28.9-35.2 tok/s each while four ran, the labyrinth about 95 tok/s per request once alone, first token median 6.6 s (Nemotron thinking on: 30.2-38.0 tok/s per session, first token median 0.59 s). Every session ran without a harness error.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Agent-run decode per session, Cyber-Tiel-Coder, four OpenCode agents at once (lowest)",
+     "before": null,
+     "after": 28.9,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Agent-run decode per session, Nemotron 3.5 Lightning thinking on, four at once (lowest)",
+     "before": null,
+     "after": 30.2,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Cyber-Tiel: 2 of 4 clean (both test 1); Nemotron thinking on: 1 of 4 clean (test 2). Both labyrinths 0/10 after a time stop.",
+   "caveat": "One run per shape. A clean harness finish is not proof of competence; the labyrinth results are graded as they stood at the stop."
   }
  ],
  "amend": [

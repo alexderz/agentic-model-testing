@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-11-13 19:07 CST",
- "built": "2026-11-13 19:07 CST",
+ "generated": "2026-11-13 21:21 CST",
+ "built": "2026-11-13 21:21 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -144,6 +144,29 @@
    ],
    "quality": "Marker recall only; no agent work graded on these shapes yet. Two OpenCode agents on the two-slot shape are queued.",
    "caveat": "Short benchmarks, one run each, cards power-capped until a bigger power supply is in. A total rate divided by the session count is not a per-session rate."
+  },
+  {
+   "date": "2026-11-13",
+   "title": "Four agents at once again: Cyber-Tiel-Coder passes both test 1 runs, Nemotron with thinking on passes test 2, and neither finishes the labyrinth inside the new time cap",
+   "kind": "tuning",
+   "summary": "Two more four-agent rounds on one load across both cards (OpenCode, tests 1, 2, 7 and test 1 again). Nemotron 3.5 Lightning Q8_0 with thinking on: test 2 builds, returns recorded data and passes its own 12 tests, but both test 1 runs miss most live checks, and the labyrinth agent was still looping after 22 hours, so it was stopped under Alex's new duration policy and scored 0 (its generator never finds a path). Cyber-Tiel-Coder 35B-A3B abliterated UD-Q6_K_XL with thinking off: both test 1 runs pass every live check (18 and 31 of their own tests), test 2 builds and passes 18 tests but its main read tool returns no recorded data, and the labyrinth agent was stopped automatically at the 3-hour cap having written a generator script but never the required ./generate program, so it scored 0. Agent-run rates: Cyber-Tiel sessions 28.9-35.2 tok/s each while four ran, the labyrinth about 95 tok/s per request once alone, first token median 6.6 s (Nemotron thinking on: 30.2-38.0 tok/s per session, first token median 0.59 s). Every session ran without a harness error.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Agent-run decode per session, Cyber-Tiel-Coder, four OpenCode agents at once (lowest)",
+     "before": null,
+     "after": 28.9,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Agent-run decode per session, Nemotron 3.5 Lightning thinking on, four at once (lowest)",
+     "before": null,
+     "after": 30.2,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Cyber-Tiel: 2 of 4 clean (both test 1); Nemotron thinking on: 1 of 4 clean (test 2). Both labyrinths 0/10 after a time stop.",
+   "caveat": "One run per shape. A clean harness finish is not proof of competence; the labyrinth results are graded as they stood at the stop."
   },
   {
    "date": "2026-11-12",
@@ -12892,6 +12915,150 @@
     "loc": 930,
     "errors_per_kloc": 288.2
    }
+  },
+  {
+   "case": "mm-0l3-dual-nemotron35-lightning-30b-a3b-q8-ctx1m-par4-f16kv-hold-4agents-think-t1-t2-t7-t1-p1",
+   "model": "lcpp-nemotron35-lightning-q8-3090-v100",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 0,
+   "tests_pass": 13,
+   "tests_fail": 0,
+   "subcmds": 0,
+   "tps": 30.2,
+   "minutes": 17,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "f16",
+   "verdict": "fail",
+   "finished": "2026-11-12 19:37",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 780,
+    "errors_per_kloc": 1.3
+   }
+  },
+  {
+   "case": "mm-0l3-dual-nemotron35-lightning-30b-a3b-q8-ctx1m-par4-f16kv-hold-4agents-think-t1-t2-t7-t1-p4",
+   "model": "lcpp-nemotron35-lightning-q8-3090-v100",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 2,
+   "tests_pass": 17,
+   "tests_fail": 0,
+   "subcmds": 5,
+   "tps": 31.4,
+   "minutes": 22,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "f16",
+   "verdict": "fail",
+   "finished": "2026-11-12 19:42",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 663,
+    "errors_per_kloc": 13.6
+   }
+  },
+  {
+   "case": "mm-0l3-dual-nemotron35-lightning-30b-a3b-q8-ctx1m-par4-f16kv-hold-4agents-think-t1-t2-t7-t1-p2",
+   "model": "lcpp-nemotron35-lightning-q8-3090-v100",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 12,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 38.0,
+   "minutes": 29,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "f16",
+   "verdict": "pass",
+   "finished": "2026-11-12 19:49",
+   "struggle": {
+    "compiles": 40,
+    "failed_compiles": 12,
+    "rust_errors": 87,
+    "loc": 652,
+    "errors_per_kloc": 133.4
+   }
+  },
+  {
+   "case": "mm-0l5-dual-cybertiel35b-abl-q6kxl-ctx512k-par4-f16kv-hold-4agents-nothink-t1-t2-t7-t1-p1",
+   "model": "lcpp-cybertiel35b-abl-q6kxl-3090-v100",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 18,
+   "tests_fail": 0,
+   "subcmds": 7,
+   "tps": 33.0,
+   "minutes": 10,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "f16",
+   "verdict": "pass",
+   "finished": "2026-11-13 18:27",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 857,
+    "errors_per_kloc": 2.3
+   }
+  },
+  {
+   "case": "mm-0l5-dual-cybertiel35b-abl-q6kxl-ctx512k-par4-f16kv-hold-4agents-nothink-t1-t2-t7-t1-p4",
+   "model": "lcpp-cybertiel35b-abl-q6kxl-3090-v100",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 31,
+   "tests_fail": 0,
+   "subcmds": 7,
+   "tps": 28.9,
+   "minutes": 21,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "f16",
+   "verdict": "pass",
+   "finished": "2026-11-13 18:39",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 977,
+    "errors_per_kloc": 2.0
+   }
+  },
+  {
+   "case": "mm-0l5-dual-cybertiel35b-abl-q6kxl-ctx512k-par4-f16kv-hold-4agents-nothink-t1-t2-t7-t1-p2",
+   "model": "lcpp-cybertiel35b-abl-q6kxl-3090-v100",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 18,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 35.2,
+   "minutes": 21,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "f16",
+   "verdict": "partial",
+   "finished": "2026-11-13 18:38",
+   "struggle": {
+    "compiles": 25,
+    "failed_compiles": 20,
+    "rust_errors": 628,
+    "loc": 1376,
+    "errors_per_kloc": 456.4
+   }
   }
  ],
  "test3": [
@@ -22408,16 +22575,56 @@
     "note": "Thinking off, one of four OpenCode sessions at once on one load (tests 1, 2 and 1 again beside it for the first 40 minutes). It handed in a generator, a maze and notes after 117 minutes, but the maze fails the first rule: six cells on floor 2 have a wall on one side with no matching wall in the next cell, so the later rules were not checked, and none of 10 hidden seeds pass. Walk and notes not judged yet. Agent-run decode 61.1 tok/s.",
     "frames": [],
     "live": null
+   },
+   {
+    "case": "mm-0l3-dual-nemotron35-lightning-30b-a3b-q8-ctx1m-par4-f16kv-hold-4agents-think-t1-t2-t7-t1-p3",
+    "entry": "lcpp-nemotron35-lightning-q8-3090-v100",
+    "test": 7,
+    "finish": "stopped by policy",
+    "tokens": 6187006.0,
+    "wall_s": 79770.0,
+    "tok_s": 77.56,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "Thinking on, one of four OpenCode sessions at once on one load (tests 1, 2 and 1 again beside it). Still looping after 22.2 hours, so it was stopped under the 3-hour duration policy and graded as it stood: its generator exits with 'Could not find solution path' on all 10 hidden seeds, and there is no maze or notes. Agent-run decode 109.1 tok/s per request (client side), first token median 0.59 s.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "mm-0l5-dual-cybertiel35b-abl-q6kxl-ctx512k-par4-f16kv-hold-4agents-nothink-t1-t2-t7-t1-p3",
+    "entry": "lcpp-cybertiel35b-abl-q6kxl-3090-v100",
+    "test": 7,
+    "finish": "stopped at the 3-hour cap",
+    "tokens": 366120.0,
+    "wall_s": 10805.5,
+    "tok_s": 33.89,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "Thinking off, one of four OpenCode sessions at once on one load (tests 1, 2 and 1 again beside it for the first ~21 minutes). Stopped automatically at the 3-hour cap. It wrote a generator script but never the required ./generate program, so every hidden seed fails, and there is no maze or notes. Agent-run decode 81.2 tok/s per request (client side), first token median 6.6 s.",
+    "frames": [],
+    "live": null
    }
   ]
  },
  "counts": {
   "models": 145,
-  "runs": 359,
+  "runs": 365,
   "test3": 86,
-  "oneshots": 167,
+  "oneshots": 169,
   "frames": 310,
-  "pass": 266,
+  "pass": 269,
   "live": 100
  }
 }
