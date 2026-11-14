@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-11-14 04:14 CST",
- "built": "2026-11-14 04:14 CST",
+ "generated": "2026-11-14 07:51 CST",
+ "built": "2026-11-14 07:51 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -155,6 +155,29 @@
    ],
    "quality": "2 of 2 handed in: test 2 full pass (8 tools, 132/0); test 7 8 of 10.",
    "caveat": "One run. Rates are agent runs measured by the client, not short benchmarks. Same model and serving shape as the earlier tests 1 and 2 pair; this run adds the longer test 7 and the largest prompts so far."
+  },
+  {
+   "date": "2026-11-14",
+   "title": "Flash-Next UD-Q4_K_XL, two long OpenCode agents at once on one 3090: work passes, about 20-27 tok/s each",
+   "kind": "model",
+   "summary": "The 4-bit Flash-Next core with its stock n-gram table (two 256k sessions, 8-bit K/V, 28 GiB host-RAM session park, never disk) ran test 2 and the test 7 labyrinth at the same time with thinking on, with the same tasks, settings and time caps as the UD-Q2_0 pair. Test 2 built a Rust MCP server with 13 tools and 246 of its own tests passing (about 10,000 lines), but it was still working when the automatic 3-hour cap stopped it, so it was graded as it stood; UD-Q2_0 handed in the same task after 50 minutes. The labyrinth handed in after 141 minutes and scored 9 of 10: showcase, 10 of 10 hidden seeds and extra credit full marks, the walk 1 (stairs spread, no entrance tunnel, checkpoints at junctions, but most side passages are one-cell niches) and notes 2 (the pasted verifier output, the showcase and the stated 1000-seed test all reproduce exactly). Agent-run decode 26.9 and 19.9 tok/s per session (client side), first token median 2.1 s and 1.9 s, no request errors and no compaction; the largest prompt reached 216,905 tokens. 3.1 GiB free on the 3090 at peak. A matched run with an 8-bit n-gram table on the same core is under way.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Agent-run decode per session, Flash-Next UD-Q4_K_XL stock table, test 2 beside test 7 on one 3090",
+     "before": 61.2,
+     "after": 26.9,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Agent-run decode per session, Flash-Next UD-Q4_K_XL stock table, test 7 beside test 2",
+     "before": 53.9,
+     "after": 19.9,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Test 2 work passes in full (13 tools, 246/0) but stopped at the 3-hour cap; test 7 9 of 10.",
+   "caveat": "One run. 'Before' is UD-Q2_0 on the same pair of tasks and settings. Rates are agent runs measured by the client, not short benchmarks; the two sessions overlapped for 141 minutes. The n-gram table is read from SSD with direct I/O here, while the UD-Q2_0 runs held it in RAM."
   },
   {
    "date": "2026-11-13",
@@ -4625,6 +4648,32 @@
    "kind": "abliterated",
    "uncensored": true,
    "note": "The uncensored Cyber 27B held entirely on the V100 (no system RAM) with four 96k sessions, tested as the candidate Cyber backend beside Flash-Next on the 3090. MTP draft head present but drafting off. Short benchmark: 36.3 tok/s decode on one session, first token 0.45-0.54 s; 90k retrieval correct; four ~90k prompts read one after another at about 400 tok/s each, then about 8 tok/s per session with all four decoding; 2.7 GiB free. Four OpenCode agents at once (thinking off): one of four passed.",
+   "vision": null
+  },
+  "strata0213-fnb-v31-udq4kxl-stocktable": {
+   "id": "strata0213-fnb-v31-udq4kxl-stocktable",
+   "family": "Qwen3.8 Flash-Next",
+   "label": "Flash-Next UD-Q4_K_XL (Unsloth Dynamic v3.1), stock n-gram table · Strata 0.2.13, RTX 3090, two 256k sessions, 8-bit KV",
+   "base": "Qwen/Qwen3.8-Flash-Next",
+   "arch": "MoE",
+   "engine": "Strata 0.2.13",
+   "quant": "Unsloth UD-Q4_K_XL v3.1 (103.7 GiB), its own IQ4_NL per-layer n-gram table",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "Flash-Next UD-Q4_K_XL (Unsloth Dynamic v3.1, 103.7 GiB) on Strata 0.2.13, one RTX 3090 at 300 W with experts streamed from host RAM, MTP draft head, two 256k slots with 8-bit K/V and a 28 GiB host-RAM session park (never disk), the per-layer n-gram table read from local SSD (direct I/O). The 4-bit core with the n-gram table it ships with; the control arm of a matched comparison against the same core with an 8-bit table. Two ~240k prompts at once (short benchmark): both needles correct, 48.3 tok/s total while both decode (27.9 and 18.9 per session), first tokens 269 and 107 s, 3.1 GiB free. Two long OpenCode agents at once (tests 2 and 7): test 2 builds a 13-tool server with 246 of its own tests passing but was still working at the 3-hour cap; the labyrinth scores 9 of 10. Agent-run decode 26.9 and 19.9 tok/s per session (client side), first token median 2.1 and 1.9 s, about 40% of UD-Q2_0 on the same pair.",
+   "vision": null
+  },
+  "strata0213-fnb-v31-udq4kxl-q8table": {
+   "id": "strata0213-fnb-v31-udq4kxl-q8table",
+   "family": "Qwen3.8 Flash-Next",
+   "label": "Flash-Next UD-Q4_K_XL (Unsloth Dynamic v3.1), 8-bit n-gram table · Strata 0.2.13, RTX 3090, two 256k sessions, 8-bit KV",
+   "base": "Qwen/Qwen3.8-Flash-Next",
+   "arch": "MoE",
+   "engine": "Strata 0.2.13",
+   "quant": "Unsloth UD-Q4_K_XL v3.1 core (103.7 GiB) with the Q8_0 per-layer n-gram table from Unsloth's UD-Q6_K_XL upload (50.7 GiB)",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "Flash-Next UD-Q4_K_XL (Unsloth Dynamic v3.1, 103.7 GiB) on Strata 0.2.13, one RTX 3090 at 300 W with experts streamed from host RAM, MTP draft head, two 256k slots with 8-bit K/V and a 28 GiB host-RAM session park (never disk), the per-layer n-gram table read from local SSD (direct I/O). Same core and settings as the stock-table version; only the n-gram table differs (Q8_0 instead of IQ4_NL). Two ~240k prompts at once (short benchmark): both needles correct, 51.2 tok/s total while both decode (27.9 and 19.7 per session), first tokens 272 and 108 s, 3.1 GiB free, so the bigger table costs nothing measurable in speed or VRAM here. Its long two-agent run is under way; quality is not measured yet.",
    "vision": null
   }
  },
@@ -13267,6 +13316,30 @@
     "loc": 4996,
     "errors_per_kloc": 14.8
    }
+  },
+  {
+   "case": "mm-0m2a-fnbq4-udq4kxl-stocktable-pledirect-b2-ctx256k-park28g-hold-longagents-t2-t7-p1",
+   "model": "strata0213-fnb-v31-udq4kxl-stocktable",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 246,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 24.92,
+   "minutes": 180,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-14 07:41",
+   "struggle": {
+    "compiles": 44,
+    "failed_compiles": 31,
+    "rust_errors": 135,
+    "loc": 10093,
+    "errors_per_kloc": 13.4
+   }
   }
  ],
  "test3": [
@@ -17159,6 +17232,26 @@
    "prefill": 400.7,
    "vram": 32436,
    "error": "fit rule miss: 332 MiB free on the V100 after four ~106k prefills, under the 512 MiB floor"
+  },
+  {
+   "model": "strata0213-fnb-v31-udq4kxl-stocktable",
+   "engine": "Strata 0.2.13",
+   "variant": "Flash-Next UD-Q4_K_XL with its stock IQ4_NL n-gram table, one 3090, two 256k slots, 8-bit K/V, 28 GiB RAM park, table read with direct I/O; short benchmark; two ~240k prompts at once, both needles correct, read one after another (about 1,490 and 2,260 tok/s), first tokens 269 and 107 s, then 48.3 tok/s total while both decode (27.9 and 18.9 per session); short prompt 29.9 tok/s, first token 1.5 s; draft accept 0.68; 3.1 GiB free after the longest prefill, fits",
+   "decode": 48.27,
+   "quote": null,
+   "prefill": 1489.0,
+   "vram": 21378,
+   "error": ""
+  },
+  {
+   "model": "strata0213-fnb-v31-udq4kxl-q8table",
+   "engine": "Strata 0.2.13",
+   "variant": "Same as the stock-table row except the n-gram table is Q8_0; short benchmark; two ~240k prompts at once, both needles correct, about 1,470 and 2,230 tok/s prefill, first tokens 272 and 108 s, then 51.2 tok/s total while both decode (27.9 and 19.7 per session); short prompt 32.5 tok/s, first token 1.5 s; draft accept 0.67; 3.1 GiB free after the longest prefill, fits. Speed and VRAM match the stock table within noise",
+   "decode": 51.21,
+   "quote": null,
+   "prefill": 1472.7,
+   "vram": 21356,
+   "error": ""
   }
  ],
  "engines": [
@@ -22913,16 +23006,36 @@
     "note": "Vaults of the Turned Stair. Thinking on, one of two OpenCode sessions at once on one load (test 2 beside it for the first 50 minutes), 256k session. Showcase reproduces, 10 of 10 hidden seeds give distinct passing mazes, extra credit met. D 1 from the map checker only: stairs evenly spread, checkpoints at junctions and real side passages (16 of 106 side openings run six cells or more, the deepest 18), but the entrance runs 29 cells before the first choice. E 1: the pasted verifier output, the showcase and every stated test command reproduce (6000 of 6000 seeds), but the notes name the third checkpoint wrongly. Agent-run decode 53.9 tok/s per request (client side), first token median 0.73 s; tok_s here is output tokens over wall time. One round.",
     "frames": [],
     "live": null
+   },
+   {
+    "case": "mm-0m2a-fnbq4-udq4kxl-stocktable-pledirect-b2-ctx256k-park28g-hold-longagents-t2-t7-p2",
+    "entry": "strata0213-fnb-v31-udq4kxl-stocktable",
+    "test": 7,
+    "finish": "agent done",
+    "tokens": 145304.0,
+    "wall_s": 8449.0,
+    "tok_s": 17.2,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 1.0,
+     "E": 2.0
+    },
+    "total": 9.0,
+    "note": "Labyrinth of the Six Ladders. Thinking on, one of two OpenCode sessions at once on one load (test 2 beside it throughout), 256k session, Flash-Next UD-Q4_K_XL with its stock n-gram table. Showcase reproduces, 10 of 10 hidden seeds give distinct passing mazes, extra credit met. D 1 from the map checker only: no entrance tunnel, stairs spread along the route and checkpoints at junctions, but 89 of 144 side openings are a single dead-end cell and only 8 run six cells or more (the deepest 10). E 2: the pasted verifier output, the showcase (also under different hash seeds), the edge seeds and the stated 200- and 1000-seed test commands all reproduce, with the same ranges. Agent-run decode 19.9 tok/s per request (client side), first token median 1.9 s; tok_s here is output tokens over wall time. One round.",
+    "frames": [],
+    "live": null
    }
   ]
  },
  "counts": {
-  "models": 146,
-  "runs": 371,
+  "models": 148,
+  "runs": 372,
   "test3": 86,
-  "oneshots": 171,
+  "oneshots": 172,
   "frames": 310,
-  "pass": 273,
+  "pass": 274,
   "live": 100
  }
 }
