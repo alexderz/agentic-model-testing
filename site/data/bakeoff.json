@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-11-14 07:51 CST",
- "built": "2026-11-14 07:51 CST",
+ "generated": "2026-11-14 10:52 CST",
+ "built": "2026-11-14 10:52 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -178,6 +178,29 @@
    ],
    "quality": "Test 2 work passes in full (13 tools, 246/0) but stopped at the 3-hour cap; test 7 9 of 10.",
    "caveat": "One run. 'Before' is UD-Q2_0 on the same pair of tasks and settings. Rates are agent runs measured by the client, not short benchmarks; the two sessions overlapped for 141 minutes. The n-gram table is read from SSD with direct I/O here, while the UD-Q2_0 runs held it in RAM."
+  },
+  {
+   "date": "2026-11-14",
+   "title": "Flash-Next UD-Q4_K_XL with an 8-bit n-gram table, two long OpenCode agents at once on one 3090: same speed as the stock table",
+   "kind": "model",
+   "summary": "The matched second arm: the same 4-bit Flash-Next core, serving shape, tasks and time caps as the stock-table run, with only the per-layer n-gram table swapped for an 8-bit one. Test 2 handed in after 154 minutes: a Rust MCP server with 9 tools and 104 of its own tests passing (about 6,800 lines), with fewer compiler errors on the way (5.6 per thousand lines against 13.4). The test 7 labyrinth was still working when the automatic 3-hour cap stopped it: its generator gives 10 of 10 distinct passing mazes on hidden seeds with extra credit met, but it never wrote the showcase maze or its notes, so it scores 5 of 10 (showcase 0, notes 0; the walk 1, judged on generated mazes: stairs spread and checkpoints at junctions, but every side passage is shallow). Agent-run decode 23.1 and 20.9 tok/s per session (client side), first token median 1.7 s, no request errors and no compaction; 3.1 GiB free on the 3090 at peak. Against the stock table (26.9 and 19.9 tok/s) the speed is the same within noise, and the two arms each finished a different one of the two tasks.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Agent-run decode per session, test 2 beside test 7, stock table vs 8-bit table",
+     "before": 26.9,
+     "after": 23.1,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Agent-run decode per session, test 7 beside test 2, stock table vs 8-bit table",
+     "before": 19.9,
+     "after": 20.9,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Test 2 full pass (9 tools, 104/0) handed in at 154 min; test 7 5 of 10, stopped at the 3-hour cap with no showcase or notes.",
+   "caveat": "One run per arm, so the split outcome says nothing reliable about the table's effect on quality. 'Before' is the stock-table arm on the same tasks and settings. Rates are agent runs measured by the client, not short benchmarks."
   },
   {
    "date": "2026-11-13",
@@ -4673,7 +4696,7 @@
    "quant": "Unsloth UD-Q4_K_XL v3.1 core (103.7 GiB) with the Q8_0 per-layer n-gram table from Unsloth's UD-Q6_K_XL upload (50.7 GiB)",
    "kind": "stock",
    "uncensored": false,
-   "note": "Flash-Next UD-Q4_K_XL (Unsloth Dynamic v3.1, 103.7 GiB) on Strata 0.2.13, one RTX 3090 at 300 W with experts streamed from host RAM, MTP draft head, two 256k slots with 8-bit K/V and a 28 GiB host-RAM session park (never disk), the per-layer n-gram table read from local SSD (direct I/O). Same core and settings as the stock-table version; only the n-gram table differs (Q8_0 instead of IQ4_NL). Two ~240k prompts at once (short benchmark): both needles correct, 51.2 tok/s total while both decode (27.9 and 19.7 per session), first tokens 272 and 108 s, 3.1 GiB free, so the bigger table costs nothing measurable in speed or VRAM here. Its long two-agent run is under way; quality is not measured yet.",
+   "note": "Flash-Next UD-Q4_K_XL (Unsloth Dynamic v3.1, 103.7 GiB) on Strata 0.2.13, one RTX 3090 at 300 W with experts streamed from host RAM, MTP draft head, two 256k slots with 8-bit K/V and a 28 GiB host-RAM session park (never disk), the per-layer n-gram table read from local SSD (direct I/O). Same core and settings as the stock-table version; only the n-gram table differs (Q8_0 instead of IQ4_NL). Two ~240k prompts at once (short benchmark): both needles correct, 51.2 tok/s total while both decode (27.9 and 19.7 per session), first tokens 272 and 108 s, 3.1 GiB free, so the bigger table costs nothing measurable in speed or VRAM here. Two long OpenCode agents at once (tests 2 and 7): test 2 handed in after 154 minutes with a 9-tool server and 104 of its own tests passing; the labyrinth was still unfinished at the 3-hour cap (working generator, no showcase maze or notes) and scores 5 of 10. Agent-run decode 23.1 and 20.9 tok/s per session (client side), first token median 1.7 s, the same speed as the stock table.",
    "vision": null
   }
  },
@@ -13339,6 +13362,30 @@
     "rust_errors": 135,
     "loc": 10093,
     "errors_per_kloc": 13.4
+   }
+  },
+  {
+   "case": "mm-0m2b-fnbq4-udq4kxl-q8table-pledirect-b2-ctx256k-park28g-hold-longagents-t2-t7-p1",
+   "model": "strata0213-fnb-v31-udq4kxl-q8table",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 104,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 21.33,
+   "minutes": 154.3,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-14 10:16",
+   "struggle": {
+    "compiles": 37,
+    "failed_compiles": 12,
+    "rust_errors": 38,
+    "loc": 6766,
+    "errors_per_kloc": 5.6
    }
   }
  ],
@@ -23026,16 +23073,36 @@
     "note": "Labyrinth of the Six Ladders. Thinking on, one of two OpenCode sessions at once on one load (test 2 beside it throughout), 256k session, Flash-Next UD-Q4_K_XL with its stock n-gram table. Showcase reproduces, 10 of 10 hidden seeds give distinct passing mazes, extra credit met. D 1 from the map checker only: no entrance tunnel, stairs spread along the route and checkpoints at junctions, but 89 of 144 side openings are a single dead-end cell and only 8 run six cells or more (the deepest 10). E 2: the pasted verifier output, the showcase (also under different hash seeds), the edge seeds and the stated 200- and 1000-seed test commands all reproduce, with the same ranges. Agent-run decode 19.9 tok/s per request (client side), first token median 1.9 s; tok_s here is output tokens over wall time. One round.",
     "frames": [],
     "live": null
+   },
+   {
+    "case": "mm-0m2b-fnbq4-udq4kxl-q8table-pledirect-b2-ctx256k-park28g-hold-longagents-t2-t7-p2",
+    "entry": "strata0213-fnb-v31-udq4kxl-q8table",
+    "test": 7,
+    "finish": "stopped at the 3-hour cap",
+    "tokens": 168608.0,
+    "wall_s": 10805.6,
+    "tok_s": 15.55,
+    "points": {
+     "A": 0.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 1.0,
+     "E": 0.0
+    },
+    "total": 5.0,
+    "note": "Thinking on, one of two OpenCode sessions at once on one load (test 2 beside it for the first 154 minutes), 256k session, Flash-Next UD-Q4_K_XL with an 8-bit n-gram table. Stopped automatically at the 3-hour cap. Its ./generate gives 10 of 10 distinct passing mazes on hidden seeds and meets the extra credit, but it never wrote the showcase maze, its seed or the notes, so the showcase and notes score 0. D 1 from the map checker on two generated mazes (there is no showcase to walk): stairs spread along the route and checkpoints at junctions, no long entrance tunnel, but every side passage is shallow (the deepest 10-11 cells). Agent-run decode 20.9 tok/s per request (client side), first token median 1.7 s; tok_s here is output tokens over wall time. One round.",
+    "frames": [],
+    "live": null
    }
   ]
  },
  "counts": {
   "models": 148,
-  "runs": 372,
+  "runs": 373,
   "test3": 86,
-  "oneshots": 172,
+  "oneshots": 173,
   "frames": 310,
-  "pass": 274,
+  "pass": 275,
   "live": 100
  }
 }
