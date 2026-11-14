@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-11-13 23:58 CST",
- "built": "2026-11-13 23:58 CST",
+ "generated": "2026-11-14 02:52 CST",
+ "built": "2026-11-14 02:52 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -116,6 +116,23 @@
   }
  ],
  "findings": [
+  {
+   "date": "2026-11-14",
+   "title": "Four OpenCode agents at once on the Cyber 27B, fully on the V100: one of four passes, about 9-10 tok/s each",
+   "kind": "model",
+   "summary": "The uncensored Qwen3.8-27B Cyber IQ4_XS held entirely on the V100 (four 96k slots, 8-bit K/V, no system RAM) ran four OpenCode agents at once with thinking off: test 1 twice, test 2 and test 7, under the automatic time caps. One test 1 run passed all five live checks with 27 of its own tests passing and 5 subcommands, after 133 minutes (it spent a long stretch repeating one malformed shell command before recovering). The other test 1 run left an empty work folder at its 148-minute cap, test 2 never started a project before the 3-hour cap, and the test 7 generator crashes on all 10 hidden seeds (0 of 10). Agent-run decode 8.7-10.1 tok/s per session on the client side, first token median 1.6-1.9 s for tests 1 and 2 and 8.0 s for test 7, no request errors, 2.7 GiB free on the V100 at peak.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Agent-run decode per session, Cyber 27B IQ4_XS, four OpenCode agents at once on the V100 (lowest)",
+     "before": null,
+     "after": 8.7,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "1 of 4 clean (one test 1 pass); test 1, test 2 and test 7 failures at the caps.",
+   "caveat": "One run. Thinking off, matching the Cyber-Tiel four-agent run. Rates are agent runs measured by the client, not short benchmarks; the four sessions shared one card the whole time."
+  },
   {
    "date": "2026-11-13",
    "title": "Flash-Next at 500k to 1M total context: it fits and recalls, but no shape gives every session 40 tok/s yet",
@@ -4572,6 +4589,19 @@
    "kind": "abliterated",
    "uncensored": true,
    "note": "A 122 GB base checkpoint run with its experts in system RAM on both cards. Short-benchmark rates: 14.5-14.8 tok/s decode, first token 5-11 s on short prompts, about 66 tok/s prefill at 30k. It fails the format check by repeating the chat prompt as a new user turn, gets the 30k retrieval wrong, and runs every reply on into an invented next turn, as an untuned base model does. Not usable for agent work on these cards.",
+   "vision": null
+  },
+  "lcpp-q38-27b-cyber-iq4xs-v100-4x96k": {
+   "id": "lcpp-q38-27b-cyber-iq4xs-v100-4x96k",
+   "family": "Qwen3.8 27B",
+   "label": "Qwen3.8-27B Cyber (abliterated) IQ4_XS · llama.cpp (Clover 4838ffb), V100 alone, four 96k slots, 8-bit KV",
+   "base": "Qwen/Qwen3.8-27B",
+   "arch": "dense 27B",
+   "engine": "llama.cpp Clover 4838ffb",
+   "quant": "IQ4_XS",
+   "kind": "abliterated",
+   "uncensored": true,
+   "note": "The uncensored Cyber 27B held entirely on the V100 (no system RAM) with four 96k sessions, tested as the candidate Cyber backend beside Flash-Next on the 3090. MTP draft head present but drafting off. Short benchmark: 36.3 tok/s decode on one session, first token 0.45-0.54 s; 90k retrieval correct; four ~90k prompts read one after another at about 400 tok/s each, then about 8 tok/s per session with all four decoding; 2.7 GiB free. Four OpenCode agents at once (thinking off): one of four passed.",
    "vision": null
   }
  },
@@ -13130,6 +13160,66 @@
     "loc": 7555,
     "errors_per_kloc": 6.1
    }
+  },
+  {
+   "case": "mm-0l8a-v100-cyber27b-iq4xs-4x96k-q8kv-hold-4agents-nothink-t1-t2-t7-t1-p1",
+   "model": "lcpp-q38-27b-cyber-iq4xs-v100-4x96k",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 27,
+   "tests_fail": 0,
+   "subcmds": 5,
+   "tps": 7.6,
+   "minutes": 133,
+   "compactions": null,
+   "ctx": 98304,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-14 01:53",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 587,
+    "errors_per_kloc": 8.5
+   }
+  },
+  {
+   "case": "mm-0l8a-v100-cyber27b-iq4xs-4x96k-q8kv-hold-4agents-nothink-t1-t2-t7-t1-p4",
+   "model": "lcpp-q38-27b-cyber-iq4xs-v100-4x96k",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 0,
+   "tests_pass": null,
+   "tests_fail": null,
+   "subcmds": 0,
+   "tps": 7.6,
+   "minutes": 148,
+   "compactions": null,
+   "ctx": 98304,
+   "kv": "q8_0",
+   "verdict": "fail",
+   "finished": "2026-11-14 02:07",
+   "struggle": null
+  },
+  {
+   "case": "mm-0l8a-v100-cyber27b-iq4xs-4x96k-q8kv-hold-4agents-nothink-t1-t2-t7-t1-p2",
+   "model": "lcpp-q38-27b-cyber-iq4xs-v100-4x96k",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": null,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 7.8,
+   "minutes": 180,
+   "compactions": null,
+   "ctx": 98304,
+   "kv": "q8_0",
+   "verdict": "fail",
+   "finished": "2026-11-14 02:40",
+   "struggle": null
   }
  ],
  "test3": [
@@ -22736,16 +22826,36 @@
     "note": "Thinking off, one of four OpenCode sessions at once on one load (tests 1, 2 and 1 again beside it for the first ~21 minutes). Stopped automatically at the 3-hour cap. It wrote a generator script but never the required ./generate program, so every hidden seed fails, and there is no maze or notes. Agent-run decode 81.2 tok/s per request (client side), first token median 6.6 s.",
     "frames": [],
     "live": null
+   },
+   {
+    "case": "mm-0l8a-v100-cyber27b-iq4xs-4x96k-q8kv-hold-4agents-nothink-t1-t2-t7-t1-p3",
+    "entry": "lcpp-q38-27b-cyber-iq4xs-v100-4x96k",
+    "test": 7,
+    "finish": "stopped at the 3-hour cap",
+    "tokens": 85205.0,
+    "wall_s": 10805.5,
+    "tok_s": 7.89,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "Thinking off, on the V100 alone, one of four OpenCode sessions at once on one load (tests 1, 2 and 1 again beside it). Stopped automatically at the 3-hour cap. It wrote a ./generate program, but it crashes on all 10 hidden seeds, and there is no maze or notes. Agent-run decode 8.7 tok/s per request (client side), first token median 8.0 s.",
+    "frames": [],
+    "live": null
    }
   ]
  },
  "counts": {
-  "models": 145,
-  "runs": 367,
+  "models": 146,
+  "runs": 370,
   "test3": 86,
-  "oneshots": 169,
+  "oneshots": 170,
   "frames": 310,
-  "pass": 271,
+  "pass": 272,
   "live": 100
  }
 }
