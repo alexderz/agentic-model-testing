@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Voxel Pagoda — 五重塔</title>
+<style>
+  :root{ --ink:#f7efe4; --muted:rgba(247,239,228,.6); }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; height:100%; overflow:hidden; background:#0a0c10; color:var(--ink);
+    font-family:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif; }
+  #app{ position:fixed; inset:0; } canvas{ display:block; }
+
+  .vignette{ position:fixed; inset:0; pointer-events:none; z-index:2;
+    background:radial-gradient(130% 100% at 50% 42%, transparent 52%, rgba(8,10,16,.5) 100%); }
+
+  .hud{ position:fixed; top:26px; left:32px; z-index:3; pointer-events:none;
+    animation:rise 1.4s cubic-bezier(.2,.7,.2,1) both .2s; }
+  .kicker{ font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+    font-size:13px; letter-spacing:.5em; text-transform:uppercase; color:#f0a7b8; margin-bottom:12px; }
+  .title{ margin:0; font-weight:600; font-size:clamp(38px,6.4vw,74px); line-height:.92; letter-spacing:.01em;
+    text-shadow:0 2px 30px rgba(0,0,0,.55); }
+  .sub{ margin-top:14px; font-size:15px; color:var(--muted); max-width:34ch; line-height:1.6; }
+
+  .legend{ position:fixed; left:32px; bottom:28px; z-index:3; display:flex; gap:20px; flex-wrap:wrap;
+    font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN",sans-serif; font-size:12.5px; letter-spacing:.06em;
+    color:var(--muted); animation:rise 1.4s cubic-bezier(.2,.7,.2,1) both .5s; }
+  .legend b{ display:block; color:var(--ink); font-weight:600; font-size:13px; letter-spacing:.1em; margin-bottom:3px; }
+
+  #loader{ position:fixed; inset:0; z-index:5; display:flex; align-items:center; justify-content:center;
+    background:#0a0c10; transition:opacity .9s ease; font-family:"Noto Sans JP",sans-serif;
+    letter-spacing:.4em; color:#f0a7b8; font-size:13px; }
+
+  @keyframes rise{ from{ opacity:0; transform:translateY(16px);} to{ opacity:1; transform:none;} }
+</style>
+</head>
+<body>
+  <div id="app"></div>
+  <div class="vignette"></div>
+
+  <header class="hud">
+    <div class="kicker">Voxel · Three.js · Cubes only</div>
+    <h1 class="title">五重塔</h1>
+    <p class="sub">A five-story pagoda on a stone plinth — cherry trees, a still pond, and a vermilion gate, all built from cubes.</p>
+  </header>
+
+  <footer class="legend">
+    <div><b>Camera</b>slow auto-orbit</div>
+    <div><b>Petals</b>drifting down</div>
+    <div><b>Build</b>every element from cubes</div>
+  </footer>
+
+  <div id="loader">loading the garden…</div>
+
+  <script type="importmap">
+  { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js" } }
+  </script>
+
+  <script type="module">
+  import * as THREE from 'three';
+
+  /* ---------- renderer / scene / camera ---------- */
+  const app = document.getElementById('app');
+  const renderer = new THREE.WebGLRenderer({ antialias:true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setSize(innerWidth, innerHeight);
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  app.appendChild(renderer.domElement);
+
+  const scene = new THREE.Scene();
+
+  // soft gradient sky (canvas texture) — a warm dusk horizon fading to deep blue
+  (function makeSky(){
+    const c=document.createElement('canvas'); c.width=8; c.height=256;
+    const x=c.getContext('2d');
+    const g=x.createLinearGradient(0,0,0,256);
+    g.addColorStop(0.00,'#141a2c'); g.addColorStop(0.42,'#37456b');
+    g.addColorStop(0.68,'#7f92bb'); g.addColorStop(0.85,'#dcb4b0'); g.addColorStop(1.00,'#f4cfbe');
+    x.fillStyle=g; x.fillRect(0,0,8,256);
+    const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; t.needsUpdate=true;
+    scene.background=t;
+  })();
+
+  scene.fog = new THREE.FogExp2(0x9fb0cf, 0.0135);
+
+  const camera = new THREE.PerspectiveCamera(46, innerWidth/innerHeight, 0.1, 200);
+  const target = new THREE.Vector3(0, 8.2, 0);
+
+  /* ---------- lights + shadows ---------- */
+  const hemi = new THREE.HemisphereLight(0xbcd0f5, 0x4a5236, 0.75);
+  scene.add(hemi);
+
+  const sun = new THREE.DirectionalLight(0xffe9c4, 2.1);
+  sun.position.set(24, 36, 18);
+  sun.castShadow = true;
+  sun.shadow.mapSize.set(2048, 2048);
+  sun.shadow.camera.near = 1; sun.shadow.camera.far = 140;
+  const S=55; sun.shadow.camera.left=-S; sun.shadow.camera.right=S; sun.shadow.camera.top=S; sun.shadow.camera.bottom=-S;
+  sun.shadow.bias=-0.00028; sun.shadow.normalBias=0.03; sun.shadow.radius=4;
+  sun.target.position.set(0,5,0);
+  scene.add(sun, sun.target);
+
+  const fill = new THREE.DirectionalLight(0x9fb4ff, 0.35);
+  fill.position.set(-20, 16, -24);
+  scene.add(fill);
+
+  /* ---------- helpers (all geometry is cubes) ---------- */
+  const boxGeo = new THREE.BoxGeometry(1,1,1);
+  function mat(hex, o={}){ return new THREE.MeshStandardMaterial({ color:hex, roughness:o.rough??0.85, metalness:o.metal??0.0 }); }
+  function addBox(parent,x,y,z,w,h,d,m){ const mesh=new THREE.Mesh(boxGeo,m); mesh.position.set(x,y,z); mesh.scale.set(w,h,d); parent.add(mesh); return mesh; }
+  function rand(a,b){ return a+Math.random()*(b-a); }
+
+  /* ---------- ground / stone platform ---------- */
+  const ground = new THREE.Mesh(boxGeo, mat(0x3c4a2f,{rough:1}));
+  ground.scale.set(200,1,200); ground.position.y=-0.5; ground.receiveShadow=true; scene.add(ground);
+
+  // stone platform (stacked shrinking tiers)
+  const plat = new THREE.Group(); scene.add(plat);
+  addBox(plat,0,0.30,0,17,0.6,17, mat(0x8d95a0));
+  addBox(plat,0,0.82,0,14,0.44,14, mat(0x9aa2ad));
+  // a few lighter inlaid stones for texture
+  for(let i=0;i<10;i++){ const a=i/10*Math.PI*2; addBox(plat,Math.cos(a)*5.6,1.05,Math.sin(a)*5.6,0.9,0.02,0.9, mat(0xa7aeb8)); }
+  // stone steps on the near side
+  for(let i=0;i<3;i++){ addBox(plat,0,0.12+i*0.24, 8.6-i*0.5, 3.4-0.4*i, 0.24, 0.5, mat(0x9aa2ad)); }
+
+  /* ---------- five-story pagoda ---------- */
+  const PAG = new THREE.Group(); scene.add(PAG);
+  const WHITE=mat(0xece4d3), DARKWOOD=mat(0x2b1f16), RED=mat(0xa02a1e,{rough:0.5}), GOLD=mat(0xc9a227,{metal:0.85,rough:0.3});
+  addBox(PAG,0,1.55,0,7.4,1.5,7.4, DARKWOOD);           // plinth block
+
+  function upturnedCorner(parent,cx,cz,w,d,h){
+    addBox(parent,cx,h/2,cz,w,h,d,RED);                  // corner post (upturn)
+    addBox(parent,cx,h/2+0.14,cz+w*0.35,w,0.28,d*0.7,RED);// small rafter step
+  }
+  function buildFloor(baseY,scale){
+    const wallW=6.2*scale, roofHalf=4.7*scale;
+    addBox(PAG,0,baseY+1.55,0,wallW,3.1,wallW,WHITE);     // body (walls)
+    for(const sx of [-1,1]) for(const sz of [-1,1])        // corner posts
+      addBox(PAG,sx*wallW/2,baseY+1.55,sz*wallW/2,0.34*scale,3.1,0.34*scale,DARKWOOD);
+    for(let i=-2;i<=2;i++){                               // latticed panels
+      if(i===0) continue;
+      addBox(PAG,i*1.05*scale,baseY+1.55, wallW/2+0.02, 0.34*scale,2.3,0.16, DARKWOOD);
+      addBox(PAG,i*1.05*scale,baseY+1.55,-wallW/2-0.02, 0.34*scale,2.3,0.16, DARKWOOD);
+      addBox(PAG, wallW/2+0.02,baseY+1.55,i*1.05*scale, 0.16,2.3,0.34*scale, DARKWOOD);
+      addBox(PAG,-wallW/2-0.02,baseY+1.55,i*1.05*scale, 0.16,2.3,0.34*scale, DARKWOOD);
+    }
+    for(let a=0;a<Math.PI*2;a+=Math.PI/8){                // eave under-layer (slightly larger)
+      const r=(roofHalf-0.5)*scale;
+      addBox(PAG,Math.cos(a)*r,baseY+3.18,Math.sin(a)*r,1.7*scale,0.24,1.7*scale,RED);
+    }
+    for(let a=0;a<Math.PI*2;a+=Math.PI/16){               // main eave (largest)
+      const r=roofHalf*scale;
+      addBox(PAG,Math.cos(a)*r,baseY+3.34,Math.sin(a)*r,1.5*scale,0.22,1.5*scale,RED);
+    }
+    for(const s of [1,-1]){                               // straight edge runs
+      addBox(PAG, 0, baseY+3.34, s*roofHalf*scale, roofHalf*2*scale-1, 0.22, 1.5*scale, RED);
+      addBox(PAG, s*roofHalf*scale, baseY+3.34, 0, 1.5*scale, 0.22, roofHalf*2*scale-1, RED);
+    }
+    const c=roofHalf*scale;                               // upturned corners
+    upturnedCorner(PAG, c,c,1.6*scale,1.6*scale,0.9*scale);
+    upturnedCorner(PAG,-c,c,1.6*scale,1.6*scale,0.9*scale);
+    upturnedCorner(PAG, c,-c,1.6*scale,1.6*scale,0.9*scale);
+    upturnedCorner(PAG,-c,-c,1.6*scale,1.6*scale,0.9*scale);
+  }
+  const scales=[1.0,0.85,0.72,0.60,0.48];
+  for(let i=0;i<5;i++) buildFloor(2.3+i*2.8, scales[i]);
+
+  // spire (sōrin) — stacked shrinking cubes + golden rings + jewel
+  let y=16.3; addBox(PAG,0,y,0,1.4,0.9,1.4,DARKWOOD);
+  for(let i=0;i<7;i++){ const s=1.2-i*0.15; y+=0.55; addBox(PAG,0,y,0,s,0.32,s,GOLD); }
+  y+=0.9; addBox(PAG,0,y,0,0.4,1.2,0.4,DARKWOOD); y+=1.1;
+  addBox(PAG,0,y,0,0.7,0.7,0.7,GOLD); y+=0.9;
+  const finial=addBox(PAG,0,y,0,0.34,0.62,0.34,GOLD);
+
+  /* ---------- red torii gate (on the path) ---------- */
+  function buildTorii(g,x,z,s=1){
+    g.position.set(x,0,z);
+    const postH=5.6*s, span=5.4*s;
+    for(const sx of [-1,1]) addBox(g,sx*span/2,postH/2,0,0.5*s,postH,0.5*s,RED);
+    // kasagi (top beam) with slight upward curve + shimagi purlin under it
+    for(let i=-6;i<=6;i++){ const t=i/6; addBox(g,t*span/2, postH+0.35*s+t*t*0.5*s, 0, 0.7*s,0.42*s,1.0*s,RED); }
+    for(let i=-6;i<=6;i++){ const t=i/6; addBox(g,t*(span/2-0.2), postH-0.35*s+t*t*0.28*s, 0, 0.7*s,0.34*s,1.0*s,RED); }
+    addBox(g,0,postH+0.9*s,0,0.55*s,0.6*s,0.55*s,RED);     // top post caps + center strut
+    addBox(g,0,postH-0.32*s,0,0.42*s,0.7*s,0.42*s,RED);
+  }
+
+  /* ---------- pond (dark water + stone edging) ---------- */
+  const pond = new THREE.Group(); scene.add(pond);
+  const water = addBox(pond,13,-0.12,-8,15,0.2,11, mat(0x24506e,{rough:0.12,metal:0.35}));
+  water.receiveShadow=true;
+  // stone edging ring (slightly lighter)
+  for(let a=0;a<Math.PI*2;a+=Math.PI/14){ const r=7.4; addBox(pond,13+Math.cos(a)*r,0.05,-8+Math.sin(a)*r*0.78,0.9,0.16,0.9, mat(0x8d95a0)); }
+  // stepping stones to the water
+  for(let i=0;i<3;i++){ const t=i/2; addBox(pond, 4+t*4, 0.06, -3-t*2, 1.2,0.12,1.2, mat(0x9aa2ad)); }
+
+  /* ---------- cherry trees (trunk from cubes, blossom cloud of cubes) ---------- */
+  function trunk(g,x,z,h){
+    let y=0,w=0.6;
+    while(y<h){ addBox(g,x,y+0.3,z,w,0.6,w, mat(0x5a4632)); y+=0.55; w*=0.86; }
+  }
+  function blossom(x,y,z,s=1,color=0xf3c3d4){
+    const m=mat(color,{rough:0.9});
+    addBox(PAG,x,y,z,1.2*s,1.2*s,1.2*s,m);   // temp parent; re-parented below
+  }
+  function cherryTree(x,z,s){
+    const g=new THREE.Group(); g.position.set(x,0,z); scene.add(g);
+    trunk(g,0,0,3.4*s);
+    addBox(g,1.2*s,2.6*s,0.6*s,0.5*s,0.5*s,0.5*s,mat(0x5a4632)); // branch
+    const puffs=[[-0.2,4.8,0.2,2.7],[1.7,4.3,-0.9,1.9],[-1.7,4.4,0.7,2.0],[0.5,5.6,0.9,1.7],[-0.8,5.2,-1.3,1.5]];
+    for(const [px,py,pz,r] of puffs){
+      const col = Math.random()<0.4?0xf6cdd9:0xf3c3d4;
+      addBox(g,px*s,(py)*s,pz*s, r*s*1.15, r*s, r*s*1.15, mat(col,{rough:0.9}));
+    }
+  }
+
+  /* ---------- stone lantern (garden accent) ---------- */
+  function lantern(x,z){
+    const g=new THREE.Group(); g.position.set(x,0,z); scene.add(g);
+    const st=mat(0x8d95a0), lit=mat(0xffe6ad,{rough:0.4});
+    addBox(g,0,0.3,0,1.2,0.6,1.2,st); addBox(g,0,1.1,0,0.5,1.0,0.5,st);
+    addBox(g,0,1.9,0,0.9,0.7,0.9,lit); // glowing light box (lit by bloom)
+    addBox(g,0,2.45,0,1.3,0.3,1.3,st); addBox(g,0,2.75,0,0.4,0.4,0.4,st);
+  }
+
+  /* ---------- place props ---------- */
+  buildTorii(toriiRoot=new THREE.Group(), 0, 13, 1.0); scene.add(toriiRoot);
+  cherryTree(-8, 9, 1.05);
+  cherryTree(9.5, 6, 1.25);
+  cherryTree(-7.5,-4, 0.95);
+  lantern(6, 11); lantern(-6, 11);
+
+  /* ---------- drifting petals (instanced cubes) ---------- */
+  const PCOUNT=130;
+  const petalMat = mat(0xf7cfe0,{rough:0.85, side:THREE.DoubleSide});
+  const petals = new THREE.InstancedMesh(boxGeo, petalMat, PCOUNT);
+  scene.add(petals);
+  const dummy=new THREE.Object3D();
+  const P=[]; for(let i=0;i<PCOUNT;i++) P.push(new THREE.Vector3(rand(-16,16),rand(2,22),rand(-16,16)));
+
+  /* ---------- bloom (petals + lantern light glow) ---------- */
+  import('https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/postprocessing/EffectComposer.js')
+    .then(async ({EffectComposer})=>{
+      const {RenderPass}=await import('https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/postprocessing/RenderPass.js');
+      const {UnrealBloomPass}=await import('https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/postprocessing/UnrealBloomPass.js');
+      const {OutputPass}=await import('https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/postprocessing/OutputPass.js');
+
+      composer=new EffectComposer(renderer);
+      composer.addPass(new RenderPass(scene,camera));
+      bloomPass=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight), 0.55, 0.7, 0.86);
+      composer.addPass(bloomPass);
+      composer.addPass(new OutputPass());
+
+      // make the petals + lantern light boxes glow a little by boosting their emissive
+      petalMat.emissive=new THREE.Color(0xffcfe2).multiplyScalar(0.35);
+      scene.traverse(o=>{ if(o.isMesh && o.material.color.getHex()===0xffe6ad) o.material.emissive=new THREE.Color(0xffe0a8).multiplyScalar(0.9); });
+
+      useComposer=true;
+      document.getElementById('loader').style.opacity=0;
+    })
+    .catch(()=>{ /* no addons? fall back to plain render */ document.getElementById('loader').style.opacity=0; });
+
+  let composer=null, bloomPass=null, useComposer=false;
+
+  /* ---------- animate ---------- */
+  const clock=new THREE.Clock();
+  const spin=(o,s)=>{ o.rotation.y+=s*clock.getDelta()*0+0; }; // (kept simple)
+  function loop(){
+    requestAnimationFrame(loop);
+    const dt=Math.min(clock.getDelta(),0.05);
+    const t=clock.elapsedTime;
+
+    // slow orbit
+    const a=t*0.12, R=30, H=17+Math.sin(t*0.1)*2.2;
+    camera.position.set(Math.cos(a)*R, H, Math.sin(a)*R);
+    camera.lookAt(target);
+
+    // petals drift down + swirl, respawn at top
+    for(let i=0;i<PCOUNT;i++){
+      const p=P[i];
+      p.y -= (0.5+Math.sin(i*12.9898)*0.35+0.4) * dt;          // gentle fall
+      p.x += Math.sin(t*0.6+i*1.7)*0.012 + 0.006*dt*60;        // wind sway + drift
+      p.z += Math.cos(t*0.5+i*2.3)*0.012;
+      if(p.y < -0.4){ p.y=rand(20,26); p.x=rand(-16,16); p.z=rand(-16,16); }
+      dummy.position.copy(p);
+      dummy.rotation.set(t*0.7+i, t*0.5+i*0.9, Math.sin(t*0.8+i)*0.8); // tumbling spin
+      const s=0.24+((i%3)*0.02);
+      dummy.scale.setScalar(s);
+      dummy.updateMatrix();
+      petals.setMatrixAt(i,dummy.matrix);
+    }
+    petals.instanceMatrix.needsUpdate=true;
+
+    if(useComposer && composer) composer.render(); else renderer.render(scene,camera);
+  }
+  loop();
+
+  /* ---------- resize ---------- */
+  addEventListener('resize', ()=>{
+    camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix();
+    renderer.setSize(innerWidth,innerHeight);
+    if(composer) composer.setSize(innerWidth,innerHeight);
+    if(bloomPass) bloomPass.resolution.set(innerWidth,innerHeight);
+  });
+  </script>
+</body>
+</html>

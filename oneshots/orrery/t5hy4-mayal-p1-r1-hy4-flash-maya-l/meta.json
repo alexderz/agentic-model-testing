@@ -1,0 +1,47 @@
+{
+ "case": "t5hy4-mayal-p1-r1-hy4-flash-maya-l",
+ "model": "hy4-flash-maya-l",
+ "test": "test5",
+ "max_tokens": 128000,
+ "timeout_s": 36000,
+ "started": "2026-11-19T19:53:33-0600",
+ "status": "ok",
+ "finish_reason": "stop",
+ "usage": {
+  "prompt_tokens": 71,
+  "completion_tokens": 26318,
+  "total_tokens": 26389,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  }
+ },
+ "timings": {
+  "cache_n": 0,
+  "prompt_n": 71,
+  "prompt_ms": 843.2,
+  "prompt_per_token_ms": 11.876,
+  "prompt_per_second": 84.2,
+  "predicted_n": 26318,
+  "predicted_ms": 1292005.7,
+  "predicted_per_token_ms": 49.092,
+  "predicted_per_second": 20.4,
+  "draft_n": 21033,
+  "draft_n_accepted": 16865
+ },
+ "static": {
+  "svg_found": true,
+  "parses": true,
+  "bytes": 15465,
+  "animateTransform": 0,
+  "animate": 0,
+  "animateMotion": 0,
+  "keyframes": 2,
+  "script": 0,
+  "prose_chars_outside_svg": 814
+ },
+ "wall_s": 1292.9,
+ "first_token_s": 0.9,
+ "tok_s": 20.4,
+ "reply_chars": 16279,
+ "reasoning_chars": 62199
+}

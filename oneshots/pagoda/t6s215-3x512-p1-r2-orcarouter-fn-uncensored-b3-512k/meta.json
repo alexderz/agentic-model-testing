@@ -1,0 +1,51 @@
+{
+ "case": "t6s215-3x512-p1-r2-orcarouter-fn-uncensored-b3-512k",
+ "model": "orcarouter-fn-uncensored-b3-512k",
+ "test": "test6-pagoda",
+ "max_tokens": 128000,
+ "timeout_s": 36000,
+ "started": "2026-11-17T23:11:39-0600",
+ "status": "ok",
+ "finish_reason": "stop",
+ "usage": {
+  "prompt_tokens": 156,
+  "completion_tokens": 6016,
+  "total_tokens": 6172,
+  "prompt_tokens_details": {
+   "cached_tokens": 149
+  }
+ },
+ "timings": {
+  "cache_n": 149,
+  "prompt_n": 7,
+  "prompt_ms": 270.5,
+  "prompt_per_token_ms": 38.643,
+  "prompt_per_second": 25.9,
+  "predicted_n": 6016,
+  "predicted_ms": 303167.2,
+  "predicted_per_token_ms": 50.393,
+  "predicted_per_second": 19.8,
+  "draft_n": 0,
+  "draft_n_accepted": 0
+ },
+ "static": {
+  "html_found": true,
+  "bytes": 15288,
+  "complete": true,
+  "three_module": true,
+  "importmap": true,
+  "umd_three": false,
+  "external_urls": [
+   "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+   "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/controls/OrbitControls.js"
+  ],
+  "boxes": 2,
+  "instanced": false,
+  "prose_chars_outside_html": 351
+ },
+ "wall_s": 303.5,
+ "first_token_s": 0.3,
+ "tok_s": 19.8,
+ "reply_chars": 15610,
+ "reasoning_chars": 0
+}

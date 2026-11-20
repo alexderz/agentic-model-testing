@@ -1,0 +1,41 @@
+{
+ "case": "t5s215-3x512-p1-r1-orcarouter-fn-uncensored-b3-512k-fix1",
+ "source_case": "t5s215-3x512-p1-r1-orcarouter-fn-uncensored-b3-512k",
+ "model": "orcarouter-fn-uncensored-b3-512k",
+ "test": "test5-orrery-repair1",
+ "max_tokens": 128000,
+ "timeout_s": 36000,
+ "feedback": "Your reply was cut off before the SVG file was complete, so there is nothing to open. Reply with the complete SVG file, as the task asked.",
+ "started": "2026-11-18T09:57:50-0600",
+ "status": "ok",
+ "finish_reason": "stop",
+ "usage": {
+  "prompt_tokens": 128106,
+  "completion_tokens": 127645,
+  "total_tokens": 255751,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  }
+ },
+ "timings": {
+  "cache_n": 0,
+  "prompt_n": 128106,
+  "prompt_ms": 67879.0,
+  "prompt_per_token_ms": 0.53,
+  "prompt_per_second": 1887.3,
+  "predicted_n": 127645,
+  "predicted_ms": 2582366.3,
+  "predicted_per_token_ms": 20.231,
+  "predicted_per_second": 49.4,
+  "draft_n": 80895,
+  "draft_n_accepted": 79303
+ },
+ "static": {
+  "svg_found": false,
+  "truncated": true
+ },
+ "wall_s": 2656.6,
+ "first_token_s": 74.0,
+ "tok_s": 49.4,
+ "reply_chars": 136847
+}

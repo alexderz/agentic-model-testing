@@ -1,0 +1,39 @@
+{
+ "case": "t6ls1-mm-orcarouter-fn-uncensored",
+ "model": "orcarouter-fn-uncensored",
+ "test": "test6-pagoda",
+ "max_tokens": 128000,
+ "timeout_s": 36000,
+ "started": "2026-11-15T20:46:54-0600",
+ "status": "ok",
+ "finish_reason": "stop",
+ "usage": {
+  "completion_tokens": 5313,
+  "prompt_tokens": 156,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  },
+  "total_tokens": 5469
+ },
+ "timings": null,
+ "static": {
+  "html_found": true,
+  "bytes": 12733,
+  "complete": true,
+  "three_module": true,
+  "importmap": true,
+  "umd_three": false,
+  "external_urls": [
+   "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+   "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+  ],
+  "boxes": 2,
+  "instanced": false,
+  "prose_chars_outside_html": 774
+ },
+ "wall_s": 174.6,
+ "first_token_s": 3.0,
+ "tok_s": 31.0,
+ "reply_chars": 13491,
+ "reasoning_chars": 0
+}

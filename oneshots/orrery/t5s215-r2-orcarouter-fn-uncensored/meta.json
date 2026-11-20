@@ -1,0 +1,39 @@
+{
+ "case": "t5s215-r2-orcarouter-fn-uncensored",
+ "model": "orcarouter-fn-uncensored",
+ "test": "test5-orrery",
+ "max_tokens": 128000,
+ "timeout_s": 36000,
+ "started": "2026-11-17T19:06:17-0600",
+ "status": "ok",
+ "finish_reason": "stop",
+ "usage": {
+  "prompt_tokens": 61,
+  "completion_tokens": 103,
+  "total_tokens": 164,
+  "prompt_tokens_details": {
+   "cached_tokens": 54
+  }
+ },
+ "timings": {
+  "cache_n": 54,
+  "prompt_n": 7,
+  "prompt_ms": 72.1,
+  "prompt_per_token_ms": 10.3,
+  "prompt_per_second": 97.1,
+  "predicted_n": 103,
+  "predicted_ms": 932.6,
+  "predicted_per_token_ms": 9.054,
+  "predicted_per_second": 110.4,
+  "draft_n": 77,
+  "draft_n_accepted": 70
+ },
+ "static": {
+  "svg_found": false
+ },
+ "wall_s": 1.0,
+ "first_token_s": 0.1,
+ "tok_s": 112.0,
+ "reply_chars": 380,
+ "reasoning_chars": 0
+}

@@ -1,0 +1,39 @@
+{
+ "case": "t6rs1-strata121-orcarouter-fn-uncensored",
+ "model": "Qwen3.8-Flash-Next-Uncensored-IQ4_XS-00001-of-00003",
+ "test": "test6-pagoda",
+ "max_tokens": 128000,
+ "timeout_s": 36000,
+ "started": "2026-11-15T20:38:31-0600",
+ "status": "ok",
+ "finish_reason": "stop",
+ "usage": {
+  "completion_tokens": 5877,
+  "prompt_tokens": 156,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  },
+  "total_tokens": 6033
+ },
+ "timings": null,
+ "static": {
+  "html_found": true,
+  "bytes": 13832,
+  "complete": true,
+  "three_module": true,
+  "importmap": true,
+  "umd_three": false,
+  "external_urls": [
+   "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+   "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+  ],
+  "boxes": 1,
+  "instanced": false,
+  "prose_chars_outside_html": 975
+ },
+ "wall_s": 183.9,
+ "first_token_s": 2.7,
+ "tok_s": 32.4,
+ "reply_chars": 14794,
+ "reasoning_chars": 0
+}

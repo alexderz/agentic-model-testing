@@ -1,0 +1,52 @@
+{
+ "case": "t6s215-3x512-p2-r1-orcarouter-fn-uncensored-b3-512k-fix1",
+ "source_case": "t6s215-3x512-p2-r1-orcarouter-fn-uncensored-b3-512k",
+ "model": "orcarouter-fn-uncensored-b3-512k",
+ "test": "test6-pagoda-repair1",
+ "max_tokens": 128000,
+ "timeout_s": 36000,
+ "feedback": "I opened your file in a headless Chromium and let it run for 10 seconds. The JavaScript console reported:\n- Uncaught ReferenceError: Cannot access 'unitGeo' before initialization (your file, line 120)\n\nFix the file. Reply with the complete corrected HTML file.",
+ "started": "2026-11-18T09:57:50-0600",
+ "status": "ok",
+ "finish_reason": "stop",
+ "usage": {
+  "prompt_tokens": 6657,
+  "completion_tokens": 6012,
+  "total_tokens": 12669,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  }
+ },
+ "timings": {
+  "cache_n": 0,
+  "prompt_n": 6657,
+  "prompt_ms": 2781.1,
+  "prompt_per_token_ms": 0.418,
+  "prompt_per_second": 2393.7,
+  "predicted_n": 6012,
+  "predicted_ms": 383527.2,
+  "predicted_per_token_ms": 63.794,
+  "predicted_per_second": 15.7,
+  "draft_n": 0,
+  "draft_n_accepted": 0
+ },
+ "static": {
+  "html_found": true,
+  "bytes": 15699,
+  "complete": true,
+  "three_module": true,
+  "importmap": true,
+  "umd_three": false,
+  "external_urls": [
+   "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+   "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+  ],
+  "boxes": 3,
+  "instanced": true,
+  "prose_chars_outside_html": 313
+ },
+ "wall_s": 389.5,
+ "first_token_s": 6.0,
+ "tok_s": 15.7,
+ "reply_chars": 15974
+}

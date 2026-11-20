@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voxel Pagoda — a quiet dusk</title>
+<style>
+  html,body{margin:0;height:100%;background:#0b0f14;overflow:hidden;
+    font-family:ui-monospace,"SF Mono","Cascadia Code",Menlo,Consolas,monospace;}
+  #app{position:fixed;inset:0;}
+  canvas{display:block;}
+  .ui{position:fixed;z-index:10;color:#f4efe6;pointer-events:none;
+    text-shadow:0 1px 12px rgba(0,0,0,.55);}
+  .tl{top:26px;left:30px;}
+  .tl .k{font-size:11px;letter-spacing:.42em;color:#f2a9c4;opacity:.9;}
+  .tl h1{margin:.34em 0 0;font-weight:600;font-size:clamp(26px,4.4vw,46px);
+    letter-spacing:.01em;}
+  .tl .sub{margin-top:.55em;font-size:12px;letter-spacing:.16em;color:#cdd6df;opacity:.72;}
+  .br{bottom:24px;right:30px;text-align:right;font-size:11px;letter-spacing:.14em;
+    color:#cdd6df;opacity:.62;line-height:1.9;}
+  .br b{color:#f2a9c4;font-weight:600;}
+  .bl{bottom:24px;left:30px;font-size:11px;letter-spacing:.14em;color:#cdd6df;opacity:.5;}
+  .fade{animation:fade 1.4s ease both;}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="ui tl fade">
+  <div class="k">五重塔 · VOXEL</div>
+  <h1>A Quiet Dusk</h1>
+  <div class="sub">everything is a cube — lit, shadowed, turning</div>
+</div>
+<div class="ui br fade">
+  <div><b>drag</b> to look around</div>
+  <div><b>scroll</b> to zoom</div>
+  <div>camera drifts on its own</div>
+</div>
+<div class="ui bl fade">three.js · r0.186 · one file</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+/* ---------- renderer / scene / camera ---------- */
+const renderer = new THREE.WebGLRenderer({ antialias:true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+document.getElementById('app').appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.Fog(0xf0d9c6, 42, 150);
+
+const camera = new THREE.PerspectiveCamera(45, innerWidth/innerHeight, 0.1, 1000);
+camera.position.set(24, 15, 26);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.06;
+controls.autoRotate = true;
+controls.autoRotateSpeed = 0.55;
+controls.minDistance = 12;
+controls.maxDistance = 70;
+controls.maxPolarAngle = Math.PI * 0.49;
+controls.target.set(0, 7, 0);
+
+/* ---------- sky (vertex-coloured dome) ---------- */
+const skyGeo = new THREE.SphereGeometry(400, 32, 16);
+{
+  const pos = skyGeo.attributes.position, col = [];
+  const top = new THREE.Color(0x243a63), mid = new THREE.Color(0x8f7fb0), low = new THREE.Color(0xf3c9a2);
+  const c = new THREE.Color();
+  for (let i=0;i<pos.count;i++){
+    const t = Math.max(0, pos.getY(i)/400);
+    if (t < 0.35) c.copy(low).lerp(mid, t/0.35);
+    else c.copy(mid).lerp(top, (t-0.35)/0.65);
+    col.push(c.r, c.g, c.b);
+  }
+  skyGeo.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+}
+scene.add(new THREE.Mesh(skyGeo, new THREE.MeshBasicMaterial({ vertexColors:true, side:THREE.BackSide, fog:false })));
+
+/* ---------- lights ---------- */
+scene.add(new THREE.HemisphereLight(0xbcd0ff, 0x3a2f2a, 0.55));
+scene.add(new THREE.AmbientLight(0xffffff, 0.12));
+
+const sun = new THREE.DirectionalLight(0xffd9a8, 2.6);
+sun.position.set(34, 46, 22);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.camera.near = 1; sun.shadow.camera.far = 160;
+sun.shadow.camera.left = -40; sun.shadow.camera.right = 40;
+sun.shadow.camera.top = 40; sun.shadow.camera.bottom = -40;
+sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.02;
+scene.add(sun);
+
+const fill = new THREE.DirectionalLight(0x9fb4ff, 0.35);
+fill.position.set(-24, 18, -20);
+scene.add(fill);
+
+/* ---------- shared geometry + palette ---------- */
+const CUBE = new THREE.BoxGeometry(1,1,1);
+const PAL = {
+  stone:0x9a9a92, stoneDark:0x7c7c74, stoneLight:0xb4b4aa,
+  wood:0x8a3b2f, woodDark:0x6f2f26, woodLight:0xa24a3a,
+  gold:0xe6b23a, goldDark:0xc7922a,
+  leaf:0xf2a9c4, leafLight:0xfbd3e2, leafDeep:0xe08fb0,
+  trunk:0x5a4030, trunkDark:0x463226,
+  water:0x2f6f8f, waterDeep:0x245a76,
+  grass:0x5f7d4a, grassDark:0x516d40, grassLight:0x6f8f57,
+  lantern:0xffd27a, lanternGlow:0xffe6a8,
+  stoneLantern:0x8f8f88, stoneLanternDark:0x767670,
+  path:0xbdb6a6, pathDark:0xa89f8d,
+  rock:0x8b8b83, rockDark:0x74746c,
+  bridge:0x9a3b2f, bridgeDark:0x7c2f26,
+  petal:0xffc2d6, petalLight:0xffd9e6,
+};
+const matCache = {};
+function mat(hex, opts={}){
+  const key = hex+'|'+(opts.emissive||0)+'|'+(opts.emissiveIntensity||0)+'|'+(opts.transparent||false)+'|'+(opts.opacity||1);
+  if (matCache[key]) return matCache[key];
+  const m = new THREE.MeshStandardMaterial({ color:hex, roughness:opts.roughness??0.9, metalness:opts.metalness??0.0 });
+  if (opts.emissive){ m.emissive = new THREE.Color(opts.emissive); m.emissiveIntensity = opts.emissiveIntensity??1; }
+  if (opts.transparent){ m.transparent = true; m.opacity = opts.opacity??1; }
+  return matCache[key] = m;
+}
+function cube(x,y,z,s,material,cast=true,rec=true){
+  const m = new THREE.Mesh(CUBE, material);
+  m.position.set(x,y,z); m.scale.setScalar(s);
+  m.castShadow = cast; m.receiveShadow = rec;
+  return m;
+}
+function jitter(hex, arr, amt=0.05){
+  const c = new THREE.Color(hex);
+  const hsl = {}; c.getHSL(hsl);
+  c.setHSL(hsl.h, hsl.s, THREE.MathUtils.clamp(hsl.l + (Math.random()*2-1)*amt, 0, 1));
+  return arr[Math.floor(Math.random()*arr.length)] = c.getHex();
+}
+
+/* ---------- ground ---------- */
+const ground = new THREE.Group(); scene.add(ground);
+const G = 34;
+for (let x=-G;x<=G;x++) for (let z=-G;z<=G;z++){
+  const d = Math.hypot(x,z);
+  if (d > 30) continue;
+  const h = Math.max(0, (d-24)/6) * 0.5;
+  const hex = jitter(PAL.grass, [PAL.grass, PAL.grassDark, PAL.grassLight], 0.03);
+  ground.add(cube(x, h, z, 1, mat(hex), false, true));
+}
+
+/* ---------- stone platform ---------- */
+const plat = new THREE.Group(); scene.add(plat);
+const P = 11;
+for (let x=-P;x<=P;x++) for (let z=-P;z<=P;z++){
+  const h = (Math.abs(x)<=9 && Math.abs(z)<=9) ? 0.5 : 0.25;
+  const hex = jitter(PAL.stone, [PAL.stone, PAL.stoneDark, PAL.stoneLight], 0.03);
+  plat.add(cube(x, h, z, 1, mat(hex), false, true));
+}
+for (let x=-P;x<=P;x++) for (let z=-P;z<=P;z++){
+  if (Math.abs(x)===P || Math.abs(z)===P) plat.add(cube(x, 0.75, z, 1, mat(PAL.stoneDark)));
+}
+for (let z=-P;z<=P;z++) plat.add(cube(0, 0.75, z, 1, mat(PAL.stoneLight))); // centre line
+for (let s=0;s<4;s++){ // corner lanterns
+  const cx = s<2?-9:9, cz = s%2?-9:9;
+  plat.add(cube(cx, 1.0, cz, 1, mat(PAL.stoneDark)));
+  plat.add(cube(cx, 1.5, cz, 1, mat(PAL.stoneLanternDark)));
+  plat.add(cube(cx, 2.0, cz, 1, mat(PAL.stoneLantern)));
+  plat.add(cube(cx, 2.5, cz, 1, mat(PAL.stoneLanternDark)));
+  plat.add(cube(cx, 2.9, cz, 1, mat(PAL.stoneLantern)));
+  plat.add(cube(cx, 3.3, cz, 1, mat(PAL.stoneLanternDark)));
+  plat.add(cube(cx, 2.5, cz, 0.55, mat(PAL.lanternGlow,{emissive:PAL.lanternGlow,emissiveIntensity:1.4}), false, false));
+}
+
+/* ---------- five-story pagoda ---------- */
+const pagoda = new THREE.Group(); scene.add(pagoda);
+const stories = [
+  { half:3.0, bodyH:2.0, eaveHalf:4.2, eaveTip:5.2, eaveUp:0.9 },
+  { half:2.6, bodyH:1.8, eaveHalf:3.6, eaveTip:4.5, eaveUp:0.8 },
+  { half:2.2, bodyH:1.6, eaveHalf:3.0, eaveTip:3.8, eaveUp:0.7 },
+  { half:1.8, bodyH:1.4, eaveHalf:2.4, eaveTip:3.1, eaveUp:0.6 },
+  { half:1.4, bodyH:1.2, eaveHalf:1.8, eaveTip:2.4, eaveUp:0.5 },
+];
+let y = 0.75;
+for (const s of stories){
+  const bodyTop = y + s.bodyH;
+  for (let x=-s.half;x<=s.half;x++) for (let z=-s.half;z<=s.half;z++){
+    const edge = (Math.abs(x)===s.half || Math.abs(z)===s.half);
+    const hex = edge ? jitter(PAL.woodDark,[PAL.woodDark,PAL.wood],0.02) : jitter(PAL.wood,[PAL.wood,PAL.woodLight],0.02);
+    pagoda.add(cube(x, y+s.bodyH/2, z, 1, mat(hex)));
+  }
+  for (let x=-s.half;x<=s.half;x++) for (let z=-s.half;z<=s.half;z++){
+    if (Math.abs(x)===s.half && Math.abs(z)===s.half) pagoda.add(cube(x, bodyTop+0.5, z, 1, mat(PAL.gold,{metalness:0.6,roughness:0.35})));
+  }
+  for (let x=-s.eaveHalf;x<=s.eaveHalf;x++) for (let z=-s.eaveHalf;z<=s.eaveHalf;z++){
+    const edge = (Math.abs(x)===s.eaveHalf || Math.abs(z)===s.eaveHalf);
+    const up = edge ? s.eaveUp : 0;
+    pagoda.add(cube(x, bodyTop+0.5+up, z, 1, mat(edge?PAL.woodDark:PAL.wood)));
+  }
+  for (let x=-s.eaveTip;x<=s.eaveTip;x++) for (let z=-s.eaveTip;z<=s.eaveTip;z++){
+    if (Math.abs(x)===s.eaveTip && Math.abs(z)===s.eaveTip) pagoda.add(cube(x, bodyTop+0.5+s.eaveUp, z, 1, mat(PAL.woodDark)));
+  }
+  y = bodyTop + 1.0;
+}
+/* spire */
+for (let i=0;i<4;i++) pagoda.add(cube(0, y+0.5+i*0.5, 0, 1, mat(PAL.gold,{metalness:0.6,roughness:0.35})));
+for (let i=0;i<5;i++) pagoda.add(cube(0, y+2.6+i*0.5, 0, 0.7, mat(PAL.gold,{metalness:0.6,roughness:0.35})));
+pagoda.add(cube(0, y+5.3, 0, 0.5, mat(PAL.gold,{metalness:0.6,roughness:0.35})));
+pagoda.add(cube(0, y+5.8, 0, 0.35, mat(PAL.gold,{metalness:0.6,roughness:0.35})));
+pagoda.add(cube(0, y+6.2, 0, 0.25, mat(PAL.gold,{metalness:0.6,roughness:0.35})));
+
+/* ---------- pond ---------- */
+const pond = new THREE.Group(); scene.add(pond);
+const PC = { x:-11, z:11, r:6 };
+for (let x=-20;x<=20;x++) for (let z=-20;z<=20;z++){
+  const d = Math.hypot(x-PC.x, z-PC.z);
+  if (d > PC.r) continue;
+  const hex = jitter(PAL.water, [PAL.water, PAL.waterDeep], 0.02);
+  pond.add(cube(x, 0.02, z, 1, mat(hex,{roughness:0.25,metalness:0.1}), false, true));
+}
+for (let x=-20;x<=20;x++) for (let z=-20;z<=20;z++){
+  const d = Math.hypot(x-PC.x, z-PC.z);
+  if (d > PC.r+1.2 || d < PC.r-0.2) continue;
+  pond.add(cube(x, 0.35, z, 1, mat(jitter(PAL.stone,[PAL.stone,PAL.stoneDark,PAL.stoneLight],0.03))));
+}
+pond.add(cube(PC.x+3, 0.35, PC.z-2, 1, mat(PAL.rock)));
+pond.add(cube(PC.x+3, 0.7, PC.z-2, 0.7, mat(PAL.rockDark)));
+pond.add(cube(PC.x-2, 0.35, PC.z+3, 1, mat(PAL.rock)));
+pond.add(cube(PC.x-2, 0.6, PC.z+3, 0.6, mat(PAL.rockDark)));
+
+/* ---------- stone path ---------- */
+const path = new THREE.Group(); scene.add(path);
+for (let z=12; z<=22; z++){
+  for (let x=-1; x<=1; x++){
+    const hex = jitter(PAL.path, [PAL.path, PAL.pathDark], 0.03);
+    path.add(cube(x, 0.06, z, 1, mat(hex), false, true));
+  }
+}
+
+/* ---------- red torii gate ---------- */
+const torii = new THREE.Group(); scene.add(torii);
+const TZ = 20, TH = 7.5, TW = 3.2;
+for (let i=0;i<3;i++) torii.add(cube(-TW, 0.5+i, TZ, 1, mat(PAL.wood)));
+for (let i=0;i<3;i++) torii.add(cube( TW, 0.5+i, TZ, 1, mat(PAL.wood)));
+for (let x=-TW-1; x<=TW+1; x++) torii.add(cube(x, TH, TZ, 1, mat(PAL.woodDark)));
+for (let x=-TW-2; x<=TW+2; x++) torii.add(cube(x, TH+1, TZ, 1, mat(PAL.wood)));
+for (let x=-TW-2; x<=TW+2; x++) torii.add(cube(x, TH+1.5, TZ, 1, mat(PAL.woodDark)));
+torii.add(cube(0, TH+0.5, TZ, 1, mat(PAL.woodDark)));
+
+/* ---------- cherry blossom trees ---------- */
+function tree(x, z, trunkH, canopyR, seed){
+  const g = new THREE.Group();
+  for (let i=0;i<trunkH;i++) g.add(cube(x, 0.5+i, z, 1, mat(jitter(PAL.trunk,[PAL.trunk,PAL.trunkDark],0.02))));
+  const top = trunkH;
+  for (let i=0;i<canopyR;i++){
+    g.add(cube(x, top+i, z, 1, mat(jitter(PAL.trunk,[PAL.trunk,PAL.trunkDark],0.02))));
+    g.add(cube(x+i, top+i, z, 1, mat(jitter(PAL.trunk,[PAL.trunk,PAL.trunkDark],0.02))));
+    g.add(cube(x-i, top+i, z, 1, mat(jitter(PAL.trunk,[PAL.trunk,PAL.trunkDark],0.02))));
+  }
+  for (let i=-canopyR;i<=canopyR;i++) for (let j=-canopyR;j<=canopyR;j++) for (let k=-canopyR;k<=canopyR;k++){
+    if (Math.hypot(i,j,k) > canopyR) continue;
+    if (Math.random() < 0.12) continue;
+    g.add(cube(x+i, top+canopyR+j, z+k, 1, mat(jitter(PAL.leaf,[PAL.leaf,PAL.leafLight,PAL.leafDeep],0.03))));
+  }
+  scene.add(g);
+}
+tree(-14, 4, 5, 3, 1);
+tree(13, 12, 6, 3, 2);
+tree(-6, 18, 4, 2, 3);
+tree(16, -6, 5, 3, 4);
+tree(-18, -10, 4, 2, 5);
+
+/* ---------- drifting petals ---------- */
+const petals = [];
+const petalMats = [mat(PAL.petal), mat(PAL.petalLight), mat(PAL.leafLight)];
+for (let i=0;i<48;i++){
+  const m = new THREE.Mesh(CUBE, petalMats[i%3]);
+  m.scale.set(0.22, 0.05, 0.16);
+  m.castShadow = true;
+  m.position.set((Math.random()*2-1)*22, Math.random()*22, (Math.random()*2-1)*22);
+  m.userData = {
+    vy: 0.5 + Math.random()*0.7,
+    phase: Math.random()*Math.PI*2,
+    sway: 0.4 + Math.random()*0.9,
+    spin: (Math.random()*2-1)*1.2,
+    baseX: m.position.x, baseZ: m.position.z,
+  };
+  scene.add(m); petals.push(m);
+}
+
+/* ---------- animate ---------- */
+const clock = new THREE.Clock();
+function animate(){
+  requestAnimationFrame(animate);
+  const dt = Math.min(clock.getDelta(), 0.05);
+  const t = clock.elapsedTime;
+  for (const p of petals){
+    const u = p.userData;
+    p.position.y -= u.vy * dt;
+    p.position.x = u.baseX + Math.sin(t*0.6 + u.phase) * u.sway;
+    p.position.z = u.baseZ + Math.cos(t*0.5 + u.phase) * u.sway;
+    p.rotation.x += u.spin * dt;
+    p.rotation.z += u.spin * 0.7 * dt;
+    if (p.position.y < 0.15){
+      p.position.y = 20 + Math.random()*6;
+      u.baseX = (Math.random()*2-1)*22;
+      u.baseZ = (Math.random()*2-1)*22;
+    }
+  }
+  controls.update();
+  renderer.render(scene, camera);
+}
+animate();
+
+addEventListener('resize', () => {
+  camera.aspect = innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+</script>
+</body>
+</html>

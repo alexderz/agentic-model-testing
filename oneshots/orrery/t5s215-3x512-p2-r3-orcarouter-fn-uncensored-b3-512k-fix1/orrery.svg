@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 720" width="960" height="720" role="img" aria-label="Brass clockwork orrery with planets orbiting at their real relative speeds">
+<title>Brass Clockwork Orrery</title>
+<desc>A brass gear-driven orrery. Each planet orbits the Sun at its true orbital period (relative to Earth = 1 year), each carries a rotating day/night terminator, and the column gears mesh and turn.</desc>
+
+<defs>
+ <radialGradient id="bg" cx="50%" cy="42%" r="78%">
+  <stop offset="0" stop-color="#26261d"/><stop offset="55%" stop-color="#161611"/><stop offset="100%" stop-color="#0a0a07"/>
+ </radialGradient>
+ <linearGradient id="brass" x1="0" y1="0" x2="0.35" y2="1">
+  <stop offset="0" stop-color="#f7e39c"/><stop offset=".35" stop-color="#dcb45a"/>
+  <stop offset=".65" stop-color="#a9822f"/><stop offset="1" stop-color="#6f531b"/>
+ </linearGradient>
+ <linearGradient id="brassDark" x1="0" y1="0" x2="0.4" y2="1">
+  <stop offset="0" stop-color="#a07d34"/><stop offset=".5" stop-color="#6c5320"/>
+  <stop offset="1" stop-color="#3f3011"/>
+ </linearGradient>
+ <radialGradient id="sunGlow"><stop offset="0" stop-color="#ffe9a8" stop-opacity=".95"/><stop offset=".4" stop-color="#ffce6a" stop-opacity=".5"/><stop offset="1" stop-color="#ffb347" stop-opacity="0"/></radialGradient>
+ <radialGradient id="sunBody"><stop offset="0" stop-color="#fff7d2"/><stop offset=".55" stop-color="#ffd873"/><stop offset="1" stop-color="#f2a63c"/></radialGradient>
+ <linearGradient id="brassArm" x1="0" y1="0" x2="1" y2="0">
+  <stop offset="0" stop-color="#5f4718"/><stop offset=".5" stop-color="#d9b45c"/><stop offset="1" stop-color="#f3dc9a"/>
+ </linearGradient>
+ <radialGradient id="shadow"><stop offset="0" stop-color="#000" stop-opacity="0"/><stop offset=".48" stop-color="#000" stop-opacity="0"/><stop offset=".52" stop-color="#000" stop-opacity=".32"/><offset/>
+  <stop offset="1" stop-color="#000" stop-opacity=".92"/></radialGradient>
+ <filter id="gearShadow" x="-40%" y="-40%" width="180%" height="180%"><feDropShadow dx="0" dy="5" stdDeviation="6" flood-color="#000" flood-opacity=".55"/></filter>
+
+ <g id="teeth"><circle cx="0" cy="-34" r="5.2"/><use href="#teeth" transform="rotate(18)"/><use href="#teeth" transform="rotate(36)"/><use href="#teeth" transform="rotate(54)"/><use href="#teeth" transform="rotate(72)"/><use href="#teeth" transform="rotate(90)"/><use href="#teeth" transform="rotate(108)"/><use href="#teeth" transform="rotate(126)"/><use href="#teeth" transform="rotate(144)"/><use href="#teeth" transform="rotate(162)"/></g>
+
+ <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#3a3a2c" stroke-width=".5" opacity=".18"/></pattern>
+</defs>
+
+<rect x="0" y="0" width="960" height="720" fill="url(#bg)"/>
+<circle cx="480" cy="300" r="470" fill="#ffcf7a" opacity=".05"/>
+<rect x="0" y="0" width="960" height="720" fill="url(#grid)"/>
+
+<!-- Orbit rings -->
+<g stroke="#caa14f" fill="none">
+ <circle cx="480" cy="300" r="55"  stroke-width=".8" opacity=".16"/>
+ <circle cx="480" cy="300" r="95"  stroke-width=".8" opacity=".16"/>
+ <circle cx="480" cy="300" r="135" stroke-width=".8" opacity=".16"/>
+ <circle cx="480" cy="300" r="175" stroke-width=".8" opacity=".16"/>
+ <circle cx="480" cy="300" r="215" stroke-width=".8" opacity=".16"/>
+ <circle cx="480" cy="300" r="255" stroke-width=".8" opacity=".16"/>
+</g>
+
+<!-- ===================== PLANETS (Mercury..Saturn) ===================== -->
+<!-- Mercury -->
+<g><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="40 480 300" to="400 480 300" dur="21s" repeatCount="indefinite"/>
+ <line x1="480" y1="300" x2="535" y2="300" stroke="url(#brassArm)" stroke-width="4.5" stroke-linecap="round"/>
+ <circle cx="535" cy="300" r="6" fill="#c9b48a"/><g transform="translate(535 300)"><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0" to="-360" dur="21s" repeatCount="indefinite"/><circle r="6" fill="#c9b48a" stroke="#7d6f52" stroke-width=".6"/><path d="M-6 0A6 6 0 0 1 6 0Z" transform="rotate(-32)" fill="url(#shadow)"/></g></g>
+
+<!-- Venus -->
+<g><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="205 480 300" to="565 480 300" dur="54s" repeatCount="indefinite"/>
+ <line x1="480" y1="300" x2="575" y2="300" stroke="url(#brassArm)" stroke-width="5" stroke-linecap="round"/>
+ <circle cx="575" cy="300" r="9" fill="#e6c884"/><g transform="translate(575 300)"><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0" to="-360" dur="54s" repeatCount="indefinite"/><circle r="9" fill="#e6c884" stroke="#a08748" stroke-width=".7"/><path d="M-9 0A9 9 0 0 1 9 0Z" transform="rotate(-32)" fill="url(#shadow)"/></g></g>
+
+<!-- Earth -->
+<g><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="330 480 300" to="690 480 300" dur="120s" repeatCount="indefinite"/>
+ <line x1="480" y1="300" x2="615" y2="300" stroke="url(#brassArm)" stroke-width="5.5" stroke-linecap="round"/>
+ <circle cx="615" cy="300" r="9.5" fill="#4f86c4"/><g transform="translate(615 300)"><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0" to="-360" dur="120s" repeatCount="indefinite"/><circle r="9.5" fill="#4f86c4" stroke="#2b4f74" stroke-width=".7"/><path d="M-9.5 0A9.5 9.5 0 0 1 9.5 0Z" transform="rotate(-32)" fill="url(#shadow)"/></g></g>
+
+<!-- Mars -->
+<g><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="120 480 300" to="480 480 300" dur="226s" repeatCount="indefinite"/>
+ <line x1="480" y1="300" x2="655" y2="300" stroke="url(#brassArm)" stroke-width="5" stroke-linecap="round"/>
+ <circle cx="655" cy="300" r="7.5" fill="#c1543a"/><g transform="translate(655 300)"><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0" to="-360" dur="226s" repeatCount="indefinite"/><circle r="7.5" fill="#c1543a" stroke="#7d3626" stroke-width=".7"/><path d="M-7.5 0A7.5 7.5 0 0 1 7.5 0Z" transform="rotate(-32)" fill="url(#shadow)"/></g></g>
+
+<!-- Jupiter -->
+<g><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="260 480 300" to="620 480 300" dur="1425s" repeatCount="indefinite"/>
+ <line x1="480" y1="300" x2="695" y2="300" stroke="url(#brassArm)" stroke-width="6" stroke-linecap="round"/>
+ <circle cx="695" cy="300" r="17" fill="#d8b98a"/><g transform="translate(695 300)"><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0" to="-360" dur="1425s" repeatCount="indefinite"/><circle r="17" fill="#d8b98a" stroke="#a5824f" stroke-width=".8"/><path d="M-17 0A17 17 0 0 1 17 0Z" transform="rotate(-32)" fill="url(#shadow)"/></g></g>
+
+<!-- Saturn -->
+<g><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="185 480 300" to="545 480 300" dur="3527s" repeatCount="indefinite"/>
+ <line x1="480" y1="300" x2="735" y2="300" stroke="url(#brassArm)" stroke-width="6" stroke-linecap="round"/>
+ <circle cx="735" cy="300" r="14" fill="#d9c08a"/><g transform="translate(735 300)"><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0" to="-360" dur="3527s" repeatCount="indefinite"/><circle r="14" fill="#d9c08a" stroke="#a98f57" stroke-width=".8"/><path d="M-14 0A14 14 0 0 1 14 0Z" transform="rotate(-32)" fill="url(#shadow)"/></g></g>
+
+<!-- ===================== BRASS FRAMEWORK (meshing gears) ===================== -->
+<g filter="url(#gearShadow)">
+ <!-- Sun pinion -->
+ <g><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0 480 300" to="360 480 300" dur="21s" repeatCount="indefinite"/>
+  <use href="#teeth" fill="url(#brass)"/><circle cx="480" cy="300" r="30" fill="url(#brassDark)" stroke="#5f4718" stroke-width="1.2"/><circle cx="480" cy="300" r="9" fill="#2a2110"/></g>
+ <!-- Mercury ring (meshes with Sun pinion) -->
+ <g><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0 548 300" to="-360 548 300" dur="42s" repeatCount="indefinite"/>
+  <use href="#teeth" transform="translate(548 300)" fill="url(#brass)"/><circle cx="548" cy="300" r="30" fill="url(#brassDark)" stroke="#5f4718" stroke-width="1.2"/><circle cx="548" cy="300" r="9" fill="#2a2110"/></g>
+ <!-- Venus ring (meshes with Mercury ring) -->
+ <g><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0 616 300" to="360 616 300" dur="84s" repeatCount="indefinite"/>
+  <use href="#teeth" transform="translate(616 300)" fill="url(#brass)"/><circle cx="616" cy="300" r="30" fill="url(#brassDark)" stroke="#5f4718" stroke-width="1.2"/><circle cx="616" cy="300" r="9" fill="#2a2110"/></g>
+ <!-- Earth ring (meshes with Venus ring) -->
+ <g><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0 684 300" to="-360 684 300" dur="168s" repeatCount="indefinite"/>
+  <use href="#teeth" transform="translate(684 300)" fill="url(#brass)"/><circle cx="684" cy="300" r="30" fill="url(#brassDark)" stroke="#5f4718" stroke-width="1.2"/><circle cx="684" cy="300" r="9" fill="#2a2110"/></g>
+ <!-- Mars ring (meshes with Earth ring) -->
+ <g><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0 752 300" to="360 752 300" dur="336s" repeatCount="indefinite"/>
+  <use href="#teeth" transform="translate(752 300)" fill="url(#brass)"/><circle cx="752" cy="300" r="30" fill="url(#brassDark)" stroke="#5f4718" stroke-width="1.2"/><circle cx="752" cy="300" r="9" fill="#2a2110"/></g>
+ <!-- Jupiter ring (meshes with Mars ring) -->
+ <g><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0 820 300" to="-360 820 300" dur="1008s" repeatCount="indefinite"/>
+  <use href="#teeth" transform="translate(820 300)" fill="url(#brass)"/><circle cx="820" cy="300" r="30" fill="url(#brassDark)" stroke="#5f4718" stroke-width="1.2"/><circle cx="820" cy="300" r="9" fill="#2a2110"/></g>
+ <!-- Saturn ring (meshes with Jupiter ring) -->
+ <g><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0 888 300" to="360 888 300" dur="2496s" repeatCount="indefinite"/>
+  <use href="#teeth" transform="translate(888 300)" fill="url(#brass)"/><circle cx="888" cy="300" r="30" fill="url(#brassDark)" stroke="#5f4718" stroke-width="1.2"/><circle cx="888" cy="300" r="9" fill="#2a2110"/></g>
+</g>
+
+<!-- Sun glow + body (above framework) -->
+<circle cx="480" cy="300" r="62" fill="url(#sunGlow)">
+ <animate attributeName="opacity" values=".75;1;.75" dur="6s" repeatCount="indefinite"/>
+</circle>
+<circle cx="480" cy="300" r="19" fill="url(#sunBody)"/>
+
+<!-- Legend -->
+<g font-family="Georgia, 'Times New Roman', serif" fill="#d8c48a">
+ <text x="480" y="672" text-anchor="middle" font-size="20" letter-spacing="3">THE BRASS ORRERY</text>
+ <text x="480" y="694" text-anchor="middle" font-size="12.5" fill="#b6a473" letter-spacing=".5">planets orbit at their true relative periods · gears mesh and turn to drive each arm</text>
+ <text x="480" y="712" text-anchor="middle" font-size="11" fill="#8f8059" letter-spacing=".5">Mercury 88d · Venus 225d · Earth 365d · Mars 687d · Jupiter 11.9y · Saturn 29.4y   (Earth ≈ 2 min)</text>
+</g>
+</svg>

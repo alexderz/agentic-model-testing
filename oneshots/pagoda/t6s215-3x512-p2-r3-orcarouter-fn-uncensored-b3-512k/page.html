@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Voxel Japanese Pagoda — three.js</title>
+<style>
+  html,body{margin:0;height:100%;background:#141c26;overflow:hidden;font-family:"Segoe UI",system-ui,sans-serif}
+  #app{position:fixed;inset:0}
+  .hud{position:fixed;left:22px;top:20px;color:#f7efe9;z-index:5;text-shadow:0 1px 6px rgba(0,0,0,.45);user-select:none}
+  .hud h1{margin:0;font-size:30px;font-weight:800;letter-spacing:.01em}
+  .hud p{margin:2px 0 0;font-size:13.5px;opacity:.9}
+  .tip{position:fixed;right:22px;bottom:18px;color:#f7efe9;font-size:12px;opacity:.7;z-index:5;text-shadow:0 1px 6px rgba(0,0,0,.45)}
+</style>
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js" } }
+</script>
+</head>
+<body>
+<div id="app"></div>
+<div class="hud"><h1>五重塔 · Voxel Pagoda</h1><p>a little cube-built shrine at dusk — cherry blossoms, pond &amp; torii</p></div>
+<div class="tip">drag to orbit · scroll to zoom</div>
+
+<script type="module">
+import * as THREE from 'three';
+
+/* ---------- renderer / scene / camera ---------- */
+const app = document.getElementById('app');
+const renderer = new THREE.WebGLRenderer({ antialias:true });
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+app.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.Fog(0xdcc6a8, 24, 78);
+
+const camera = new THREE.PerspectiveCamera(50, innerWidth/innerHeight, 0.1, 300);
+
+/* ---------- lights (shadows) ---------- */
+const sun = new THREE.DirectionalLight(0xfff0d8, 2.6);
+sun.position.set(24, 34, 18);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048,2048);
+sun.shadow.camera.near = 1; sun.shadow.camera.far = 120;
+sun.shadow.camera.left=-34; sun.shadow.camera.right=34; sun.shadow.camera.top=34; sun.shadow.camera.bottom=-34;
+sun.shadow.bias=-0.0005; sun.shadow.normalBias=0.02;
+scene.add(sun);
+
+const hemi = new THREE.HemisphereLight(0xbfe0ff, 0x8a6f57, 1.0); scene.add(hemi);
+const fill = new THREE.DirectionalLight(0xffd9b3, 0.45); fill.position.set(-20,16,-14); scene.add(fill);
+
+/* ---------- sky (big cube shell) ---------- */
+const skyMat = new THREE.MeshBasicMaterial({ color:0xdcc6a8, side:THREE.BackSide, fog:false });
+skyMat.color.convertSRGBToLinear();
+const sky = new THREE.Mesh(new THREE.BoxGeometry(240,240,240), skyMat); scene.add(sky);
+
+/* ---------- voxel helpers (everything is a cube) ---------- */
+const unitBox = new THREE.BoxGeometry(1,1,1);
+const geoCache = new Map();
+function getGeo(sx,sy,sz){
+  const k=sx+'_'+sy+'_'+sz; let g=geoCache.get(k);
+  if(!g){ g=new THREE.BoxGeometry(sx,sy,sz); geoCache.set(k,g);} return g;
+}
+const matCache = new Map();
+function getMat(hex,emissive=0,ei=1){
+  const k=hex+'_'+emissive+'_'+ei; let m=matCache.get(k);
+  if(!m){ m=new THREE.MeshStandardMaterial({color:hex}); m.color.convertSRGBToLinear();
+    if(emissive){ m.emissive.setHex(emissive); m.emissive.convertSRGBToLinear(); m.emissiveIntensity=ei; }
+    matCache.set(k,m);} return m;
+}
+function voxel(parent,x,y,z,sx,sy,sz,hex,cast=true,rec=true,em=0,ei=1){
+  const m=new THREE.Mesh(getGeo(sx,sy,sz), getMat(hex,em,ei));
+  m.position.set(x,y,z); m.castShadow=cast; m.receiveShadow=rec; parent.add(m); return m;
+}
+
+/* ---------- ground ---------- */
+const grass=new THREE.Group(); scene.add(grass);
+const G=-12;
+voxel(grass,0,-0.5,0,46,1,46,0x5f9a48,true,true);
+for(let x=G;x<=G+10;x+=2) for(let z=G;z<=G+10;z+=2) if(Math.random()<0.30) voxel(grass,x,0.1,z,1,0.22,1,0x6fb257,false,true);
+
+// stone path from the torii toward the platform
+const PATH=[[8,-4],[8,-6],[8,-8]];
+for(const [px,pz] of PATH) voxel(grass,px,0.13,pz,1.9,0.26,1.5,0x9aa0a6,false,true);
+
+/* ---------- pond (water plane + stone rim) ---------- */
+const water = new THREE.Mesh(new THREE.PlaneGeometry(7.4,7.4),
+  new THREE.MeshStandardMaterial({ color:0x3f86b0, metalness:0.25, roughness:0.12 }));
+water.material.color.convertSRGBToLinear(); water.material.emissive.setHex(0x1c4a63); water.material.emissiveIntensity=0.3;
+water.rotation.x=-Math.PI/2; water.position.set(-8,0.15,-9); water.receiveShadow=true; scene.add(water);
+
+const pond=new THREE.Group(); scene.add(pond);
+for(let i=-4;i<=4;i++){
+  voxel(pond,i,0.35,-4,1,0.7,1,0x8b8f96,true,true);
+  voxel(pond,i,0.35,-14,1,0.7,1,0x8b8f96,true,true);
+  voxel(pond,-3,0.35,i-5,1,0.7,1,0x8b8f96,true,true);
+  voxel(pond,3,0.35,i-5,1,0.7,1,0x8b8f96,true,true);
+}
+
+/* ---------- stone platform (stacked cubes) ---------- */
+const plat=new THREE.Group(); scene.add(plat);
+function layer(y,h,s,color){ for(let x=-s;x<=s;x++)for(let z=-s;z<=s;z++) voxel(plat,x,y,z,1,h,1,color,true,true); }
+layer(0.35,0.7,6,0x9aa0a6);
+layer(1.05,0.7,5,0xa7adb4);
+
+/* ---------- five-story pagoda ---------- */
+const PAG=new THREE.Group(); scene.add(PAG);
+const P={ body:0xb23f3f, bodyDk:0x9a3535, roof:0x2b2e36, accent:0xe8c46a, dark:0x26292f };
+
+function pillar(x,z){
+  for(let y=1.7;y<=3.1;y+=0.7) voxel(PAG,x,y,z,0.5,0.7,0.5,P.body,true,true);
+  voxel(PAG,x,1.45,z,0.62,0.28,0.62,P.dark,true,true);   // plinth
+  voxel(PAG,x,3.32,z,0.62,0.16,0.62,P.accent,false,true); // cap
+}
+function bracket(x,y,z,s){ voxel(PAG,x,y,z,s,s,s,P.bodyDk,true,true); }
+function eave(s){
+  const H=1.5, yTop=s+H;
+  for(let y=s;y<=yTop;y++) for(let x=-s;x<=s;x++){ if(x===-s||x===s) voxel(PAG,x,y,s,P.roof,true,true),voxel(PAG,x,y,-s,P.roof,true,true); }
+  for(let y=s;y<=yTop;y++) for(let z=-(s-1);z<=(s-1);z++){ if(z===-s||z===s) voxel(PAG,s,y,z,P.roof,true,true),voxel(PAG,-s,y,z,P.roof,true,true); }
+  for(let y=s;y<=yTop;y++) for(let x=-s;x<=s;x++)for(let z=-s;z<=s;z++){ if((x===-s||x===s)&&(z===-s||z===s)) voxel(PAG,x,y,z,P.accent,false,true); }
+  bracket(s+1,yTop,s+1,1.4); bracket(-(s+1),yTop,s+1,1.4); bracket(s+1,yTop,-(s+1),1.4); bracket(-(s+1),yTop,-(s+1),1.4);
+}
+
+for(let i=0;i<5;i++){
+  const s = 6-i;                 // footprint half-size (shrinks each story)
+  for(let x=-s;x<=s;x++) for(let z=-s;z<=s;z++) voxel(PAG,x,0,z,P.roof,true,true);      // base slab
+  if(i<4){ for(let x=-s+1;x<=s-1;x++) for(let z=-s+1;z<=s-1;z++) pillar(x,z); }          // pillars
+  eave(s);
+}
+
+/* spire (sōrin) — stacked cubes */
+let y=7.5; voxel(PAG,0,y,0,2,0.4,2,P.dark,true,true); y+=0.6;
+for(let i=0;i<6;i++){ const r=Math.max(0.3,1.5-i*0.2); voxel(PAG,0,y,0,r,0.34,r,P.accent,false,true); y+=0.5; }
+voxel(PAG,0,y+0.2,0,0.34,0.7,0.34,P.accent,true,true);
+
+/* ---------- cherry blossom trees ---------- */
+function trunk(x,z,h){ for(let i=0;i<h;i++) voxel(grass,x,i+1,z,1,1,1,0x6b4a2f,true,true); }
+const canopyCols=[0xffcfe0,0xffd9e6,0xf7bfd2];
+function canopy(x,y,z){ const c=canopyCols[(Math.abs(Math.round(x*3)+Math.abs(z*5)))%3]; voxel(grass,x,y,z,1,1,1,c,true,false); }
+
+trunk(11,-4,6); trunk(10,4,7); trunk(-13,-2,6);
+const trees=[{x:11,topY:7},{x:10,topY:8},{x:-13,topY:7}];
+for(const t of trees){ const {x,topY}=t;
+  for(let dx=-2;dx<=2;dx++)for(let dz=-2;dz<=2;dz++){ const r=Math.abs(dx)+Math.abs(dz); if(r>4)continue;
+    canopy(x+dx, topY-3+r*0.6, z+dz);} canopy(x,topY,z); }
+
+/* ---------- red torii gate (cubes) ---------- */
+const T={post:0xd23a34, beam:0xe0453d, dark:0x9e2b26};
+for(const px of [8.7,10.3]){ for(let y=1;y<=6;y++) voxel(grass,px,y,-11,0.9,1,0.9,T.post,true,true); }
+voxel(grass,9.5,6.4,-11,2.8,0.7,1.4,T.dark,true,true);   // nuki (tie beam)
+for(let x=8;x<=11;x++) voxel(grass,x,7.3,-11,1,0.6,1.2,T.beam,true,true); // shimaki (top rail)
+voxel(grass,9.5,7.9,-11,0.5,0.7,0.5,T.dark,true,true);   // center strut
+
+/* ---------- drifting petals ---------- */
+const petalGeo=new THREE.BoxGeometry(0.28,0.05,0.28);
+const petalCols=[0xffd0e0,0xffc4d6,0xffb3cc];
+const petalMats=petalCols.map(c=>{ const m=new THREE.MeshStandardMaterial({color:c}); m.color.convertSRGBToLinear(); return m; });
+const petals=[]; const PN=16;
+for(let i=0;i<PN;i++){
+  const p=new THREE.Mesh(petalGeo, petalMats[i%3]); p.castShadow=false; scene.add(p);
+  petals.push({m:p,x:Math.random()*24-12,y:Math.random()*18+2,z:Math.random()*24-12,vy:-(0.6+Math.random()*0.9),phase:Math.random()*6.28});
+}
+
+/* ---------- camera controls (slow orbit + drag/zoom) ---------- */
+let targetAz=THREE.MathUtils.degToRad(35), targetPol=THREE.MathUtils.degToRad(74);
+const MINP=THREE.MathUtils.degToRad(12), MAXP=THREE.MathUtils.degToRad(86);
+let targetR=40, MINR=18, MAXR=90;
+const look=new THREE.Vector3(0,5.5,0);
+let az=targetAz, pol=targetPol, R=targetR;
+let dragging=false, px=0, py=0;
+const el=renderer.domElement;
+el.addEventListener('pointerdown',e=>{dragging=true;px=e.clientX;py=e.clientY;});
+addEventListener('pointerup',()=>dragging=false);
+addEventListener('pointermove',e=>{ if(!dragging)return; const dx=e.clientX-px,dy=e.clientY-py; px=e.clientX;py=e.clientY; targetAz-=dx*0.005; targetPol=THREE.MathUtils.clamp(targetPol-dy*0.005,MINP,MAXP); });
+el.addEventListener('wheel',e=>{ e.preventDefault(); targetR=THREE.MathUtils.clamp(targetR+Math.sign(e.deltaY)*2,MINR,MAXR); },{passive:false});
+
+/* ---------- animate ---------- */
+const clock=new THREE.Clock();
+function animate(){
+  requestAnimationFrame(animate);
+  const dt=Math.min(clock.getDelta(),0.05), t=clock.elapsedTime;
+
+  targetAz += dt*0.045;                                   // slow auto-orbit
+  az += (targetAz-az)*0.06; pol += (targetPol-pol)*0.06; R += (targetR-R)*0.06;
+
+  camera.position.set(look.x+R*Math.sin(pol)*Math.sin(az), look.y+R*Math.cos(pol), look.z+R*Math.sin(pol)*Math.cos(az));
+  camera.lookAt(look);
+
+  for(const p of petals){                                  // drift + gentle sway, respawn at top
+    p.y += p.vy*dt;
+    p.m.position.set(p.x+Math.sin(t*0.8+p.phase)*0.6, p.y, p.z+Math.cos(t*0.7+p.phase*1.3)*0.5);
+    p.m.rotation.z += dt*0.6; p.m.rotation.x += dt*0.4;
+    if(p.y<-0.2){ p.y=18+Math.random()*4; p.x=Math.random()*24-12; p.z=Math.random()*24-12; }
+  }
+
+  renderer.render(scene,camera);
+}
+animate();
+
+addEventListener('resize',()=>{ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); });
+</script>
+</body>
+</html>

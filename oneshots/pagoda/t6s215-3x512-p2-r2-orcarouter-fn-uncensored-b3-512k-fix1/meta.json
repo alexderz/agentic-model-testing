@@ -1,0 +1,51 @@
+{
+ "case": "t6s215-3x512-p2-r2-orcarouter-fn-uncensored-b3-512k-fix1",
+ "source_case": "t6s215-3x512-p2-r2-orcarouter-fn-uncensored-b3-512k",
+ "model": "orcarouter-fn-uncensored-b3-512k",
+ "test": "test6-pagoda-repair1",
+ "max_tokens": 128000,
+ "timeout_s": 36000,
+ "feedback": "I opened your file in a headless Chromium and let it run for 10 seconds. The JavaScript console reported no errors. If you want to improve anything, reply with the complete improved HTML file; otherwise reply with the same file.",
+ "started": "2026-11-18T10:04:19-0600",
+ "status": "ok",
+ "finish_reason": "stop",
+ "usage": {
+  "prompt_tokens": 6032,
+  "completion_tokens": 5913,
+  "total_tokens": 11945,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  }
+ },
+ "timings": {
+  "cache_n": 0,
+  "prompt_n": 6032,
+  "prompt_ms": 2643.9,
+  "prompt_per_token_ms": 0.438,
+  "prompt_per_second": 2281.5,
+  "predicted_n": 5913,
+  "predicted_ms": 320777.3,
+  "predicted_per_token_ms": 54.25,
+  "predicted_per_second": 18.4,
+  "draft_n": 0,
+  "draft_n_accepted": 0
+ },
+ "static": {
+  "html_found": true,
+  "bytes": 14011,
+  "complete": true,
+  "three_module": true,
+  "importmap": true,
+  "umd_three": false,
+  "external_urls": [
+   "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js"
+  ],
+  "boxes": 2,
+  "instanced": true,
+  "prose_chars_outside_html": 367
+ },
+ "wall_s": 323.6,
+ "first_token_s": 2.7,
+ "tok_s": 18.4,
+ "reply_chars": 14371
+}

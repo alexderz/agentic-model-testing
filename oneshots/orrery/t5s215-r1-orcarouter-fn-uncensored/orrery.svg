@@ -1,0 +1,316 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="100%" height="100%" style="display:block;background:#07060a">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&display=swap');
+
+/* ---- rotation drivers (one per planet, real relative orbital periods) ---- */
+.spin1 { animation: spin 3.00s linear infinite; }
+.spin2 { animation: spin 7.49s linear infinite; }
+.spin3 { animation: spin 12.00s linear infinite; }   /* reference = Earth */
+.spin4 { animation: spin 22.58s linear infinite; }
+.spin5 { animation: spin 141.60s linear infinite; }
+.spin6 { animation: spin 352.90s linear infinite; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---- day / night terminator sweep (real relative rotation periods) ---- */
+.daynight1 { animation: dn 42.28s linear infinite; }
+.daynight2 { animation: dn 58.70s linear infinite; }
+.daynight3 { animation: dn 60.00s linear infinite; }   /* reference = Earth */
+.daynight4 { animation: dn 149.50s linear infinite; }
+.daynight5 { animation: dn 24.80s linear infinite; }
+.daynight6 { animation: dn 41.90s linear infinite; }
+
+@keyframes dn { to { transform: rotate(360deg); } }
+
+/* ---- fixed lighting (does NOT rotate) ---- */
+.hl { mix-blend-mode: screen; opacity:.55; }
+.shade{ mix-blend-mode:multiply; opacity:.82; }
+
+/* ---- misc motion ---- */
+.twinkle { animation: tw 3.6s ease-in-out infinite; }
+@keyframes tw { 0%,100%{opacity:.12} 50%{opacity:.9} }
+
+.frametitle { font-family:'Cinzel',serif; fill:#caa46a; letter-spacing:7px; text-anchor:middle; font-size:23px; opacity:.92;}
+.framesub   { font-family:'Cinzel',serif; fill:#8f7c50; letter-spacing:5px; text-anchor:middle; font-size:12.5px;opacity:.8;}
+.plabel     { font-family:'Cinzel',serif; fill:#d9bd82; text-anchor:middle; font-size:12px; letter-spacing:3px;}
+
+/* reduced motion */
+@media (prefers-reduced-motion: reduce){ .spin1,.spin2,.spin3,.spin4,.spin5,.spin6,.daynight1,.daynight2,.daynight3,.daynight4,.daynight5,.daynight6,.twinkle{animation-duration:0s; animation-iteration-count:1;} }
+</style>
+
+<defs>
+  <!-- gradients -->
+  <radialGradient id="bg" cx="50%" cy="42%" r="72%">
+    <stop offset="0%" stop-color="#1a1408"/>
+    <stop offset="42%" stop-color="#100b06"/>
+    <stop offset="100%" stop-color="#050403"/>
+  </radialGradient>
+
+  <linearGradient id="brass" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#f4dc96"/><stop offset="28%" stop-color="#d3a857"/>
+    <stop offset="52%" stop-color="#a2762f"/><stop offset="74%" stop-color="#c99b4e"/>
+    <stop offset="100%" stop-color="#7c5720"/>
+  </linearGradient>
+
+  <radialGradient id="sun" cx="42%" cy="40%" r="62%">
+    <stop offset="0%" stop-color="#fff3c0"/><stop offset="35%" stop-color="#f6cf6a"/>
+    <stop offset="72%" stop-color="#d99b34"/><stop offset="100%" stop-color="#a86e1c"/>
+  </radialGradient>
+
+  <!-- planet palettes -->
+  <radialGradient id="p_merc" cx="40%" cy="35%" r="72%"><stop offset="0%" stop-color="#d9b06f"/><stop offset="100%" stop-color="#8a5f28"/></radialGradient>
+  <radialGradient id="p_ven"  cx="40%" cy="35%" r="72%"><stop offset="0%" stop-color="#f4d98e"/><stop offset="100%" stop-color="#b9863c"/></radialGradient>
+  <radialGradient id="p_ear"  cx="40%" cy="35%" r="72%"><stop offset="0%" stop-color="#cdb27f"/><stop offset="100%" stop-color="#93682f"/></radialGradient>
+  <radialGradient id="p_mar"  cx="40%" cy="35%" r="72%"><stop offset="0%" stop-color="#dca86a"/><stop offset="100%" stop-color="#9c6e2c"/></radialGradient>
+  <radialGradient id="p_jup"  cx="40%" cy="35%" r="72%"><stop offset="0%" stop-color="#f0d290"/><stop offset="100%" stop-color="#b0803a"/></radialGradient>
+  <radialGradient id="p_sat"  cx="40%" cy="35%" r="72%"><stop offset="0%" stop-color="#e6c684"/><stop offset="100%" stop-color="#9d7233"/></radialGradient>
+
+  <!-- fixed day/night terminator (light from top-left) -->
+  <linearGradient id="term" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#000" stop-opacity="0"/>
+    <stop offset="46%" stop-color="#000" stop-opacity="0"/>
+    <stop offset="58%" stop-color="#000" stop-opacity=".35"/>
+    <stop offset="100%" stop-color="#000" stop-opacity=".92"/>
+  </linearGradient>
+
+  <!-- fixed specular highlight -->
+  <radialGradient id="spec" cx="34%" cy="30%" r="60%">
+    <stop offset="0%" stop-color="#fff" stop-opacity=".55"/>
+    <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+  </radialGradient>
+
+  <!-- filters -->
+  <filter id="glow" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="7"/></filter>
+  <filter id="soft" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.2"/></filter>
+
+  <!-- gear teeth (trapezoidal, pointing +x) -->
+  <path id="t12" d="M34,-5 L46,-3.2 L46,3.2 L34,5 Z"/>
+  <path id="t18" d="M50,-7 L64,-4.6 L64,4.6 L50,7 Z"/>
+  <path id="t24" d="M66,-9 L82,-6 L82,6 L66,9 Z"/>
+
+  <!-- reusable gear bodies (teeth generated via <use>) -->
+  <g id="gear12">
+    <circle r="34" fill="#000" opacity=".55" filter="url(#soft)"/>
+    <g fill="url(#brass)">
+      <use href="#t12"/><use href="#t12" transform="rotate(30)"/><use href="#t12" transform="rotate(60)"/>
+      <use href="#t12" transform="rotate(90)"/><use href="#t12" transform="rotate(120)"/><use href="#t12" transform="rotate(150)"/>
+      <use href="#t12" transform="rotate(180)"/><use href="#t12" transform="rotate(210)"/><use href="#t12" transform="rotate(240)"/>
+      <use href="#t12" transform="rotate(270)"/><use href="#t12" transform="rotate(300)"/><use href="#t12" transform="rotate(330)"/>
+    </g>
+    <circle r="34" fill="url(#brass)"/>
+    <circle r="29" fill="none" stroke="#6b4a1f" stroke-width="2.5" opacity=".7"/>
+    <circle r="10" fill="url(#brass)" stroke="#5e4018" stroke-width="2"/>
+  </g>
+
+  <g id="gear18">
+    <circle r="50" fill="#000" opacity=".55" filter="url(#soft)"/>
+    <g fill="url(#brass)">
+      <use href="#t18"/><use href="#t18" transform="rotate(20)"/><use href="#t18" transform="rotate(40)"/>
+      <use href="#t18" transform="rotate(60)"/><use href="#t18" transform="rotate(80)"/><use href="#t18" transform="rotate(100)"/>
+      <use href="#t18" transform="rotate(120)"/><use href="#t18" transform="rotate(140)"/><use href="#t18" transform="rotate(160)"/>
+      <use href="#t18" transform="rotate(180)"/><use href="#t18" transform="rotate(200)"/><use href="#t18" transform="rotate(220)"/>
+      <use href="#t18" transform="rotate(240)"/><use href="#t18" transform="rotate(260)"/><use href="#t18" transform="rotate(280)"/>
+      <use href="#t18" transform="rotate(300)"/><use href="#t18" transform="rotate(320)"/><use href="#t18" transform="rotate(340)"/>
+    </g>
+    <circle r="50" fill="url(#brass)"/>
+    <g stroke="#6b4a1f" stroke-width="7" opacity=".55">
+      <line x1="-42" y1="0" x2="42" y2="0"/><line x1="-21" y1="-36.4" x2="21" y2="36.4"/><line x1="-21" y1="36.4" x2="21" y2="-36.4"/>
+    </g>
+    <circle r="43" fill="none" stroke="#6b4a1f" stroke-width="2.5" opacity=".7"/>
+    <circle r="13" fill="url(#brass)" stroke="#5e4018" stroke-width="2"/>
+  </g>
+
+  <g id="gear24">
+    <circle r="66" fill="#000" opacity=".55" filter="url(#soft)"/>
+    <g fill="url(#brass)">
+      <use href="#t24"/><use href="#t24" transform="rotate(15)"/><use href="#t24" transform="rotate(30)"/>
+      <use href="#t24" transform="rotate(45)"/><use href="#t24" transform="rotate(60)"/><use href="#t24" transform="rotate(75)"/>
+      <use href="#t24" transform="rotate(90)"/><use href="#t24" transform="rotate(105)"/><use href="#t24" transform="rotate(120)"/>
+      <use href="#t24" transform="rotate(135)"/><use href="#t24" transform="rotate(150)"/><use href="#t24" transform="rotate(165)"/>
+      <use href="#t24" transform="rotate(180)"/><use href="#t24" transform="rotate(195)"/><use href="#t24" transform="rotate(210)"/>
+      <use href="#t24" transform="rotate(225)"/><use href="#t24" transform="rotate(240)"/><use href="#t24" transform="rotate(255)"/>
+      <use href="#t24" transform="rotate(270)"/><use href="#t24" transform="rotate(285)"/><use href="#t24" transform="rotate(300)"/>
+      <use href="#t24" transform="rotate(315)"/><use href="#t24" transform="rotate(330)"/><use href="#t24" transform="rotate(345)"/>
+    </g>
+    <circle r="66" fill="url(#brass)"/>
+    <g stroke="#6b4a1f" stroke-width="8" opacity=".5">
+      <line x1="-56" y1="0" x2="56" y2="0"/><line x1="-28" y1="-48.5" x2="28" y2="48.5"/><line x1="-28" y1="48.5" x2="28" y2="-48.5"/>
+    </g>
+    <circle r="57" fill="none" stroke="#6b4a1f" stroke-width="3" opacity=".7"/>
+    <circle r="16" fill="url(#brass)" stroke="#5e4018" stroke-width="2.5"/>
+  </g>
+
+  <!-- planet: fixed body+lighting, rotating brass equator ring, rotating terminator -->
+  <g id="planet">
+    <circle r="17" fill="url(#p_ear)"/>
+    <circle class="hl" r="17" fill="url(#spec)"/>
+    <ellipse rx="17" ry="5.2" fill="none" stroke="#e9c46a" stroke-width="1.4" opacity=".55"/>
+    <g class="daynight3">
+      <circle r="17" fill="url(#term)"/>
+      <circle r="17" fill="none" stroke="#f0d488" stroke-width="1.2" opacity=".5"/>
+    </g>
+  </g>
+
+  <!-- sun -->
+  <g id="sunCore">
+    <circle r="60" fill="url(#sun)" filter="url(#glow)" opacity=".7"/>
+    <circle r="44" fill="url(#sun)"/>
+    <g stroke="#f2d079" stroke-width="2.5" opacity=".8">
+      <line x1="-38" y1="0" x2="38" y2="0"/><line x1="-19" y1="-32.9" x2="19" y2="32.9"/>
+      <line x1="-19" y1="32.9" x2="19" y2="-32.9"/><line x1="0" y1="-38" x2="0" y2="38"/>
+    </g>
+    <circle r="44" fill="none" stroke="#7c5720" stroke-width="2.5"/>
+  </g>
+
+  <!-- decorative corner gears (static) -->
+  <g id="corner">
+    <g fill="url(#brass)">
+      <use href="#t18"/><use href="#t18" transform="rotate(30)"/><use href="#t18" transform="rotate(60)"/>
+      <use href="#t18" transform="rotate(90)"/><use href="#t18" transform="rotate(120)"/><use href="#t18" transform="rotate(150)"/>
+      <use href="#t18" transform="rotate(180)"/><use href="#t18" transform="rotate(210)"/><use href="#t18" transform="rotate(240)"/>
+      <use href="#t18" transform="rotate(270)"/><use href="#t18" transform="rotate(300)"/><use href="#t18" transform="rotate(330)"/>
+    </g>
+    <circle r="46" fill="url(#brass)"/>
+    <circle r="39" fill="none" stroke="#5e4018" stroke-width="2.5" opacity=".7"/>
+    <circle r="12" fill="#0c0a06" stroke="#caa46a" stroke-width="2"/>
+  </g>
+
+  <!-- star field -->
+  <g id="stars" fill="#e8d9a8">
+    <circle cx="70" cy="120" r="1.3"/><circle cx="150" cy="60" r="1"/><circle cx="240" cy="150" r="1.6"/>
+    <circle cx="330" cy="90" r="1"/><circle cx="420" cy="50" r="1.2"/><circle cx="560" cy="70" r="1"/>
+    <circle cx="680" cy="110" r="1.5"/><circle cx="800" cy="70" r="1"/><circle cx="900" cy="140" r="1.3"/>
+    <circle cx="950" cy="240" r="1"/><circle cx="60" cy="300" r="1.2"/><circle cx="120" cy="440" r="1"/>
+    <circle cx="80" cy="600" r="1.4"/><circle cx="140" cy="760" r="1"/><circle cx="240" cy="900" r="1.3"/>
+    <circle cx="420" cy="950" r="1"/><circle cx="600" cy="930" r="1.2"/><circle cx="780" cy="900" r="1"/>
+    <circle cx="900" cy="820" r="1.4"/><circle cx="950" cy="620" r="1"/><circle cx="930" cy="440" r="1.2"/>
+    <circle class="twinkle" cx="200" cy="220" r="1.8"/><circle class="twinkle" cx="760" cy="200" r="1.8"/>
+    <circle class="twinkle" cx="150" cy="640" r="1.9"/><circle class="twinkle" cx="860" cy="600" r="1.9"/>
+  </g>
+</defs>
+
+<!-- background -->
+<rect width="1000" height="1000" fill="url(#bg)"/>
+<use href="#stars"/>
+
+<!-- frame + corner gears -->
+<g id="frame">
+  <circle cx="500" cy="500" r="470" fill="none" stroke="url(#brass)" stroke-width="26"/>
+  <circle cx="500" cy="500" r="470" fill="none" stroke="#3a2a12" stroke-width="26" opacity=".35"/>
+  <circle cx="500" cy="500" r="483" fill="none" stroke="#caa46a" stroke-width="2" opacity=".7"/>
+  <circle cx="500" cy="500" r="457" fill="none" stroke="#caa46a" stroke-width="1.5" opacity=".5"/>
+  <use href="#corner" transform="translate(138,138) rotate(20)"/>
+  <use href="#corner" transform="translate(862,138) rotate(70)"/>
+  <use href="#corner" transform="translate(138,862) rotate(50)"/>
+  <use href="#corner" transform="translate(862,862) rotate(10)"/>
+</g>
+
+<!-- ===== ORBIT ARM 6 : SATURN (outermost) ===== -->
+<g class="spin6">
+  <g transform="translate(500,500)">
+    <line x1="0" y1="0" x2="408" y2="0" stroke="#3a2c14" stroke-width="7"/>
+    <line x1="0" y1="0" x2="408" y2="0" stroke="url(#brass)" stroke-width="3.5"/>
+  </g>
+  <g transform="translate(908,500)">
+    <use href="#gear24"/>
+    <circle cx="-66" cy="0" r="10" fill="#0c0a06" stroke="#caa46a" stroke-width="1.5"/>
+    <g transform="translate(0,-30) scale(-1,1)">
+      <ellipse rx="26" ry="8" fill="none" stroke="#d9b06f" stroke-width="3" opacity=".85"/>
+      <path d="M-26,0 A26,8 0 0 0 26,0" fill="none" stroke="#eac477" stroke-width="3.4" opacity=".95"/>
+    </g>
+    <use href="#planet"/>
+    <g class="daynight6"><circle r="17" fill="url(#term)"/></g>
+  </g>
+</g>
+
+<!-- ===== ORBIT ARM 5 : JUPITER ===== -->
+<g class="spin5">
+  <g transform="translate(500,500)">
+    <line x1="0" y1="0" x2="348" y2="0" stroke="#3a2c14" stroke-width="7"/>
+    <line x1="0" y1="0" x2="348" y2="0" stroke="url(#brass)" stroke-width="3.5"/>
+  </g>
+  <g transform="translate(848,500)">
+    <use href="#gear24"/>
+    <circle cx="-66" cy="0" r="10" fill="#0c0a06" stroke="#caa46a" stroke-width="1.5"/>
+    <use href="#planet"/>
+    <g class="daynight5"><circle r="17" fill="url(#term)"/></g>
+  </g>
+</g>
+
+<!-- ===== ORBIT ARM 4 : MARS ===== -->
+<g class="spin4">
+  <g transform="translate(500,500)">
+    <line x1="0" y1="0" x2="288" y2="0" stroke="#3a2c14" stroke-width="7"/>
+    <line x1="0" y1="0" x2="288" y2="0" stroke="url(#brass)" stroke-width="3.5"/>
+  </g>
+  <g transform="translate(788,500)">
+    <use href="#gear24"/>
+    <circle cx="-66" cy="0" r="10" fill="#0c0a06" stroke="#caa46a" stroke-width="1.5"/>
+    <g transform="translate(17,0) scale(.85)">
+      <ellipse rx="3.2" ry="3.2" fill="#d9b06f"/><circle r="3.2" fill="url(#spec)" opacity=".4"/>
+    </g>
+    <use href="#planet"/>
+    <g class="daynight4"><circle r="17" fill="url(#term)"/></g>
+  </g>
+</g>
+
+<!-- ===== ORBIT ARM 3 : EARTH (reference speed) ===== -->
+<g class="spin3">
+  <g transform="translate(500,500)">
+    <line x1="0" y1="0" x2="228" y2="0" stroke="#3a2c14" stroke-width="7"/>
+    <line x1="0" y1="0" x2="228" y2="0" stroke="url(#brass)" stroke-width="3.5"/>
+  </g>
+  <g transform="translate(728,500)">
+    <use href="#gear24"/>
+    <circle cx="-66" cy="0" r="10" fill="#0c0a06" stroke="#caa46a" stroke-width="1.5"/>
+    <g transform="translate(34,0) scale(.7)">
+      <ellipse rx="3" ry="3" fill="#d9b06f"/><circle r="3" fill="url(#spec)" opacity=".4"/>
+    </g>
+    <use href="#planet"/>
+    <g class="daynight3"><circle r="17" fill="url(#term)"/></g>
+  </g>
+</g>
+
+<!-- ===== ORBIT ARM 2 : VENUS ===== -->
+<g class="spin2">
+  <g transform="translate(500,500)">
+    <line x1="0" y1="0" x2="168" y2="0" stroke="#3a2c14" stroke-width="7"/>
+    <line x1="0" y1="0" x2="168" y2="0" stroke="url(#brass)" stroke-width="3.5"/>
+  </g>
+  <g transform="translate(668,500)">
+    <use href="#gear24"/>
+    <circle cx="-66" cy="0" r="10" fill="#0c0a06" stroke="#caa46a" stroke-width="1.5"/>
+    <use href="#planet"/>
+    <g class="daynight2"><circle r="17" fill="url(#term)"/></g>
+  </g>
+</g>
+
+<!-- ===== ORBIT ARM 1 : MERCURY (innermost) ===== -->
+<g class="spin1">
+  <g transform="translate(500,500)">
+    <line x1="0" y1="0" x2="108" y2="0" stroke="#3a2c14" stroke-width="7"/>
+    <line x1="0" y1="0" x2="108" y2="0" stroke="url(#brass)" stroke-width="3.5"/>
+  </g>
+  <g transform="translate(608,500)">
+    <use href="#gear24"/>
+    <circle cx="-66" cy="0" r="10" fill="#0c0a06" stroke="#caa46a" stroke-width="1.5"/>
+    <use href="#planet"/>
+    <g class="daynight1"><circle r="17" fill="url(#term)"/></g>
+  </g>
+</g>
+
+<!-- central sun -->
+<use href="#sunCore"/>
+
+<!-- labels -->
+<g id="labels">
+  <text class="frametitle" x="500" y="46">CLOCKWORK ORRERY</text>
+  <text class="framesub"   x="500" y="72">· TRUE RELATIVE ORBITAL SPEEDS ·</text>
+  <text class="plabel" x="138" y="206">MERCURY</text>
+  <text class="plabel" x="862" y="206">VENUS</text>
+  <text class="plabel" x="138" y="798">EARTH</text>
+  <text class="plabel" x="862" y="798">MARS</text>
+  <text class="plabel" x="500" y="46" visibility="hidden">JUPITER</text>
+  <text class="plabel" x="500" y="966">SATURN</text>
+</g>
+</svg>

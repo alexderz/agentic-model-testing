@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Voxel Pagoda — Cubes Only</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { height:100%; overflow:hidden; background:#0b0f14; font-family:"Segoe UI",system-ui,-apple-system,sans-serif; }
+  #app { position:fixed; inset:0; }
+  .overlay { position:fixed; pointer-events:none; z-index:10; color:#fff; text-shadow:0 2px 12px rgba(0,0,0,.5); }
+  .tl { top:26px; left:30px; animation:fadeUp 1.4s ease both; }
+  .tl h1 { font-size:clamp(28px,4.6vw,52px); font-weight:800; letter-spacing:.02em; line-height:1; color:#fff; }
+  .tl h1 span { color:#ff9ec2; }
+  .tl p { margin-top:10px; font-size:clamp(12px,1.5vw,14px); font-weight:600; letter-spacing:.32em; text-transform:uppercase; color:#ffe6ee; opacity:.85; }
+  .br { bottom:24px; right:30px; text-align:right; animation:fadeUp 1.4s ease .25s both; }
+  .br p { font-size:12px; letter-spacing:.14em; color:#f7d9e6; opacity:.85; }
+  .br .k { display:inline-block; margin-top:8px; padding:6px 13px; border-radius:999px; background:rgba(20,10,16,.4); border:1px solid rgba(255,255,255,.14); backdrop-filter:blur(7px); font-size:11.5px; letter-spacing:.1em; color:#ffe9f2; }
+  .bl { bottom:26px; left:30px; display:flex; align-items:center; gap:11px; animation:fadeUp 1.4s ease .4s both; }
+  .dot { width:11px; height:11px; border-radius:50%; background:#ff8ab0; box-shadow:0 0 14px #ff8ab0, 0 0 26px rgba(255,138,176,.6); animation:pulse 2.4s ease-in-out infinite; }
+  .bl span { font-size:12px; letter-spacing:.2em; text-transform:uppercase; color:#ffe9f2; opacity:.85; }
+  @keyframes fadeUp { from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:none;} }
+  @keyframes pulse { 0%,100%{transform:scale(1);opacity:1;} 50%{transform:scale(.6);opacity:.5;} }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="overlay tl">
+  <h1>Voxel&nbsp;<span>Pagoda</span></h1>
+  <p>Five Stories · Cubes Only</p>
+</div>
+<div class="overlay br">
+  <p>Drag to look around — it keeps orbiting on its own.</p>
+  <span class="k">three.js r0.186 · import map</span>
+</div>
+<div class="overlay bl"><span class="dot"></span><span>Drifting petals</span></div>
+
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js" } }
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+
+// ---------- renderer / scene / camera ----------
+const app = document.getElementById('app');
+const renderer = new THREE.WebGLRenderer({ antialias:true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+app.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.Fog(0xf1d2dd, 34, 96);
+
+const camera = new THREE.PerspectiveCamera(52, innerWidth/innerHeight, 0.1, 400);
+
+// ---------- cube factory (everything is a cube) ----------
+const boxGeo = new THREE.BoxGeometry(1,1,1);
+function addCube(x,y,z,sx,sy,sz,color,{rotY=0,cast=true,receive=true}={}){
+  const m = new THREE.Mesh(boxGeo, new THREE.MeshStandardMaterial({ color, roughness:0.92, metalness:0 }));
+  m.position.set(x,y,z); m.scale.set(sx,sy,sz); m.rotation.y = rotY;
+  m.castShadow = cast; m.receiveShadow = receive; scene.add(m); return m;
+}
+
+// ---------- palette ----------
+const COL = {
+  stoneTop:0x9a978d, stoneMid:0x8b887e, stoneBase:0x7c796f, moss:0x7f9364,
+  wallCream:0xe9dfca, woodDark:0x5a2f22, woodMed:0x74412d, roof:0x2b2f38, roofHi:0x3c414d,
+  redBright:0xd23a2e, redDeep:0xa8271f, gold:0xd9ad55, white:0xf6f3ec, black:0x2a2a2e,
+  trunkDark:0x5b4130, trunkMid:0x74523c, branchDark:0x6b4d38, branchMid:0x876049,
+  blossomA:0xf7c9db, blossomB:0xf4bcd0, blossomC:0xfbd6e4, water:0x3f7fa0, sand:0xdccca2,
+};
+
+// ---------- ground + pond (sand ring, grass, water) ----------
+addCube(0,-0.5,0, 130,1,130, COL.moss);
+addCube(16,0.001,-8, 9,0.24,7, COL.sand, {cast:false});
+
+// ---------- lighting ----------
+scene.add(new THREE.HemisphereLight(0xffe3ec, 0x556b3f, 0.7));
+const sun = new THREE.DirectionalLight(0xfff1dd, 2.4);
+sun.position.set(30, 42, 20);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.camera.near = 1; sun.shadow.camera.far = 140;
+sun.shadow.camera.left = -34; sun.shadow.camera.right = 34;
+sun.shadow.camera.top = 34; sun.shadow.camera.bottom = -34;
+sun.shadow.bias = -0.0005; sun.shadow.normalBias = 0.02;
+scene.add(sun);
+const fill = new THREE.DirectionalLight(0xffd7e6, 0.35); fill.position.set(-24,18,-18); scene.add(fill);
+
+// ---------- helpers ----------
+function tier(cx,cy,cz,sx,sy,sz,color){ addCube(cx,cy+sy/2,cz,sx,sy,sz,color); }
+function pillar(x,y,z,h,color=COL.woodDark){ addCube(x,y+h/2,z,0.5,h,0.5,color); }
+function rail(x1,z1,x2,z2,y){ const dx=x2-x1,dz=z2-z1,len=Math.hypot(dx,dz),ang=Math.atan2(dz,dx);
+  addCube((x1+x2)/2,y,(z1+z2)/2, len,0.16,0.16,COL.redBright,{rotY:ang}); }
+
+function upturnedEaves(cx,cy,cz,rx,rz,thick,color){
+  const s = rx*2;
+  addCube(cx,cy+thick/2,cz, s,thick,s, color);
+  for (const [sx,sz] of [[1,0],[0,1],[-1,0],[0,-1]]){
+    for (let i=1;i<=3;i++){
+      const k = i*rx*0.28;
+      addCube(cx+sx*k, cy+thick/2 + i*i*0.16, cz+sz*k, rx*0.55, thick, rz*0.55, color);
+    }
+  }
+  const d = (rx-0.28)*0.86;
+  for (const [sx,sz] of [[1,1],[1,-1],[-1,1],[-1,-1]]){
+    for (let i=1;i<=4;i++){
+      const k = i*rx*0.30;
+      addCube(cx+sx*k, cy+thick/2 + i*i*0.26, cz+sz*k, rx*0.5, thick, rz*0.5, color);
+    }
+  }
+}
+
+function lantern(x,z){
+  const y=0;
+  addCube(x,y+0.18,z,0.42,0.36,0.42,COL.stoneMid);
+  addCube(x,y+0.52,z,0.34,0.34,0.34,COL.stoneMid);
+  addCube(x,y+1.02,z,0.52,0.68,0.52,COL.white,{cast:false});
+  const pl=new THREE.PointLight(0xffd9a0,7,13,2); pl.position.set(x,y+1.02,z); scene.add(pl);
+  addCube(x,y+1.44,z,0.62,0.16,0.62,COL.stoneMid);
+  addCube(x,y+1.62,z,0.34,0.18,0.34,COL.stoneMid);
+}
+
+function tree(x,z,s=1){
+  const th = (3.4 + Math.random()*1.2)*s;
+  addCube(x,th/2,z,0.5*s,th,0.5*s,COL.trunkDark);
+  for(let i=0;i<3;i++){ const a=Math.random()*6.28;
+    addCube(Math.cos(a)*0.45*s, th*0.7+i*0.2*s, Math.sin(a)*0.45*s, 0.32*s,1.1*s,0.32*s,COL.trunkMid); }
+  const cols=[COL.blossomA,COL.blossomB,COL.blossomC]; let n=0;
+  for(let i=0;i<46;i++){ const a=Math.random()*6.28,r=(Math.pow(Math.random(),0.5))*1.7*s,y=th*0.9+Math.random()*1.3*s;
+    addCube(x+Math.cos(a)*r, y, z+Math.sin(a)*r, (0.5+Math.random()*0.4)*s,(0.5+Math.random()*0.4)*s,(0.5+Math.random()*0.4)*s, cols[n++%3]); }
+}
+
+function torii(){
+  const cx=16,cz=-8;
+  addCube(cx-2.4,0.7,cz,0.62,1.4,0.62,COL.black);
+  addCube(cx+2.4,0.7,cz,0.62,1.4,0.62,COL.black);
+  pillar(cx-2.4,1.4,cz,3.0,COL.redDeep);
+  pillar(cx+2.4,1.4,cz,3.0,COL.redDeep);
+  addCube(cx,4.95,cz,7.0,0.5,0.6,COL.redBright);            // kasagi (curved top)
+  addCube(cx-2.4,4.68,cz,1.3,0.34,0.5,COL.black,{rotY:0.12});
+  addCube(cx+2.4,4.68,cz,1.3,0.34,0.5,COL.black,{rotY:-0.12});
+  addCube(cx,4.55,cz,7.0,0.34,0.55,COL.redBright);           // shimaki
+  addCube(cx,3.78,cz,4.9,0.36,0.44,COL.redBright);           // nuki
+  addCube(cx,4.28,cz,0.4,1.15,0.4,COL.redBright);            // gakuzuka
+}
+
+function bridge(){
+  const x=9,z=-7;
+  for(let i=0;i<7;i++){ const p=(i/6-0.5)*3.2,h=0.18+Math.cos((i/6-0.5)*Math.PI)*0.42; addCube(x,p+h/2,z,0.55,h,3.4,COL.redBright); }
+  rail(x,-1.7,x,1.7,1.02); rail(x,-1.7,x,1.7,0.62);
+  for(const zz of [-1.7,1.7]) for(let i=0;i<7;i++){ const p=(i/6-0.5)*3.2,h=0.18+Math.cos((i/6-0.5)*Math.PI)*0.42; addCube(x,p+h*0.5+0.02,zz,0.12,h*0.9,0.12,COL.redDeep); }
+  for(const zz of [-1.7,1.7]){ addCube(-1.6,1.35,zz,0.24,0.7,0.24,COL.redBright); addCube(1.6,1.35,zz,0.24,0.7,0.24,COL.redBright); }
+}
+
+// ---------- stone platform + pagoda (five stories) ----------
+tier(0,0,0, 13,0.9,13, COL.stoneBase);
+tier(0,0.9,0, 11.6,0.7,11.6, COL.stoneMid);
+tier(0,1.6,0, 10.4,0.5,10.4, COL.stoneTop);
+for(let i=0;i<8;i++){ const a=i/8*6.28; addCube(Math.cos(a)*4.7,3.15,Math.sin(a)*4.7,0.42,0.36,0.42,COL.gold,{cast:false}); }
+
+let y=2.1;
+for(let t=0;t<5;t++){
+  const rx=(5.9-t*0.92), rz=rx, th=0.42;
+  tier(0,y,0, 3.7-t*0.36, 1.85, 3.7-t*0.36, COL.wallCream);
+  for(const [sx,sz] of [[1,1],[1,-1],[-1,1],[-1,-1]]) addCube(sx*(rx-0.28), y+0.92, sz*(rz-0.28), 0.42,1.85,0.42, COL.woodDark);
+  upturnedEaves(0,y+1.85,0, rx,rz, th, COL.roof);
+  y += 1.85 + th;
+}
+
+// spire (sōrin)
+addCube(0,y,0, 1.3,0.4,1.3, COL.gold);
+for(let i=1;i<=7;i++) addCube(0,y+0.4+i*0.28,0, Math.max(0.5,(1.0-i*0.06)),0.12,Math.max(0.5,(1.0-i*0.06)), COL.gold);
+addCube(0,y+2.7,0, 0.24,1.3,0.24, COL.gold);
+addCube(0,y+4.1,0, 0.5,0.5,0.5, COL.gold,{cast:false});
+
+// ---------- cherry trees (one overhanging the pond) ----------
+tree(-8,-7,1.1); tree(-9.2,-3.6,0.95); tree(8.6,-11,1.0); tree(14.5,-14.5,0.85); tree(7.6,10.5,1.05);
+const over = new THREE.Group(); over.position.set(13.2,-9.2,0); scene.add(over);
+{ const th=3.6; addCube(0,th/2,0,0.5,th,0.5,COL.trunkDark);
+  for(let i=0;i<4;i++){ const a=Math.random()*6.28; addCube(Math.cos(a)*0.5,th*0.7+i*0.25,Math.sin(a)*0.5,0.34,1.2,0.34,COL.trunkMid); }
+  const cols=[COL.blossomA,COL.blossomB,COL.blossomC]; let n=0;
+  for(let i=0;i<46;i++){ const a=Math.random()*6.28,r=(Math.pow(Math.random(),0.5))*1.7,yb=th*0.9+Math.random()*1.3;
+    addCube(Math.cos(a)*r,yb,Math.sin(a)*r,(0.5+Math.random()*0.4),(0.5+Math.random()*0.4),(0.5+Math.random()*0.4),cols[n++%3]); } }
+
+// ---------- pond (water + lily pads) ----------
+const water = new THREE.Mesh(new THREE.PlaneGeometry(16,12), new THREE.MeshStandardMaterial({ color:COL.water, roughness:0.15, metalness:0.0, transparent:true, opacity:0.85 }));
+water.rotation.x=-Math.PI/2; water.position.set(16,-0.12,-8); water.receiveShadow=true; scene.add(water);
+for(const [lx,lz] of [[13.5,-9],[17.4,-10.4],[15.2,-6.4],[18.2,-8.4]]) addCube(lx,0.02,lz,0.9,0.06,0.9,COL.moss,{cast:false});
+
+// ---------- torii + bridge ----------
+torii(); bridge();
+
+// ---------- stone lanterns ----------
+lantern(-7,10); lantern(8,11); lantern(13,-13);
+
+// ---------- drifting petals (InstancedMesh) ----------
+const PCOUNT=90;
+const petalGeo=new THREE.BoxGeometry(0.22,0.05,0.16);
+const petalMat=new THREE.MeshStandardMaterial({ color:0xffffff, roughness:0.8 });
+const petals=new THREE.InstancedMesh(petalGeo,petalMat,PCOUNT);
+petals.instanceMatrix.setUsage(THREE.DynamicDrawUsage); scene.add(petals);
+const dummy=new THREE.Object3D(), cA=new THREE.Color(COL.blossomA),cB=new THREE.Color(COL.blossomB),cC=new THREE.Color(COL.blossomC);
+const petalData=[];
+for(let i=0;i<PCOUNT;i++){
+  const a=Math.random()*6.28, r=3+Math.random()*14;
+  dummy.position.set(Math.cos(a)*r, Math.random()*16, Math.sin(a)*r);
+  dummy.rotation.set(Math.random()*6.28,Math.random()*6.28,Math.random()*6.28);
+  dummy.scale.setScalar(0.7+Math.random()*0.7); dummy.updateMatrix(); petals.setMatrixAt(i,dummy.matrix);
+  petals.setColorAt(i,[cA,cB,cC][i%3]);
+  petalData.push({ x:dummy.position.x,y:dummy.position.y,z:dummy.position.z, rx:Math.random()*6.28,ry:Math.random()*6.28,rz:Math.random()*6.28, sp:0.5+Math.random()*0.9, ph:Math.random()*6.28, sw:0.4+Math.random()*0.7 });
+}
+petals.instanceColor.needsUpdate=true;
+
+// ---------- camera orbit + interaction ----------
+const target=new THREE.Vector3(0,6,0);
+let radius=30, phi=1.05, theta=0.9;
+let autoRotate=true, lastInteract=performance.now();
+const down={x:0,y:0}; let dragging=false;
+const el=renderer.domElement;
+el.addEventListener('pointerdown',e=>{dragging=true;autoRotate=false;lastInteract=performance.now();down.x=e.clientX;down.y=e.clientY;});
+addEventListener('pointermove',e=>{ if(!dragging)return; const dx=e.clientX-down.x,dy=e.clientY-down.y; down.x=e.clientX;down.y=e.clientY; theta-=dx*0.005; phi=Math.max(0.35,Math.min(1.45,phi-dy*0.005)); lastInteract=performance.now(); });
+addEventListener('pointerup',()=>{dragging=false;lastInteract=performance.now();});
+el.addEventListener('wheel',e=>{ e.preventDefault(); radius=Math.max(16,Math.min(48,radius+e.deltaY*0.02)); lastInteract=performance.now(); },{passive:false});
+
+// ---------- loop ----------
+const clock=new THREE.Clock(); let camPhase=0;
+function animate(){
+  requestAnimationFrame(animate);
+  const dt=Math.min(clock.getDelta(),0.05), t=clock.elapsedTime;
+  if(!dragging && performance.now()-lastInteract>3200) autoRotate=true;
+  if(autoRotate) camPhase+=dt*0.12;
+  const th=theta+camPhase, ph=phi+Math.sin(t*0.15)*0.03;
+  camera.position.set(target.x+radius*Math.sin(ph)*Math.cos(th), target.y+radius*Math.cos(ph), target.z+radius*Math.sin(ph)*Math.sin(th));
+  camera.lookAt(target);
+
+  for(let i=0;i<PCOUNT;i++){ const p=petalData[i];
+    p.y-=p.sp*dt; p.rx+=dt*1.2; p.rz+=dt*0.9; p.ry+=dt*(0.4+p.sw*0.3);
+    if(p.y<-0.2){ p.y=16+Math.random()*3; const a=Math.random()*6.28,r=3+Math.random()*14; p.x=Math.cos(a)*r;p.z=Math.sin(a)*r; }
+    dummy.position.set(p.x+Math.sin(t*p.sw+p.ph)*0.5, p.y, p.z+Math.cos(t*p.sw*0.8+p.ph)*0.5);
+    dummy.rotation.set(p.rx,p.ry,p.rz); dummy.updateMatrix(); petals.setMatrixAt(i,dummy.matrix);
+  }
+  petals.instanceMatrix.needsUpdate=true;
+
+  renderer.render(scene,camera);
+}
+animate();
+
+addEventListener('resize',()=>{ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); });
+</script>
+</body>
+</html>

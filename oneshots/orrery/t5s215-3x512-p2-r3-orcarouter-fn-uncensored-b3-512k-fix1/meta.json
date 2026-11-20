@@ -1,0 +1,48 @@
+{
+ "case": "t5s215-3x512-p2-r3-orcarouter-fn-uncensored-b3-512k-fix1",
+ "source_case": "t5s215-3x512-p2-r3-orcarouter-fn-uncensored-b3-512k",
+ "model": "orcarouter-fn-uncensored-b3-512k",
+ "test": "test5-orrery-repair1",
+ "max_tokens": 128000,
+ "timeout_s": 36000,
+ "feedback": "I opened your file in a headless Chromium and let it run for 10 seconds. The JavaScript console reported no errors. If you want to improve anything, reply with the complete improved SVG file; otherwise reply with the same file.",
+ "started": "2026-11-18T10:47:09-0600",
+ "status": "ok",
+ "finish_reason": "stop",
+ "usage": {
+  "prompt_tokens": 4836,
+  "completion_tokens": 4595,
+  "total_tokens": 9431,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  }
+ },
+ "timings": {
+  "cache_n": 0,
+  "prompt_n": 4836,
+  "prompt_ms": 2634.8,
+  "prompt_per_token_ms": 0.545,
+  "prompt_per_second": 1835.4,
+  "predicted_n": 4595,
+  "predicted_ms": 74693.8,
+  "predicted_per_token_ms": 16.255,
+  "predicted_per_second": 61.5,
+  "draft_n": 3654,
+  "draft_n_accepted": 3454
+ },
+ "static": {
+  "svg_found": true,
+  "parses": true,
+  "bytes": 11254,
+  "animateTransform": 19,
+  "animate": 1,
+  "animateMotion": 0,
+  "keyframes": 0,
+  "script": 0,
+  "prose_chars_outside_svg": 575
+ },
+ "wall_s": 77.3,
+ "first_token_s": 2.7,
+ "tok_s": 61.5,
+ "reply_chars": 11821
+}

@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Voxel Pagoda — 五重塔</title>
+<style>
+  :root{ --ink:#f7efe6; --dim:rgba(247,239,230,.62); --line:rgba(247,239,230,.18); }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; height:100%; background:#0a0d15; color:var(--ink); overflow:hidden; }
+  body{ font-family:"Avenir Next","Segoe UI",system-ui,-apple-system,"Helvetica Neue",sans-serif; -webkit-font-smoothing:antialiased; }
+  canvas{ display:block; }
+
+  .ui{ position:fixed; inset:0; z-index:10; pointer-events:none; user-select:none;
+       opacity:0; animation:rise 1.2s ease .35s forwards; }
+  @keyframes rise{ to{ opacity:1; transform:none; } }
+
+  .panel{ position:absolute; top:clamp(18px,3vw,42px); left:clamp(18px,3vw,46px); max-width:min(90vw,540px);
+          text-shadow:0 2px 26px rgba(0,0,0,.45); }
+  .kicker{ font-size:12px; letter-spacing:.34em; text-transform:uppercase; color:var(--dim);
+           display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+  .kicker::before{ content:""; width:30px; height:1px; background:linear-gradient(90deg,var(--line),transparent); }
+  h1{ font-family:"Hiragino Mincho ProN","Yu Mincho",Georgia,"Times New Roman",serif; font-weight:600;
+      font-size:clamp(48px,10vw,124px); line-height:.84; margin:0; letter-spacing:.02em; }
+  .romaji{ margin-top:16px; font-size:clamp(13px,1.5vw,17px); letter-spacing:.42em; text-transform:uppercase; color:var(--dim); }
+
+  .legend{ position:absolute; left:clamp(18px,3vw,46px); bottom:clamp(18px,3vw,40px);
+           display:flex; flex-direction:column; gap:11px; font-size:12.5px; color:var(--dim); }
+  .legend div{ display:flex; align-items:center; gap:11px; }
+  kbd{ font-family:inherit; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink);
+       background:rgba(255,255,255,.06); border:1px solid var(--line); border-radius:6px; padding:3px 9px; min-width:26px; text-align:center; }
+
+  .clock{ position:absolute; right:clamp(18px,3vw,46px); bottom:clamp(18px,3vw,40px); text-align:right;
+          font-size:12.5px; color:var(--dim); letter-spacing:.05em; line-height:1.7; }
+  .clock b{ display:block; font-family:"Hiragino Mincho ProN","Yu Mincho",Georgia,serif; font-weight:600;
+            font-size:26px; color:var(--ink); letter-spacing:.14em; }
+
+  #loader{ position:fixed; inset:0; z-index:20; display:flex; align-items:center; justify-content:center;
+           background:#0a0d15; transition:opacity .9s ease; }
+  #loader.hide{ opacity:0; pointer-events:none; }
+  #loader span{ font-family:"Hiragino Mincho ProN","Yu Mincho",Georgia,serif; font-size:26px; letter-spacing:.3em; color:var(--dim); }
+</style>
+<script type="importmap">
+{ "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+}}
+</script>
+</head>
+<body>
+  <div id="loader"><span>五重塔</span></div>
+
+  <div class="ui">
+    <header class="panel">
+      <div class="kicker">Voxel Garden · Cubes Only</div>
+      <h1>五重塔</h1>
+      <div class="romaji">Gorinotō — the five‑story pagoda</div>
+    </header>
+
+    <footer class="legend">
+      <div><kbd>drag</kbd> orbit the scene</div>
+      <div><kbd>scroll</kbd> zoom in / out</div>
+      <div><kbd>space</kbd> pause the tour</div>
+      <div><kbd>R</kbd> reset view</div>
+    </footer>
+
+    <aside class="clock">
+      <b id="time">—:—</b>
+      <span>camera auto‑orbiting</span>
+    </aside>
+  </div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+/* ---------- tiny helpers ---------- */
+const rand = (a,b)=> a + Math.random()*(b-a);
+const choice = arr => arr[(Math.random()*arr.length)|0];
+const clamp = (v,a,b)=> Math.max(a,Math.min(b,v));
+function hash2(x,y){ const s=Math.sin(x*127.1+y*311.7)*43758.5453; return s-Math.floor(s); }
+
+/* ---------- renderer / scene / camera ---------- */
+const renderer = new THREE.WebGLRenderer({ antialias:true });
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+
+// fog blends distant geometry into the horizon glow
+scene.fog = new THREE.FogExp2(new THREE.Color('#c9a184'), 0.006);
+
+/* ---------- voxel builder (everything is a cube) — defined before use ---------- */
+const unitGeo = new THREE.BoxGeometry(1,1,1);
+const matCache = new Map();
+function flatMat(hex){ const c=new THREE.Color(hex).getHex(); let m=matCache.get(c);
+  if(!m){ m=new THREE.MeshStandardMaterial({ color:c, roughness:0.96, metalness:0 }); matCache.set(c,m);} return m; }
+function addCube(x,y,z,sx,sy,sz,color,opt={}){
+  const mesh = new THREE.Mesh(unitGeo, flatMat(color));
+  if(opt.flat){ mesh.material=flatMat(color); mesh.castShadow=false; mesh.receiveShadow=false; }
+  else { mesh.castShadow = opt.cast!==false; mesh.receiveShadow = opt.receive!==false; }
+  mesh.position.set(x,y,z); mesh.scale.set(sx,sy,sz); mesh.rotation.y = opt.rot||0; scene.add(mesh); return mesh;
+}
+
+/* ---------- sky gradient (vertex colours on a big cube — no external file) ---------- */
+const skyGeo = new THREE.BoxGeometry(1400,1400,1400);
+{ const c=[], col=new THREE.Color(), top=new THREE.Color('#2a3f68'), bot=new THREE.Color('#e9c5a6');
+  for(let i=0;i<skyGeo.attributes.position.count;i++){ col.copy(top).lerp(bot,i/7); c.push(col.r,col.g,col.b); }
+  skyGeo.setAttribute('color', new THREE.Float32BufferAttribute(c,3)); }
+const sky = new THREE.Mesh(skyGeo, new THREE.MeshBasicMaterial({ vertexColors:true, side:THREE.BackSide, fog:false }));
+scene.add(sky);
+
+/* ---------- distant mountains + clouds (cubes) ---------- */
+{ const rock = new THREE.Color('#5b6f93'), cloud = new THREE.Color('#ecd0bd');
+  for(let i=0;i<44;i++){ const a=rand(0,Math.PI*2), r=rand(72,120);
+    addCube(Math.cos(a)*r, rand(2,10)+Math.sin(a)*3.5, Math.sin(a)*r, rand(6,16), rand(9,24), rand(6,16), rock, {flat:true}); }
+  for(let i=0;i<18;i++){ const a=rand(0,Math.PI*2), r=rand(70,120);
+    addCube(Math.cos(a)*r, rand(30,54), Math.sin(a)*r, rand(6,14), rand(3,6), rand(6,14), cloud, {flat:true}); } }
+
+const camera = new THREE.PerspectiveCamera(42, innerWidth/innerHeight, 0.5, 3000);
+camera.position.set(38,27,52);
+
+/* ---------- lighting (sun + moon, both cast shadows) ---------- */
+const hemi = new THREE.HemisphereLight(0x9fb6e0, 0x3a3524, 1.0); scene.add(hemi);
+
+const sunDir = new THREE.Vector3().setFromSphericalCoords(1, THREE.MathUtils.degToRad(70), THREE.MathUtils.degToRad(42));
+const sun = new THREE.DirectionalLight(0xffe6bf, 2.7); sun.position.copy(sunDir).multiplyScalar(95); sun.target.position.set(0,6,0);
+sun.castShadow=true; sun.shadow.mapSize.set(2048,2048);
+{ const c=sun.shadow.camera; c.left=-46;c.right=46;c.top=46;c.bottom=-46;c.near=1;c.far=260; }
+sun.shadow.bias=-0.0004; sun.shadow.normalBias=0.03; scene.add(sun, sun.target);
+
+const moonDir = new THREE.Vector3().setFromSphericalCoords(1, THREE.MathUtils.degToRad(58), THREE.MathUtils.degToRad(222));
+const moon = new THREE.DirectionalLight(0x7f9bd6, 0.85); moon.position.copy(moonDir).multiplyScalar(95); moon.target.position.set(0,6,0);
+moon.castShadow=true; moon.shadow.mapSize.set(1024,1024);
+{ const c=moon.shadow.camera; c.left=-46;c.right=46;c.top=46;c.bottom=-46;c.near=1;c.far=260; }
+moon.shadow.bias=-0.0004; moon.shadow.normalBias=0.03; scene.add(moon, moon.target);
+
+const sunMesh  = new THREE.Mesh(unitGeo, new THREE.MeshBasicMaterial({ color:0xffdca0, fog:false }));
+sunMesh.scale.setScalar(12); sunMesh.position.copy(sunDir).multiplyScalar(560); sky.add(sunMesh);
+const moonMesh = new THREE.Mesh(unitGeo, new THREE.MeshBasicMaterial({ color:0xdfe7ff, fog:false }));
+moonMesh.scale.setScalar(8); moonMesh.position.copy(moonDir).multiplyScalar(560); sky.add(moonMesh);
+
+/* ---------- ground (stone + grass) ---------- */
+const GROUND = -1.2;
+addCube(0,-1.7,0, 340,1,340, '#5f6a4c', {cast:false}); // base slab
+
+function stoneTop(x,z){ return hash2(x,z)<0.12 ? (hash2(z,x)<0.5?'#8b9099':'#767b85') : choice(['#9aa0aa','#9298a2','#868c96']); }
+for(let x=-30;x<=30;x++) for(let z=-30;z<=30;z++){
+  const d=Math.hypot(x,z); if(d>17) continue;
+  const grass = hash2(x*1.7+5, z*1.9-3) < (d/17)*0.92 + 0.06;
+  addCube(x,-0.7,z, 1,1,1, grass ? choice(['#4c6a3f','#547444','#456238']) : stoneTop(x,z), {cast:false});
+}
+
+/* ---------- pond (water + stones) ---------- */
+const WATER = new THREE.MeshStandardMaterial({ color:0x2b6e97, roughness:0.14, metalness:0.2 });
+const waterCells=[];
+for(let x=-13;x<=-5;x++) for(let z=1;z<=9;z++){
+  const d=Math.hypot(x+9,z-5); if(d>5.6) continue;
+  addCube(x,-0.78,z, 1,1,1, '#2f3a48', {cast:false}); // dark bed
+  const w=new THREE.Mesh(unitGeo,WATER); w.position.set(x,-0.72,z); w.scale.set(1,0.9,1); w.castShadow=false; w.receiveShadow=true; scene.add(w); waterCells.push(w);
+}
+for(let a=0;a<Math.PI*2;a+=0.45) addCube(-9+Math.cos(a)*6.2,-0.35,5+Math.sin(a)*6.2, 1.3,1.1,1.3, '#8a8f97');
+
+/* ---------- stone platform (stacked, upturned corners) ---------- */
+function slab(y,size,color){ for(let x=-size;x<=size;x++) for(let z=-size;z<=size;z++){
+  const d=Math.max(Math.abs(x),Math.abs(z)); if(d>size) continue; const corner=(d===size&&Math.abs(x)===size&&Math.abs(z)===size);
+  addCube(x,y,z,1,1,1, corner?choice(['#868c96','#727880']):color, {cast:false}); } }
+slab(-0.5,13,'#a2a8b2'); slab(0.4,11,'#9aa0aa'); slab(1.3,9,'#8f959f');
+for(let x=-7;x<=7;x++) for(let z=-7;z<=7;z++){ const d=Math.max(Math.abs(x),Math.abs(z)); if(d>7) continue;
+  const corner=(d===7&&Math.abs(x)===7&&Math.abs(z)===7); addCube(x,2.2,z,1,1,1, corner?choice(['#868c96','#727880']):'#8a909a', {cast:false}); }
+for(let i=0;i<4;i++){ const a=i*Math.PI/2; addCube(Math.cos(a)*13,-0.5,Math.sin(a)*13, 2.4,1.4,2.4, '#767c86'); }
+
+/* ---------- five‑story pagoda ---------- */
+const RED='#b23a2e', REDD='#922d24', DARK='#3a2f26', GOLD='#e0aa3c', WOOD='#5c4632';
+function story(cx,cz,baseY,w,d){ const h=1.7; addCube(cx,baseY+h/2,cz,w,h,d,DARK); addCube(cx,baseY+0.2,cz,w+0.3,0.4,d+0.3,RED); }
+function eaveRing(cx,cz,y,w,d){ for(let x=-w;x<=w;x++) for(let z=-d;z<=d;z++){ const m=Math.max(Math.abs(x),Math.abs(z)); if(m!==w&&m!==d) continue; let lift=0; if(m===w&&Math.abs(z)===d) lift=1.2; else if(m===w||m!==d) lift=0.6; addCube(cx,y+lift,z,1,0.5,1, RED); } }
+function post(cx,cz,y,h){ for(let i=0;i<h;i++) addCube(cx,y+i,cz,1,1,1,RED); }
+
+const baseY=3;
+story(0,0,baseY,7,7); eaveRing(0,0,baseY+1.7,7,7);
+for(let s=1;s<=4;s++){ const w=7-s*2, d=w-1, y=baseY+s*(w+1)+0.3; story(0,0,y,w,d); eaveRing(0,0,y+w,w,d); }
+
+// posts on every level
+[[5,-5],[5,5],[-5,-5],[-5,5]].forEach(([x,z])=>post(x,z,baseY,2));
+[[4,-3],[4,3],[-4,-3],[-4,3]].forEach(([x,z])=>post(x,z,9.1,3));
+[[2,-2],[2,2],[-2,-2],[-2,2]].forEach(([x,z])=>post(x,z,15.0,3));
+[[1,-1],[1,1],[-1,-1],[-1,1]].forEach(([x,z])=>post(x,z,20.9,3));
+
+// topmost eave + spire (sorin)
+eaveRing(0,0,26.8,1,1);
+let sy=27.4; addCube(0,sy,0,1.6,1.6,1.6,GOLD); sy+=1.6; for(let i=0;i<9;i++){ addCube(0,sy+0.5,0,1.3-i*0.12,1,1.3-i*0.12,GOLD); sy+=1; }
+addCube(0,sy+1.4,0,0.6,2.8,0.6,GOLD);
+
+/* ---------- torii gate (on the path) ---------- */
+{ const cx=0,cz=17,y0=-0.4;
+  for(let i=0;i<9;i++){ addCube(cx-3.5,y0+i,cz,1,1,1,RED); addCube(cx+3.5,y0+i,cz,1,1,1,RED); }
+  for(let x=-4;x<=4;x++) addCube(cx+x,y0+7,cz,1,1,1,REDD);      // nuki (tie beam)
+  for(let x=-5;x<=5;x++){ const lift=(Math.abs(x)===5)?0.9:(Math.abs(x)===4?0.4:0); addCube(cx+x,y0+9+lift,cz,1,1,1,RED); } // kasagi (curved top)
+  for(let x=-6;x<=6;x++) addCube(cx+x,y0+9.5,cz,1,0.5,1,DARK);   // shimaki (cap)
+  addCube(cx,y0+8,cz,0.6,1.4,0.6,GOLD);                          // gakuzuka
+}
+
+/* ---------- cherry blossom trees ---------- */
+function tree(x,z,scale=1){ const th=Math.round(5*scale), ch=Math.round(9*scale);
+  for(let i=0;i<th;i++) addCube(x,i+0.2,z,Math.max(1,Math.round(scale)),1,Math.max(1,Math.round(scale)),WOOD,{rot:rand(-0.1,0.1)});
+  const cy=th-0.5;
+  for(let i=-ch;i<=ch;i++) addCube(x+i,cy,z,1,1,1,'#6b4a30',{cast:false});
+  for(let i=-ch;i<=ch;i++) addCube(x,cy,z+i,1,1,1,'#6b4a30',{cast:false});
+  const cR=Math.round(5*scale), puffs=[[0,cR+1,0],[cR,cR-2,0],[-cR,cR-2,0],[0,cR-2,cR],[0,cR-2,-cR],[cR-1,cR+2,cR-1],[-cR+1,cR+2,-cR+1]];
+  for(const [ox,oy,oz] of puffs){ const pc=choice(['#f4b6c8','#ef9cb6','#f8cbd7']);
+    addCube(x+ox,cy+oy,z+oz,5*scale,5*scale,5*scale,pc);
+    addCube(x+ox,cy+oy,z+oz,3.2*scale,3.2*scale,3.2*scale,'#fbe0e9'); }
+}
+tree(14,-14,1.05); tree(-17,-8,0.95); tree(16,12,0.9); tree(-14,15,0.8);
+
+// small lanterns for warmth
+function lantern(x,z){ addCube(x,0,z,1,1,1,'#7c828c'); addCube(x,1,z,1.4,0.5,1.4,'#6f757e'); addCube(x,2,z,1,1,1,'#f2d9a0');
+  const l=new THREE.PointLight(0xffcf9a,0.6,26,2); l.position.set(x,2.2,z); scene.add(l); }
+lantern(-3,-5); lantern(4,-6);
+
+/* ---------- drifting blossom petals ---------- */
+const P=170; const petalGeo=new THREE.BoxGeometry(0.28,0.09,0.28);
+const petalMat=new THREE.MeshStandardMaterial({ color:0xffffff, roughness:0.5, emissive:0x3a1622, emissiveIntensity:0.35 });
+const petals=[]; const dummy=new THREE.Object3D(); const inst=new THREE.InstancedMesh(petalGeo,petalMat,P); inst.instanceMatrix.setUsage(THREE.DynamicDrawUsage); scene.add(inst);
+for(let i=0;i<P;i++) petals.push({ x:rand(-26,26), y:rand(4,58), z:rand(-26,26), vy:-rand(1.3,3.0), rx:rand(0,6),ry:rand(0,6),rz:rand(0,6), wx:rand(0.4,1.1), wy:rand(0.4,1.1), wz:rand(0.4,1.1), ph:rand(0,6), col:new THREE.Color(choice(['#f7c2d2','#f3a9c0','#fbdbdf','#ef9cb6'])) });
+
+/* ---------- controls + interaction ---------- */
+const controls=new OrbitControls(camera,renderer.domElement);
+controls.enableDamping=true; controls.dampingFactor=0.05; controls.autoRotate=true; controls.autoRotateSpeed=0.55;
+controls.minDistance=24; controls.maxDistance=110; controls.maxPolarAngle=Math.PI*0.49;
+controls.target.set(0,13,0);
+
+addEventListener('keydown',e=>{ if(e.code==='Space'){ e.preventDefault(); controls.autoRotate=!controls.autoRotate; }
+  if(e.key.toLowerCase()==='r') resetView(); });
+function resetView(){ camera.position.set(38,27,52); controls.target.set(0,13,0); controls.update(); }
+
+/* ---------- clock + loop ---------- */
+const timeEl=document.getElementById('time'); let lastClock=0;
+function updateClock(){ const d=new Date(); timeEl.textContent=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
+updateClock(); setInterval(updateClock,15000);
+
+const clock=new THREE.Clock();
+function animate(){ requestAnimationFrame(animate); const dt=Math.min(clock.getDelta(),0.05), t=clock.elapsedTime;
+  for(let i=0;i<P;i++){ const p=petals[i]; p.y+=p.vy*dt; p.rx+=dt*p.wx; p.ry+=dt*p.wy; p.rz+=dt*p.wz;
+    if(p.y<GROUND+0.4){ p.y=rand(46,58); p.x=rand(-26,26); p.z=rand(-26,26); }
+    dummy.position.set(p.x+Math.sin(t*0.7+p.ph)*1.4, p.y, p.z+Math.cos(t*0.6+p.ph)*1.4); dummy.rotation.set(p.rx,p.ry,p.rz);
+    dummy.updateMatrix(); inst.setMatrixAt(i,dummy.matrix); inst.setColorAt(i,p.col); }
+  inst.instanceMatrix.needsUpdate=true; if(inst.instanceColor) inst.instanceColor.needsUpdate=true;
+  controls.update(); renderer.render(scene,camera);
+}
+animate();
+
+addEventListener('resize',()=>{ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); });
+
+// reveal scene after first frame
+requestAnimationFrame(()=> setTimeout(()=> document.getElementById('loader').classList.add('hide'), 350));
+</script>
+</body>
+</html>

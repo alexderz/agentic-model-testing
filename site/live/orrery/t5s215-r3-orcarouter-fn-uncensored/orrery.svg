@@ -1,0 +1,282 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 780" width="1000" height="780" preserveAspectRatio="xMidYMid meet">
+<defs>
+  <radialGradient id="bg" cx="50%" cy="42%" r="78%">
+    <stop offset="0%" stop-color="#3a2c16"/>
+    <stop offset="55%" stop-color="#191307"/>
+    <stop offset="100%" stop-color="#0b0803"/>
+  </radialGradient>
+  <linearGradient id="brass" x1="0" y1="0" x2="0.65" y2="1">
+    <stop offset="0%" stop-color="#f9e7a6"/>
+    <stop offset="34%" stop-color="#d8ab4c"/>
+    <stop offset="66%" stop-color="#a67c2b"/>
+    <stop offset="100%" stop-color="#6f5018"/>
+  </linearGradient>
+  <linearGradient id="brass2" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0%" stop-color="#c9a24d"/>
+    <stop offset="50%" stop-color="#8f6a26"/>
+    <stop offset="100%" stop-color="#5e4315"/>
+  </linearGradient>
+  <radialGradient id="sunG" cx="42%" cy="38%" r="72%">
+    <stop offset="0%" stop-color="#fff6cf"/>
+    <stop offset="35%" stop-color="#f6d061"/>
+    <stop offset="72%" stop-color="#c98a2c"/>
+    <stop offset="100%" stop-color="#8a5a17"/>
+  </radialGradient>
+  <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+    <stop offset="0%" stop-color="#ffdf9e" stop-opacity=".95"/>
+    <stop offset="32%" stop-color="#f4b84e" stop-opacity=".5"/>
+    <stop offset="72%" stop-color="#c9862a" stop-opacity=".16"/>
+    <stop offset="100%" stop-color="#c9862a" stop-opacity="0"/>
+  </radialGradient>
+  <filter id="soft" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="5"/></filter>
+  <filter id="glow" x="-70%" y="-70%" width="240%" height="240%">
+    <feGaussianBlur stdDeviation="6" result="b"/>
+    <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+
+  <!-- gear teeth (pointing up, outer tip at y=-R) -->
+  <polygon id="t50" points="-2.6,-34 -1.6,-40 1.6,-40 2.6,-34"/>
+  <polygon id="t40" points="-2.8,-27 -1.7,-32 1.7,-32 2.8,-27"/>
+  <polygon id="t32" points="-2.9,-21.5 -1.8,-26 1.8,-26 2.9,-21.5"/>
+  <polygon id="t24" points="-2.9,-16 -1.8,-20 1.8,-20 2.9,-16"/>
+
+  <!-- gears: body + spokes + hub (teeth added via use) -->
+  <g id="gear50">
+    <use href="#t50"/><use href="#t50" transform="rotate(7.2)"/><use href="#t50" transform="rotate(14.4)"/>
+    <use href="#t50" transform="rotate(21.6)"/><use href="#t50" transform="rotate(28.8)"/><use href="#t50" transform="rotate(36)"/>
+    <use href="#t50" transform="rotate(43.2)"/><use href="#t50" transform="rotate(50.4)"/><use href="#t50" transform="rotate(57.6)"/>
+    <use href="#t50" transform="rotate(64.8)"/><use href="#t50" transform="rotate(72)"/><use href="#t50" transform="rotate(79.2)"/>
+    <use href="#t50" transform="rotate(86.4)"/><use href="#t50" transform="rotate(93.6)"/><use href="#t50" transform="rotate(100.8)"/>
+    <use href="#t50" transform="rotate(108)"/><use href="#t50" transform="rotate(115.2)"/><use href="#t50" transform="rotate(122.4)"/>
+    <use href="#t50" transform="rotate(129.6)"/><use href="#t50" transform="rotate(136.8)"/><use href="#t50" transform="rotate(144)"/>
+    <use href="#t50" transform="rotate(151.2)"/><use href="#t50" transform="rotate(158.4)"/><use href="#t50" transform="rotate(165.6)"/>
+    <use href="#t50" transform="rotate(172.8)"/><use href="#t50" transform="rotate(180)"/><use href="#t50" transform="rotate(187.2)"/>
+    <use href="#t50" transform="rotate(194.4)"/><use href="#t50" transform="rotate(201.6)"/><use href="#t50" transform="rotate(208.8)"/>
+    <use href="#t50" transform="rotate(216)"/><use href="#t50" transform="rotate(223.2)"/><use href="#t50" transform="rotate(230.4)"/>
+    <use href="#t50" transform="rotate(237.6)"/><use href="#t50" transform="rotate(244.8)"/><use href="#t50" transform="rotate(252)"/>
+    <use href="#t50" transform="rotate(259.2)"/><use href="#t50" transform="rotate(266.4)"/><use href="#t50" transform="rotate(273.6)"/>
+    <use href="#t50" transform="rotate(280.8)"/><use href="#t50" transform="rotate(288)"/><use href="#t50" transform="rotate(295.2)"/>
+    <use href="#t50" transform="rotate(302.4)"/><use href="#t50" transform="rotate(309.6)"/><use href="#t50" transform="rotate(316.8)"/>
+    <use href="#t50" transform="rotate(324)"/><use href="#t50" transform="rotate(331.2)"/><use href="#t50" transform="rotate(338.4)"/>
+    <use href="#t50" transform="rotate(345.6)"/><use href="#t50" transform="rotate(352.8)"/>
+    <circle r="34" fill="url(#brass)" stroke="#5c4113" stroke-width="1.4"/>
+    <g fill="none" stroke="url(#brass2)" stroke-width="6">
+      <line x1="-30" y1="0" x2="30" y2="0"/><line x1="-21" y1="-21" x2="21" y2="21"/>
+      <line x1="0" y1="-30" x2="0" y2="30"/><line x1="21" y1="-21" x2="-21" y2="21"/>
+    </g>
+    <circle r="12" fill="url(#brass)" stroke="#5c4113" stroke-width="1.2"/>
+  </g>
+  <g id="gear40">
+    <use href="#t40"/><use href="#t40" transform="rotate(9)"/><use href="#t40" transform="rotate(18)"/>
+    <use href="#t40" transform="rotate(27)"/><use href="#t40" transform="rotate(36)"/><use href="#t40" transform="rotate(45)"/>
+    <use href="#t40" transform="rotate(54)"/><use href="#t40" transform="rotate(63)"/><use href="#t40" transform="rotate(72)"/>
+    <use href="#t40" transform="rotate(81)"/><use href="#t40" transform="rotate(90)"/><use href="#t40" transform="rotate(99)"/>
+    <use href="#t40" transform="rotate(108)"/><use href="#t40" transform="rotate(117)"/><use href="#t40" transform="rotate(126)"/>
+    <use href="#t40" transform="rotate(135)"/><use href="#t40" transform="rotate(144)"/><use href="#t40" transform="rotate(153)"/>
+    <use href="#t40" transform="rotate(162)"/><use href="#t40" transform="rotate(171)"/><use href="#t40" transform="rotate(180)"/>
+    <use href="#t40" transform="rotate(189)"/><use href="#t40" transform="rotate(198)"/><use href="#t40" transform="rotate(207)"/>
+    <use href="#t40" transform="rotate(216)"/><use href="#t40" transform="rotate(225)"/><use href="#t40" transform="rotate(234)"/>
+    <use href="#t40" transform="rotate(243)"/><use href="#t40" transform="rotate(252)"/><use href="#t40" transform="rotate(261)"/>
+    <use href="#t40" transform="rotate(270)"/><use href="#t40" transform="rotate(279)"/><use href="#t40" transform="rotate(288)"/>
+    <use href="#t40" transform="rotate(297)"/><use href="#t40" transform="rotate(306)"/><use href="#t40" transform="rotate(315)"/>
+    <use href="#t40" transform="rotate(324)"/><use href="#t40" transform="rotate(333)"/><use href="#t40" transform="rotate(342)"/>
+    <use href="#t40" transform="rotate(351)"/>
+    <circle r="27" fill="url(#brass)" stroke="#5c4113" stroke-width="1.3"/>
+    <g fill="none" stroke="url(#brass2)" stroke-width="5">
+      <line x1="-23" y1="0" x2="23" y2="0"/><line x1="-16" y1="-16" x2="16" y2="16"/>
+      <line x1="0" y1="-23" x2="0" y2="23"/><line x1="16" y1="-16" x2="-16" y2="16"/>
+    </g>
+    <circle r="9" fill="url(#brass)" stroke="#5c4113" stroke-width="1.1"/>
+  </g>
+  <g id="gear32">
+    <use href="#t32"/><use href="#t32" transform="rotate(11.25)"/><use href="#t32" transform="rotate(22.5)"/>
+    <use href="#t32" transform="rotate(33.75)"/><use href="#t32" transform="rotate(45)"/><use href="#t32" transform="rotate(56.25)"/>
+    <use href="#t32" transform="rotate(67.5)"/><use href="#t32" transform="rotate(78.75)"/><use href="#t32" transform="rotate(90)"/>
+    <use href="#t32" transform="rotate(101.25)"/><use href="#t32" transform="rotate(112.5)"/><use href="#t32" transform="rotate(123.75)"/>
+    <use href="#t32" transform="rotate(135)"/><use href="#t32" transform="rotate(146.25)"/><use href="#t32" transform="rotate(157.5)"/>
+    <use href="#t32" transform="rotate(168.75)"/><use href="#t32" transform="rotate(180)"/><use href="#t32" transform="rotate(191.25)"/>
+    <use href="#t32" transform="rotate(202.5)"/><use href="#t32" transform="rotate(213.75)"/><use href="#t32" transform="rotate(225)"/>
+    <use href="#t32" transform="rotate(236.25)"/><use href="#t32" transform="rotate(247.5)"/><use href="#t32" transform="rotate(258.75)"/>
+    <use href="#t32" transform="rotate(270)"/><use href="#t32" transform="rotate(281.25)"/><use href="#t32" transform="rotate(292.5)"/>
+    <use href="#t32" transform="rotate(303.75)"/><use href="#t32" transform="rotate(315)"/><use href="#t32" transform="rotate(326.25)"/>
+    <use href="#t32" transform="rotate(337.5)"/><use href="#t32" transform="rotate(348.75)"/>
+    <circle r="21.5" fill="url(#brass)" stroke="#5c4113" stroke-width="1.2"/>
+    <g fill="none" stroke="url(#brass2)" stroke-width="4">
+      <line x1="-18" y1="0" x2="18" y2="0"/><line x1="-13" y1="-13" x2="13" y2="13"/>
+      <line x1="0" y1="-18" x2="0" y2="18"/><line x1="13" y1="-13" x2="-13" y2="13"/>
+    </g>
+    <circle r="7" fill="url(#brass)" stroke="#5c4113" stroke-width="1"/>
+  </g>
+  <g id="gear24">
+    <use href="#t24"/><use href="#t24" transform="rotate(15)"/><use href="#t24" transform="rotate(30)"/>
+    <use href="#t24" transform="rotate(45)"/><use href="#t24" transform="rotate(60)"/><use href="#t24" transform="rotate(75)"/>
+    <use href="#t24" transform="rotate(90)"/><use href="#t24" transform="rotate(105)"/><use href="#t24" transform="rotate(120)"/>
+    <use href="#t24" transform="rotate(135)"/><use href="#t24" transform="rotate(150)"/><use href="#t24" transform="rotate(165)"/>
+    <use href="#t24" transform="rotate(180)"/><use href="#t24" transform="rotate(195)"/><use href="#t24" transform="rotate(210)"/>
+    <use href="#t24" transform="rotate(225)"/><use href="#t24" transform="rotate(240)"/><use href="#t24" transform="rotate(255)"/>
+    <use href="#t24" transform="rotate(270)"/><use href="#t24" transform="rotate(285)"/><use href="#t24" transform="rotate(300)"/>
+    <use href="#t24" transform="rotate(315)"/><use href="#t24" transform="rotate(330)"/><use href="#t24" transform="rotate(345)"/>
+    <circle r="16" fill="url(#brass)" stroke="#5c4113" stroke-width="1.1"/>
+    <g fill="none" stroke="url(#brass2)" stroke-width="3.5">
+      <line x1="-13" y1="0" x2="13" y2="0"/><line x1="-9" y1="-9" x2="9" y2="9"/>
+      <line x1="0" y1="-13" x2="0" y2="13"/><line x1="9" y1="-9" x2="-9" y2="9"/>
+    </g>
+    <circle r="5.5" fill="url(#brass)" stroke="#5c4113" stroke-width="1"/>
+  </g>
+
+  <!-- planet with a fixed day/night terminator + rim light -->
+  <g id="planet">
+    <circle r="10" fill="currentColor"/>
+    <path d="M0,-10 A10,10 0 0 1 0,10 Z" fill="#08060a" opacity=".52"/>
+    <path d="M-9.3,-3.4 A10,10 0 0 0 -9.3,3.4" fill="none" stroke="#fff2c8" stroke-width="1.6" opacity=".7"/>
+  </g>
+
+  <!-- a single arm: gears + planet (rotates about origin; planet stays upright) -->
+  <g id="arm">
+    <use href="#gear50"/>
+    <path d="M0,0 L148,0" stroke="url(#brass2)" stroke-width="9" fill="none" stroke-linecap="round"/>
+    <path d="M0,0 L148,0" stroke="url(#brass)" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <use href="#gear40" x="148" y="0"/>
+    <g transform="translate(296,0)">
+      <circle r="10" fill="url(#brass)" stroke="#5c4113" stroke-width="1.2"/>
+      <use href="#planet"/>
+    </g>
+  </g>
+
+  <!-- small planet on a fixed arm (Mercury/Venus) -->
+  <g id="armSmall">
+    <path d="M0,0 L74,0" stroke="url(#brass2)" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <path d="M0,0 L74,0" stroke="url(#brass)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+    <use href="#gear32" x="74" y="0"/>
+    <g transform="translate(148,0)">
+      <circle r="10" fill="url(#brass)" stroke="#5c4113" stroke-width="1.2"/>
+      <use href="#planet"/>
+    </g>
+  </g>
+
+  <!-- idler gear that meshes with a fixed ring (Mercury/Venus) -->
+  <g id="idler">
+    <use href="#gear32"/>
+    <path d="M0,0 L74,0" stroke="url(#brass2)" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <path d="M0,0 L74,0" stroke="url(#brass)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+    <g transform="translate(148,0)">
+      <circle r="10" fill="url(#brass)" stroke="#5c4113" stroke-width="1.2"/>
+      <use href="#planet"/>
+    </g>
+  </g>
+
+  <!-- idler gear that meshes with a spinning arm (Earth) -->
+  <g id="idlerArm">
+    <use href="#gear32"/>
+    <path d="M0,0 L74,0" stroke="url(#brass2)" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <path d="M0,0 L74,0" stroke="url(#brass)" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+    <g transform="translate(148,0)">
+      <circle r="10" fill="url(#brass)" stroke="#5c4113" stroke-width="1.2"/>
+      <use href="#planet"/>
+    </g>
+  </g>
+
+  <!-- fixed brass ring that meshes with the idler -->
+  <g id="ring">
+    <circle r="98" fill="none" stroke="url(#brass)" stroke-width="12"/>
+    <path d="M0,-104 L-7.5,-96 L7.5,-96 Z" fill="url(#brass2)"/>
+    <path d="M0,-104 L-7.5,-96 L7.5,-96 Z" fill="url(#brass2)" transform="rotate(30)"/>
+    <path d="M0,-104 L-7.5,-96 L7.5,-96 Z" fill="url(#brass2)" transform="rotate(60)"/>
+    <path d="M0,-104 L-7.5,-96 L7.5,-96 Z" fill="url(#brass2)" transform="rotate(90)"/>
+    <path d="M0,-104 L-7.5,-96 L7.5,-96 Z" fill="url(#brass2)" transform="rotate(120)"/>
+    <path d="M0,-104 L-7.5,-96 L7.5,-96 Z" fill="url(#brass2)" transform="rotate(150)"/>
+    <path d="M0,-104 L-7.5,-96 L7.5,-96 Z" fill="url(#brass2)" transform="rotate(180)"/>
+    <path d="M0,-104 L-7.5,-96 L7.5,-96 Z" fill="url(#brass2)" transform="rotate(210)"/>
+    <path d="M0,-104 L-7.5,-96 L7.5,-96 Z" fill="url(#brass2)" transform="rotate(240)"/>
+    <path d="M0,-104 L-7.5,-96 L7.5,-96 Z" fill="url(#brass2)" transform="rotate(270)"/>
+    <path d="M0,-104 L-7.5,-96 L7.5,-96 Z" fill="url(#brass2)" transform="rotate(300)"/>
+    <path d="M0,-104 L-7.5,-96 L7.5,-96 Z" fill="url(#brass2)" transform="rotate(330)"/>
+  </g>
+
+  <!-- sun with counter-rotating drive gears -->
+  <g id="sun">
+    <circle r="128" fill="url(#sunGlow)" filter="url(#soft)">
+      <animate attributeName="opacity" values=".85;1;.85" dur="4s" repeatCount="indefinite"/>
+    </circle>
+    <g><use href="#gear32"/><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="10s" begin="-2.789s" repeatCount="indefinite"/></g>
+    <g><use href="#gear32"/><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="10s" begin="-5.578s" repeatCount="indefinite"/></g>
+    <g><use href="#gear32"/><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="10s" begin="-8.367s" repeatCount="indefinite"/></g>
+    <circle r="44" fill="url(#sunG)" stroke="#6f5018" stroke-width="2"/>
+    <circle r="44" fill="none" stroke="#fff3c9" stroke-width="1" opacity=".45"/>
+  </g>
+
+  <!-- Saturn (arm + rings, drawn above its planet) -->
+  <g id="saturn">
+    <use href="#gear50"/>
+    <path d="M0,0 L148,0" stroke="url(#brass2)" stroke-width="9" fill="none" stroke-linecap="round"/>
+    <path d="M0,0 L148,0" stroke="url(#brass)" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <use href="#gear40" x="148" y="0"/>
+    <g transform="translate(296,0)">
+      <circle r="10" fill="currentColor"/>
+      <path d="M0,-10 A10,10 0 0 1 0,10 Z" fill="#08060a" opacity=".52"/>
+      <path d="M-9.3,-3.4 A10,10 0 0 0 -9.3,3.4" fill="none" stroke="#fff2c8" stroke-width="1.6" opacity=".7"/>
+    </g>
+    <g transform="translate(296,0) rotate(-18)" fill="none">
+      <ellipse rx="25" ry="7.5" stroke="#dcb463" stroke-width="2.4" opacity=".9"/>
+      <ellipse rx="20" ry="6" stroke="#c79a45" stroke-width="1.6" opacity=".8"/>
+    </g>
+  </g>
+
+  <!-- Uranus/Neptune (arm + moon, drawn above their planets) -->
+  <g id="uranus">
+    <use href="#gear50"/>
+    <path d="M0,0 L148,0" stroke="url(#brass2)" stroke-width="9" fill="none" stroke-linecap="round"/>
+    <path d="M0,0 L148,0" stroke="url(#brass)" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <use href="#gear40" x="148" y="0"/>
+    <g transform="translate(296,0)">
+      <circle r="10" fill="currentColor"/>
+      <path d="M0,-10 A10,10 0 0 1 0,10 Z" fill="#08060a" opacity=".52"/>
+      <path d="M-9.3,-3.4 A10,10 0 0 0 -9.3,3.4" fill="none" stroke="#fff2c8" stroke-width="1.6" opacity=".7"/>
+    </g>
+    <g transform="translate(296,0)">
+      <circle r="15" fill="none" stroke="#b9c8d8" stroke-width=".6" opacity=".35"/>
+      <g><circle cx="15" cy="0" r="2.4" fill="#d7e2ee"/><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="1.2s" repeatCount="indefinite"/></g>
+    </g>
+  </g>
+
+  <clipPath id="frame">
+    <path d="M40,40 H960 V740 H40 Z M500,380 m-292,0 a292,292 0 1,0 584,0 a292,292 0 1,0 -584,0 Z" fill-rule="evenodd"/>
+  </clipPath>
+</defs>
+
+<rect width="1000" height="780" fill="url(#bg)"/>
+
+<g clip-path="url(#frame)">
+  <circle cx="500" cy="380" r="292" fill="#241a0c" stroke="#6e5220" stroke-width="2"/>
+
+  <!-- fixed brass ring + idlers (Mercury, Venus) -->
+  <g transform="translate(500,380)">
+    <use href="#ring"/>
+    <g><use href="#idler"/><animateTransform attributeName="transform" type="rotate" from="0" to="-360" dur="14.7s" begin="-9.25s" repeatCount="indefinite"/></g>
+    <g transform="rotate(180)"><use href="#idler"/><animateTransform attributeName="transform" type="rotate" from="0" to="-360" dur="24.3s" begin="-17.6s" repeatCount="indefinite"/></g>
+  </g>
+
+  <!-- spinning brass arms + planets -->
+  <g transform="translate(500,380)"><g><use href="#armSmall" color="#b9a482"/><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="14.7s" begin="-3.7s" repeatCount="indefinite"/></g></g>
+  <g transform="translate(500,380)"><g><use href="#armSmall" color="#e0b24a"/><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="24.3s" begin="-17.6s" repeatCount="indefinite"/></g></g>
+  <g transform="translate(500,380)"><g><use href="#arm" color="#4f86c9"/><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="10s" repeatCount="indefinite"/></g></g>
+  <g transform="translate(500,380)"><g><use href="#arm" color="#c25a34"/><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="18.8s" begin="-9.4s" repeatCount="indefinite"/></g></g>
+  <g transform="translate(500,380)"><g><use href="#arm" color="#cbb27f"/><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="119s" begin="-59.5s" repeatCount="indefinite"/></g></g>
+  <g transform="translate(500,380)"><g><use href="#saturn" color="#d9b46a"/><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="295s" begin="-147.5s" repeatCount="indefinite"/></g></g>
+  <g transform="translate(500,380)"><g><use href="#uranus" color="#8fc6d4"/><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="841s" begin="-420.5s" repeatCount="indefinite"/></g></g>
+  <g transform="translate(500,380)"><g><use href="#arm" color="#4a6fc4"/><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="1650s" begin="-825s" repeatCount="indefinite"/></g></g>
+
+  <!-- sun on top -->
+  <use href="#sun"/>
+</g>
+
+<!-- engraved frame + rivets -->
+<rect x="40" y="40" width="920" height="700" rx="26" fill="none" stroke="url(#brass)" stroke-width="14"/>
+<rect x="48" y="48" width="904" height="684" rx="20" fill="none" stroke="#3a2a10" stroke-width="2"/>
+<g fill="#5e4315">
+  <circle cx="70" cy="70" r="5"/><circle cx="930" cy="70" r="5"/>
+  <circle cx="70" cy="710" r="5"/><circle cx="930" cy="710" r="5"/>
+</g>
+
+<text x="500" y="762" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="20" letter-spacing="4" fill="#d8ab4c">ORRERY · THE ORBITS OF THE PLANETS</text>
+</svg>

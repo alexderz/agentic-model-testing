@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-11-14 10:52 CST",
- "built": "2026-11-14 10:52 CST",
+ "generated": "2026-11-20 10:59 CST",
+ "built": "2026-11-20 11:00 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -116,6 +116,75 @@
   }
  ],
  "findings": [
+  {
+   "date": "2026-11-20",
+   "title": "Hy4-Flash joins the test set: Maya-L across both cards, then a Q3_K build on the 3090 alone",
+   "kind": "model",
+   "summary": "Tencent's Hy4-Flash (224B with a 64B Engram table, 12B active). Maya's IQ4_XS pack on Maya v1.1.68 across the RTX 3090 and V100: test 1 passed under both harnesses (5 of 5 checks each; 43 own tests and 1 subcommand with OpenCode, 45 tests and 12 subcommands with Oh My Pi), test 2 passed (7 tools, 21 tests), the orrery scored 10 of 10 and the pagoda 9 of 10, all with thinking high, at about 20 tok/s agent-run decode. A Q3_K build on the maya-hy4f fork fits the RTX 3090 alone at 128k with 924 MiB free and reads prompts about six times faster (about 1,400 against 240 tok/s; a 100k retrieval's first token at 71 s instead of 434 s) at the same decode speed, and scored 8 of 10 on the labyrinth under both harnesses.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Prefill on a 100k prompt, Maya-L on both cards vs Q3_K on the 3090 alone (short benchmark)",
+     "before": 240,
+     "after": 1417.7,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Decode, chat, Maya-L through llama-swap vs Q3_K (short benchmark)",
+     "before": 18.7,
+     "after": 23.9,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Maya-L: test 1 5/5 (OpenCode and Oh My Pi), test 2 pass, orrery 10/10, pagoda 9/10. Q3_K: labyrinth 8/10 with each harness.",
+   "caveat": "One run per test. The Q3_K labyrinth runs had the 3090 at 300 W and the V100 idle (interim power caps until a bigger power supply is in). Agent-run first tokens were 3-6 s median for Maya-L and 6-15 s for Q3_K, longer than the short-benchmark warm first token."
+  },
+  {
+   "date": "2026-11-20",
+   "title": "Oh My Pi against OpenCode on the same models: tied quality so far, no switch verdict",
+   "kind": "model",
+   "summary": "Same model, same settings, one harness after the other. On hosted DeepSeek-V4.1-Flash (test 7 only; tests 1, 2 and 2T stay on local models for privacy): 10 and 10 in repetition 1, 9 and 9 in repetition 3; repetition 2 was 7 and 7 but ran under unequal time caps and is left out; repetition 4's omp run scored 9 and its OpenCode run is not graded yet. Hy4-Flash Q3_K on the 3090: 8 and 8. Hy4-Flash Maya-L test 1: 5 of 5 under both. Across the two equal hosted pairs omp cost 32% less ($0.27 against $0.40) but took 10% longer in total (68 against 62 minutes); on Hy4-Flash it took longer (93 against 48 minutes on test 7, 95 against 62 on test 1).",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Labyrinth points, equal-cap pairs, OpenCode vs omp (sum of three pairs)",
+     "before": 27,
+     "after": 27,
+     "unit": "points"
+    },
+    {
+     "label": "Hosted cost, two equal pairs, OpenCode vs omp",
+     "before": 0.4,
+     "after": 0.27,
+     "unit": "USD"
+    }
+   ],
+   "quality": "Every graded pair so far is a tie.",
+   "caveat": "Few pairs, all on one hosted model and one local model, and early pairs always ran OpenCode first; the comparison is still running. Wall-time and cost differences come with different prompt volumes and tool loops, so they are not a measured harness effect. Rates are agent runs measured by the client (hosted 156-204 tok/s, Hy4 25-26 tok/s)."
+  },
+  {
+   "date": "2026-11-18",
+   "title": "The 3 x 512k daily driver: agent tests 2 and 2T hold up, one-shots and the labyrinth do not",
+   "kind": "model",
+   "summary": "Orcarouter Flash-Next Uncensored on Strata 0.2.15 with three 512k sessions on one RTX 3090 ran the suite twice with thinking off and once with thinking on per request, three sessions at a time. Where the model can run its own checks it is steady: test 2 passed all three times (9, 7 and 8 tools; 69, 73 and 58 of its own tests) and 2T all three (10, 8 and 10 tools; trust verdict hedged once, tested twice). Test 1 went from no working client (the thinking-on run hit its time cap) to a perfect one (5 of 5 checks, 116 tests, 10 subcommands); a third run was stopped by the runner and is not counted. One-shots are erratic: first-draft pagodas scored 9 and 8 when they drew, but 8 of 10 were blank from a single script error or a hang; first-draft orreries 0 to 7. One round of console feedback fixed 2 of 4 crashed pagodas (to 6) and broke a 9 when told 'no errors'. The labyrinth scored 0 in all 5 thinking-off runs (the model announces its next step and stops, or runs out of time), and 8 of 10 alone with thinking on, but 0 again with thinking on under shared load.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Agent-run client decode per session, test 2, thinking off (two passes) vs thinking on",
+     "before": 24.4,
+     "after": 21.2,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Labyrinth alone, thinking off vs thinking on",
+     "before": 0,
+     "after": 8,
+     "unit": "of 10"
+    }
+   ],
+   "quality": "Test 2 and 2T: 6 of 6 pass. Test 1: 1 pass, 1 fail. Pagoda first drafts: median 0, best 9; orrery best 7; labyrinth best 8 (alone, thinking on).",
+   "caveat": "One to three samples per cell, mostly with all three slots busy: agent decode was 16-30 tok/s per session (52-59 for two 2T runs), median first tokens 1.4-2.2 s. Thinking-on results are one pass; a second pass was ended by an outage and is not counted."
+  },
   {
    "date": "2026-11-14",
    "title": "Four OpenCode agents at once on the Cyber 27B, fully on the V100: one of four passes, about 9-10 tok/s each",
@@ -2462,6 +2531,20 @@
    "title": "Agent serving profile on one 3090",
    "what": "Two 256k slots with a 20k K/V window in VRAM and a host-RAM session cache: parked 155k sessions come back in 1.25 s, four 120k streams fit at 95.8 tok/s total, and two OpenCode agents ran at once with test 2 passing.",
    "why": "Alex wanted two large agent sessions served from the 3090 without re-reading long sessions on every switch."
+  },
+  {
+   "date": "2026-11-17",
+   "era": "Flash-Next",
+   "title": "Multi-session daily driver: 3 x 512k on one 3090",
+   "what": "Orcarouter Flash-Next Uncensored on Strata 0.2.15 serves three 512k sessions from one RTX 3090 with experts in host RAM: three 481k prompts fit at once and decode at 22-26 tok/s each; the single-session driver moved to 1M context.",
+   "why": "Alex wanted several long agent sessions at once on the daily driver."
+  },
+  {
+   "date": "2026-11-19",
+   "era": "Models",
+   "title": "Hy4-Flash added to the test set",
+   "what": "Tencent's Hy4-Flash on Maya v1.1.68 across both cards (Maya-L IQ4_XS), then a Q3_K build on the RTX 3090 alone; first coverage of tests 1, 2, 5, 6 and 7.",
+   "why": "Alex asked for the new model at once and for it to join the standing test set."
   }
  ],
  "events": [],
@@ -4697,6 +4780,123 @@
    "kind": "stock",
    "uncensored": false,
    "note": "Flash-Next UD-Q4_K_XL (Unsloth Dynamic v3.1, 103.7 GiB) on Strata 0.2.13, one RTX 3090 at 300 W with experts streamed from host RAM, MTP draft head, two 256k slots with 8-bit K/V and a 28 GiB host-RAM session park (never disk), the per-layer n-gram table read from local SSD (direct I/O). Same core and settings as the stock-table version; only the n-gram table differs (Q8_0 instead of IQ4_NL). Two ~240k prompts at once (short benchmark): both needles correct, 51.2 tok/s total while both decode (27.9 and 19.7 per session), first tokens 272 and 108 s, 3.1 GiB free, so the bigger table costs nothing measurable in speed or VRAM here. Two long OpenCode agents at once (tests 2 and 7): test 2 handed in after 154 minutes with a 9-tool server and 104 of its own tests passing; the labyrinth was still unfinished at the 3-hour cap (working generator, no showcase maze or notes) and scores 5 of 10. Agent-run decode 23.1 and 20.9 tok/s per session (client side), first token median 1.7 s, the same speed as the stock table.",
+   "vision": null
+  },
+  "orcarouter-fn-uncensored-strata0215": {
+   "id": "orcarouter-fn-uncensored-strata0215",
+   "family": "Qwen3.8 Flash-Next",
+   "label": "Orcarouter Flash-Next Uncensored IQ4_XS · Strata 0.2.15, RTX 3090, 262k, 8-bit KV",
+   "base": "orcarouter/Qwen3.8-Flash-Next-Uncensored",
+   "arch": "MoE 125B / 6B active",
+   "engine": "Strata 0.2.15",
+   "quant": "IQ4_XS",
+   "kind": "uncensored-tune",
+   "uncensored": true,
+   "note": "The daily driver from 2026-11-16 to 2026-11-17: Orcarouter Flash-Next Uncensored IQ4_XS repacked for Strata 0.2.15 (small projections in BF16), one RTX 3090 with experts streamed from host RAM, MTP drafts (about 80% accepted), one 262k session with 8-bit K/V, thinking off. One-shot replies decode at 112-127 tok/s with first tokens of 0.1-0.9 s (single long requests, not agent runs).",
+   "vision": null
+  },
+  "orcarouter-fn-strata-1m": {
+   "id": "orcarouter-fn-strata-1m",
+   "family": "Qwen3.8 Flash-Next",
+   "label": "Orcarouter Flash-Next Uncensored IQ4_XS · Strata 0.2.15, RTX 3090, 1M (yarn x4), 8-bit KV",
+   "base": "orcarouter/Qwen3.8-Flash-Next-Uncensored",
+   "arch": "MoE 125B / 6B active",
+   "engine": "Strata 0.2.15",
+   "quant": "IQ4_XS",
+   "kind": "uncensored-tune",
+   "uncensored": true,
+   "note": "The same pack and engine as the 262k daily driver with yarn rope scaling x4 for a 1,048,576-token session; the single-session daily driver points at this config since 2026-11-17. At normal lengths it costs nothing measurable in grades; a one-shot pagoda decoded at 112 tok/s against about 122 without yarn (first token 0.8 s). Past 262k it is untested for quality.",
+   "vision": null
+  },
+  "orcarouter-fn-uncensored-b2": {
+   "id": "orcarouter-fn-uncensored-b2",
+   "family": "Qwen3.8 Flash-Next",
+   "label": "Orcarouter Flash-Next Uncensored IQ4_XS · Strata 0.2.15, RTX 3090, 2 x 256k, 8-bit KV",
+   "base": "orcarouter/Qwen3.8-Flash-Next-Uncensored",
+   "arch": "MoE 125B / 6B active",
+   "engine": "Strata 0.2.15",
+   "quant": "IQ4_XS",
+   "kind": "uncensored-tune",
+   "uncensored": true,
+   "note": "Two 262k sessions on one RTX 3090 (no yarn), MTP drafts, thinking off. Fit check (short benchmark): two different 224k-token prompts at once, both needles found, 2,240 MiB free on the 3090, then 47.1 and 46.4 tok/s per session while both decode. Two one-shot pagodas sent at the same time decoded at 42.3 and 39.5 tok/s (first tokens 1.4 and 1.7 s).",
+   "vision": null
+  },
+  "orcarouter-fn-uncensored-b3-512k": {
+   "id": "orcarouter-fn-uncensored-b3-512k",
+   "family": "Qwen3.8 Flash-Next",
+   "label": "Orcarouter Flash-Next Uncensored IQ4_XS · Strata 0.2.15, RTX 3090, 3 x 512k (yarn x2), 8-bit KV",
+   "base": "orcarouter/Qwen3.8-Flash-Next-Uncensored",
+   "arch": "MoE 125B / 6B active",
+   "engine": "Strata 0.2.15",
+   "quant": "IQ4_XS",
+   "kind": "uncensored-tune",
+   "uncensored": true,
+   "note": "The multi-session daily driver (Alex, 2026-11-17: \"3x512 on orca uncensored\"): three 524,288-token sessions with yarn x2 on one RTX 3090 at 300 W, experts streamed from host RAM, MTP drafts for all three slots, an 8 GiB host-RAM conversation cache (never disk). Fit check (short benchmark): three 481k-token prompts at once, all needles found, 2,162 MiB free on the 3090, then 21.9, 26.3 and 24.4 tok/s per session (72.6 total) while all three decode. Thinking is off by default; the thinking-on runs ask for it per request. Agent and one-shot rates on this entry were mostly measured with the other two slots busy.",
+   "vision": null
+  },
+  "orcarouter-fn-rusting": {
+   "id": "orcarouter-fn-rusting",
+   "family": "Qwen3.8 Flash-Next",
+   "label": "Orcarouter Flash-Next Uncensored IQ4_XS · RustingStrata 1.2.1, RTX 3090, 262k, 8-bit KV",
+   "base": "orcarouter/Qwen3.8-Flash-Next-Uncensored",
+   "arch": "MoE 125B / 6B active",
+   "engine": "RustingStrata 1.2.1",
+   "quant": "IQ4_XS",
+   "kind": "uncensored-tune",
+   "uncensored": true,
+   "note": "The pure-Rust RustingStrata 1.2.1 engine on the Orcarouter Flash-Next Uncensored IQ4_XS file, one RTX 3090, 262k context with 8-bit K/V, no MTP (not supported for this architecture), thinking off. One-shot pagodas decoded at 31-32 tok/s with first tokens of 2.7-3.0 s, about a quarter of Strata 0.2.15 on the same weights. Kept as a fallback serve.",
+   "vision": null
+  },
+  "hy4-flash-maya-l": {
+   "id": "hy4-flash-maya-l",
+   "family": "Hy4-Flash",
+   "label": "Hy4-Flash Maya-L IQ4_XS · Maya v1.1.68, RTX 3090 + V100, 128k, 8-bit KV",
+   "base": "tencent/Hy4-flash",
+   "arch": "MoE 224B (incl. 64B Engram table) / 12B active",
+   "engine": "Maya v1.1.68",
+   "quant": "Maya-L IQ4_XS with its Engram n-gram table, MTP head",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "Tencent's Hy4-Flash in Maya's own IQ4_XS pack on Maya v1.1.68, layers split across the RTX 3090 and the V100 with most experts in host RAM, 128k context with 8-bit K/V (VRAM only, never disk), MTP drafts, thinking high by default, temperature 0.9 and top_p 1. The engine serves one request at a time. Fit and speed through llama-swap (short benchmark): 680 MiB free on the 3090 and 1,905 MiB on the V100 after the longest prefill, a 104k-token retrieval correct with the first token after 434 s (about 240 tok/s prefill), decode about 19 tok/s (chat 18.7, code 23.0) and a warm first token of 0.5 s. Agent runs decode at about 20 tok/s on the client side.",
+   "vision": null
+  },
+  "hy4f-q3k-3090": {
+   "id": "hy4f-q3k-3090",
+   "family": "Hy4-Flash",
+   "label": "Hy4-Flash Q3_K · maya-hy4f (cbe0a1f), RTX 3090, 128k, 8-bit KV",
+   "base": "tencent/Hy4-flash",
+   "arch": "MoE 224B (incl. 64B Engram table) / 12B active",
+   "engine": "maya-hy4f cbe0a1f",
+   "quant": "Q3_K trunk with the F8_E4M3 Engram table from the Maya-L pack, MTP head",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "A community fork of the Maya engine built for Hy4-Flash on RTX 30-class cards: Q3_K trunk on one RTX 3090, every routed expert in pinned host RAM (about 84 GB in the container), the 63 GB Engram table read straight from SSD, 128k context with 8-bit K/V, MTP drafts, thinking high by default, temperature 0.9 and top_p 1. Qualification (short benchmark): 924 MiB free on the 3090 after a 100k-token prefill, decode 23.9 tok/s chat and 26.8 code, first token about 1.9 s, prefill about 1,400 tok/s (100k retrieval correct with the first token at 71 s, against 434 s for Maya-L across both cards). Over-refusal check, thinking off: 2 of 64 harmless prompts and 0 of 24 lookalikes refused.",
+   "vision": null
+  },
+  "qwen38-27b-pi": {
+   "id": "qwen38-27b-pi",
+   "family": "Qwen3.8 27B",
+   "label": "Qwen3.8-27B UD-Q4_K_M + pi-harness LoRA · llama.cpp (Clover 4838ffb), V100, 128k, 8-bit KV",
+   "base": "Qwen/Qwen3.8-27B",
+   "arch": "dense 27B",
+   "engine": "llama.cpp Clover 4838ffb",
+   "quant": "Unsloth UD-Q4_K_M with an F16 LoRA adapter trained for the pi coding agent (applied at load, not merged)",
+   "kind": "tune",
+   "uncensored": false,
+   "note": "Qwen3.8-27B with a LoRA tuned for the pi coding-agent harness, on the Tesla V100 alone, 128k context with 8-bit K/V, thinking off, temperature 0.8. Short benchmark beside another model on the 3090: decode 25.4 tok/s, prefill 85 tok/s on a short prompt, first token 0.40 s, 20,726 MiB of VRAM; the live LoRA costs about a fifth of the decode speed against the same base file (32.2 tok/s).",
+   "vision": null
+  },
+  "openrouter-deepseek-v4.1-flash-1017": {
+   "id": "openrouter-deepseek-v4.1-flash-1017",
+   "family": "DeepSeek",
+   "label": "DeepSeek-V4.1-Flash 1017 · hosted on OpenRouter",
+   "base": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+   "arch": "MoE",
+   "engine": "OpenRouter (hosted, served by Wafer)",
+   "quant": "not given",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "Hosted: OpenRouter model deepseek/deepseek-v4.1-flash-1017, served by the provider Wafer (one excluded run also got Prime Intellect for 28 of 98 requests), 1,048,576-token context, temperature 0.6, top_p 0.95, reasoning effort high, one request at a time. Used for the test 7 half of the OpenCode-against-Oh My Pi harness comparison; tests 1, 2, 2T and 3 stay on local models for privacy. Agent-run client decode 156-204 tok/s with median first tokens of 0.7-1.6 s; cost per labyrinth run $0.14-0.23, with about 99% of prompt tokens read from the provider's cache.",
    "vision": null
   }
  },
@@ -13387,6 +13587,297 @@
     "loc": 6766,
     "errors_per_kloc": 5.6
    }
+  },
+  {
+   "case": "hy4-mayal-p1-test1-hy4-flash-maya-l",
+   "model": "hy4-flash-maya-l",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 43,
+   "tests_fail": 0,
+   "subcmds": 1,
+   "tps": 20.2,
+   "minutes": 61.7,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-19 19:13",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 1912,
+    "errors_per_kloc": 0.0
+   }
+  },
+  {
+   "case": "hy4-mayal-p1-test1-omp",
+   "model": "hy4-flash-maya-l",
+   "test": 1,
+   "agent": "Oh My Pi",
+   "checks": 5,
+   "tests_pass": 45,
+   "tests_fail": 0,
+   "subcmds": 12,
+   "tps": 19.7,
+   "minutes": 94.5,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-19 23:34",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 1864,
+    "errors_per_kloc": 0.5
+   }
+  },
+  {
+   "case": "s215-3x512-p2-test1-orcarouter-fn-uncensored-b3-512k",
+   "model": "orcarouter-fn-uncensored-b3-512k",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 116,
+   "tests_fail": 0,
+   "subcmds": 10,
+   "tps": 15.71,
+   "minutes": 86.5,
+   "compactions": null,
+   "ctx": 524288,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-18 06:21",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 2255,
+    "errors_per_kloc": 1.8
+   }
+  },
+  {
+   "case": "s215-3x512-think-p1-test1-orcarouter-fn-uncensored-b3-512k",
+   "model": "orcarouter-fn-uncensored-b3-512k",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 0,
+   "tests_pass": null,
+   "tests_fail": null,
+   "subcmds": 0,
+   "tps": 17.59,
+   "minutes": 95.1,
+   "compactions": null,
+   "ctx": 524288,
+   "kv": "q8_0",
+   "verdict": "fail",
+   "finished": "2026-11-18 14:54",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 2908,
+    "errors_per_kloc": 0.0
+   }
+  },
+  {
+   "case": "switch-pi27-test1-r1-opencode",
+   "model": "qwen38-27b-pi",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 75,
+   "tests_fail": 0,
+   "subcmds": 7,
+   "tps": 20.76,
+   "minutes": 33.0,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-20 00:11",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 1511,
+    "errors_per_kloc": 0.0
+   }
+  },
+  {
+   "case": "hy4-mayal-p1-test2-hy4-flash-maya-l",
+   "model": "hy4-flash-maya-l",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 21,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 20.38,
+   "minutes": 43.1,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-19 20:58",
+   "struggle": {
+    "compiles": 6,
+    "failed_compiles": 4,
+    "rust_errors": 5,
+    "loc": 1727,
+    "errors_per_kloc": 2.9
+   }
+  },
+  {
+   "case": "s215-3x512-p1-test2-orcarouter-fn-uncensored-b3-512k",
+   "model": "orcarouter-fn-uncensored-b3-512k",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 69,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 24.32,
+   "minutes": 171.1,
+   "compactions": null,
+   "ctx": 524288,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-18 02:56",
+   "struggle": {
+    "compiles": 91,
+    "failed_compiles": 40,
+    "rust_errors": 1022,
+    "loc": 3289,
+    "errors_per_kloc": 311.0
+   }
+  },
+  {
+   "case": "s215-3x512-p2-test2-orcarouter-fn-uncensored-b3-512k",
+   "model": "orcarouter-fn-uncensored-b3-512k",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 73,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 24.43,
+   "minutes": 67.0,
+   "compactions": null,
+   "ctx": 524288,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-18 07:28",
+   "struggle": {
+    "compiles": 48,
+    "failed_compiles": 28,
+    "rust_errors": 103,
+    "loc": 2703,
+    "errors_per_kloc": 38.5
+   }
+  },
+  {
+   "case": "s215-3x512-think-p1-test2-orcarouter-fn-uncensored-b3-512k",
+   "model": "orcarouter-fn-uncensored-b3-512k",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 58,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 21.2,
+   "minutes": 180.1,
+   "compactions": null,
+   "ctx": 524288,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-18 17:54",
+   "struggle": {
+    "compiles": 44,
+    "failed_compiles": 22,
+    "rust_errors": 119,
+    "loc": 5779,
+    "errors_per_kloc": 20.9
+   }
+  },
+  {
+   "case": "s215-3x512-p1-test2t-orcarouter-fn-uncensored-b3-512k",
+   "model": "orcarouter-fn-uncensored-b3-512k",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 36,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 58.91,
+   "minutes": 76.5,
+   "compactions": null,
+   "ctx": 524288,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-18 04:13",
+   "flavor": "2T",
+   "struggle": {
+    "compiles": 162,
+    "failed_compiles": 67,
+    "rust_errors": 115,
+    "loc": 3470,
+    "errors_per_kloc": 35.7
+   }
+  },
+  {
+   "case": "s215-3x512-p2-test2t-orcarouter-fn-uncensored-b3-512k",
+   "model": "orcarouter-fn-uncensored-b3-512k",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 58,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 51.89,
+   "minutes": 127.7,
+   "compactions": null,
+   "ctx": 524288,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-18 09:37",
+   "flavor": "2T",
+   "struggle": {
+    "compiles": 211,
+    "failed_compiles": 46,
+    "rust_errors": 136,
+    "loc": 2850,
+    "errors_per_kloc": 48.1
+   }
+  },
+  {
+   "case": "s215-3x512-think-p1-test2t-orcarouter-fn-uncensored-b3-512k",
+   "model": "orcarouter-fn-uncensored-b3-512k",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 94,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 29.85,
+   "minutes": 127.2,
+   "compactions": null,
+   "ctx": 524288,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-18 20:02",
+   "flavor": "2T",
+   "struggle": {
+    "compiles": 38,
+    "failed_compiles": 25,
+    "rust_errors": 65,
+    "loc": 5778,
+    "errors_per_kloc": 11.2
+   }
   }
  ],
  "test3": [
@@ -17299,6 +17790,16 @@
    "prefill": 1472.7,
    "vram": 21356,
    "error": ""
+  },
+  {
+   "model": "hy4f-q3k-3090",
+   "engine": "maya-hy4f cbe0a1f",
+   "variant": "Qualification, short benchmark: Hy4-Flash Q3_K on the RTX 3090 alone, 128k, 8-bit KV, MTP; chat decode 23.9 tok/s (code 26.8), first token about 1.9 s; 26k and 100k retrievals correct, prefill about 1,340 and 1,420 tok/s (first token 19.6 s and 70.7 s); 924 MiB free after the 100k prefill (23,198 MiB used), fits",
+   "decode": 23.95,
+   "quote": null,
+   "prefill": 1417.7,
+   "vram": 23198,
+   "error": ""
   }
  ],
  "engines": [
@@ -20237,6 +20738,430 @@
      "frames/orrery/fnb-v31-udq3kxl-t5-oneshot-orrery-r1/frame-6000.webp"
     ],
     "live": "live/orrery/fnb-v31-udq3kxl-t5-oneshot-orrery-r1/orrery.svg"
+   },
+   {
+    "case": "t5s215-r1-orcarouter-fn-uncensored",
+    "entry": "orcarouter-fn-uncensored-strata0215",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 7210.0,
+    "wall_s": 59.9,
+    "tok_s": 121.4,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. The SVG does not parse: an unescaped & in a Google Fonts @import URL (line 3). Strata 0.2.15, one session, thinking off, MTP drafts. First token 0.5 s; 121.4 tok/s is a single long request, not an agent-run rate.",
+    "frames": [],
+    "live": "live/orrery/t5s215-r1-orcarouter-fn-uncensored/orrery.svg"
+   },
+   {
+    "case": "t5s215-r2-orcarouter-fn-uncensored",
+    "entry": "orcarouter-fn-uncensored-strata0215",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 103.0,
+    "wall_s": 1.0,
+    "tok_s": 112.0,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. No SVG: it answered as if it had file tools (made-up list_files and read_file calls) and stopped after 103 tokens. Strata 0.2.15, one session, thinking off, MTP drafts. First token 0.1 s; 112.0 tok/s is a single long request, not an agent-run rate.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t5s215-r3-orcarouter-fn-uncensored",
+    "entry": "orcarouter-fn-uncensored-strata0215",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 8382.0,
+    "wall_s": 66.3,
+    "tok_s": 126.6,
+    "points": {
+     "A": 1.0,
+     "B": 1.0,
+     "C": 1.0,
+     "D": 0.0,
+     "E": 1.0
+    },
+    "total": 4.0,
+    "note": "4 of 10 (A1 B1 C1 D0 E1). Parses, SMIL only. The sun and gears never appear and the planets crowd one ring at the left edge; outer periods are within 1% of the real ratios, but Mercury and Venus do not orbit; the toothed gears are in the code but not visible. Strata 0.2.15, one session, thinking off, MTP drafts. First token 0.1 s; 126.6 tok/s is a single long request, not an agent-run rate.",
+    "frames": [
+     "frames/orrery/t5s215-r3-orcarouter-fn-uncensored/frame-100.webp",
+     "frames/orrery/t5s215-r3-orcarouter-fn-uncensored/frame-2000.webp",
+     "frames/orrery/t5s215-r3-orcarouter-fn-uncensored/frame-6000.webp"
+    ],
+    "live": "live/orrery/t5s215-r3-orcarouter-fn-uncensored/orrery.svg"
+   },
+   {
+    "case": "t5s215-3x512-p1-r1-orcarouter-fn-uncensored-b3-512k",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 5,
+    "finish": "length",
+    "tokens": 128000.0,
+    "wall_s": 5322.3,
+    "tok_s": 24.1,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. Ran away writing path coordinates until the 128k reply cap, so the SVG is cut off. 3 x 512k entry, thinking off, while the other two sessions ran agent tests (shared load). First token 1.3 s; 24.1 tok/s is a single long request, not an agent-run rate.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t5s215-3x512-p1-r2-orcarouter-fn-uncensored-b3-512k",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 202.0,
+    "wall_s": 9.5,
+    "tok_s": 22.3,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. No SVG: a made-up <tool_call> to list_files/read_file instead of an answer. 3 x 512k entry, thinking off, while the other two sessions ran agent tests (shared load). First token 0.5 s; 22.3 tok/s is a single long request, not an agent-run rate.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t5s215-3x512-p1-r3-orcarouter-fn-uncensored-b3-512k",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 8282.0,
+    "wall_s": 383.3,
+    "tok_s": 21.6,
+    "points": {
+     "A": 1.0,
+     "B": 1.0,
+     "C": 1.0,
+     "D": 1.0,
+     "E": 1.0
+    },
+    "total": 5.0,
+    "note": "5 of 10 (A1 B1 C1 D1 E1). Renders in a brass frame, but every planet crowds onto one toothed plate left of the sun; all eight planets animate in order with most ratios within 1-3% (Mercury and Neptune off by more than 3%); gears all turn the same way, so they do not mesh. 3 x 512k entry, thinking off, while the other two sessions ran agent tests (shared load). First token 0.2 s; 21.6 tok/s is a single long request, not an agent-run rate.",
+    "frames": [
+     "frames/orrery/t5s215-3x512-p1-r3-orcarouter-fn-uncensored-b3-512k/frame-1500.webp",
+     "frames/orrery/t5s215-3x512-p1-r3-orcarouter-fn-uncensored-b3-512k/frame-5000.webp",
+     "frames/orrery/t5s215-3x512-p1-r3-orcarouter-fn-uncensored-b3-512k/frame-10000.webp"
+    ],
+    "live": "live/orrery/t5s215-3x512-p1-r3-orcarouter-fn-uncensored-b3-512k/orrery.svg"
+   },
+   {
+    "case": "t5s215-3x512-p2-r1-orcarouter-fn-uncensored-b3-512k",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 197.0,
+    "wall_s": 13.0,
+    "tok_s": 16.9,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. No SVG: a made-up <tool_call> again (third time across samples). 3 x 512k entry, thinking off, while the other two sessions ran agent tests (shared load). First token 1.3 s; 16.9 tok/s is a single long request, not an agent-run rate.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t5s215-3x512-p2-r2-orcarouter-fn-uncensored-b3-512k",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 4835.0,
+    "wall_s": 331.1,
+    "tok_s": 14.6,
+    "points": {
+     "A": 1.0,
+     "B": 2.0,
+     "C": 0.0,
+     "D": 1.0,
+     "E": 1.0
+    },
+    "total": 5.0,
+    "note": "5 of 10 (A1 B2 C0 D1 E1). Renders, but the gears are a vertical stack that swings across the orbits; planet periods 5-12 s with Neptune among the fastest, so not ordered. 3 x 512k entry, thinking off, while the other two sessions ran agent tests (shared load). First token 0.2 s; 14.6 tok/s is a single long request, not an agent-run rate.",
+    "frames": [
+     "frames/orrery/t5s215-3x512-p2-r2-orcarouter-fn-uncensored-b3-512k/frame-1500.webp",
+     "frames/orrery/t5s215-3x512-p2-r2-orcarouter-fn-uncensored-b3-512k/frame-5000.webp",
+     "frames/orrery/t5s215-3x512-p2-r2-orcarouter-fn-uncensored-b3-512k/frame-10000.webp"
+    ],
+    "live": "live/orrery/t5s215-3x512-p2-r2-orcarouter-fn-uncensored-b3-512k/orrery.svg"
+   },
+   {
+    "case": "t5s215-3x512-p2-r3-orcarouter-fn-uncensored-b3-512k",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 4714.0,
+    "wall_s": 315.1,
+    "tok_s": 15.0,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 1.0,
+     "D": 1.0,
+     "E": 1.0
+    },
+    "total": 7.0,
+    "note": "7 of 10 (A2 B2 C1 D1 E1). Clean 'Brass Orrery' with a period legend; ordered periods near the real ratios (Mercury about 4% and Mars about 6% off); adjacent gears alternate direction but share one radius, so the gear law fails. 3 x 512k entry, thinking off, while the other two sessions ran agent tests (shared load). First token 0.3 s; 15.0 tok/s is a single long request, not an agent-run rate.",
+    "frames": [
+     "frames/orrery/t5s215-3x512-p2-r3-orcarouter-fn-uncensored-b3-512k/frame-1500.webp",
+     "frames/orrery/t5s215-3x512-p2-r3-orcarouter-fn-uncensored-b3-512k/frame-5000.webp",
+     "frames/orrery/t5s215-3x512-p2-r3-orcarouter-fn-uncensored-b3-512k/frame-10000.webp"
+    ],
+    "live": "live/orrery/t5s215-3x512-p2-r3-orcarouter-fn-uncensored-b3-512k/orrery.svg"
+   },
+   {
+    "case": "t5s215-3x512-p1-r1-orcarouter-fn-uncensored-b3-512k-fix1",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 127645.0,
+    "wall_s": 2656.6,
+    "tok_s": 49.4,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. One repair round, not a pure one-shot: the model got its draft back with the sealed render's console errors (or 'no errors') and answered with a new file. Draft p1-r1 scored 0 (cut off); it ran away again to 127,645 tokens of path coordinates. First token 74.0 s; 49.4 tok/s is a single long request, not an agent-run rate.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t5s215-3x512-p1-r2-orcarouter-fn-uncensored-b3-512k-fix1",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 105.0,
+    "wall_s": 5.5,
+    "tok_s": 45.0,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. One repair round, not a pure one-shot: the model got its draft back with the sealed render's console errors (or 'no errors') and answered with a new file. Draft p1-r2 scored 0 (no SVG); it replied with a made-up tool call again. First token 3.2 s; 45.0 tok/s is a single long request, not an agent-run rate.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t5s215-3x512-p1-r3-orcarouter-fn-uncensored-b3-512k-fix1",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 8820.0,
+    "wall_s": 148.1,
+    "tok_s": 61.0,
+    "points": {
+     "A": 1.0,
+     "B": 2.0,
+     "C": 1.0,
+     "D": 1.0,
+     "E": 1.0
+    },
+    "total": 6.0,
+    "note": "6 of 10 (A1 B2 C1 D1 E1). One repair round, not a pure one-shot: the model got its draft back with the sealed render's console errors (or 'no errors') and answered with a new file. Draft p1-r3 scored 5; it sped the periods up 40 times so planets and arms visibly move (B 1 to 2); planets still crowd one plate left of the sun. First token 3.4 s; 61.0 tok/s is a single long request, not an agent-run rate.",
+    "frames": [
+     "frames/orrery/t5s215-3x512-p1-r3-orcarouter-fn-uncensored-b3-512k-fix1/frame-1500.webp",
+     "frames/orrery/t5s215-3x512-p1-r3-orcarouter-fn-uncensored-b3-512k-fix1/frame-5000.webp",
+     "frames/orrery/t5s215-3x512-p1-r3-orcarouter-fn-uncensored-b3-512k-fix1/frame-10000.webp"
+    ],
+    "live": "live/orrery/t5s215-3x512-p1-r3-orcarouter-fn-uncensored-b3-512k-fix1/orrery.svg"
+   },
+   {
+    "case": "t5s215-3x512-p2-r1-orcarouter-fn-uncensored-b3-512k-fix1",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 5631.0,
+    "wall_s": 79.1,
+    "tok_s": 72.7,
+    "points": {
+     "A": 1.0,
+     "B": 1.0,
+     "C": 1.0,
+     "D": 1.0,
+     "E": 1.0
+    },
+    "total": 5.0,
+    "note": "5 of 10 (A1 B1 C1 D1 E1). One repair round, not a pure one-shot: the model got its draft back with the sealed render's console errors (or 'no errors') and answered with a new file. Draft p2-r1 scored 0 (no SVG); now an SVG with four orbit rings (Mercury to Mars only), clumped toothed gears at the right, planets barely visible. First token 1.6 s; 72.7 tok/s is a single long request, not an agent-run rate.",
+    "frames": [
+     "frames/orrery/t5s215-3x512-p2-r1-orcarouter-fn-uncensored-b3-512k-fix1/frame-1500.webp",
+     "frames/orrery/t5s215-3x512-p2-r1-orcarouter-fn-uncensored-b3-512k-fix1/frame-5000.webp",
+     "frames/orrery/t5s215-3x512-p2-r1-orcarouter-fn-uncensored-b3-512k-fix1/frame-10000.webp"
+    ],
+    "live": "live/orrery/t5s215-3x512-p2-r1-orcarouter-fn-uncensored-b3-512k-fix1/orrery.svg"
+   },
+   {
+    "case": "t5s215-3x512-p2-r2-orcarouter-fn-uncensored-b3-512k-fix1",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 4411.0,
+    "wall_s": 70.2,
+    "tok_s": 65.3,
+    "points": {
+     "A": 1.0,
+     "B": 2.0,
+     "C": 0.0,
+     "D": 1.0,
+     "E": 1.0
+    },
+    "total": 5.0,
+    "note": "5 of 10 (A1 B2 C0 D1 E1). One repair round, not a pure one-shot: the model got its draft back with the sealed render's console errors (or 'no errors') and answered with a new file. Draft p2-r2 scored 5; told 'no errors', it kept the same swinging gear stack. First token 2.7 s; 65.3 tok/s is a single long request, not an agent-run rate.",
+    "frames": [
+     "frames/orrery/t5s215-3x512-p2-r2-orcarouter-fn-uncensored-b3-512k-fix1/frame-1500.webp",
+     "frames/orrery/t5s215-3x512-p2-r2-orcarouter-fn-uncensored-b3-512k-fix1/frame-5000.webp",
+     "frames/orrery/t5s215-3x512-p2-r2-orcarouter-fn-uncensored-b3-512k-fix1/frame-10000.webp"
+    ],
+    "live": "live/orrery/t5s215-3x512-p2-r2-orcarouter-fn-uncensored-b3-512k-fix1/orrery.svg"
+   },
+   {
+    "case": "t5s215-3x512-p2-r3-orcarouter-fn-uncensored-b3-512k-fix1",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 4595.0,
+    "wall_s": 77.3,
+    "tok_s": 61.5,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 1.0,
+     "D": 1.0,
+     "E": 1.0
+    },
+    "total": 7.0,
+    "note": "7 of 10 (A2 B2 C1 D1 E1). One repair round, not a pure one-shot: the model got its draft back with the sealed render's console errors (or 'no errors') and answered with a new file. Draft p2-r3 scored 7; essentially the same file back. First token 2.7 s; 61.5 tok/s is a single long request, not an agent-run rate.",
+    "frames": [
+     "frames/orrery/t5s215-3x512-p2-r3-orcarouter-fn-uncensored-b3-512k-fix1/frame-1500.webp",
+     "frames/orrery/t5s215-3x512-p2-r3-orcarouter-fn-uncensored-b3-512k-fix1/frame-5000.webp",
+     "frames/orrery/t5s215-3x512-p2-r3-orcarouter-fn-uncensored-b3-512k-fix1/frame-10000.webp"
+    ],
+    "live": "live/orrery/t5s215-3x512-p2-r3-orcarouter-fn-uncensored-b3-512k-fix1/orrery.svg"
+   },
+   {
+    "case": "t5s215-3x512-think-p1-r1-orcarouter-fn-uncensored-b3-512k",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 79385.0,
+    "wall_s": 4085.9,
+    "tok_s": 19.4,
+    "points": {
+     "A": 1.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 1.0,
+     "E": 1.0
+    },
+    "total": 7.0,
+    "note": "7 of 10 (A1 B2 C2 D1 E1). Sun, planets and orbit arms render and move; all eight periods within 5% of the real ratios; the dashed gear circles sweep across and out of the dial and do not mesh; no clear day/night sweep. 3 x 512k entry, thinking on by request, shared load; the token count includes reasoning and the first token is the first generated token, not the first visible answer. First token 1.2 s; 19.4 tok/s is a single long request, not an agent-run rate.",
+    "frames": [
+     "frames/orrery/t5s215-3x512-think-p1-r1-orcarouter-fn-uncensored-b3-512k/frame-100.webp",
+     "frames/orrery/t5s215-3x512-think-p1-r1-orcarouter-fn-uncensored-b3-512k/frame-2000.webp",
+     "frames/orrery/t5s215-3x512-think-p1-r1-orcarouter-fn-uncensored-b3-512k/frame-6000.webp"
+    ],
+    "live": "live/orrery/t5s215-3x512-think-p1-r1-orcarouter-fn-uncensored-b3-512k/orrery.svg"
+   },
+   {
+    "case": "t5s215-3x512-think-p1-r2-orcarouter-fn-uncensored-b3-512k",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 78945.0,
+    "wall_s": 3464.4,
+    "tok_s": 22.8,
+    "points": {
+     "A": 1.0,
+     "B": 1.0,
+     "C": 1.0,
+     "D": 1.0,
+     "E": 1.0
+    },
+    "total": 5.0,
+    "note": "5 of 10 (A1 B1 C1 D1 E1). With scripts off (the standard test 5 render) the frames show a brass background, a blank period panel, a displaced moving sun and scattered gear and planet parts rather than an assembled orrery. 3 x 512k entry, thinking on by request, shared load; the token count includes reasoning and the first token is the first generated token, not the first visible answer. First token 0.5 s; 22.8 tok/s is a single long request, not an agent-run rate.",
+    "frames": [
+     "frames/orrery/t5s215-3x512-think-p1-r2-orcarouter-fn-uncensored-b3-512k/frame-100.webp",
+     "frames/orrery/t5s215-3x512-think-p1-r2-orcarouter-fn-uncensored-b3-512k/frame-2000.webp",
+     "frames/orrery/t5s215-3x512-think-p1-r2-orcarouter-fn-uncensored-b3-512k/frame-6000.webp"
+    ],
+    "live": "live/orrery/t5s215-3x512-think-p1-r2-orcarouter-fn-uncensored-b3-512k/orrery.svg"
+   },
+   {
+    "case": "t5s215-3x512-think-p1-r3-orcarouter-fn-uncensored-b3-512k",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 111066.0,
+    "wall_s": 4788.6,
+    "tok_s": 23.2,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. No complete SVG: the reply ended without finishing the file, although the server reported a normal stop. 3 x 512k entry, thinking on by request, shared load; the token count includes reasoning and the first token is the first generated token, not the first visible answer. First token 0.3 s; 23.2 tok/s is a single long request, not an agent-run rate.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t5hy4-mayal-p1-r1-hy4-flash-maya-l",
+    "entry": "hy4-flash-maya-l",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 26318.0,
+    "wall_s": 1292.9,
+    "tok_s": 20.4,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 10.0,
+    "note": "10 of 10. Clean CSS-only SVG: six nested rings, pinions and planet textures all move; Mercury to Saturn periods within 0.8% of the real ratios (Uranus and Neptune absent, as in earlier six-planet rows); tangent toothed pairs counter-rotate and obey the gear law; anti-solar shading stays put while the surfaces spin. Hy4-Flash Maya-L IQ4_XS on Maya v1.1.68 across both cards (RTX 3090 + V100), thinking high, temperature 0.9, top_p 1. First token 0.9 s; 20.4 tok/s is a single long request, not an agent-run rate.",
+    "frames": [
+     "frames/orrery/t5hy4-mayal-p1-r1-hy4-flash-maya-l/frame-100.webp",
+     "frames/orrery/t5hy4-mayal-p1-r1-hy4-flash-maya-l/frame-2000.webp",
+     "frames/orrery/t5hy4-mayal-p1-r1-hy4-flash-maya-l/frame-6000.webp"
+    ],
+    "live": "live/orrery/t5hy4-mayal-p1-r1-hy4-flash-maya-l/orrery.svg"
    }
   ],
   "pagoda": [
@@ -21779,6 +22704,602 @@
      "frames/pagoda/mm-0f1-q3kxl0213-mtp-best-oneshots-qwensampling-t6-pagoda/frame-10000.webp"
     ],
     "live": "live/pagoda/mm-0f1-q3kxl0213-mtp-best-oneshots-qwensampling-t6-pagoda/page.html"
+   },
+   {
+    "case": "t6rs1-strata121-orcarouter-fn-uncensored",
+    "entry": "orcarouter-fn-rusting",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 5877.0,
+    "wall_s": 183.9,
+    "tok_s": 32.4,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 1.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 9.0,
+    "note": "9 of 10 (A2 B2 C1 D2 E2). Draws cleanly; all boxes (the one sphere is the sky dome); five storeys resting on each other with a gold stepped spire, but each roof turns up at only one corner. RustingStrata 1.2.1, no MTP, thinking off. First token 2.7 s; 32.4 tok/s is a single long request, not an agent-run rate.",
+    "frames": [
+     "frames/pagoda/t6rs1-strata121-orcarouter-fn-uncensored/frame-1500.webp",
+     "frames/pagoda/t6rs1-strata121-orcarouter-fn-uncensored/frame-5000.webp",
+     "frames/pagoda/t6rs1-strata121-orcarouter-fn-uncensored/frame-10000.webp"
+    ],
+    "live": "live/pagoda/t6rs1-strata121-orcarouter-fn-uncensored/page.html"
+   },
+   {
+    "case": "t6ls1-mm-orcarouter-fn-uncensored",
+    "entry": "orcarouter-fn-rusting",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 5313.0,
+    "wall_s": 174.6,
+    "tok_s": 31.0,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. Blank: ReferenceError, step is not defined (line 186), so nothing is added to the scene. Same RustingStrata 1.2.1 serve reached through llama-swap, thinking off. First token 3.0 s; 31.0 tok/s is a single long request, not an agent-run rate.",
+    "frames": [
+     "frames/pagoda/t6ls1-mm-orcarouter-fn-uncensored/frame-1500.webp",
+     "frames/pagoda/t6ls1-mm-orcarouter-fn-uncensored/frame-5000.webp",
+     "frames/pagoda/t6ls1-mm-orcarouter-fn-uncensored/frame-10000.webp"
+    ],
+    "live": "live/pagoda/t6ls1-mm-orcarouter-fn-uncensored/page.html"
+   },
+   {
+    "case": "t6s215-orcarouter-fn-uncensored",
+    "entry": "orcarouter-fn-uncensored-strata0215",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 7180.0,
+    "wall_s": 59.6,
+    "tok_s": 121.9,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 1.0,
+     "D": 2.0,
+     "E": 1.0
+    },
+    "total": 8.0,
+    "note": "8 of 10 (A2 B2 C1 D2 E1). Draws; every scene object is a box; five storeys and a nine-ring gold spire, but the roofs are stepped pyramids with no overhang or upturned corner; platform, cherry trees, pond and torii; camera orbit and falling petals, but no mesh casts a shadow. Strata 0.2.15, one session, thinking off, MTP drafts. First token 0.7 s; 121.9 tok/s is a single long request, not an agent-run rate.",
+    "frames": [
+     "frames/pagoda/t6s215-orcarouter-fn-uncensored/frame-1500.webp",
+     "frames/pagoda/t6s215-orcarouter-fn-uncensored/frame-5000.webp",
+     "frames/pagoda/t6s215-orcarouter-fn-uncensored/frame-10000.webp"
+    ],
+    "live": "live/pagoda/t6s215-orcarouter-fn-uncensored/page.html"
+   },
+   {
+    "case": "t6s215-1m-orcarouter-fn-strata-1m",
+    "entry": "orcarouter-fn-strata-1m",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 6847.0,
+    "wall_s": 61.9,
+    "tok_s": 112.1,
+    "points": {
+     "A": 1.0,
+     "B": 1.0,
+     "C": 1.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 7.0,
+    "note": "7 of 10 (A1 B1 C1 D2 E2). No console errors, but an 'Enter the garden' intro card and dark overlay cover every frame until a click; the pond is a plane; flat eave rings. Same weights on the 1M-context entry (yarn x4), thinking off. First token 0.8 s; 112.1 tok/s is a single long request, not an agent-run rate.",
+    "frames": [
+     "frames/pagoda/t6s215-1m-orcarouter-fn-strata-1m/frame-1500.webp",
+     "frames/pagoda/t6s215-1m-orcarouter-fn-strata-1m/frame-5000.webp",
+     "frames/pagoda/t6s215-1m-orcarouter-fn-strata-1m/frame-10000.webp"
+    ],
+    "live": "live/pagoda/t6s215-1m-orcarouter-fn-strata-1m/page.html"
+   },
+   {
+    "case": "t6s215-r2-orcarouter-fn-uncensored",
+    "entry": "orcarouter-fn-uncensored-strata0215",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 5401.0,
+    "wall_s": 46.0,
+    "tok_s": 119.8,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. Blank: ReferenceError, cannot access 'y' before initialization (line 138), so the script stops before the scene is built. Strata 0.2.15, one session, thinking off, MTP drafts. First token 0.9 s; 119.8 tok/s is a single long request, not an agent-run rate.",
+    "frames": [
+     "frames/pagoda/t6s215-r2-orcarouter-fn-uncensored/frame-1500.webp",
+     "frames/pagoda/t6s215-r2-orcarouter-fn-uncensored/frame-5000.webp",
+     "frames/pagoda/t6s215-r2-orcarouter-fn-uncensored/frame-10000.webp"
+    ],
+    "live": "live/pagoda/t6s215-r2-orcarouter-fn-uncensored/page.html"
+   },
+   {
+    "case": "t6s215-r3-orcarouter-fn-uncensored",
+    "entry": "orcarouter-fn-uncensored-strata0215",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 6280.0,
+    "wall_s": 51.6,
+    "tok_s": 121.8,
+    "points": {
+     "A": 2.0,
+     "B": 1.0,
+     "C": 2.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 9.0,
+    "note": "9 of 10 (A2 B1 C2 D2 E2). Draws cleanly; five storeys with stepped roofs and raised gold corner finials, spire, plinth, cherry trees, pond and torii; the ground and petals are planes, so B 1. Strata 0.2.15, one session, thinking off, MTP drafts. First token 0.1 s; 121.8 tok/s is a single long request, not an agent-run rate.",
+    "frames": [
+     "frames/pagoda/t6s215-r3-orcarouter-fn-uncensored/frame-1500.webp",
+     "frames/pagoda/t6s215-r3-orcarouter-fn-uncensored/frame-5000.webp",
+     "frames/pagoda/t6s215-r3-orcarouter-fn-uncensored/frame-10000.webp"
+    ],
+    "live": "live/pagoda/t6s215-r3-orcarouter-fn-uncensored/page.html"
+   },
+   {
+    "case": "t6b2-A-orcarouter-fn-uncensored-b2",
+    "entry": "orcarouter-fn-uncensored-b2",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 6241.0,
+    "wall_s": 148.8,
+    "tok_s": 42.3,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 1.0,
+     "D": 1.0,
+     "E": 2.0
+    },
+    "total": 8.0,
+    "note": "8 of 10 (A2 B2 C1 D1 E2). Draws, all cubes; the code builds five storeys with upturned corners but the camera frames only the base, the first storey and the spire tip; torii, lantern and pond are not seen. Two requests at once on the 2 x 256k entry, thinking off (about 120 tok/s alone). First token 1.4 s; 42.3 tok/s is a single long request, not an agent-run rate.",
+    "frames": [
+     "frames/pagoda/t6b2-A-orcarouter-fn-uncensored-b2/frame-1500.webp",
+     "frames/pagoda/t6b2-A-orcarouter-fn-uncensored-b2/frame-5000.webp",
+     "frames/pagoda/t6b2-A-orcarouter-fn-uncensored-b2/frame-10000.webp"
+    ],
+    "live": "live/pagoda/t6b2-A-orcarouter-fn-uncensored-b2/page.html"
+   },
+   {
+    "case": "t6b2-B-orcarouter-fn-uncensored-b2",
+    "entry": "orcarouter-fn-uncensored-b2",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 5494.0,
+    "wall_s": 140.8,
+    "tok_s": 39.5,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. Blank: SyntaxError, missing ) after an argument list (line 176). Two requests at once on the 2 x 256k entry, thinking off; the same one-line crash class as a solo sample, so not put down to sharing. First token 1.7 s; 39.5 tok/s is a single long request, not an agent-run rate.",
+    "frames": [
+     "frames/pagoda/t6b2-B-orcarouter-fn-uncensored-b2/frame-1500.webp",
+     "frames/pagoda/t6b2-B-orcarouter-fn-uncensored-b2/frame-5000.webp",
+     "frames/pagoda/t6b2-B-orcarouter-fn-uncensored-b2/frame-10000.webp"
+    ],
+    "live": "live/pagoda/t6b2-B-orcarouter-fn-uncensored-b2/page.html"
+   },
+   {
+    "case": "t6s215-3x512-p1-r1-orcarouter-fn-uncensored-b3-512k",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 6122.0,
+    "wall_s": 402.5,
+    "tok_s": 16.8,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. Blank ('loading the garden...'): ReferenceError, toriiRoot is not defined (line 227). The first token waited 38 s behind the agents' prompt reading. 3 x 512k entry, thinking off, while the other two sessions ran agent tests (shared load). First token 38.0 s; 16.8 tok/s is a single long request, not an agent-run rate.",
+    "frames": [
+     "frames/pagoda/t6s215-3x512-p1-r1-orcarouter-fn-uncensored-b3-512k/frame-1500.webp",
+     "frames/pagoda/t6s215-3x512-p1-r1-orcarouter-fn-uncensored-b3-512k/frame-5000.webp",
+     "frames/pagoda/t6s215-3x512-p1-r1-orcarouter-fn-uncensored-b3-512k/frame-10000.webp"
+    ],
+    "live": "live/pagoda/t6s215-3x512-p1-r1-orcarouter-fn-uncensored-b3-512k/page.html"
+   },
+   {
+    "case": "t6s215-3x512-p1-r2-orcarouter-fn-uncensored-b3-512k",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 6016.0,
+    "wall_s": 303.5,
+    "tok_s": 19.8,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 1.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 9.0,
+    "note": "9 of 10 (A2 B2 C1 D2 E2). Draws with no errors; boxes throughout; five storeys and spire, but no upturned eave is visible; torii, cherry trees, plinth; shadows, drifting petals, auto-orbit. 3 x 512k entry, thinking off, while the other two sessions ran agent tests (shared load). First token 0.3 s; 19.8 tok/s is a single long request, not an agent-run rate.",
+    "frames": [
+     "frames/pagoda/t6s215-3x512-p1-r2-orcarouter-fn-uncensored-b3-512k/frame-1500.webp",
+     "frames/pagoda/t6s215-3x512-p1-r2-orcarouter-fn-uncensored-b3-512k/frame-5000.webp",
+     "frames/pagoda/t6s215-3x512-p1-r2-orcarouter-fn-uncensored-b3-512k/frame-10000.webp"
+    ],
+    "live": "live/pagoda/t6s215-3x512-p1-r2-orcarouter-fn-uncensored-b3-512k/page.html"
+   },
+   {
+    "case": "t6s215-3x512-p1-r3-orcarouter-fn-uncensored-b3-512k",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 7782.0,
+    "wall_s": 294.4,
+    "tok_s": 26.5,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. Only the page's own fallback text shows: a TypeError reading 'visible' of undefined aborts the scene build. 3 x 512k entry, thinking off, while the other two sessions ran agent tests (shared load). First token 0.4 s; 26.5 tok/s is a single long request, not an agent-run rate.",
+    "frames": [
+     "frames/pagoda/t6s215-3x512-p1-r3-orcarouter-fn-uncensored-b3-512k/frame-1500.webp",
+     "frames/pagoda/t6s215-3x512-p1-r3-orcarouter-fn-uncensored-b3-512k/frame-5000.webp",
+     "frames/pagoda/t6s215-3x512-p1-r3-orcarouter-fn-uncensored-b3-512k/frame-10000.webp"
+    ],
+    "live": "live/pagoda/t6s215-3x512-p1-r3-orcarouter-fn-uncensored-b3-512k/page.html"
+   },
+   {
+    "case": "t6s215-3x512-p2-r1-orcarouter-fn-uncensored-b3-512k",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 6426.0,
+    "wall_s": 382.2,
+    "tok_s": 16.9,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. Blank: ReferenceError, cannot access 'unitGeo' before initialization (line 120). 3 x 512k entry, thinking off, while the other two sessions ran agent tests (shared load). First token 1.2 s; 16.9 tok/s is a single long request, not an agent-run rate.",
+    "frames": [
+     "frames/pagoda/t6s215-3x512-p2-r1-orcarouter-fn-uncensored-b3-512k/frame-1500.webp",
+     "frames/pagoda/t6s215-3x512-p2-r1-orcarouter-fn-uncensored-b3-512k/frame-5000.webp",
+     "frames/pagoda/t6s215-3x512-p2-r1-orcarouter-fn-uncensored-b3-512k/frame-10000.webp"
+    ],
+    "live": "live/pagoda/t6s215-3x512-p2-r1-orcarouter-fn-uncensored-b3-512k/page.html"
+   },
+   {
+    "case": "t6s215-3x512-p2-r2-orcarouter-fn-uncensored-b3-512k",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 5815.0,
+    "wall_s": 321.2,
+    "tok_s": 18.1,
+    "points": {
+     "A": 1.0,
+     "B": 2.0,
+     "C": 1.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 8.0,
+    "note": "8 of 10 (A1 B2 C1 D2 E2). No console errors, but the roof tiles float detached in rings around the tower; five stepped storeys and a gold spire; torii, cherry trees, lanterns; shadows, petals, auto-orbit. 3 x 512k entry, thinking off, while the other two sessions ran agent tests (shared load). First token 0.4 s; 18.1 tok/s is a single long request, not an agent-run rate.",
+    "frames": [
+     "frames/pagoda/t6s215-3x512-p2-r2-orcarouter-fn-uncensored-b3-512k/frame-1500.webp",
+     "frames/pagoda/t6s215-3x512-p2-r2-orcarouter-fn-uncensored-b3-512k/frame-5000.webp",
+     "frames/pagoda/t6s215-3x512-p2-r2-orcarouter-fn-uncensored-b3-512k/frame-10000.webp"
+    ],
+    "live": "live/pagoda/t6s215-3x512-p2-r2-orcarouter-fn-uncensored-b3-512k/page.html"
+   },
+   {
+    "case": "t6s215-3x512-p2-r3-orcarouter-fn-uncensored-b3-512k",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 4166.0,
+    "wall_s": 189.6,
+    "tok_s": 22.0,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. Blank: ReferenceError, z is not defined (line 147). 3 x 512k entry, thinking off, while the other two sessions ran agent tests (shared load). First token 0.3 s; 22.0 tok/s is a single long request, not an agent-run rate.",
+    "frames": [
+     "frames/pagoda/t6s215-3x512-p2-r3-orcarouter-fn-uncensored-b3-512k/frame-1500.webp",
+     "frames/pagoda/t6s215-3x512-p2-r3-orcarouter-fn-uncensored-b3-512k/frame-5000.webp",
+     "frames/pagoda/t6s215-3x512-p2-r3-orcarouter-fn-uncensored-b3-512k/frame-10000.webp"
+    ],
+    "live": "live/pagoda/t6s215-3x512-p2-r3-orcarouter-fn-uncensored-b3-512k/page.html"
+   },
+   {
+    "case": "t6s215-3x512-p1-r1-orcarouter-fn-uncensored-b3-512k-fix1",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 5986.0,
+    "wall_s": 381.9,
+    "tok_s": 15.8,
+    "points": {
+     "A": 1.0,
+     "B": 2.0,
+     "C": 1.0,
+     "D": 1.0,
+     "E": 1.0
+    },
+    "total": 6.0,
+    "note": "6 of 10 (A1 B2 C1 D1 E1). One repair round, not a pure one-shot: the model got its draft back with the sealed render's console errors (or 'no errors') and answered with a new file. Draft p1-r1 scored 0; the toriiRoot error is fixed and it draws five storeys, spire, torii, trees and petals, but the loading overlay never clears, there is no pond and the shadows are lost in fog. First token 3.0 s; 15.8 tok/s is a single long request, not an agent-run rate.",
+    "frames": [
+     "frames/pagoda/t6s215-3x512-p1-r1-orcarouter-fn-uncensored-b3-512k-fix1/frame-1500.webp",
+     "frames/pagoda/t6s215-3x512-p1-r1-orcarouter-fn-uncensored-b3-512k-fix1/frame-5000.webp",
+     "frames/pagoda/t6s215-3x512-p1-r1-orcarouter-fn-uncensored-b3-512k-fix1/frame-10000.webp"
+    ],
+    "live": "live/pagoda/t6s215-3x512-p1-r1-orcarouter-fn-uncensored-b3-512k-fix1/page.html"
+   },
+   {
+    "case": "t6s215-3x512-p1-r2-orcarouter-fn-uncensored-b3-512k-fix1",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 7107.0,
+    "wall_s": 407.6,
+    "tok_s": 17.6,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. One repair round, not a pure one-shot: the model got its draft back with the sealed render's console errors (or 'no errors') and answered with a new file. Draft p1-r2 scored 9; told 'no errors', it rewrote the page and added a new ReferenceError (waterRef, line 275), so the repair broke a good draft. First token 3.2 s; 17.6 tok/s is a single long request, not an agent-run rate.",
+    "frames": [
+     "frames/pagoda/t6s215-3x512-p1-r2-orcarouter-fn-uncensored-b3-512k-fix1/frame-1500.webp",
+     "frames/pagoda/t6s215-3x512-p1-r2-orcarouter-fn-uncensored-b3-512k-fix1/frame-5000.webp",
+     "frames/pagoda/t6s215-3x512-p1-r2-orcarouter-fn-uncensored-b3-512k-fix1/frame-10000.webp"
+    ],
+    "live": "live/pagoda/t6s215-3x512-p1-r2-orcarouter-fn-uncensored-b3-512k-fix1/page.html"
+   },
+   {
+    "case": "t6s215-3x512-p1-r3-orcarouter-fn-uncensored-b3-512k-fix1",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 7844.0,
+    "wall_s": 369.6,
+    "tok_s": 21.4,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. One repair round, not a pure one-shot: the model got its draft back with the sealed render's console errors (or 'no errors') and answered with a new file. Draft p1-r3 scored 0; wrong diagnosis, the same TypeError remains and the page is blank. First token 3.4 s; 21.4 tok/s is a single long request, not an agent-run rate.",
+    "frames": [
+     "frames/pagoda/t6s215-3x512-p1-r3-orcarouter-fn-uncensored-b3-512k-fix1/frame-1500.webp",
+     "frames/pagoda/t6s215-3x512-p1-r3-orcarouter-fn-uncensored-b3-512k-fix1/frame-5000.webp",
+     "frames/pagoda/t6s215-3x512-p1-r3-orcarouter-fn-uncensored-b3-512k-fix1/frame-10000.webp"
+    ],
+    "live": "live/pagoda/t6s215-3x512-p1-r3-orcarouter-fn-uncensored-b3-512k-fix1/page.html"
+   },
+   {
+    "case": "t6s215-3x512-p2-r1-orcarouter-fn-uncensored-b3-512k-fix1",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 6012.0,
+    "wall_s": 389.5,
+    "tok_s": 15.7,
+    "points": {
+     "A": 1.0,
+     "B": 2.0,
+     "C": 1.0,
+     "D": 2.0,
+     "E": 1.0
+    },
+    "total": 6.0,
+    "note": "6 of 10 (A1 B2 C1 D2 E1). One repair round, not a pure one-shot: the model got its draft back with the sealed render's console errors (or 'no errors') and answered with a new file. Draft p2-r1 scored 0; the unitGeo error is fixed and it draws a torii, cherry trees, paths and a tiered red tower, but trees hide the storeys and no shadows show. First token 6.0 s; 15.7 tok/s is a single long request, not an agent-run rate.",
+    "frames": [
+     "frames/pagoda/t6s215-3x512-p2-r1-orcarouter-fn-uncensored-b3-512k-fix1/frame-1500.webp",
+     "frames/pagoda/t6s215-3x512-p2-r1-orcarouter-fn-uncensored-b3-512k-fix1/frame-5000.webp",
+     "frames/pagoda/t6s215-3x512-p2-r1-orcarouter-fn-uncensored-b3-512k-fix1/frame-10000.webp"
+    ],
+    "live": "live/pagoda/t6s215-3x512-p2-r1-orcarouter-fn-uncensored-b3-512k-fix1/page.html"
+   },
+   {
+    "case": "t6s215-3x512-p2-r2-orcarouter-fn-uncensored-b3-512k-fix1",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 5913.0,
+    "wall_s": 323.6,
+    "tok_s": 18.4,
+    "points": {
+     "A": 1.0,
+     "B": 2.0,
+     "C": 1.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 8.0,
+    "note": "8 of 10 (A1 B2 C1 D2 E2). One repair round, not a pure one-shot: the model got its draft back with the sealed render's console errors (or 'no errors') and answered with a new file. Draft p2-r2 scored 8; small edits, the same detached floating roof tiles. First token 2.7 s; 18.4 tok/s is a single long request, not an agent-run rate.",
+    "frames": [
+     "frames/pagoda/t6s215-3x512-p2-r2-orcarouter-fn-uncensored-b3-512k-fix1/frame-1500.webp",
+     "frames/pagoda/t6s215-3x512-p2-r2-orcarouter-fn-uncensored-b3-512k-fix1/frame-5000.webp",
+     "frames/pagoda/t6s215-3x512-p2-r2-orcarouter-fn-uncensored-b3-512k-fix1/frame-10000.webp"
+    ],
+    "live": "live/pagoda/t6s215-3x512-p2-r2-orcarouter-fn-uncensored-b3-512k-fix1/page.html"
+   },
+   {
+    "case": "t6s215-3x512-p2-r3-orcarouter-fn-uncensored-b3-512k-fix1",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 3969.0,
+    "wall_s": 244.1,
+    "tok_s": 16.4,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. One repair round, not a pure one-shot: the model got its draft back with the sealed render's console errors (or 'no errors') and answered with a new file. Draft p2-r3 scored 0; the fix keeps the same z is not defined bug, blank. First token 2.7 s; 16.4 tok/s is a single long request, not an agent-run rate.",
+    "frames": [
+     "frames/pagoda/t6s215-3x512-p2-r3-orcarouter-fn-uncensored-b3-512k-fix1/frame-1500.webp",
+     "frames/pagoda/t6s215-3x512-p2-r3-orcarouter-fn-uncensored-b3-512k-fix1/frame-5000.webp",
+     "frames/pagoda/t6s215-3x512-p2-r3-orcarouter-fn-uncensored-b3-512k-fix1/frame-10000.webp"
+    ],
+    "live": "live/pagoda/t6s215-3x512-p2-r3-orcarouter-fn-uncensored-b3-512k-fix1/page.html"
+   },
+   {
+    "case": "t6s215-3x512-think-p1-r1-orcarouter-fn-uncensored-b3-512k",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 46016.0,
+    "wall_s": 2718.5,
+    "tok_s": 16.9,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. SyntaxError: identifier 'fill' has already been declared (line 353); the frames show only the loading overlay. 3 x 512k entry, thinking on by request, shared load; the token count includes reasoning and the first token is the first generated token, not the first visible answer. First token 2.7 s; 16.9 tok/s is a single long request, not an agent-run rate.",
+    "frames": [
+     "frames/pagoda/t6s215-3x512-think-p1-r1-orcarouter-fn-uncensored-b3-512k/frame-1500.webp",
+     "frames/pagoda/t6s215-3x512-think-p1-r1-orcarouter-fn-uncensored-b3-512k/frame-5000.webp",
+     "frames/pagoda/t6s215-3x512-think-p1-r1-orcarouter-fn-uncensored-b3-512k/frame-10000.webp"
+    ],
+    "live": "live/pagoda/t6s215-3x512-think-p1-r1-orcarouter-fn-uncensored-b3-512k/page.html"
+   },
+   {
+    "case": "t6s215-3x512-think-p1-r2-orcarouter-fn-uncensored-b3-512k",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 54332.0,
+    "wall_s": 3395.7,
+    "tok_s": 16.0,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. TypeError: hillsCol.fn is not a function (line 401); overlay without the garden or pagoda. 3 x 512k entry, thinking on by request, shared load; the token count includes reasoning and the first token is the first generated token, not the first visible answer. First token 0.3 s; 16.0 tok/s is a single long request, not an agent-run rate.",
+    "frames": [
+     "frames/pagoda/t6s215-3x512-think-p1-r2-orcarouter-fn-uncensored-b3-512k/frame-1500.webp",
+     "frames/pagoda/t6s215-3x512-think-p1-r2-orcarouter-fn-uncensored-b3-512k/frame-5000.webp",
+     "frames/pagoda/t6s215-3x512-think-p1-r2-orcarouter-fn-uncensored-b3-512k/frame-10000.webp"
+    ],
+    "live": "live/pagoda/t6s215-3x512-think-p1-r2-orcarouter-fn-uncensored-b3-512k/page.html"
+   },
+   {
+    "case": "t6s215-3x512-think-p1-r3-orcarouter-fn-uncensored-b3-512k",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 52117.0,
+    "wall_s": 3176.0,
+    "tok_s": 16.4,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. No frame rendered: loops at lines 393-415 never advance, so the page hangs before drawing anything. Its page is not offered for playing here because it would hang the viewer. 3 x 512k entry, thinking on by request, shared load; the token count includes reasoning and the first token is the first generated token, not the first visible answer. First token 0.5 s; 16.4 tok/s is a single long request, not an agent-run rate.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t6s215-3x512-think-p2-r1-orcarouter-fn-uncensored-b3-512k",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 49332.0,
+    "wall_s": 2990.6,
+    "tok_s": 16.5,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. TypeError reading 'includes' of undefined (line 582); interface only, no 3D scene. 3 x 512k entry, thinking on by request, shared load; the token count includes reasoning and the first token is the first generated token, not the first visible answer. Inference finished before an unrelated outage ended that second pass. First token 1.3 s; 16.5 tok/s is a single long request, not an agent-run rate.",
+    "frames": [
+     "frames/pagoda/t6s215-3x512-think-p2-r1-orcarouter-fn-uncensored-b3-512k/frame-1500.webp",
+     "frames/pagoda/t6s215-3x512-think-p2-r1-orcarouter-fn-uncensored-b3-512k/frame-5000.webp",
+     "frames/pagoda/t6s215-3x512-think-p2-r1-orcarouter-fn-uncensored-b3-512k/frame-10000.webp"
+    ],
+    "live": "live/pagoda/t6s215-3x512-think-p2-r1-orcarouter-fn-uncensored-b3-512k/page.html"
+   },
+   {
+    "case": "t6hy4-mayal-p1-r1-hy4-flash-maya-l",
+    "entry": "hy4-flash-maya-l",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 23887.0,
+    "wall_s": 1203.5,
+    "tok_s": 19.9,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 1.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 9.0,
+    "note": "9 of 10 (A2 B2 C1 D2 E2). Clean scene with only deprecation warnings; all boxes; five storeys with stepped upturned corners and a gold spire, but a visible gap at each upper-storey join caps C at 1; platform, cherry trees, torii and garden; motion and shadows. Hy4-Flash Maya-L IQ4_XS on Maya v1.1.68 across both cards (RTX 3090 + V100), thinking high, temperature 0.9, top_p 1. First token 1.5 s; 19.9 tok/s is a single long request, not an agent-run rate.",
+    "frames": [
+     "frames/pagoda/t6hy4-mayal-p1-r1-hy4-flash-maya-l/frame-1500.webp",
+     "frames/pagoda/t6hy4-mayal-p1-r1-hy4-flash-maya-l/frame-5000.webp",
+     "frames/pagoda/t6hy4-mayal-p1-r1-hy4-flash-maya-l/frame-10000.webp"
+    ],
+    "live": "live/pagoda/t6hy4-mayal-p1-r1-hy4-flash-maya-l/page.html"
    }
   ],
   "agent-orrery": [
@@ -23093,16 +24614,336 @@
     "note": "Thinking on, one of two OpenCode sessions at once on one load (test 2 beside it for the first 154 minutes), 256k session, Flash-Next UD-Q4_K_XL with an 8-bit n-gram table. Stopped automatically at the 3-hour cap. Its ./generate gives 10 of 10 distinct passing mazes on hidden seeds and meets the extra credit, but it never wrote the showcase maze, its seed or the notes, so the showcase and notes score 0. D 1 from the map checker on two generated mazes (there is no showcase to walk): stairs spread along the route and checkpoints at junctions, no long entrance tunnel, but every side passage is shallow (the deepest 10-11 cells). Agent-run decode 20.9 tok/s per request (client side), first token median 1.7 s; tok_s here is output tokens over wall time. One round.",
     "frames": [],
     "live": null
+   },
+   {
+    "case": "s215-3x512-p1-test7-orcarouter-fn-uncensored-b3-512k",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 7,
+    "finish": "stopped at the 3-hour cap",
+    "tokens": 150400.0,
+    "wall_s": 10805.4,
+    "tok_s": 18.92,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. Thinking off. Still exploring at the 3-hour cap: it wrote generate.py but never built ./generate, so nothing could be graded. One of three sessions at once on the 3 x 512k entry (tests 1, 2 and 2T and one-shots beside it). Harness: OpenCode 2.1.4 in the bakeoff sandbox (not T3 Code). 18.92 tok/s is the agent-run client decode rate, not a short benchmark; median first token 1.389 s.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "s215-3x512-p2-test7-orcarouter-fn-uncensored-b3-512k",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 7,
+    "finish": "stopped at the 3-hour cap",
+    "tokens": 156720.0,
+    "wall_s": 10805.4,
+    "tok_s": 19.18,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. Thinking off. Same as pass 1: 3-hour cap, generate.py instead of ./generate. One of three sessions at once on the 3 x 512k entry (tests 1, 2 and 2T and one-shots beside it). Harness: OpenCode 2.1.4 in the bakeoff sandbox (not T3 Code). 19.18 tok/s is the agent-run client decode rate, not a short benchmark; median first token 1.904 s.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t7solo-b3-orcarouter-fn-uncensored-b3-512k",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 7,
+    "finish": "agent ended itself",
+    "tokens": 44364.0,
+    "wall_s": 1215.2,
+    "tok_s": 63.12,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. Thinking off, alone on the 3 x 512k entry. After 20 minutes its last message was a tool call typed out as text to a misspelled tool (executee), which OpenCode takes as the final answer; it had written gen.py, not ./generate. Harness: OpenCode 2.1.4 in the bakeoff sandbox (not T3 Code). 63.12 tok/s is the agent-run client decode rate, not a short benchmark; median first token 0.868 s.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t7solo-b2-orcarouter-fn-uncensored-b2",
+    "entry": "orcarouter-fn-uncensored-b2",
+    "test": 7,
+    "finish": "agent ended itself",
+    "tokens": 47990.0,
+    "wall_s": 2745.4,
+    "tok_s": 71.11,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. Thinking off, alone on the 2 x 256k entry (no yarn, same weights): it wrote 36 probe scripts and no generator, then ended its turn at 46 minutes by announcing a next step without a tool call. So yarn is not the cause. Harness: OpenCode 2.1.4 in the bakeoff sandbox (not T3 Code). 71.11 tok/s is the agent-run client decode rate, not a short benchmark; median first token 0.723 s.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t7solo-b3-undeclared-call-orcarouter-fn-uncensored-b3-512k",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 7,
+    "finish": "agent ended itself",
+    "tokens": 12345.0,
+    "wall_s": 205.0,
+    "tok_s": 69.84,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. Thinking off, alone, with undeclared tool calls passed through as calls: it ended its turn after 3 minutes by announcing a plan in plain text. Thinking off, this model scored 0 in 5 of 5 test 7 runs. Harness: OpenCode 2.1.4 in the bakeoff sandbox (not T3 Code). 69.84 tok/s is the agent-run client decode rate, not a short benchmark; median first token 0.802 s.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t7solo-b3-think-orcarouter-fn-uncensored-b3-512k",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 7,
+    "finish": "agent done",
+    "tokens": 177480.0,
+    "wall_s": 3675.6,
+    "tok_s": 59.44,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 1.0,
+     "E": 1.0
+    },
+    "total": 8.0,
+    "note": "8 of 10 (A2 B2 C2 D1 E1). Thinking on by request, alone on the 3 x 512k entry: 61 minutes, a real ./generate (Python); the showcase reproduces and 10 of 10 hidden seeds pass and differ (worst route 385, 6 floor changes). D 1: a real spanning-tree maze, but the route is a banded snake lengthened with small bumps. E 1: the pasted verifier output matches a fresh run, but the 1000-seed batch script was not kept. D is judged from the ASCII maps and topology only (no Minecraft walk). Harness: OpenCode 2.1.4 in the bakeoff sandbox (not T3 Code). 59.44 tok/s is the agent-run client decode rate, not a short benchmark; median first token 0.898 s.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "s215-3x512-think-p1-test7-orcarouter-fn-uncensored-b3-512k",
+    "entry": "orcarouter-fn-uncensored-b3-512k",
+    "test": 7,
+    "finish": "stopped at the 3-hour cap",
+    "tokens": 156786.0,
+    "wall_s": 10805.4,
+    "tok_s": 15.89,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10. Thinking on, under shared load: its generator produced no graded output and every hidden-seed run timed out at 120 s; the solo 8 of 10 did not repeat. One of three sessions at once on the 3 x 512k entry (tests 1, 2 and 2T and one-shots beside it). Harness: OpenCode 2.1.4 in the bakeoff sandbox (not T3 Code). 15.89 tok/s is the agent-run client decode rate, not a short benchmark; median first token 1.33 s.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "switch-hosted-test7-r1-opencode",
+    "entry": "openrouter-deepseek-v4.1-flash-1017",
+    "test": 7,
+    "finish": "agent done",
+    "tokens": 150147.0,
+    "wall_s": 1770.2,
+    "tok_s": 156.34,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 10.0,
+    "note": "10 of 10. 10 of 10 hidden seeds distinct and passing (worst route 339, 6 floor changes); exact verifier output and a byte-identical sealed showcase. D is judged from the ASCII maps and topology only (no Minecraft walk). Cost $0.2207 (99% of prompt tokens were cache reads); 30 minutes, 101 requests. Repetition 1, OpenCode first. Hosted: OpenRouter deepseek/deepseek-v4.1-flash-1017 (served by Wafer), temperature 0.6, top_p 0.95, reasoning high, one request at a time; harness comparison study, both harnesses get the same settings. Harness: OpenCode 2.1.4 in the bakeoff sandbox (not T3 Code). 156.34 tok/s is the agent-run client decode rate, not a short benchmark; median first token 1.555 s.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "switch-hosted-test7-r1-omp",
+    "entry": "openrouter-deepseek-v4.1-flash-1017",
+    "test": 7,
+    "finish": "agent done",
+    "tokens": 144037.0,
+    "wall_s": 2731.0,
+    "tok_s": 156.96,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 10.0,
+    "note": "10 of 10. 10 of 10 hidden seeds distinct and passing (worst 349 cells, 6 floor changes); exact verifier output and a sealed reproduction; its 800-seed check ran before a final small edit, so it does not certify the final file (the final 50-seed check does). D is judged from the ASCII maps and topology only (no Minecraft walk). Cost $0.1370; 46 minutes, 67 requests. Repetition 1, tied with OpenCode. Hosted: OpenRouter deepseek/deepseek-v4.1-flash-1017 (served by Wafer), temperature 0.6, top_p 0.95, reasoning high, one request at a time; harness comparison study, both harnesses get the same settings. Harness: Oh My Pi (omp) 18.22.2 in the bakeoff sandbox (not T3 Code). 156.96 tok/s is the agent-run client decode rate, not a short benchmark; median first token 0.692 s.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "switch-hosted-test7-r2-omp",
+    "entry": "openrouter-deepseek-v4.1-flash-1017",
+    "test": 7,
+    "finish": "stopped at its time cap",
+    "tokens": 214556.0,
+    "wall_s": 5464.0,
+    "tok_s": 190.48,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 1.0,
+     "E": 0.0
+    },
+    "total": 7.0,
+    "note": "7 of 10 (A2 B2 C2 D1 E0). 10 of 10 hidden seeds pass; D 1: real branches but packed local switchbacks; E 0: no NOTES.md (it put the notes off for a final 100-seed loop and was stopped at its cap). Its cap came from run history (5,462 s) while the prompt says 3 hours, and OpenCode's repetition 2 got 3,540 s, so this pair is left out of the harness comparison. D is judged from the ASCII maps and topology only (no Minecraft walk). Cost $0.2279; 91 minutes, 85 requests. Hosted: OpenRouter deepseek/deepseek-v4.1-flash-1017 (served by Wafer), temperature 0.6, top_p 0.95, reasoning high, one request at a time; harness comparison study, both harnesses get the same settings. Harness: Oh My Pi (omp) 18.22.2 in the bakeoff sandbox (not T3 Code). 190.48 tok/s is the agent-run client decode rate, not a short benchmark; median first token 0.764 s.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "switch-hosted-test7-r2-opencode",
+    "entry": "openrouter-deepseek-v4.1-flash-1017",
+    "test": 7,
+    "finish": "agent done",
+    "tokens": 188083.0,
+    "wall_s": 1530.2,
+    "tok_s": 179.39,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 1.0,
+     "D": 1.0,
+     "E": 1.0
+    },
+    "total": 7.0,
+    "note": "7 of 10 (A2 B2 C1 D1 E1). 10 of 10 hidden seeds pass (worst route 259, 8 floor changes, so C 1); D 1: real side networks but repeated strip snakes; E 1: honest overall with small slips. Unequal caps with omp repetition 2, so this pair is left out of the harness comparison. D is judged from the ASCII maps and topology only (no Minecraft walk). Cost $0.2237; 26 minutes, 98 requests. Hosted: OpenRouter deepseek/deepseek-v4.1-flash-1017 (Wafer served 70 requests, Prime Intellect 28), temperature 0.6, top_p 0.95, reasoning high, one request at a time; harness comparison study, both harnesses get the same settings. Harness: OpenCode 2.1.4 in the bakeoff sandbox (not T3 Code). 179.39 tok/s is the agent-run client decode rate, not a short benchmark; median first token 0.942 s.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "switch-hosted-test7-r3-opencode",
+    "entry": "openrouter-deepseek-v4.1-flash-1017",
+    "test": 7,
+    "finish": "agent done",
+    "tokens": 108904.0,
+    "wall_s": 1940.2,
+    "tok_s": 164.49,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 1.0,
+     "E": 2.0
+    },
+    "total": 9.0,
+    "note": "9 of 10 (A2 B2 C2 D1 E2). 10 of 10 hidden seeds pass (worst 353 cells, 6 floor changes); D 1: irregular route and real side networks, but the checkpoint branches are 1-2 cell stubs; E 2: exact verifier output and checks that match the final source. Both harnesses got the same fixed 3-hour cap from here on. D is judged from the ASCII maps and topology only (no Minecraft walk). Cost $0.1826; 32 minutes, 123 requests. Repetition 3, OpenCode first. Hosted: OpenRouter deepseek/deepseek-v4.1-flash-1017 (served by Wafer), temperature 0.6, top_p 0.95, reasoning high, one request at a time; harness comparison study, both harnesses get the same settings. Harness: OpenCode 2.1.4 in the bakeoff sandbox (not T3 Code). 164.49 tok/s is the agent-run client decode rate, not a short benchmark; median first token 0.934 s.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "switch-hosted-test7-r3-omp",
+    "entry": "openrouter-deepseek-v4.1-flash-1017",
+    "test": 7,
+    "finish": "agent done",
+    "tokens": 139375.0,
+    "wall_s": 1345.4,
+    "tok_s": 203.63,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 1.0,
+     "E": 2.0
+    },
+    "total": 9.0,
+    "note": "9 of 10 (A2 B2 C2 D1 E2). 10 of 10 hidden seeds pass (worst 365 cells, 6 floor changes); D 1: every checkpoint branch is one cell; E 2: exact verifier output and 1,010 passing checks on the final source. Same fixed 3-hour cap as OpenCode. D is judged from the ASCII maps and topology only (no Minecraft walk). Cost $0.1366; 22 minutes, 63 requests. Repetition 3, tied with OpenCode. Hosted: OpenRouter deepseek/deepseek-v4.1-flash-1017 (served by Wafer), temperature 0.6, top_p 0.95, reasoning high, one request at a time; harness comparison study, both harnesses get the same settings. Harness: Oh My Pi (omp) 18.22.2 in the bakeoff sandbox (not T3 Code). 203.63 tok/s is the agent-run client decode rate, not a short benchmark; median first token 0.799 s.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "switch-hosted-test7-r4-omp",
+    "entry": "openrouter-deepseek-v4.1-flash-1017",
+    "test": 7,
+    "finish": "agent done",
+    "tokens": 233446.0,
+    "wall_s": 1590.5,
+    "tok_s": 168.19,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 2.0,
+     "E": 1.0
+    },
+    "total": 9.0,
+    "note": "9 of 10 (A2 B2 C2 D2 E1). 10 of 10 hidden seeds pass (worst 375 cells, 6 floor changes); D 2: irregular routes, spread stairs and real side regions; E 1: small wording slips in NOTES. D is judged from the ASCII maps and topology only (no Minecraft walk). Cost $0.1979; 27 minutes, 71 requests. Repetition 4, omp first; its OpenCode pair is not graded yet. Hosted: OpenRouter deepseek/deepseek-v4.1-flash-1017 (served by Wafer), temperature 0.6, top_p 0.95, reasoning high, one request at a time; harness comparison study, both harnesses get the same settings. Harness: Oh My Pi (omp) 18.22.2 in the bakeoff sandbox (not T3 Code). 168.19 tok/s is the agent-run client decode rate, not a short benchmark; median first token 0.789 s.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "switch-hy4f-test7-r1-recovery2-omp",
+    "entry": "hy4f-q3k-3090",
+    "test": 7,
+    "finish": "agent done",
+    "tokens": 58074.0,
+    "wall_s": 5562.3,
+    "tok_s": 25.37,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 1.0,
+     "E": 1.0
+    },
+    "total": 8.0,
+    "note": "8 of 10 (A2 B2 C2 D1 E1). 10 of 10 hidden seeds pass (worst 351 cells, 6 floor changes); D 1: real side networks but checkpoint branches of 1-2 cells; E 1: verified output with small descriptive slips. D is judged from the ASCII maps and topology only (no Minecraft walk). 93 minutes, 78 requests, all complete. Repetition 1, omp first. Hy4-Flash Q3_K on the maya-hy4f engine, RTX 3090 alone, 128k, 8-bit KV, thinking on, temperature 0.9, top_p 1; 3090 at 300 W, V100 idle (PSU interim caps) on our 3090 + V100 box. Harness: Oh My Pi (omp) 18.22.2 in the bakeoff sandbox (not T3 Code). 25.37 tok/s is the agent-run client decode rate, not a short benchmark; median first token 5.849 s.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "switch-hy4f-test7-r1-recovery2-opencode",
+    "entry": "hy4f-q3k-3090",
+    "test": 7,
+    "finish": "agent done",
+    "tokens": 50418.0,
+    "wall_s": 2900.4,
+    "tok_s": 26.29,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 1.0,
+     "E": 1.0
+    },
+    "total": 8.0,
+    "note": "8 of 10 (A2 B2 C2 D1 E1). 10 of 10 hidden seeds pass (worst 341 cells, 6 floor changes); D 1: banded sweeps and checkpoint stubs; E 1: verifier-backed claims, but it calls its validation unconditional while one fallback path only checks connectivity. D is judged from the ASCII maps and topology only (no Minecraft walk). 48 minutes, 44 requests; its first tokens were slower than omp's because more of each prompt had to be read fresh. Repetition 1, tied with omp. Hy4-Flash Q3_K on the maya-hy4f engine, RTX 3090 alone, 128k, 8-bit KV, thinking on, temperature 0.9, top_p 1; 3090 at 300 W, V100 idle (PSU interim caps) on our 3090 + V100 box. Harness: OpenCode 2.1.4 in the bakeoff sandbox (not T3 Code). 26.29 tok/s is the agent-run client decode rate, not a short benchmark; median first token 15.45 s.",
+    "frames": [],
+    "live": null
    }
   ]
  },
  "counts": {
-  "models": 148,
-  "runs": 373,
+  "models": 157,
+  "runs": 385,
   "test3": 86,
-  "oneshots": 173,
-  "frames": 310,
-  "pass": 275,
-  "live": 100
+  "oneshots": 233,
+  "frames": 415,
+  "pass": 286,
+  "live": 136
  }
 }

@@ -1,0 +1,198 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 960" width="960" height="960" role="img" aria-label="Animated brass clockwork orrery">
+  <title>Brass Clockwork Orrery</title>
+  <desc>A brass mechanical orrery. Meshing gears turn to drive planets orbiting the sun at their true relative periods, with a day/night shadow sweeping across each planet.</desc>
+
+  <defs>
+    <!-- ============ BRASS MATERIALS ============ -->
+    <radialGradient id="brass" cx="35%" cy="28%" r="80%">
+      <stop offset="0%" stop-color="#f6e7a6"/>
+      <stop offset="32%" stop-color="#d9b451"/>
+      <stop offset="66%" stop-color="#a9812c"/>
+      <stop offset="100%" stop-color="#6f4f16"/>
+    </radialGradient>
+    <linearGradient id="brassEdge" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fff2c0"/>
+      <stop offset="45%" stop-color="#c9a24a"/>
+      <stop offset="100%" stop-color="#7c581d"/>
+    </linearGradient>
+    <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fff4cf"/>
+      <stop offset="22%" stop-color="#ffe08a"/>
+      <stop offset="55%" stop-color="#e9b64a" stop-opacity="0.75"/>
+      <stop offset="100%" stop-color="#e9b64a" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="sunCore" cx="42%" cy="38%" r="70%">
+      <stop offset="0%" stop-color="#fffdf1"/>
+      <stop offset="55%" stop-color="#ffe9a6"/>
+      <stop offset="100%" stop-color="#e6b23f"/>
+    </radialGradient>
+
+    <!-- ============ LIGHT (day/night terminator) ============ -->
+    <radialGradient id="light" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0"/>
+      <stop offset="42%" stop-color="#000" stop-opacity="0"/>
+      <stop offset="63%" stop-color="#000" stop-opacity="0.5"/>
+      <stop offset="82%" stop-color="#000" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0.97"/>
+    </radialGradient>
+
+    <!-- ============ PLANET SURFACES (lit from centre) ============ -->
+    <radialGradient id="pMercury" cx="50%" cy="50%" r="82%"><stop offset="0%" stop-color="#f3e4b0"/><stop offset="100%" stop-color="#8f7a4c"/></radialGradient>
+    <radialGradient id="pVenus"   cx="50%" cy="50%" r="82%"><stop offset="0%" stop-color="#ffe6ad"/><stop offset="100%" stop-color="#b98f43"/></radialGradient>
+    <radialGradient id="pEarth"   cx="50%" cy="50%" r="82%"><stop offset="0%" stop-color="#eaf2c2"/><stop offset="100%" stop-color="#7fa06a"/></radialGradient>
+    <radialGradient id="pMars"    cx="50%" cy="50%" r="82%"><stop offset="0%" stop-color="#f0b98a"/><stop offset="100%" stop-color="#a4573a"/></radialGradient>
+
+    <!-- ============ FILTERS ============ -->
+    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="10"/></filter>
+    <filter id="soft" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="3.5"/></filter>
+
+    <!-- ============ GEAR RECEPTACLES (drawn at origin, centred) ============ -->
+    <g id="gearA">
+      <circle r="24" fill="url(#brass)" stroke="#4d370f" stroke-width="1.6"/>
+      <circle r="20.5" fill="none" stroke="url(#brassEdge)" stroke-width="2.2"/>
+      <g fill="url(#brass)" stroke="#4d370f" stroke-width="1">
+        <rect x="-3.1" y="-26" width="6.2" height="7" rx="1.2"/><rect x="-3.1" y="-26" width="6.2" height="7" rx="1.2" transform="rotate(45)"/>
+        <rect x="-3.1" y="-26" width="6.2" height="7" rx="1.2" transform="rotate(90)"/><rect x="-3.1" y="-26" width="6.2" height="7" rx="1.2" transform="rotate(135)"/>
+        <rect x="-3.1" y="-26" width="6.2" height="7" rx="1.2" transform="rotate(180)"/><rect x="-3.1" y="-26" width="6.2" height="7" rx="1.2" transform="rotate(225)"/>
+        <rect x="-3.1" y="-26" width="6.2" height="7" rx="1.2" transform="rotate(270)"/><rect x="-3.1" y="-26" width="6.2" height="7" rx="1.2" transform="rotate(315)"/>
+      </g>
+      <g fill="#3f2c0a"><circle cx="13" cy="0" r="3"/><circle cx="-13" cy="0" r="3"/><circle cx="0" cy="13" r="3"/><circle cx="0" cy="-13" r="3"/></g>
+      <circle r="6.5" fill="#2a1d07"/>
+    </g>
+
+    <g id="gearB">
+      <circle r="34" fill="url(#brass)" stroke="#4d370f" stroke-width="1.8"/>
+      <circle r="29" fill="none" stroke="url(#brassEdge)" stroke-width="2.6"/>
+      <g fill="url(#brass)" stroke="#4d370f" stroke-width="1">
+        <rect x="-3.5" y="-36.5" width="7" height="8" rx="1.4"/><rect x="-3.5" y="-36.5" width="7" height="8" rx="1.4" transform="rotate(30)"/>
+        <rect x="-3.5" y="-36.5" width="7" height="8" rx="1.4" transform="rotate(60)"/><rect x="-3.5" y="-36.5" width="7" height="8" rx="1.4" transform="rotate(90)"/>
+        <rect x="-3.5" y="-36.5" width="7" height="8" rx="1.4" transform="rotate(120)"/><rect x="-3.5" y="-36.5" width="7" height="8" rx="1.4" transform="rotate(150)"/>
+        <rect x="-3.5" y="-36.5" width="7" height="8" rx="1.4" transform="rotate(180)"/><rect x="-3.5" y="-36.5" width="7" height="8" rx="1.4" transform="rotate(210)"/>
+        <rect x="-3.5" y="-36.5" width="7" height="8" rx="1.4" transform="rotate(240)"/><rect x="-3.5" y="-36.5" width="7" height="8" rx="1.4" transform="rotate(270)"/>
+        <rect x="-3.5" y="-36.5" width="7" height="8" rx="1.4" transform="rotate(300)"/><rect x="-3.5" y="-36.5" width="7" height="8" rx="1.4" transform="rotate(330)"/>
+      </g>
+      <g fill="#3f2c0a"><circle cx="19" cy="0" r="3.4"/><circle cx="-19" cy="0" r="3.4"/><circle cx="0" cy="19" r="3.4"/><circle cx="0" cy="-19" r="3.4"/></g>
+      <circle r="7.5" fill="#2a1d07"/>
+    </g>
+
+    <g id="gearC">
+      <circle r="46" fill="url(#brass)" stroke="#4d370f" stroke-width="2"/>
+      <circle r="40" fill="none" stroke="url(#brassEdge)" stroke-width="3"/>
+      <g fill="url(#brass)" stroke="#4d370f" stroke-width="1.1">
+        <rect x="-4" y="-49" width="8" height="9" rx="1.6"/><rect x="-4" y="-49" width="8" height="9" rx="1.6" transform="rotate(30)"/>
+        <rect x="-4" y="-49" width="8" height="9" rx="1.6" transform="rotate(60)"/><rect x="-4" y="-49" width="8" height="9" rx="1.6" transform="rotate(90)"/>
+        <rect x="-4" y="-49" width="8" height="9" rx="1.6" transform="rotate(120)"/><rect x="-4" y="-49" width="8" height="9" rx="1.6" transform="rotate(150)"/>
+        <rect x="-4" y="-49" width="8" height="9" rx="1.6" transform="rotate(180)"/><rect x="-4" y="-49" width="8" height="9" rx="1.6" transform="rotate(210)"/>
+        <rect x="-4" y="-49" width="8" height="9" rx="1.6" transform="rotate(240)"/><rect x="-4" y="-49" width="8" height="9" rx="1.6" transform="rotate(270)"/>
+        <rect x="-4" y="-49" width="8" height="9" rx="1.6" transform="rotate(300)"/><rect x="-4" y="-49" width="8" height="9" rx="1.6" transform="rotate(330)"/>
+      </g>
+      <g fill="#3f2c0a"><circle cx="27" cy="0" r="4"/><circle cx="-27" cy="0" r="4"/><circle cx="0" cy="27" r="4"/><circle cx="0" cy="-27" r="4"/></g>
+      <circle r="9" fill="#2a1d07"/>
+    </g>
+
+    <!-- ============ SUN + MOUNTED GEAR ============ -->
+    <g id="sun">
+      <circle r="58" fill="url(#sunGlow)" filter="url(#glow)"/>
+      <g stroke="#e6b23f" stroke-width="4" opacity="0.55">
+        <line x1="0" y1="-46" x2="0" y2="-78"/><line x1="0" y1="-46" x2="0" y2="-78" transform="rotate(30)"/>
+        <line x1="0" y1="-46" x2="0" y2="-78" transform="rotate(60)"/><line x1="0" y1="-46" x2="0" y2="-78" transform="rotate(90)"/>
+        <line x1="0" y1="-46" x2="0" y2="-78" transform="rotate(120)"/><line x1="0" y1="-46" x2="0" y2="-78" transform="rotate(150)"/>
+        <line x1="0" y1="-46" x2="0" y2="-78" transform="rotate(180)"/><line x1="0" y1="-46" x2="0" y2="-78" transform="rotate(210)"/>
+        <line x1="0" y1="-46" x2="0" y2="-78" transform="rotate(240)"/><line x1="0" y1="-46" x2="0" y2="-78" transform="rotate(270)"/>
+        <line x1="0" y1="-46" x2="0" y2="-78" transform="rotate(300)"/><line x1="0" y1="-46" x2="0" y2="-78" transform="rotate(330)"/>
+      </g>
+      <circle r="34" fill="url(#sunCore)" stroke="#a9812c" stroke-width="2"/>
+      <use href="#gearC" transform="scale(0.62)"/>
+    </g>
+
+    <!-- ============ PLANET + ROTATING DAY/NIGHT TERMINATOR ============ -->
+    <g id="planet">
+      <circle r="14" fill="url(#light)" filter="url(#soft)"/>
+      <circle r="14" fill="#000" opacity="0.55" clip-path="url(#pc)">
+        <animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0 0 0" to="-360 0 0" dur="18s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+
+    <!-- ============ LABELS ============ -->
+    <style>
+      .cap{font-family:Georgia,'Times New Roman',serif;font-size:15px;fill:#d9b451;letter-spacing:.12em}
+      .sub{font-family:Georgia,serif;font-size:12px;fill:#8a6f34;letter-spacing:.04em}
+    </style>
+  </defs>
+
+  <clipPath id="pc"><circle r="14"/></clipPath>
+
+  <!-- ============ BACKDROP ============ -->
+  <rect x="0" y="0" width="960" height="960" fill="#120f0a"/>
+  <g opacity="0.5">
+    <circle cx="120" cy="140" r="1.4" fill="#e7d38a"/><circle cx="820" cy="120" r="1.2" fill="#e7d38a"/>
+    <circle cx="900" cy="300" r="1.5" fill="#e7d38a"/><circle cx="60" cy="420" r="1.2" fill="#e7d38a"/>
+    <circle cx="150" cy="760" r="1.4" fill="#e7d38a"/><circle cx="880" cy="720" r="1.3" fill="#e7d38a"/>
+    <circle cx="400" cy="90" r="1.2" fill="#e7d38a"/><circle cx="560" cy="880" r="1.4" fill="#e7d38a"/>
+  </g>
+
+  <!-- ============ ORBIT TRACKS (brass rings) ============ -->
+  <g fill="none" stroke="url(#brassEdge)" opacity="0.5">
+    <circle cx="480" cy="480" r="150" stroke-width="2"/>
+    <circle cx="480" cy="480" r="230" stroke-width="2"/>
+    <circle cx="480" cy="480" r="310" stroke-width="2"/>
+    <circle cx="480" cy="480" r="390" stroke-width="2.5"/>
+  </g>
+
+  <!-- ============ GEAR TRAIN (drives the orbits) ============ -->
+  <g id="train">
+    <use href="#sun"><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0 480 480" to="360 480 480" dur="24s" repeatCount="indefinite"/></use>
+
+    <!-- Mercury: driven gear meshes with sun -->
+    <g transform="translate(630,480)"><g><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0 0 0" to="-360 0 0" dur="24s" repeatCount="indefinite"/><use href="#gearA"/></g></g>
+
+    <!-- Venus: driven gear meshes with Mercury -->
+    <g transform="translate(710,480)"><g><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0 0 0" to="360 0 0" dur="24s" repeatCount="indefinite"/><use href="#gearA"/></g></g>
+
+    <!-- Earth: driven gear meshes with Venus -->
+    <g transform="translate(790,480)"><g><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0 0 0" to="-360 0 0" dur="24s" repeatCount="indefinite"/><use href="#gearA"/></g></g>
+
+    <!-- Mars: driven gear meshes with Earth -->
+    <g transform="translate(870,480)"><g><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0 0 0" to="360 0 0" dur="24s" repeatCount="indefinite"/><use href="#gearA"/></g></g>
+
+    <!-- Moon pinion meshes with Mercury (adds visible gear texture) -->
+    <g transform="translate(630,512)"><g><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0 0 0" to="-360 0 0" dur="12s" repeatCount="indefinite"/><use href="#gearA" transform="scale(0.5)"/></g></g>
+    <!-- Idler meshes with Mars -->
+    <g transform="translate(870,448)"><g><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0 0 0" to="-360 0 0" dur="12s" repeatCount="indefinite"/><use href="#gearA" transform="scale(0.5)"/></g></g>
+  </g>
+
+  <!-- ============ PLANETS (orbit at true relative periods) ============ -->
+  <g id="planets">
+    <!-- Mercury — orbit 88d, day 176d (slowest spin) -->
+    <g transform="translate(480,480)">
+      <g><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0 0 0" to="360 0 0" dur="10.5s" repeatCount="indefinite"/>
+        <use href="#planet" transform="translate(150,0) scale(0.42)"><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0 150 0" to="-360 150 0" dur="21s" repeatCount="indefinite"/></use>
+      </g>
+    </g>
+
+    <!-- Venus — orbit 225d, day 243d retrograde (slowest spin) -->
+    <g transform="translate(480,480)">
+      <g><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0 0 0" to="360 0 0" dur="26.9s" repeatCount="indefinite"/>
+        <use href="#planet" transform="translate(230,0) scale(0.58)"><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0 230 0" to="-360 230 0" dur="29s" repeatCount="indefinite"/></use>
+      </g>
+    </g>
+
+    <!-- Earth — orbit 365d, day 1d (fastest spin) -->
+    <g transform="translate(480,480)">
+      <g><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0 0 0" to="360 0 0" dur="43.6s" repeatCount="indefinite"/>
+        <use href="#planet" transform="translate(310,0) scale(0.62)"><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0 310 0" to="-360 310 0" dur="4s" repeatCount="indefinite"/></use>
+      </g>
+    </g>
+
+    <!-- Mars — orbit 687d, day 1.03d -->
+    <g transform="translate(480,480)">
+      <g><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0 0 0" to="360 0 0" dur="82s" repeatCount="indefinite"/>
+        <use href="#planet" transform="translate(390,0) scale(0.5)"><animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0 390 0" to="-360 390 0" dur="4.1s" repeatCount="indefinite"/></use>
+      </g>
+    </g>
+  </g>
+
+  <!-- ============ CAPTION ============ -->
+  <text x="480" y="922" text-anchor="middle" class="cap">CLOCKWORK ORRERY · TRUE RELATIVE ORBITAL PERIODS</text>
+  <text x="480" y="942" text-anchor="middle" class="sub">gears mesh to drive each orbit — day/night terminator sweeps every planet</text>
+</svg>

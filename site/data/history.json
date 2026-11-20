@@ -1,7 +1,7 @@
 {
  "schema": "history/1",
- "generated_from": "private bake-off grades through 2026-11-08: Flash-Next Unsloth v3.1 round 1, the 3090 + V100 serving tuning and the Flash-Next 150 tok/s serving goal (Strata 0.2.12 through round 21 and a Strata 0.2.13 engine check, code and JSON benchmarks with a quality check, a 256k slot and four-stream totals, DFlash2 window and confidence, sampled decoding, llamAmpere with four slots, K/V cache in host RAM, parallel slots that fit, thinking-on sampled decoding, a dual-card Tiel-Coder Q6 serving check, llamAmpere 0.6.3.2 and 0.6.3.8, the daily driver's agent test 1, 2, 2T and 7 runs, UD-Q3_K_XL test 1, 2 and 2T runs, session switching with a host-RAM session cache, two 256k agent slots, the agent serving profile (parked 155k sessions, four 120k streams, two agents at once on tests 1 and 2, a 30-minute idle resume), the UD-Q3_K_XL test 7 run, Arete-27B test 1 on the V100, the V100 peer tier with four agent slots, the UD-Q2_0 speed check, its agent test 1, 2, 2T and 7 runs and its agent-profile check, GSQ IQ3_S agent tests 1, 2 and 7, GSQ IQ3_XXS agent tests 1, 2 and 7, Arete-27B test 2 on the V100, Tiel-Coder Q6 agent test 1 with thinking on and off and tests 2 and 7 with thinking off, test 7 again with context pruning and test 2T with thinking off, the TensorFold 1.2.7 release at 128k and 176k and Nemotron 3.5 Lightning NVFP4 on its RTX 30 fallback, Arete-27B test 7 on the V100, the largest contexts on the V100 alone for Arete Q6_K and Q8_0, Tiel-Coder Q6 and Flash-Next UD-Q2_0 on Strata, Flash-Next UD-Q2_0 with eight and four ~240k sessions at once across both cards, the Unsloth Dynamic V3.1 re-upload of Qwen3.8-27B UD-Q4_K_M against the old file on short benchmarks and agent test 1, webAI's TwIL-8B balanced Q4_K_M and verbose Q8_0 on one 3090, Nex-N2.6 Q2_K across both cards with experts in RAM, the RustingStrata 1.2.1 engine on Flash-Next UD-Q2_K_XL, Arete-27B Q6_K with three 256k slots across both cards, Arete-27B Q8_0 with two 256k slots across both cards, Tiel-Coder Q6 and the abliterated Cyber-Tiel-Coder with four 256k slots across both cards at ~240k, ~120k and ~60k, 16-bit K/V on four sessions for Tiel-Coder Q6 and Q4 and Nemotron 3.5 Lightning Q8_0, ThinkingCap-27B Heretic with four 256k slots, four OpenCode agents at once on Nemotron 3.5 Lightning, Flint Preview with four 256k slots, the MACaQ-R refinement of Qwen3.6-35B-A3B UD-Q4_K_XL against its Unsloth parent, Flash-Next UD-Q2_0 with two active 256k sessions and four parked ~248k sessions in host RAM and with three 256k sessions across both cards, Nemotron 3.5 Lightning with four ~60k sessions, four OpenCode agents at once on Nemotron 3.5 Lightning with thinking on and on the abliterated Cyber-Tiel-Coder, four OpenCode agents at once on the Cyber 27B IQ4_XS on the V100 alone, two long OpenCode agents at once (tests 2 and 7) on Flash-Next UD-Q2_0 with two 256k sessions, the Flash-Next UD-Q4_K_XL core with its stock per-layer n-gram table and with an 8-bit one (two ~240k sessions at once), two long OpenCode agents at once on the stock-table and 8-bit-table versions, one-shot pagodas and eight- and four-slot fits); runs from 2026-10-07 on",
- "generated": "2026-11-14 10:52 CST",
+ "generated_from": "private bake-off grades through 2026-11-08: Flash-Next Unsloth v3.1 round 1, the 3090 + V100 serving tuning and the Flash-Next 150 tok/s serving goal (Strata 0.2.12 through round 21 and a Strata 0.2.13 engine check, code and JSON benchmarks with a quality check, a 256k slot and four-stream totals, DFlash2 window and confidence, sampled decoding, llamAmpere with four slots, K/V cache in host RAM, parallel slots that fit, thinking-on sampled decoding, a dual-card Tiel-Coder Q6 serving check, llamAmpere 0.6.3.2 and 0.6.3.8, the daily driver's agent test 1, 2, 2T and 7 runs, UD-Q3_K_XL test 1, 2 and 2T runs, session switching with a host-RAM session cache, two 256k agent slots, the agent serving profile (parked 155k sessions, four 120k streams, two agents at once on tests 1 and 2, a 30-minute idle resume), the UD-Q3_K_XL test 7 run, Arete-27B test 1 on the V100, the V100 peer tier with four agent slots, the UD-Q2_0 speed check, its agent test 1, 2, 2T and 7 runs and its agent-profile check, GSQ IQ3_S agent tests 1, 2 and 7, GSQ IQ3_XXS agent tests 1, 2 and 7, Arete-27B test 2 on the V100, Tiel-Coder Q6 agent test 1 with thinking on and off and tests 2 and 7 with thinking off, test 7 again with context pruning and test 2T with thinking off, the TensorFold 1.2.7 release at 128k and 176k and Nemotron 3.5 Lightning NVFP4 on its RTX 30 fallback, Arete-27B test 7 on the V100, the largest contexts on the V100 alone for Arete Q6_K and Q8_0, Tiel-Coder Q6 and Flash-Next UD-Q2_0 on Strata, Flash-Next UD-Q2_0 with eight and four ~240k sessions at once across both cards, the Unsloth Dynamic V3.1 re-upload of Qwen3.8-27B UD-Q4_K_M against the old file on short benchmarks and agent test 1, webAI's TwIL-8B balanced Q4_K_M and verbose Q8_0 on one 3090, Nex-N2.6 Q2_K across both cards with experts in RAM, the RustingStrata 1.2.1 engine on Flash-Next UD-Q2_K_XL, Arete-27B Q6_K with three 256k slots across both cards, Arete-27B Q8_0 with two 256k slots across both cards, Tiel-Coder Q6 and the abliterated Cyber-Tiel-Coder with four 256k slots across both cards at ~240k, ~120k and ~60k, 16-bit K/V on four sessions for Tiel-Coder Q6 and Q4 and Nemotron 3.5 Lightning Q8_0, ThinkingCap-27B Heretic with four 256k slots, four OpenCode agents at once on Nemotron 3.5 Lightning, Flint Preview with four 256k slots, the MACaQ-R refinement of Qwen3.6-35B-A3B UD-Q4_K_XL against its Unsloth parent, Flash-Next UD-Q2_0 with two active 256k sessions and four parked ~248k sessions in host RAM and with three 256k sessions across both cards, Nemotron 3.5 Lightning with four ~60k sessions, four OpenCode agents at once on Nemotron 3.5 Lightning with thinking on and on the abliterated Cyber-Tiel-Coder, four OpenCode agents at once on the Cyber 27B IQ4_XS on the V100 alone, two long OpenCode agents at once (tests 2 and 7) on Flash-Next UD-Q2_0 with two 256k sessions, the Flash-Next UD-Q4_K_XL core with its stock per-layer n-gram table and with an 8-bit one (two ~240k sessions at once), two long OpenCode agents at once on the stock-table and 8-bit-table versions, one-shot pagodas and eight- and four-slot fits, the 3 x 512k Orcarouter Flash-Next Uncensored daily driver on Strata 0.2.15 (agent tests 1, 2, 2T and 7 with thinking off and on, one-shot pagodas and orreries with one repair round) and its 262k, 1M, 2 x 256k and RustingStrata siblings, Hy4-Flash Maya-L across both cards (tests 1, 2, 5 and 6) and Hy4-Flash Q3_K on the 3090 alone (qualification and test 7), Qwen3.8-27B with a pi-harness LoRA on the V100 (test 1), and the Oh My Pi against OpenCode harness comparison on hosted DeepSeek-V4.1-Flash (test 7)); runs from 2026-10-07 on",
+ "generated": "2026-11-20 10:59 CST",
  "runs_new": [
   {
    "case": "wa-saluki-27b-iq2",
@@ -4051,6 +4051,297 @@
     "loc": 6766,
     "errors_per_kloc": 5.6
    }
+  },
+  {
+   "case": "hy4-mayal-p1-test1-hy4-flash-maya-l",
+   "model": "hy4-flash-maya-l",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 43,
+   "tests_fail": 0,
+   "subcmds": 1,
+   "tps": 20.2,
+   "minutes": 61.7,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-19 19:13",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 1912,
+    "errors_per_kloc": 0.0
+   }
+  },
+  {
+   "case": "hy4-mayal-p1-test1-omp",
+   "model": "hy4-flash-maya-l",
+   "test": 1,
+   "agent": "Oh My Pi",
+   "checks": 5,
+   "tests_pass": 45,
+   "tests_fail": 0,
+   "subcmds": 12,
+   "tps": 19.7,
+   "minutes": 94.5,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-19 23:34",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 1864,
+    "errors_per_kloc": 0.5
+   }
+  },
+  {
+   "case": "s215-3x512-p2-test1-orcarouter-fn-uncensored-b3-512k",
+   "model": "orcarouter-fn-uncensored-b3-512k",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 116,
+   "tests_fail": 0,
+   "subcmds": 10,
+   "tps": 15.71,
+   "minutes": 86.5,
+   "compactions": null,
+   "ctx": 524288,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-18 06:21",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 2255,
+    "errors_per_kloc": 1.8
+   }
+  },
+  {
+   "case": "s215-3x512-think-p1-test1-orcarouter-fn-uncensored-b3-512k",
+   "model": "orcarouter-fn-uncensored-b3-512k",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 0,
+   "tests_pass": null,
+   "tests_fail": null,
+   "subcmds": 0,
+   "tps": 17.59,
+   "minutes": 95.1,
+   "compactions": null,
+   "ctx": 524288,
+   "kv": "q8_0",
+   "verdict": "fail",
+   "finished": "2026-11-18 14:54",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 2908,
+    "errors_per_kloc": 0.0
+   }
+  },
+  {
+   "case": "switch-pi27-test1-r1-opencode",
+   "model": "qwen38-27b-pi",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 75,
+   "tests_fail": 0,
+   "subcmds": 7,
+   "tps": 20.76,
+   "minutes": 33.0,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-20 00:11",
+   "struggle": {
+    "compiles": 0,
+    "failed_compiles": 0,
+    "rust_errors": 0,
+    "loc": 1511,
+    "errors_per_kloc": 0.0
+   }
+  },
+  {
+   "case": "hy4-mayal-p1-test2-hy4-flash-maya-l",
+   "model": "hy4-flash-maya-l",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 21,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 20.38,
+   "minutes": 43.1,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-19 20:58",
+   "struggle": {
+    "compiles": 6,
+    "failed_compiles": 4,
+    "rust_errors": 5,
+    "loc": 1727,
+    "errors_per_kloc": 2.9
+   }
+  },
+  {
+   "case": "s215-3x512-p1-test2-orcarouter-fn-uncensored-b3-512k",
+   "model": "orcarouter-fn-uncensored-b3-512k",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 69,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 24.32,
+   "minutes": 171.1,
+   "compactions": null,
+   "ctx": 524288,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-18 02:56",
+   "struggle": {
+    "compiles": 91,
+    "failed_compiles": 40,
+    "rust_errors": 1022,
+    "loc": 3289,
+    "errors_per_kloc": 311.0
+   }
+  },
+  {
+   "case": "s215-3x512-p2-test2-orcarouter-fn-uncensored-b3-512k",
+   "model": "orcarouter-fn-uncensored-b3-512k",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 73,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 24.43,
+   "minutes": 67.0,
+   "compactions": null,
+   "ctx": 524288,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-18 07:28",
+   "struggle": {
+    "compiles": 48,
+    "failed_compiles": 28,
+    "rust_errors": 103,
+    "loc": 2703,
+    "errors_per_kloc": 38.5
+   }
+  },
+  {
+   "case": "s215-3x512-think-p1-test2-orcarouter-fn-uncensored-b3-512k",
+   "model": "orcarouter-fn-uncensored-b3-512k",
+   "test": 2,
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 58,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 21.2,
+   "minutes": 180.1,
+   "compactions": null,
+   "ctx": 524288,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-18 17:54",
+   "struggle": {
+    "compiles": 44,
+    "failed_compiles": 22,
+    "rust_errors": 119,
+    "loc": 5779,
+    "errors_per_kloc": 20.9
+   }
+  },
+  {
+   "case": "s215-3x512-p1-test2t-orcarouter-fn-uncensored-b3-512k",
+   "model": "orcarouter-fn-uncensored-b3-512k",
+   "test": 2,
+   "flavor": "2T",
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 36,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 58.91,
+   "minutes": 76.5,
+   "compactions": null,
+   "ctx": 524288,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-18 04:13",
+   "struggle": {
+    "compiles": 162,
+    "failed_compiles": 67,
+    "rust_errors": 115,
+    "loc": 3470,
+    "errors_per_kloc": 35.7
+   }
+  },
+  {
+   "case": "s215-3x512-p2-test2t-orcarouter-fn-uncensored-b3-512k",
+   "model": "orcarouter-fn-uncensored-b3-512k",
+   "test": 2,
+   "flavor": "2T",
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 58,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 51.89,
+   "minutes": 127.7,
+   "compactions": null,
+   "ctx": 524288,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-18 09:37",
+   "struggle": {
+    "compiles": 211,
+    "failed_compiles": 46,
+    "rust_errors": 136,
+    "loc": 2850,
+    "errors_per_kloc": 48.1
+   }
+  },
+  {
+   "case": "s215-3x512-think-p1-test2t-orcarouter-fn-uncensored-b3-512k",
+   "model": "orcarouter-fn-uncensored-b3-512k",
+   "test": 2,
+   "flavor": "2T",
+   "agent": "OpenCode",
+   "checks": null,
+   "tests_pass": 94,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 29.85,
+   "minutes": 127.2,
+   "compactions": null,
+   "ctx": 524288,
+   "kv": "q8_0",
+   "verdict": "pass",
+   "finished": "2026-11-18 20:02",
+   "struggle": {
+    "compiles": 38,
+    "failed_compiles": 25,
+    "rust_errors": 65,
+    "loc": 5778,
+    "errors_per_kloc": 11.2
+   }
   }
  ],
  "test3_new": [
@@ -5376,6 +5667,123 @@
    "kind": "stock",
    "uncensored": false,
    "note": "Flash-Next UD-Q4_K_XL (Unsloth Dynamic v3.1, 103.7 GiB) on Strata 0.2.13, one RTX 3090 at 300 W with experts streamed from host RAM, MTP draft head, two 256k slots with 8-bit K/V and a 28 GiB host-RAM session park (never disk), the per-layer n-gram table read from local SSD (direct I/O). Same core and settings as the stock-table version; only the n-gram table differs (Q8_0 instead of IQ4_NL). Two ~240k prompts at once (short benchmark): both needles correct, 51.2 tok/s total while both decode (27.9 and 19.7 per session), first tokens 272 and 108 s, 3.1 GiB free, so the bigger table costs nothing measurable in speed or VRAM here. Two long OpenCode agents at once (tests 2 and 7): test 2 handed in after 154 minutes with a 9-tool server and 104 of its own tests passing; the labyrinth was still unfinished at the 3-hour cap (working generator, no showcase maze or notes) and scores 5 of 10. Agent-run decode 23.1 and 20.9 tok/s per session (client side), first token median 1.7 s, the same speed as the stock table.",
+   "vision": null
+  },
+  "orcarouter-fn-uncensored-strata0215": {
+   "id": "orcarouter-fn-uncensored-strata0215",
+   "family": "Qwen3.8 Flash-Next",
+   "label": "Orcarouter Flash-Next Uncensored IQ4_XS \u00b7 Strata 0.2.15, RTX 3090, 262k, 8-bit KV",
+   "base": "orcarouter/Qwen3.8-Flash-Next-Uncensored",
+   "arch": "MoE 125B / 6B active",
+   "engine": "Strata 0.2.15",
+   "quant": "IQ4_XS",
+   "kind": "uncensored-tune",
+   "uncensored": true,
+   "note": "The daily driver from 2026-11-16 to 2026-11-17: Orcarouter Flash-Next Uncensored IQ4_XS repacked for Strata 0.2.15 (small projections in BF16), one RTX 3090 with experts streamed from host RAM, MTP drafts (about 80% accepted), one 262k session with 8-bit K/V, thinking off. One-shot replies decode at 112-127 tok/s with first tokens of 0.1-0.9 s (single long requests, not agent runs).",
+   "vision": null
+  },
+  "orcarouter-fn-strata-1m": {
+   "id": "orcarouter-fn-strata-1m",
+   "family": "Qwen3.8 Flash-Next",
+   "label": "Orcarouter Flash-Next Uncensored IQ4_XS \u00b7 Strata 0.2.15, RTX 3090, 1M (yarn x4), 8-bit KV",
+   "base": "orcarouter/Qwen3.8-Flash-Next-Uncensored",
+   "arch": "MoE 125B / 6B active",
+   "engine": "Strata 0.2.15",
+   "quant": "IQ4_XS",
+   "kind": "uncensored-tune",
+   "uncensored": true,
+   "note": "The same pack and engine as the 262k daily driver with yarn rope scaling x4 for a 1,048,576-token session; the single-session daily driver points at this config since 2026-11-17. At normal lengths it costs nothing measurable in grades; a one-shot pagoda decoded at 112 tok/s against about 122 without yarn (first token 0.8 s). Past 262k it is untested for quality.",
+   "vision": null
+  },
+  "orcarouter-fn-uncensored-b2": {
+   "id": "orcarouter-fn-uncensored-b2",
+   "family": "Qwen3.8 Flash-Next",
+   "label": "Orcarouter Flash-Next Uncensored IQ4_XS \u00b7 Strata 0.2.15, RTX 3090, 2 x 256k, 8-bit KV",
+   "base": "orcarouter/Qwen3.8-Flash-Next-Uncensored",
+   "arch": "MoE 125B / 6B active",
+   "engine": "Strata 0.2.15",
+   "quant": "IQ4_XS",
+   "kind": "uncensored-tune",
+   "uncensored": true,
+   "note": "Two 262k sessions on one RTX 3090 (no yarn), MTP drafts, thinking off. Fit check (short benchmark): two different 224k-token prompts at once, both needles found, 2,240 MiB free on the 3090, then 47.1 and 46.4 tok/s per session while both decode. Two one-shot pagodas sent at the same time decoded at 42.3 and 39.5 tok/s (first tokens 1.4 and 1.7 s).",
+   "vision": null
+  },
+  "orcarouter-fn-uncensored-b3-512k": {
+   "id": "orcarouter-fn-uncensored-b3-512k",
+   "family": "Qwen3.8 Flash-Next",
+   "label": "Orcarouter Flash-Next Uncensored IQ4_XS \u00b7 Strata 0.2.15, RTX 3090, 3 x 512k (yarn x2), 8-bit KV",
+   "base": "orcarouter/Qwen3.8-Flash-Next-Uncensored",
+   "arch": "MoE 125B / 6B active",
+   "engine": "Strata 0.2.15",
+   "quant": "IQ4_XS",
+   "kind": "uncensored-tune",
+   "uncensored": true,
+   "note": "The multi-session daily driver (Alex, 2026-11-17: \"3x512 on orca uncensored\"): three 524,288-token sessions with yarn x2 on one RTX 3090 at 300 W, experts streamed from host RAM, MTP drafts for all three slots, an 8 GiB host-RAM conversation cache (never disk). Fit check (short benchmark): three 481k-token prompts at once, all needles found, 2,162 MiB free on the 3090, then 21.9, 26.3 and 24.4 tok/s per session (72.6 total) while all three decode. Thinking is off by default; the thinking-on runs ask for it per request. Agent and one-shot rates on this entry were mostly measured with the other two slots busy.",
+   "vision": null
+  },
+  "orcarouter-fn-rusting": {
+   "id": "orcarouter-fn-rusting",
+   "family": "Qwen3.8 Flash-Next",
+   "label": "Orcarouter Flash-Next Uncensored IQ4_XS \u00b7 RustingStrata 1.2.1, RTX 3090, 262k, 8-bit KV",
+   "base": "orcarouter/Qwen3.8-Flash-Next-Uncensored",
+   "arch": "MoE 125B / 6B active",
+   "engine": "RustingStrata 1.2.1",
+   "quant": "IQ4_XS",
+   "kind": "uncensored-tune",
+   "uncensored": true,
+   "note": "The pure-Rust RustingStrata 1.2.1 engine on the Orcarouter Flash-Next Uncensored IQ4_XS file, one RTX 3090, 262k context with 8-bit K/V, no MTP (not supported for this architecture), thinking off. One-shot pagodas decoded at 31-32 tok/s with first tokens of 2.7-3.0 s, about a quarter of Strata 0.2.15 on the same weights. Kept as a fallback serve.",
+   "vision": null
+  },
+  "hy4-flash-maya-l": {
+   "id": "hy4-flash-maya-l",
+   "family": "Hy4-Flash",
+   "label": "Hy4-Flash Maya-L IQ4_XS \u00b7 Maya v1.1.68, RTX 3090 + V100, 128k, 8-bit KV",
+   "base": "tencent/Hy4-flash",
+   "arch": "MoE 224B (incl. 64B Engram table) / 12B active",
+   "engine": "Maya v1.1.68",
+   "quant": "Maya-L IQ4_XS with its Engram n-gram table, MTP head",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "Tencent's Hy4-Flash in Maya's own IQ4_XS pack on Maya v1.1.68, layers split across the RTX 3090 and the V100 with most experts in host RAM, 128k context with 8-bit K/V (VRAM only, never disk), MTP drafts, thinking high by default, temperature 0.9 and top_p 1. The engine serves one request at a time. Fit and speed through llama-swap (short benchmark): 680 MiB free on the 3090 and 1,905 MiB on the V100 after the longest prefill, a 104k-token retrieval correct with the first token after 434 s (about 240 tok/s prefill), decode about 19 tok/s (chat 18.7, code 23.0) and a warm first token of 0.5 s. Agent runs decode at about 20 tok/s on the client side.",
+   "vision": null
+  },
+  "hy4f-q3k-3090": {
+   "id": "hy4f-q3k-3090",
+   "family": "Hy4-Flash",
+   "label": "Hy4-Flash Q3_K \u00b7 maya-hy4f (cbe0a1f), RTX 3090, 128k, 8-bit KV",
+   "base": "tencent/Hy4-flash",
+   "arch": "MoE 224B (incl. 64B Engram table) / 12B active",
+   "engine": "maya-hy4f cbe0a1f",
+   "quant": "Q3_K trunk with the F8_E4M3 Engram table from the Maya-L pack, MTP head",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "A community fork of the Maya engine built for Hy4-Flash on RTX 30-class cards: Q3_K trunk on one RTX 3090, every routed expert in pinned host RAM (about 84 GB in the container), the 63 GB Engram table read straight from SSD, 128k context with 8-bit K/V, MTP drafts, thinking high by default, temperature 0.9 and top_p 1. Qualification (short benchmark): 924 MiB free on the 3090 after a 100k-token prefill, decode 23.9 tok/s chat and 26.8 code, first token about 1.9 s, prefill about 1,400 tok/s (100k retrieval correct with the first token at 71 s, against 434 s for Maya-L across both cards). Over-refusal check, thinking off: 2 of 64 harmless prompts and 0 of 24 lookalikes refused.",
+   "vision": null
+  },
+  "qwen38-27b-pi": {
+   "id": "qwen38-27b-pi",
+   "family": "Qwen3.8 27B",
+   "label": "Qwen3.8-27B UD-Q4_K_M + pi-harness LoRA \u00b7 llama.cpp (Clover 4838ffb), V100, 128k, 8-bit KV",
+   "base": "Qwen/Qwen3.8-27B",
+   "arch": "dense 27B",
+   "engine": "llama.cpp Clover 4838ffb",
+   "quant": "Unsloth UD-Q4_K_M with an F16 LoRA adapter trained for the pi coding agent (applied at load, not merged)",
+   "kind": "tune",
+   "uncensored": false,
+   "note": "Qwen3.8-27B with a LoRA tuned for the pi coding-agent harness, on the Tesla V100 alone, 128k context with 8-bit K/V, thinking off, temperature 0.8. Short benchmark beside another model on the 3090: decode 25.4 tok/s, prefill 85 tok/s on a short prompt, first token 0.40 s, 20,726 MiB of VRAM; the live LoRA costs about a fifth of the decode speed against the same base file (32.2 tok/s).",
+   "vision": null
+  },
+  "openrouter-deepseek-v4.1-flash-1017": {
+   "id": "openrouter-deepseek-v4.1-flash-1017",
+   "family": "DeepSeek",
+   "label": "DeepSeek-V4.1-Flash 1017 \u00b7 hosted on OpenRouter",
+   "base": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
+   "arch": "MoE",
+   "engine": "OpenRouter (hosted, served by Wafer)",
+   "quant": "not given",
+   "kind": "stock",
+   "uncensored": false,
+   "note": "Hosted: OpenRouter model deepseek/deepseek-v4.1-flash-1017, served by the provider Wafer (one excluded run also got Prime Intellect for 28 of 98 requests), 1,048,576-token context, temperature 0.6, top_p 0.95, reasoning effort high, one request at a time. Used for the test 7 half of the OpenCode-against-Oh My Pi harness comparison; tests 1, 2, 2T and 3 stay on local models for privacy. Agent-run client decode 156-204 tok/s with median first tokens of 0.7-1.6 s; cost per labyrinth run $0.14-0.23, with about 99% of prompt tokens read from the provider's cache.",
    "vision": null
   }
  },
@@ -7919,6 +8327,16 @@
    "prefill": 1472.7,
    "vram": 21356,
    "error": ""
+  },
+  {
+   "model": "hy4f-q3k-3090",
+   "engine": "maya-hy4f cbe0a1f",
+   "variant": "Qualification, short benchmark: Hy4-Flash Q3_K on the RTX 3090 alone, 128k, 8-bit KV, MTP; chat decode 23.9 tok/s (code 26.8), first token about 1.9 s; 26k and 100k retrievals correct, prefill about 1,340 and 1,420 tok/s (first token 19.6 s and 70.7 s); 924 MiB free after the 100k prefill (23,198 MiB used), fits",
+   "decode": 23.95,
+   "quote": null,
+   "prefill": 1417.7,
+   "vram": 23198,
+   "error": ""
   }
  ],
  "tests": [
@@ -8158,6 +8576,20 @@
    "title": "Agent serving profile on one 3090",
    "what": "Two 256k slots with a 20k K/V window in VRAM and a host-RAM session cache: parked 155k sessions come back in 1.25 s, four 120k streams fit at 95.8 tok/s total, and two OpenCode agents ran at once with test 2 passing.",
    "why": "Alex wanted two large agent sessions served from the 3090 without re-reading long sessions on every switch."
+  },
+  {
+   "date": "2026-11-17",
+   "era": "Flash-Next",
+   "title": "Multi-session daily driver: 3 x 512k on one 3090",
+   "what": "Orcarouter Flash-Next Uncensored on Strata 0.2.15 serves three 512k sessions from one RTX 3090 with experts in host RAM: three 481k prompts fit at once and decode at 22-26 tok/s each; the single-session driver moved to 1M context.",
+   "why": "Alex wanted several long agent sessions at once on the daily driver."
+  },
+  {
+   "date": "2026-11-19",
+   "era": "Models",
+   "title": "Hy4-Flash added to the test set",
+   "what": "Tencent's Hy4-Flash on Maya v1.1.68 across both cards (Maya-L IQ4_XS), then a Q3_K build on the RTX 3090 alone; first coverage of tests 1, 2, 5, 6 and 7.",
+   "why": "Alex asked for the new model at once and for it to join the standing test set."
   }
  ],
  "findings": [
@@ -10046,6 +10478,75 @@
    ],
    "quality": "Test 2 full pass (9 tools, 104/0) handed in at 154 min; test 7 5 of 10, stopped at the 3-hour cap with no showcase or notes.",
    "caveat": "One run per arm, so the split outcome says nothing reliable about the table's effect on quality. 'Before' is the stock-table arm on the same tasks and settings. Rates are agent runs measured by the client, not short benchmarks."
+  },
+  {
+   "date": "2026-11-18",
+   "title": "The 3 x 512k daily driver: agent tests 2 and 2T hold up, one-shots and the labyrinth do not",
+   "kind": "model",
+   "summary": "Orcarouter Flash-Next Uncensored on Strata 0.2.15 with three 512k sessions on one RTX 3090 ran the suite twice with thinking off and once with thinking on per request, three sessions at a time. Where the model can run its own checks it is steady: test 2 passed all three times (9, 7 and 8 tools; 69, 73 and 58 of its own tests) and 2T all three (10, 8 and 10 tools; trust verdict hedged once, tested twice). Test 1 went from no working client (the thinking-on run hit its time cap) to a perfect one (5 of 5 checks, 116 tests, 10 subcommands); a third run was stopped by the runner and is not counted. One-shots are erratic: first-draft pagodas scored 9 and 8 when they drew, but 8 of 10 were blank from a single script error or a hang; first-draft orreries 0 to 7. One round of console feedback fixed 2 of 4 crashed pagodas (to 6) and broke a 9 when told 'no errors'. The labyrinth scored 0 in all 5 thinking-off runs (the model announces its next step and stops, or runs out of time), and 8 of 10 alone with thinking on, but 0 again with thinking on under shared load.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Agent-run client decode per session, test 2, thinking off (two passes) vs thinking on",
+     "before": 24.4,
+     "after": 21.2,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Labyrinth alone, thinking off vs thinking on",
+     "before": 0,
+     "after": 8,
+     "unit": "of 10"
+    }
+   ],
+   "quality": "Test 2 and 2T: 6 of 6 pass. Test 1: 1 pass, 1 fail. Pagoda first drafts: median 0, best 9; orrery best 7; labyrinth best 8 (alone, thinking on).",
+   "caveat": "One to three samples per cell, mostly with all three slots busy: agent decode was 16-30 tok/s per session (52-59 for two 2T runs), median first tokens 1.4-2.2 s. Thinking-on results are one pass; a second pass was ended by an outage and is not counted."
+  },
+  {
+   "date": "2026-11-20",
+   "title": "Hy4-Flash joins the test set: Maya-L across both cards, then a Q3_K build on the 3090 alone",
+   "kind": "model",
+   "summary": "Tencent's Hy4-Flash (224B with a 64B Engram table, 12B active). Maya's IQ4_XS pack on Maya v1.1.68 across the RTX 3090 and V100: test 1 passed under both harnesses (5 of 5 checks each; 43 own tests and 1 subcommand with OpenCode, 45 tests and 12 subcommands with Oh My Pi), test 2 passed (7 tools, 21 tests), the orrery scored 10 of 10 and the pagoda 9 of 10, all with thinking high, at about 20 tok/s agent-run decode. A Q3_K build on the maya-hy4f fork fits the RTX 3090 alone at 128k with 924 MiB free and reads prompts about six times faster (about 1,400 against 240 tok/s; a 100k retrieval's first token at 71 s instead of 434 s) at the same decode speed, and scored 8 of 10 on the labyrinth under both harnesses.",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Prefill on a 100k prompt, Maya-L on both cards vs Q3_K on the 3090 alone (short benchmark)",
+     "before": 240,
+     "after": 1417.7,
+     "unit": "tok/s"
+    },
+    {
+     "label": "Decode, chat, Maya-L through llama-swap vs Q3_K (short benchmark)",
+     "before": 18.7,
+     "after": 23.9,
+     "unit": "tok/s"
+    }
+   ],
+   "quality": "Maya-L: test 1 5/5 (OpenCode and Oh My Pi), test 2 pass, orrery 10/10, pagoda 9/10. Q3_K: labyrinth 8/10 with each harness.",
+   "caveat": "One run per test. The Q3_K labyrinth runs had the 3090 at 300 W and the V100 idle (interim power caps until a bigger power supply is in). Agent-run first tokens were 3-6 s median for Maya-L and 6-15 s for Q3_K, longer than the short-benchmark warm first token."
+  },
+  {
+   "date": "2026-11-20",
+   "title": "Oh My Pi against OpenCode on the same models: tied quality so far, no switch verdict",
+   "kind": "model",
+   "summary": "Same model, same settings, one harness after the other. On hosted DeepSeek-V4.1-Flash (test 7 only; tests 1, 2 and 2T stay on local models for privacy): 10 and 10 in repetition 1, 9 and 9 in repetition 3; repetition 2 was 7 and 7 but ran under unequal time caps and is left out; repetition 4's omp run scored 9 and its OpenCode run is not graded yet. Hy4-Flash Q3_K on the 3090: 8 and 8. Hy4-Flash Maya-L test 1: 5 of 5 under both. Across the two equal hosted pairs omp cost 32% less ($0.27 against $0.40) but took 10% longer in total (68 against 62 minutes); on Hy4-Flash it took longer (93 against 48 minutes on test 7, 95 against 62 on test 1).",
+   "settings": null,
+   "metrics": [
+    {
+     "label": "Labyrinth points, equal-cap pairs, OpenCode vs omp (sum of three pairs)",
+     "before": 27,
+     "after": 27,
+     "unit": "points"
+    },
+    {
+     "label": "Hosted cost, two equal pairs, OpenCode vs omp",
+     "before": 0.4,
+     "after": 0.27,
+     "unit": "USD"
+    }
+   ],
+   "quality": "Every graded pair so far is a tie.",
+   "caveat": "Few pairs, all on one hosted model and one local model, and early pairs always ran OpenCode first; the comparison is still running. Wall-time and cost differences come with different prompt volumes and tool loops, so they are not a measured harness effect. Rates are agent runs measured by the client (hosted 156-204 tok/s, Hy4 25-26 tok/s)."
   }
  ],
  "amend": [

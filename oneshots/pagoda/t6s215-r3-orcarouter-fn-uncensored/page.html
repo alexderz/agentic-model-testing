@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Voxel Pagoda — 五重塔</title>
+<style>
+  :root{ --ink:#f3e9dc; --dim:rgba(243,233,220,.55); }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html,body{ height:100%; overflow:hidden; background:#0a0d14; }
+  #c{ position:fixed; inset:0; width:100%; height:100%; display:block; cursor:grab; }
+  #c:active{ cursor:grabbing; }
+
+  .ui{ position:fixed; z-index:5; color:var(--ink); font-family:'Hiragino Mincho ProN','Yu Mincho',Georgia,'Times New Roman',serif; pointer-events:none; user-select:none; }
+  .tl{ top:34px; left:38px; }
+  .br{ right:34px; bottom:30px; text-align:right; }
+
+  .kanji{ font-size:clamp(64px,12vw,132px); line-height:.92; letter-spacing:.04em;
+    color:#fff7ee; text-shadow:0 6px 34px rgba(0,0,0,.45), 0 0 40px rgba(255,150,120,.18); }
+  .kanji::after{ content:""; display:block; width:64px; height:4px; margin-top:14px; background:#e0473a; border-radius:2px; box-shadow:0 0 18px rgba(224,71,58,.6); }
+  .sub{ margin-top:16px; font-size:14px; letter-spacing:.32em; text-transform:uppercase; color:var(--dim); }
+
+  .hint{ font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace; font-size:12px; line-height:1.9;
+    letter-spacing:.04em; color:var(--dim); text-shadow:0 2px 10px rgba(0,0,0,.5); }
+  .hint b{ color:#fff3ea; font-weight:700; }
+
+  #vignette{ position:fixed; inset:0; z-index:4; pointer-events:none;
+    background:radial-gradient(125% 125% at 50% 40%, transparent 52%, rgba(6,9,16,.5) 100%); }
+
+  #loader{ position:fixed; inset:0; z-index:20; display:flex; align-items:center; justify-content:center;
+    background:#0a0d14; color:#e8dccf; font-family:'Hiragino Mincho ProN',Georgia,serif; letter-spacing:.3em; transition:opacity .9s ease; }
+  #loader.hide{ opacity:0; pointer-events:none; }
+
+  @media (prefers-reduced-motion: reduce){ .ui,.hint{ animation:none !important; } }
+</style>
+<script type="importmap">
+{ "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+  <canvas id="c"></canvas>
+  <div class="ui tl">
+    <div class="kanji">五重塔</div>
+    <div class="sub">Gorōtō · A Voxel Pagoda</div>
+  </div>
+  <div class="ui br hint">
+    <div><b>drag</b> — look around</div>
+    <div><b>scroll</b> — zoom in / out</div>
+    <div><b>idle</b> — resume the orbit</div>
+  </div>
+  <div id="vignette"></div>
+  <div id="loader">読 み 込 み …</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+/* ---------- renderer / scene / camera ---------- */
+const canvas = document.getElementById('c');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias:true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.06;
+
+const scene = new THREE.Scene();
+scene.background = gradientTexture('#c3d9e8', '#f2dfda', 512);
+scene.fog = new THREE.Fog(0xd7dce2, 46, 172);
+
+const camera = new THREE.PerspectiveCamera(42, innerWidth/innerHeight, 0.1, 600);
+camera.position.set(34, 25, 42);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.06;
+controls.autoRotate = true;
+controls.autoRotateSpeed = 0.55;
+controls.target.set(0, 13, 0);
+controls.minDistance = 24;
+controls.maxDistance = 96;
+controls.minPolarAngle = 0.18;
+controls.maxPolarAngle = Math.PI * 0.495;
+
+let idleTimer = null;
+function nudgeIdle(){ controls.autoRotate = false; clearTimeout(idleTimer); idleTimer = setTimeout(()=>controls.autoRotate=true, 3200); }
+renderer.domElement.addEventListener('pointerdown', nudgeIdle);
+renderer.domElement.addEventListener('wheel', nudgeIdle, { passive:true });
+
+/* ---------- lights (shadow casting) ---------- */
+const hemi = new THREE.HemisphereLight(0xbcd7ff, 0x6a5844, 0.95);
+scene.add(hemi);
+
+const sun = new THREE.DirectionalLight(0xfff1d8, 2.35);
+sun.position.set(38, 54, 24);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+sun.shadow.camera.near = 1; sun.shadow.camera.far = 220;
+sun.shadow.camera.left = -70; sun.shadow.camera.right = 70; sun.shadow.camera.top = 70; sun.shadow.camera.bottom = -70;
+sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.05;
+scene.add(sun);
+
+const warm = new THREE.DirectionalLight(0xffcf9a, 0.35);
+warm.position.set(-30, 22, -26); scene.add(warm);
+
+/* ---------- helpers ---------- */
+function gradientTexture(top, bottom, size=512){
+  const c = document.createElement('canvas'); c.width=c.height=size;
+  const g = c.getContext('2d').createLinearGradient(0,0,0,size);
+  g.addColorStop(0,top); g.addColorStop(1,bottom);
+  const ctx=c.getContext('2d'); ctx.fillStyle=g; ctx.fillRect(0,0,size,size);
+  const t=new THREE.CanvasTexture(c); t.colorSpace=THREE.SRGBColorSpace; return t;
+}
+
+const CUBE = new THREE.BoxGeometry(1,1,1);
+const matCache = new Map();
+function getMat(hex){ if(!matCache.has(hex)) matCache.set(hex, new THREE.MeshStandardMaterial({ color:hex })); return matCache.get(hex); }
+function box(parent, x,y,z, sx,sy,sz, hex, cast=true, recv=true){
+  const m = new THREE.Mesh(CUBE, getMat(hex));
+  m.castShadow=cast; m.receiveShadow=recv; m.position.set(x,y,z); m.scale.set(sx,sy,sz); parent.add(m); return m;
+}
+
+/* ---------- palette ---------- */
+const P = {
+  stone:0x9aa0a8, stoneDark:0x7d838c, stoneLight:0xb6bbc2, gravel:0xcfcabf, sand:0xd8cbb0,
+  woodDark:0x4e2f22, woodMid:0x7a4a30, rail:0x95573a, gold:0xe6b84d,
+  roofTop:0x39424f, roofBottom:0x212832, tileRidge:0x556070, tileEdge:0x2c333d,
+  red:0xc23a2b, redDark:0x9e2f22, black:0x1a1a1e, white:0xf4efe6,
+  trunk:0x5a3d2a, branch:0x6e4a34, blossomA:0xffcfe2, blossomB:0xffb9d4, blossomC:0xffdcec,
+  water:0x3f7fa0, waterDeep:0x2f6483, grass:0x5f8f52, grassDark:0x4e7a44,
+  stoneLantern:0xa9b0b8, moss:0x7d9a63, lanternGlow:0xffcf8a,
+};
+
+/* ---------- ground + pond ---------- */
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(220,220), getMat(P.gravel));
+ground.rotation.x = -Math.PI/2; ground.receiveShadow = true; scene.add(ground);
+
+// grass patches (sand garden ring around the platform)
+box(scene, 0,0.04,16, 34,0.08,10, P.grass, false, true);
+box(scene, -20,0.04,-4, 12,0.08,26, P.grassDark, false, true);
+
+// pond (cuboid pool + stone lip) — kept clear of the platform
+const pond = new THREE.Group(); scene.add(pond);
+box(pond, 30, -0.45, 18, 17, 0.9, 12, P.waterDeep, false, true);
+box(pond, 30, 0.02, 18, 16, 0.06, 11, P.water, false, true);
+const pondC = [ [30,24,17,0],[30,12,17,0],[-5,18,12,90], [65,18,12,90] ]; // top/bottom/left/right lips
+pondC.forEach(([x,z,w,r])=>{ const b=box(pond,x,0.06,z,w,0.12,1.4,P.stone,false,true); b.rotation.y=r*Math.PI/180; });
+
+/* ---------- stone platform (stacked tiers) + stairway ---------- */
+const plat = new THREE.Group(); scene.add(plat);
+box(plat, 0,0.35,0, 26,0.7,26, P.stoneDark, true,true);
+box(plat, 0,1.05,0, 24,0.7,24, P.stone,     true,true);
+box(plat, 0,1.75,0, 22,0.7,22, P.stoneLight,true,true);
+
+// steps up the front (south) face of the top tier
+for(let i=0;i<4;i++){ const s=i+1; box(plat, 0, 1.75 - s*0.35, 11 + s*0.9, 6, 0.35, 1.8, P.stoneLight, true,true); }
+
+/* ---------- the five-story pagoda ---------- */
+const pag = new THREE.Group(); scene.add(pag);
+let Y = 2.1; // top of platform (local y)
+
+// stone plinth + corner stones
+box(pag, 0, Y+0.35, 0, 18,0.7,18, P.stoneDark, true,true);
+[[8.6,8.6],[8.6,-8.6],[-8.6,8.6],[-8.6,-8.6]].forEach(([x,z])=> box(pag,x,Y+0.55,z,0.7,1.1,0.7,P.stone,true,true));
+Y += 0.7;
+
+// ground floor: solid body + entrance doorway
+box(pag, 0, Y+3.2, 0, 12,6.4,12, P.white, true,true);
+box(pag, 0, Y+2.9, 5.86, 2.4,4.6,0.3, P.black, false,false); // doorway (front)
+
+// corner pillars on the ground floor
+for(const [x,z] of [[5.7,5.7],[5.7,-5.7],[-5.7,5.7],[-5.7,-5.7]]) box(pag,x,Y+3.2,z,0.7,6.4,0.7,P.woodDark,true,true);
+
+const floors = 5;
+for(let f=1; f<=floors; f++){
+  const h = 3.2 - (f-1)*0.28;            // floor height
+  const bodyHalf = 6 - (f-1)*0.72;       // half-width of this storey's body
+  const eaveHalf = bodyHalf + 3.4;       // half-width of the upturned roof
+
+  // body wall
+  box(pag, 0, Y+h/2, 0, bodyHalf*2, h, bodyHalf*2, P.white, true,true);
+  // dark wooden band at the top of each storey (belt / rail)
+  box(pag, 0, Y+h-0.45, 0, bodyHalf*2+0.15, 0.9, bodyHalf*2+0.15, P.rail, true,true);
+  // corner posts
+  for(const [x,z] of [[bodyHalf,bodyHalf],[bodyHalf,-bodyHalf],[-bodyHalf,bodyHalf],[-bodyHalf,-bodyHalf]]) box(pag,x,Y+h/2,z,0.6,h,0.6,P.woodDark,true,true);
+
+  // upturned roof — built from stacked cubes, widest at the bottom
+  const layers = 7;
+  for(let i=0;i<layers;i++){
+    const t = i/(layers-1);
+    const half = eaveHalf - t*(eaveHalf-(bodyHalf+0.2));
+    box(pag, 0, Y + h + 0.28 + i*0.36, 0, half*2, 0.34, half*2, P.roofTop, true,true);
+  }
+  // dark underside rim (bracket layer)
+  box(pag, 0, Y+h+0.16, 0, eaveHalf*2, 0.3, eaveHalf*2, P.roofBottom, true,true);
+  // gold-tipped corner finials at the four raised eave corners (upturned look)
+  for(const [x,z] of [[eaveHalf-0.5,eaveHalf-0.5],[eaveHalf-0.5,-(eaveHalf-0.5)],[-(eaveHalf-0.5),eaveHalf-0.5],[-(eaveHalf-0.5),-(eaveHalf-0.5)]])
+    box(pag, x, Y+h+1.05, z, 0.7,1.1,0.7, P.gold, true,true);
+
+  Y += h + layers*0.36; // advance to the next storey base
+}
+
+// ---- spire (sōrin) ----
+const sp = new THREE.Group(); sp.position.y = Y; pag.add(sp);
+box(sp, 0, 1.2, 0, 1.8,0.5,1.8, P.stoneDark, true,true);       // base
+box(sp, 0, 2.6, 0, 0.7,3.2,0.7, P.gold, true,true);            // lower shaft
+for(let i=0;i<9;i++) box(sp, 0, 4.5+i*0.62, 0, 1.5-i*0.12, 0.34, 1.5-i*0.12, P.gold, true,true); // rings
+box(sp, 0, 10.4, 0, 0.9,1.6,0.9, P.gold, true,true);           // capital
+box(sp, 0, 11.7, 0, 0.5,1.2,0.5, P.gold, true,true);           // jewel stem
+box(sp, 0, 12.6, 0, 0.9,0.9,0.9, P.gold, true,true);           // jewel cube
+
+/* ---------- torii gate (on the front approach) ---------- */
+const torii = new THREE.Group(); torii.position.set(0,0,34); scene.add(torii);
+const tp = [[-6.2,0],[6.2,0]];
+tp.forEach(([x])=>{ box(torii,x,1.05,0,1.7,2.1,1.7,P.black,true,true); box(torii,x,4.8,0,1.25,7.5,1.25,P.redDark,true,true); });
+box(torii, 0, 8.6, 0, 15.2,0.9,1.3, P.black, true,true);        // nuki (tie beam)
+box(torii, 0, 10.4, 0, 17.0,1.0,1.4, P.redDark, true,true);     // shimaki (top beam)
+box(torii, 0, 11.25, 0, 17.6,0.35,1.8, P.black, true,true);     // kasagi (crown)
+box(torii, 0, 9.55, 0, 0.7,1.9,0.7, P.redDark, true,true);      // gakuzuka (centre strut)
+
+/* ---------- cherry blossom trees ---------- */
+const bloomMats = [getMat(P.blossomA), getMat(P.blossomB), getMat(P.blossomC)];
+function buildTree(x,z,s=1){
+  const g = new THREE.Group(); g.position.set(x,0,z); g.scale.setScalar(s); scene.add(g);
+  box(g, 0,1.4,0, 1.2,2.8,1.2, P.trunk,true,true);
+  box(g, 0,3.6,0, 0.9,2.0,0.9, P.trunk,true,true);
+  const branches = [[1.5,4.7,0.6],[ -1.4,4.8,-0.4],[0.3,4.9,1.4],[-0.5,4.6,-1.3]];
+  branches.forEach(([bx,by,bz])=> box(g,bx,by,bz,0.7,2.2,0.7,P.branch,true,true));
+
+  // canopy of blossom cubes with a bit of randomness + variation
+  const rng = mulberry(987 + Math.round(x*13+z*7));
+  for(let i=0;i<46;i++){
+    const r = 2.6*Math.sqrt(rng()); const a = rng()*Math.PI*2;
+    const cx = Math.cos(a)*r, cz = Math.sin(a)*r, cy = 5.8 + (rng()-0.3)*2.4 - (r/2.6)*(r/2.6)*1.6;
+    if(cy<4.2) continue;
+    const size = 0.9 + rng()*1.0;
+    box(g, cx, cy, cz, size,size,size, bloomMats[i%3].color.getHex(), true, true);
+  }
+  // a few darker accent cubes for depth
+  for(let i=0;i<8;i++){ const r=2.2*Math.sqrt(rng()); const a=rng()*Math.PI*2; box(g, Math.cos(a)*r, 6.0+(rng()-0.5)*1.6, Math.sin(a)*r, 0.7,0.7,0.7, P.blossomB,true,true); }
+}
+function mulberry(seed){ let t=seed>>>0; return ()=>{ t+=0x6D2B79F5; let r=Math.imul(t^t>>>15,1|t); r^=r+Math.imul(r^r>>>7,61|r); return ((r^r>>>14)>>>0)/4294967296; }; }
+
+buildTree(-15, 3, 1.15);
+buildTree(14, -11, 1.0);
+buildTree(-13, -14, 0.9);
+buildTree(18, 12, 1.05);
+
+/* ---------- stone lanterns (flanking the torii) ---------- */
+function lantern(x,z){
+  const g = new THREE.Group(); g.position.set(x,0,z); scene.add(g);
+  box(g,0,0.45,0,1.3,0.9,1.3,P.stoneLantern,true,true);   // base
+  box(g,0,1.7,0,0.5,2.6,0.5,P.stoneLantern,true,true);    // post
+  box(g,0,3.2,0,1.1,0.4,1.1,P.moss,true,true);            // platform
+  const light = box(g,0,3.9,0,0.95,1.0,0.95,P.lanternGlow,false,true); light.material.emissive=new THREE.Color(P.lanternGlow); light.material.emissiveIntensity=0.7;
+  box(g,0,4.7,0,1.3,0.4,1.3,P.stoneLantern,true,true);    // roof
+  box(g,0,5.15,0,0.35,0.4,0.35,P.moss,true,true);         // finial
+}
+lantern(-9, 30); lantern(9, 30);
+
+/* ---------- drifting petals (the only non-cube shapes) ---------- */
+const petalGeo = new THREE.PlaneGeometry(0.26, 0.4);
+petalGeo.rotateX(-Math.PI/2);
+const petalMats = [P.blossomA,P.blossomB,P.blossomC].map(hex=>{ const m=new THREE.MeshStandardMaterial({color:hex,emissive:new THREE.Color(hex),emissiveIntensity:0.35,side:THREE.DoubleSide}); return m; });
+const petalAnchor = new THREE.Vector3(4, 22, -1); // petals drift from the upper-left of frame toward camera
+
+const petals = [];
+for(let i=0;i<64;i++){
+  const m = new THREE.Mesh(petalGeo, petalMats[i%3]);
+  m.position.set((Math.random()-0.5)*72, Math.random()*40-2, (Math.random()-0.5)*72);
+  scene.add(m);
+  petals.push({ mesh:m, phase:Math.random()*Math.PI*2, fall:1.6+Math.random()*2.2, spin:(Math.random()<0.5?-1:1)*(0.8+Math.random()), sway:0.4+Math.random() });
+}
+
+/* ---------- loop ---------- */
+const clock = new THREE.Clock();
+function animate(){
+  requestAnimationFrame(animate);
+  const dt = Math.min(clock.getDelta(), 0.05);
+  const t = clock.elapsedTime;
+
+  for(const p of petals){
+    p.mesh.position.y -= p.fall*dt;
+    p.mesh.position.x += Math.sin(t*0.7 + p.phase)*p.sway*dt*2.4;
+    p.mesh.position.z += Math.cos(t*0.5 + p.phase*1.3)*p.sway*dt*2.0;
+    p.mesh.rotation.z += p.spin*dt;
+    p.mesh.rotation.x += p.spin*0.6*dt;
+    if(p.mesh.position.y < 0.15){ // recycle high up, biased toward the anchor for a visible drift
+      p.mesh.position.set(petalAnchor.x + (Math.random()-0.5)*42, 34 + Math.random()*8, petalAnchor.z + (Math.random()-0.5)*42);
+    }
+  }
+
+  controls.update();
+  renderer.render(scene, camera);
+}
+animate();
+
+addEventListener('resize', ()=>{ camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); });
+document.getElementById('loader').classList.add('hide');
+</script>
+</body>
+</html>

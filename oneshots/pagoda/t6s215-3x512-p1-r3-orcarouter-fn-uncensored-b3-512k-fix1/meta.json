@@ -1,0 +1,55 @@
+{
+ "case": "t6s215-3x512-p1-r3-orcarouter-fn-uncensored-b3-512k-fix1",
+ "source_case": "t6s215-3x512-p1-r3-orcarouter-fn-uncensored-b3-512k",
+ "model": "orcarouter-fn-uncensored-b3-512k",
+ "test": "test6-pagoda-repair1",
+ "max_tokens": 128000,
+ "timeout_s": 36000,
+ "feedback": "I opened your file in a headless Chromium and let it run for 10 seconds. The JavaScript console reported:\n- TypeError: Cannot read properties of undefined (reading 'visible') (your file, line 83)\n- Uncaught TypeError: Cannot read properties of undefined (reading 'visible') (three.module.js, line 17993)\n\nFix the file. Reply with the complete corrected HTML file.",
+ "started": "2026-11-18T10:10:59-0600",
+ "status": "ok",
+ "finish_reason": "stop",
+ "usage": {
+  "prompt_tokens": 8040,
+  "completion_tokens": 7844,
+  "total_tokens": 15884,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  }
+ },
+ "timings": {
+  "cache_n": 0,
+  "prompt_n": 8040,
+  "prompt_ms": 3240.7,
+  "prompt_per_token_ms": 0.403,
+  "prompt_per_second": 2480.9,
+  "predicted_n": 7844,
+  "predicted_ms": 366164.5,
+  "predicted_per_token_ms": 46.681,
+  "predicted_per_second": 21.4,
+  "draft_n": 0,
+  "draft_n_accepted": 0
+ },
+ "static": {
+  "html_found": true,
+  "bytes": 20084,
+  "complete": true,
+  "three_module": true,
+  "importmap": true,
+  "umd_three": false,
+  "external_urls": [
+   "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+   "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/",
+   "https://fonts.googleapis.com",
+   "https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap",
+   "https://fonts.gstatic.com"
+  ],
+  "boxes": 3,
+  "instanced": true,
+  "prose_chars_outside_html": 891
+ },
+ "wall_s": 369.6,
+ "first_token_s": 3.4,
+ "tok_s": 21.4,
+ "reply_chars": 20962
+}
