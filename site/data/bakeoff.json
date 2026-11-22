@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
  "generated": "2026-11-20 10:59 CST",
- "built": "2026-11-22 10:08 CST",
+ "built": "2026-11-22 14:01 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -24958,6 +24958,26 @@
     "note": "8 of 10 (A2 B2 C2 D1 E1). 10 of 10 hidden seeds pass (worst 341 cells, 6 floor changes); D 1: banded sweeps and checkpoint stubs; E 1: verifier-backed claims, but it calls its validation unconditional while one fallback path only checks connectivity. D is judged from the ASCII maps and topology only (no Minecraft walk). 48 minutes, 44 requests; its first tokens were slower than omp's because more of each prompt had to be read fresh. Repetition 1, tied with omp. Hy4-Flash Q3_K on the maya-hy4f engine, RTX 3090 alone, 128k, 8-bit KV, thinking on, temperature 0.9, top_p 1; 3090 at 300 W, V100 idle (PSU interim caps) on our 3090 + V100 box. Harness: OpenCode 2.1.4 in the bakeoff sandbox (not T3 Code). 26.29 tok/s is the agent-run client decode rate, not a short benchmark; median first token 15.45 s.",
     "frames": [],
     "live": null
+   },
+   {
+    "case": "ink2q8v-long-t7",
+    "entry": "inkling2-mini-ud-q8kxl-v100",
+    "test": 7,
+    "finish": "timeout",
+    "tokens": 174022.0,
+    "wall_s": 10805.5,
+    "tok_s": 21.0,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0 of 10 (A0 B0 C0 D0 E0). Timeout at 3 hours: no maze file was left and all ten hidden seeds failed, so there was nothing to grade. Not an infrastructure failure - the model used its full 10,800 s. 37 requests, no errors or refusals, every one carrying unlimited-output settings; one main reply ran to 93,474 tokens without compaction, and the final reply was cut by the cap. 21.0 tokens/s agent-run decode, 2.3 s median first token. Inkling 2 Mini UD-Q8_K_XL on llama.cpp b12622 mainline, V100 alone, 204,800 context, 8-bit KV, vision on; V100 at 250 W, 3090 idle. Harness: OpenCode 2.1.4 in the bakeoff sandbox (not T3). One round.",
+    "frames": [],
+    "live": null
    }
   ]
  },
@@ -24965,7 +24985,7 @@
   "models": 157,
   "runs": 385,
   "test3": 86,
-  "oneshots": 234,
+  "oneshots": 235,
   "frames": 418,
   "pass": 286,
   "live": 137
