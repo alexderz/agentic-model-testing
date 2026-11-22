@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
  "generated": "2026-11-20 10:59 CST",
- "built": "2026-11-20 11:00 CST",
+ "built": "2026-11-22 10:08 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -23626,6 +23626,30 @@
      "frames/agent-orrery/t8-orrery-fnb-v31-udq2kxl-r1/frame-6000.webp"
     ],
     "live": "live/agent-orrery/t8-orrery-fnb-v31-udq2kxl-r1/orrery.svg"
+   },
+   {
+    "case": "t8-orrery-ink2q8v-uncapped-r2",
+    "entry": "inkling2-mini-ud-q8kxl-v100",
+    "test": 8,
+    "finish": "agent done",
+    "tokens": 82933.0,
+    "wall_s": 4145.3,
+    "tok_s": 20.01,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 1.0,
+     "E": 1.0
+    },
+    "total": 8.0,
+    "note": "Vision on; 69 min. Six planets, Mercury to Saturn, at accurate period ratios (largest error 0.034%), drawn as a brass orrery with three animated frames. The six external gears on the fixed frame all turn the same way, so the train cannot drive the orbits as drawn, and the night overlay turns with the surface instead of against the sun. Its largest single reply ran to 42,329 tokens with no length stop and no compaction. One round.",
+    "frames": [
+     "frames/agent-orrery/t8-orrery-ink2q8v-uncapped-r2/frame-100.webp",
+     "frames/agent-orrery/t8-orrery-ink2q8v-uncapped-r2/frame-2000.webp",
+     "frames/agent-orrery/t8-orrery-ink2q8v-uncapped-r2/frame-6000.webp"
+    ],
+    "live": "live/agent-orrery/t8-orrery-ink2q8v-uncapped-r2/orrery.svg"
    }
   ],
   "agent-pagoda": [
@@ -24941,9 +24965,9 @@
   "models": 157,
   "runs": 385,
   "test3": 86,
-  "oneshots": 233,
-  "frames": 415,
+  "oneshots": 234,
+  "frames": 418,
   "pass": 286,
-  "live": 136
+  "live": 137
  }
 }

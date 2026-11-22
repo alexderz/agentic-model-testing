@@ -1,0 +1,451 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="1000" height="1000">
+  <title>Clockwork Brass Orrery</title>
+  <style>
+    .tw { animation: tw 3.6s ease-in-out infinite; }
+    @keyframes tw { 0%,100% { opacity: .22; } 50% { opacity: .95; } }
+  </style>
+  <defs>
+    
+  <radialGradient id="bgGrad" cx="50%" cy="44%" r="75%">
+    <stop offset="0%" stop-color="#221f31"/>
+    <stop offset="62%" stop-color="#14121f"/>
+    <stop offset="100%" stop-color="#0a0811"/>
+  </radialGradient>
+  <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+    <stop offset="0%" stop-color="#ffd867" stop-opacity="0.5"/>
+    <stop offset="45%" stop-color="#f7b83d" stop-opacity="0.20"/>
+    <stop offset="100%" stop-color="#f7b83d" stop-opacity="0"/>
+  </radialGradient>
+  <radialGradient id="sunGrad" cx="42%" cy="36%" r="72%">
+    <stop offset="0%" stop-color="#fff3c4"/>
+    <stop offset="45%" stop-color="#f7c85e"/>
+    <stop offset="78%" stop-color="#d98f1e"/>
+    <stop offset="100%" stop-color="#8a5c14"/>
+  </radialGradient>
+  <radialGradient id="brassGear" cx="36%" cy="32%" r="78%">
+    <stop offset="0%" stop-color="#f0d488"/>
+    <stop offset="45%" stop-color="#c79a4a"/>
+    <stop offset="82%" stop-color="#8a6428"/>
+    <stop offset="100%" stop-color="#5f441c"/>
+  </radialGradient>
+  <radialGradient id="knobGrad" cx="36%" cy="30%" r="80%">
+    <stop offset="0%" stop-color="#eed28f"/>
+    <stop offset="60%" stop-color="#b08a3e"/>
+    <stop offset="100%" stop-color="#5f441c"/>
+  </radialGradient>
+  <radialGradient id="limbGrad" cx="42%" cy="36%" r="85%">
+    <stop offset="0%" stop-color="#000000" stop-opacity="0"/>
+    <stop offset="58%" stop-color="#000000" stop-opacity="0"/>
+    <stop offset="100%" stop-color="#000000" stop-opacity="0.38"/>
+  </radialGradient>
+  <radialGradient id="softShadow" cx="50%" cy="50%" r="50%">
+    <stop offset="0%" stop-color="#000000" stop-opacity="0.42"/>
+    <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="bandGrad" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#6e4f22"/>
+    <stop offset="42%" stop-color="#e3c074"/>
+    <stop offset="58%" stop-color="#c79a4a"/>
+    <stop offset="100%" stop-color="#6e4f22"/>
+  </linearGradient>
+  <linearGradient id="panelGrad" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#4d3a1a"/>
+    <stop offset="45%" stop-color="#3a2c12"/>
+    <stop offset="100%" stop-color="#241a0a"/>
+  </linearGradient>
+  <linearGradient id="ringGrad" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" stop-color="#f2e2b4"/>
+    <stop offset="55%" stop-color="#d8c795"/>
+    <stop offset="100%" stop-color="#a8874e"/>
+  </linearGradient>
+  <linearGradient id="nightGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" stop-color="#000000" stop-opacity="0"/>
+    <stop offset="42%" stop-color="#000000" stop-opacity="0"/>
+    <stop offset="72%" stop-color="#0a0e22" stop-opacity="0.55"/>
+    <stop offset="100%" stop-color="#04060e" stop-opacity="0.92"/>
+  </linearGradient>
+  <filter id="softNight" x="-30%" y="-30%" width="160%" height="160%">
+    <feGaussianBlur stdDeviation="1.6"/>
+  </filter>
+  <clipPath id="clip_Jupiter"><circle cx="0" cy="0" r="25"/></clipPath><clipPath id="clip_Saturn"><circle cx="0" cy="0" r="21"/></clipPath>
+  
+  <radialGradient id="pg_Mercury" cx="38%" cy="33%" r="80%">
+    <stop offset="0%" stop-color="#e8e2d5"/>
+    <stop offset="48%" stop-color="#b3aa9e"/>
+    <stop offset="100%" stop-color="#584e44"/>
+  </radialGradient>
+  <radialGradient id="pg_Venus" cx="38%" cy="33%" r="80%">
+    <stop offset="0%" stop-color="#ffe6b0"/>
+    <stop offset="48%" stop-color="#e2b25c"/>
+    <stop offset="100%" stop-color="#7c5024"/>
+  </radialGradient>
+  <radialGradient id="pg_Earth" cx="38%" cy="33%" r="80%">
+    <stop offset="0%" stop-color="#a8d0f2"/>
+    <stop offset="48%" stop-color="#4a7fbf"/>
+    <stop offset="100%" stop-color="#1e3355"/>
+  </radialGradient>
+  <radialGradient id="pg_Mars" cx="38%" cy="33%" r="80%">
+    <stop offset="0%" stop-color="#f3ac72"/>
+    <stop offset="48%" stop-color="#c96a42"/>
+    <stop offset="100%" stop-color="#5f2a18"/>
+  </radialGradient>
+  <radialGradient id="pg_Jupiter" cx="38%" cy="33%" r="80%">
+    <stop offset="0%" stop-color="#f2dcbb"/>
+    <stop offset="48%" stop-color="#d0a878"/>
+    <stop offset="100%" stop-color="#6f4f30"/>
+  </radialGradient>
+  <radialGradient id="pg_Saturn" cx="38%" cy="33%" r="80%">
+    <stop offset="0%" stop-color="#f6e7b6"/>
+    <stop offset="48%" stop-color="#dfc57f"/>
+    <stop offset="100%" stop-color="#7d6331"/>
+  </radialGradient>
+  
+<radialGradient id="vignette" cx="50%" cy="46%" r="72%">
+    <stop offset="0%" stop-color="#000000" stop-opacity="0"/>
+    <stop offset="72%" stop-color="#000000" stop-opacity="0"/>
+    <stop offset="100%" stop-color="#05030c" stop-opacity="0.55"/>
+  </radialGradient>
+  </defs>
+
+  <rect width="1000" height="1000" fill="url(#bgGrad)"/>
+  <circle cx="326.7" cy="132.0" r="1.18" fill="#ffe9c0" opacity="0.9" class="tw" style="animation-duration:2.79s;animation-delay:-2.33s"/>
+<circle cx="903.1" cy="184.5" r="0.59" fill="#ffffff" opacity="0.52"/>
+<circle cx="97.3" cy="357.0" r="1.37" fill="#ffffff" opacity="0.35"/>
+<circle cx="628.5" cy="487.2" r="0.56" fill="#ffffff" opacity="0.9" class="tw" style="animation-duration:4.55s;animation-delay:-0.19s"/>
+<circle cx="852.7" cy="246.1" r="0.65" fill="#dfe8ff" opacity="0.35"/>
+<circle cx="559.3" cy="568.6" r="0.61" fill="#ffffff" opacity="0.61"/>
+<circle cx="374.4" cy="458.2" r="0.57" fill="#ffffff" opacity="0.9" class="tw" style="animation-duration:3.59s;animation-delay:-2.13s"/>
+<circle cx="772.8" cy="390.7" r="1.47" fill="#ffffff" opacity="0.49"/>
+<circle cx="789.7" cy="582.6" r="0.76" fill="#ffe9c0" opacity="0.61"/>
+<circle cx="495.2" cy="290.3" r="0.97" fill="#ffffff" opacity="0.9" class="tw" style="animation-duration:2.84s;animation-delay:-1.67s"/>
+<circle cx="753.0" cy="132.9" r="1.01" fill="#ffe9c0" opacity="0.3"/>
+<circle cx="84.4" cy="466.7" r="1.33" fill="#dfe8ff" opacity="0.75"/>
+<circle cx="692.2" cy="496.6" r="1.11" fill="#ffffff" opacity="0.9" class="tw" style="animation-duration:4.49s;animation-delay:-1.9s"/>
+<circle cx="661.5" cy="57.9" r="1.24" fill="#ffe9c0" opacity="0.65"/>
+<circle cx="816.8" cy="241.9" r="0.91" fill="#ffffff" opacity="0.66"/>
+<circle cx="933.6" cy="300.2" r="1.14" fill="#ffffff" opacity="0.9" class="tw" style="animation-duration:4.14s;animation-delay:-0.52s"/>
+<circle cx="251.7" cy="329.4" r="1.41" fill="#dfe8ff" opacity="0.33"/>
+<circle cx="403.2" cy="236.4" r="0.64" fill="#ffe9c0" opacity="0.53"/>
+<circle cx="282.0" cy="349.4" r="0.88" fill="#ffffff" opacity="0.9" class="tw" style="animation-duration:2.9s;animation-delay:-0.7s"/>
+<circle cx="236.2" cy="199.8" r="1.01" fill="#dfe8ff" opacity="0.62"/>
+<circle cx="285.4" cy="127.7" r="1.06" fill="#dfe8ff" opacity="0.63"/>
+<circle cx="945.8" cy="575.6" r="1.04" fill="#ffe9c0" opacity="0.9" class="tw" style="animation-duration:4.08s;animation-delay:-1.83s"/>
+<circle cx="865.0" cy="790.5" r="1.21" fill="#dfe8ff" opacity="0.6"/>
+<circle cx="400.6" cy="93.1" r="1.17" fill="#ffffff" opacity="0.32"/>
+<circle cx="976.9" cy="370.2" r="0.62" fill="#ffffff" opacity="0.9" class="tw" style="animation-duration:2.6s;animation-delay:-0.61s"/>
+<circle cx="107.8" cy="306.9" r="0.53" fill="#ffe9c0" opacity="0.78"/>
+<circle cx="378.2" cy="529.5" r="1.5" fill="#dfe8ff" opacity="0.62"/>
+<circle cx="128.9" cy="705.8" r="1.54" fill="#dfe8ff" opacity="0.9" class="tw" style="animation-duration:3.22s;animation-delay:-0.58s"/>
+<circle cx="745.7" cy="616.6" r="1.0" fill="#ffe9c0" opacity="0.67"/>
+<circle cx="30.7" cy="789.7" r="1.05" fill="#ffe9c0" opacity="0.36"/>
+<circle cx="907.5" cy="631.2" r="0.81" fill="#ffffff" opacity="0.9" class="tw" style="animation-duration:3.99s;animation-delay:-1.04s"/>
+<circle cx="368.8" cy="145.3" r="1.31" fill="#ffe9c0" opacity="0.58"/>
+<circle cx="332.4" cy="191.3" r="1.35" fill="#ffffff" opacity="0.84"/>
+<circle cx="801.2" cy="680.7" r="1.28" fill="#ffe9c0" opacity="0.9" class="tw" style="animation-duration:3.59s;animation-delay:-2.92s"/>
+<circle cx="981.8" cy="657.5" r="1.0" fill="#ffe9c0" opacity="0.39"/>
+<circle cx="949.2" cy="375.6" r="1.48" fill="#dfe8ff" opacity="0.84"/>
+<circle cx="87.2" cy="92.0" r="0.99" fill="#dfe8ff" opacity="0.9" class="tw" style="animation-duration:3.85s;animation-delay:-3.6s"/>
+<circle cx="835.0" cy="402.1" r="1.19" fill="#ffffff" opacity="0.74"/>
+<circle cx="829.3" cy="106.6" r="0.91" fill="#ffffff" opacity="0.69"/>
+<circle cx="478.4" cy="154.7" r="1.33" fill="#ffe9c0" opacity="0.9" class="tw" style="animation-duration:3.39s;animation-delay:-1.61s"/>
+<circle cx="939.6" cy="603.8" r="0.68" fill="#ffffff" opacity="0.35"/>
+<circle cx="589.4" cy="390.5" r="1.19" fill="#ffe9c0" opacity="0.63"/>
+<circle cx="972.6" cy="548.3" r="0.87" fill="#ffffff" opacity="0.9" class="tw" style="animation-duration:2.64s;animation-delay:-3.2s"/>
+<circle cx="722.7" cy="92.5" r="1.29" fill="#ffffff" opacity="0.36"/>
+<circle cx="820.9" cy="181.5" r="0.76" fill="#ffffff" opacity="0.45"/>
+<circle cx="759.5" cy="276.0" r="1.07" fill="#ffffff" opacity="0.9" class="tw" style="animation-duration:4.42s;animation-delay:-1.42s"/>
+<circle cx="458.8" cy="487.5" r="1.45" fill="#ffe9c0" opacity="0.52"/>
+<circle cx="136.7" cy="132.8" r="1.04" fill="#ffffff" opacity="0.78"/>
+<circle cx="606.8" cy="645.9" r="0.66" fill="#ffe9c0" opacity="0.9" class="tw" style="animation-duration:4.05s;animation-delay:-2.23s"/>
+<circle cx="328.8" cy="434.1" r="1.08" fill="#ffffff" opacity="0.73"/>
+<circle cx="877.1" cy="54.7" r="0.7" fill="#ffffff" opacity="0.3"/>
+<circle cx="507.6" cy="469.7" r="1.3" fill="#dfe8ff" opacity="0.9" class="tw" style="animation-duration:3.25s;animation-delay:-3.89s"/>
+<circle cx="604.4" cy="171.9" r="0.79" fill="#dfe8ff" opacity="0.57"/>
+<circle cx="507.6" cy="211.6" r="1.05" fill="#dfe8ff" opacity="0.78"/>
+<circle cx="916.0" cy="741.8" r="0.71" fill="#dfe8ff" opacity="0.9" class="tw" style="animation-duration:2.84s;animation-delay:-1.77s"/>
+<circle cx="79.4" cy="205.8" r="0.58" fill="#ffffff" opacity="0.66"/>
+<circle cx="890.7" cy="135.0" r="1.25" fill="#ffffff" opacity="0.66"/>
+<circle cx="257.1" cy="120.8" r="0.99" fill="#ffffff" opacity="0.9" class="tw" style="animation-duration:3.4s;animation-delay:-1.95s"/>
+<circle cx="982.0" cy="692.3" r="0.67" fill="#ffe9c0" opacity="0.53"/>
+<circle cx="405.3" cy="354.3" r="0.87" fill="#dfe8ff" opacity="0.33"/>
+<circle cx="27.2" cy="463.4" r="0.96" fill="#dfe8ff" opacity="0.9" class="tw" style="animation-duration:3.63s;animation-delay:-1.18s"/>
+<circle cx="953.4" cy="100.8" r="1.46" fill="#ffffff" opacity="0.41"/>
+<circle cx="90.7" cy="231.5" r="1.45" fill="#ffffff" opacity="0.38"/>
+<circle cx="814.7" cy="706.4" r="1.21" fill="#dfe8ff" opacity="0.9" class="tw" style="animation-duration:2.9s;animation-delay:-3.68s"/>
+<circle cx="569.5" cy="583.7" r="0.59" fill="#ffe9c0" opacity="0.31"/>
+<circle cx="188.4" cy="743.9" r="0.78" fill="#ffffff" opacity="0.29"/>
+<circle cx="796.8" cy="76.8" r="1.4" fill="#ffffff" opacity="0.9" class="tw" style="animation-duration:3.51s;animation-delay:-1.36s"/>
+<circle cx="552.2" cy="769.7" r="0.78" fill="#ffe9c0" opacity="0.35"/>
+<circle cx="706.2" cy="779.1" r="1.52" fill="#ffffff" opacity="0.43"/>
+<circle cx="206.5" cy="264.5" r="0.82" fill="#dfe8ff" opacity="0.9" class="tw" style="animation-duration:3.49s;animation-delay:-2.69s"/>
+<circle cx="274.2" cy="668.6" r="1.54" fill="#ffffff" opacity="0.3"/>
+<circle cx="729.4" cy="461.0" r="0.7" fill="#dfe8ff" opacity="0.55"/>
+  <text x="500" y="34" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="16" letter-spacing="7" fill="#b08a3e">H O R O L O G I U M   S O L A R I S</text>
+
+  <circle cx="500.0" cy="445.0" r="103" fill="none" stroke="#8a6b2e" stroke-width="1.2" opacity="0.45"/>
+<circle cx="500.0" cy="445.0" r="150" fill="none" stroke="#8a6b2e" stroke-width="1.2" opacity="0.45"/>
+<circle cx="500.0" cy="445.0" r="197" fill="none" stroke="#8a6b2e" stroke-width="1.2" opacity="0.45"/>
+<circle cx="500.0" cy="445.0" r="247" fill="none" stroke="#8a6b2e" stroke-width="1.2" opacity="0.45"/>
+<circle cx="500.0" cy="445.0" r="293" fill="none" stroke="#8a6b2e" stroke-width="1.2" opacity="0.45"/>
+<circle cx="500.0" cy="445.0" r="342" fill="none" stroke="#8a6b2e" stroke-width="1.2" opacity="0.45"/>
+  
+  <g opacity="0.95">
+    <line x1="496.0" y1="489" x2="496.0" y2="838" stroke="#8a6428" stroke-width="2.6"/>
+    <line x1="504.0" y1="489" x2="504.0" y2="838" stroke="#8a6428" stroke-width="2.6"/>
+    <line x1="500.0" y1="489" x2="500.0" y2="838" stroke="#d9b56a" stroke-width="2.2"/>
+    <line x1="493.0" y1="502" x2="507.0" y2="502" stroke="#6e4f22" stroke-width="2.6"/><line x1="493.0" y1="522" x2="507.0" y2="522" stroke="#6e4f22" stroke-width="2.6"/><line x1="493.0" y1="542" x2="507.0" y2="542" stroke="#6e4f22" stroke-width="2.6"/><line x1="493.0" y1="562" x2="507.0" y2="562" stroke="#6e4f22" stroke-width="2.6"/><line x1="493.0" y1="582" x2="507.0" y2="582" stroke="#6e4f22" stroke-width="2.6"/><line x1="493.0" y1="602" x2="507.0" y2="602" stroke="#6e4f22" stroke-width="2.6"/><line x1="493.0" y1="622" x2="507.0" y2="622" stroke="#6e4f22" stroke-width="2.6"/><line x1="493.0" y1="642" x2="507.0" y2="642" stroke="#6e4f22" stroke-width="2.6"/><line x1="493.0" y1="662" x2="507.0" y2="662" stroke="#6e4f22" stroke-width="2.6"/><line x1="493.0" y1="682" x2="507.0" y2="682" stroke="#6e4f22" stroke-width="2.6"/><line x1="493.0" y1="702" x2="507.0" y2="702" stroke="#6e4f22" stroke-width="2.6"/><line x1="493.0" y1="722" x2="507.0" y2="722" stroke="#6e4f22" stroke-width="2.6"/><line x1="493.0" y1="742" x2="507.0" y2="742" stroke="#6e4f22" stroke-width="2.6"/><line x1="493.0" y1="762" x2="507.0" y2="762" stroke="#6e4f22" stroke-width="2.6"/><line x1="493.0" y1="782" x2="507.0" y2="782" stroke="#6e4f22" stroke-width="2.6"/><line x1="493.0" y1="802" x2="507.0" y2="802" stroke="#6e4f22" stroke-width="2.6"/><line x1="493.0" y1="822" x2="507.0" y2="822" stroke="#6e4f22" stroke-width="2.6"/>
+  </g>
+  
+  <g transform="translate(500.0,445.0)">
+    <circle cx="0" cy="0" r="128" fill="url(#sunGlow)"/>
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="45s" repeatCount="indefinite"/>
+      <polygon points="43.0,-2.0 54.0,0.0 43.0,2.0" fill="#f7c85e" opacity="0.6"/><polygon points="40.4,14.6 49.9,20.7 38.9,18.2" fill="#f7c85e" opacity="0.6"/><polygon points="31.8,29.0 38.2,38.2 29.0,31.8" fill="#f7c85e" opacity="0.6"/><polygon points="18.2,38.9 20.7,49.9 14.6,40.4" fill="#f7c85e" opacity="0.6"/><polygon points="2.0,43.0 0.0,54.0 -2.0,43.0" fill="#f7c85e" opacity="0.6"/><polygon points="-14.6,40.4 -20.7,49.9 -18.2,38.9" fill="#f7c85e" opacity="0.6"/><polygon points="-29.0,31.8 -38.2,38.2 -31.8,29.0" fill="#f7c85e" opacity="0.6"/><polygon points="-38.9,18.2 -49.9,20.7 -40.4,14.6" fill="#f7c85e" opacity="0.6"/><polygon points="-43.0,2.0 -54.0,0.0 -43.0,-2.0" fill="#f7c85e" opacity="0.6"/><polygon points="-40.4,-14.6 -49.9,-20.7 -38.9,-18.2" fill="#f7c85e" opacity="0.6"/><polygon points="-31.8,-29.0 -38.2,-38.2 -29.0,-31.8" fill="#f7c85e" opacity="0.6"/><polygon points="-18.2,-38.9 -20.7,-49.9 -14.6,-40.4" fill="#f7c85e" opacity="0.6"/><polygon points="-2.0,-43.0 -0.0,-54.0 2.0,-43.0" fill="#f7c85e" opacity="0.6"/><polygon points="14.6,-40.4 20.7,-49.9 18.2,-38.9" fill="#f7c85e" opacity="0.6"/><polygon points="29.0,-31.8 38.2,-38.2 31.8,-29.0" fill="#f7c85e" opacity="0.6"/><polygon points="38.9,-18.2 49.9,-20.7 40.4,-14.6" fill="#f7c85e" opacity="0.6"/>
+    </g>
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="70s" repeatCount="indefinite"/>
+        <path d="M 29.86 -4.20 L 35.77 -2.88 L 35.77 2.88 L 29.86 4.20 L 29.76 4.89 L 29.63 5.58 L 29.50 6.27 L 34.60 9.53 L 32.63 14.94 L 26.63 14.16 L 26.29 14.77 L 25.94 15.38 L 25.57 15.98 L 29.25 20.79 L 25.55 25.20 L 20.18 22.41 L 19.65 22.87 L 19.11 23.32 L 18.57 23.76 L 20.38 29.54 L 15.39 32.42 L 11.30 27.96 L 10.64 28.21 L 9.98 28.45 L 9.32 28.68 L 9.05 34.73 L 3.38 35.73 L 1.05 30.14 L 0.35 30.15 L -0.35 30.15 L -1.05 30.14 L -3.38 35.73 L -9.05 34.73 L -9.32 28.68 L -9.98 28.45 L -10.64 28.21 L -11.30 27.96 L -15.39 32.42 L -20.38 29.54 L -18.57 23.76 L -19.11 23.32 L -19.65 22.87 L -20.18 22.41 L -25.55 25.20 L -29.25 20.79 L -25.57 15.98 L -25.94 15.38 L -26.29 14.77 L -26.63 14.16 L -32.63 14.94 L -34.60 9.53 L -29.50 6.27 L -29.63 5.58 L -29.76 4.89 L -29.86 4.20 L -35.77 2.88 L -35.77 -2.88 L -29.86 -4.20 L -29.76 -4.89 L -29.63 -5.58 L -29.50 -6.27 L -34.60 -9.53 L -32.63 -14.94 L -26.63 -14.16 L -26.29 -14.77 L -25.94 -15.38 L -25.57 -15.98 L -29.25 -20.79 L -25.55 -25.20 L -20.18 -22.41 L -19.65 -22.87 L -19.11 -23.32 L -18.57 -23.76 L -20.38 -29.54 L -15.39 -32.42 L -11.30 -27.96 L -10.64 -28.21 L -9.98 -28.45 L -9.32 -28.68 L -9.05 -34.73 L -3.38 -35.73 L -1.05 -30.14 L -0.35 -30.15 L 0.35 -30.15 L 1.05 -30.14 L 3.38 -35.73 L 9.05 -34.73 L 9.32 -28.68 L 9.98 -28.45 L 10.64 -28.21 L 11.30 -27.96 L 15.39 -32.42 L 20.38 -29.54 L 18.57 -23.76 L 19.11 -23.32 L 19.65 -22.87 L 20.18 -22.41 L 25.55 -25.20 L 29.25 -20.79 L 25.57 -15.98 L 25.94 -15.38 L 26.29 -14.77 L 26.63 -14.16 L 32.63 -14.94 L 34.60 -9.53 L 29.50 -6.27 Z" fill="url(#brassGear)" stroke="#3a2a10" stroke-width="1.1" stroke-linejoin="round"/>
+        <circle cx="0" cy="0" r="28" fill="none" stroke="#5f441c" stroke-width="2"/>
+      </g>
+    <circle cx="0" cy="0" r="23" fill="url(#sunGrad)" stroke="#8a5c14" stroke-width="2"/>
+    <circle cx="-7" cy="-8" r="6.5" fill="#fff6d8" opacity="0.65"/>
+  </g>
+
+  
+    <g transform="translate(500.0,445.0)">
+      <g>
+        <animateTransform attributeName="transform" type="rotate" from="20.00" to="380.00" dur="2.500s" repeatCount="indefinite"/>
+          <line x1="0" y1="-46" x2="0" y2="-103.0" stroke="#6e4f22" stroke-width="3.4" stroke-linecap="round" opacity="0.95"/><line x1="0" y1="-46" x2="0" y2="-103.0" stroke="#d9b56a" stroke-width="1.3" stroke-linecap="round" opacity="0.9"/><circle cx="0" cy="-62.0" r="2.1" fill="#d9b56a" stroke="#6e4f22" stroke-width="0.7"/><circle cx="0" cy="-75.6" r="2.1" fill="#d9b56a" stroke="#6e4f22" stroke-width="0.7"/><circle cx="0" cy="-89.3" r="2.1" fill="#d9b56a" stroke="#6e4f22" stroke-width="0.7"/><ellipse cx="0" cy="-116.5" rx="12.5" ry="4.2" fill="url(#softShadow)" opacity="0.55"/>
+          
+      <g transform="translate(0,-103.0)">
+        <g>
+          <animateTransform attributeName="transform" type="rotate" from="-20.00" to="-380.00" dur="2.500s" repeatCount="indefinite"/>
+            
+            <circle cx="0" cy="0" r="14.5" fill="url(#knobGrad)" stroke="#3a2a10" stroke-width="1"/>
+            <circle cx="0" cy="0" r="10" fill="url(#pg_Mercury)"/>
+            <circle cx="0" cy="0" r="10" fill="url(#limbGrad)"/>
+            <path d="M -9.32 -3.03 A 9.80 9.80 0 0 1 -3.03 -9.32" fill="none" stroke="#fff3d0" stroke-width="1.7" opacity="0.55" stroke-linecap="round"/>
+            <g>
+              <animateTransform attributeName="transform" type="rotate" from="157.0" to="517.0" dur="2.60s" repeatCount="indefinite"/>
+                <circle cx="-3" cy="2" r="1.8" fill="#6a6157"/><circle cx="3.2" cy="-2.6" r="1.3" fill="#6a6157"/><circle cx="1.4" cy="4.6" r="1.1" fill="#857b70"/>
+                <path d="M 0 -10 A 10 10 0 0 1 0 10 Z" fill="#05071a" opacity="0.82" filter="url(#softNight)"/>
+              </g>
+            
+        </g>
+      </g>
+        </g>
+      </g>
+
+    <g transform="translate(500.0,445.0)">
+      <g>
+        <animateTransform attributeName="transform" type="rotate" from="150.00" to="510.00" dur="6.386s" repeatCount="indefinite"/>
+          <line x1="0" y1="-46" x2="0" y2="-150.0" stroke="#6e4f22" stroke-width="3.4" stroke-linecap="round" opacity="0.95"/><line x1="0" y1="-46" x2="0" y2="-150.0" stroke="#d9b56a" stroke-width="1.3" stroke-linecap="round" opacity="0.9"/><circle cx="0" cy="-75.1" r="2.1" fill="#d9b56a" stroke="#6e4f22" stroke-width="0.7"/><circle cx="0" cy="-100.1" r="2.1" fill="#d9b56a" stroke="#6e4f22" stroke-width="0.7"/><circle cx="0" cy="-125.0" r="2.1" fill="#d9b56a" stroke="#6e4f22" stroke-width="0.7"/><ellipse cx="0" cy="-168.9" rx="17.5" ry="5.9" fill="url(#softShadow)" opacity="0.55"/>
+          
+      <g transform="translate(0,-150.0)">
+        <g>
+          <animateTransform attributeName="transform" type="rotate" from="-150.00" to="-510.00" dur="6.386s" repeatCount="indefinite"/>
+            
+            <circle cx="0" cy="0" r="18.5" fill="url(#knobGrad)" stroke="#3a2a10" stroke-width="1"/>
+            <circle cx="0" cy="0" r="14" fill="url(#pg_Venus)"/>
+            <circle cx="0" cy="0" r="14" fill="url(#limbGrad)"/>
+            <path d="M -13.05 -4.24 A 13.72 13.72 0 0 1 -4.24 -13.05" fill="none" stroke="#fff3d0" stroke-width="1.7" opacity="0.55" stroke-linecap="round"/>
+            <g>
+              <animateTransform attributeName="transform" type="rotate" from="287.0" to="647.0" dur="3.80s" repeatCount="indefinite"/>
+                <ellipse cx="-2" cy="-4" rx="7" ry="2.1" fill="#ffedbe" opacity="0.55"/><ellipse cx="2" cy="4.5" rx="6" ry="1.8" fill="#c98f45" opacity="0.45"/>
+                <path d="M 0 -14 A 14 14 0 0 1 0 14 Z" fill="#05071a" opacity="0.82" filter="url(#softNight)"/>
+              </g>
+            
+        </g>
+      </g>
+        </g>
+      </g>
+
+    <g transform="translate(500.0,445.0)">
+      <g>
+        <animateTransform attributeName="transform" type="rotate" from="260.00" to="620.00" dur="10.380s" repeatCount="indefinite"/>
+          <line x1="0" y1="-46" x2="0" y2="-197.0" stroke="#6e4f22" stroke-width="3.4" stroke-linecap="round" opacity="0.95"/><line x1="0" y1="-46" x2="0" y2="-197.0" stroke="#d9b56a" stroke-width="1.3" stroke-linecap="round" opacity="0.9"/><circle cx="0" cy="-88.3" r="2.1" fill="#d9b56a" stroke="#6e4f22" stroke-width="0.7"/><circle cx="0" cy="-124.5" r="2.1" fill="#d9b56a" stroke="#6e4f22" stroke-width="0.7"/><circle cx="0" cy="-160.8" r="2.1" fill="#d9b56a" stroke="#6e4f22" stroke-width="0.7"/><ellipse cx="0" cy="-215.9" rx="17.5" ry="5.9" fill="url(#softShadow)" opacity="0.55"/>
+          
+      <g transform="translate(0,-197.0)">
+        <g>
+          <animateTransform attributeName="transform" type="rotate" from="-260.00" to="-620.00" dur="10.380s" repeatCount="indefinite"/>
+            
+            <circle cx="0" cy="0" r="18.5" fill="url(#knobGrad)" stroke="#3a2a10" stroke-width="1"/>
+            <circle cx="0" cy="0" r="14" fill="url(#pg_Earth)"/>
+            <circle cx="0" cy="0" r="14" fill="url(#limbGrad)"/>
+            <path d="M -13.05 -4.24 A 13.72 13.72 0 0 1 -4.24 -13.05" fill="none" stroke="#fff3d0" stroke-width="1.7" opacity="0.55" stroke-linecap="round"/>
+            <g>
+              <animateTransform attributeName="transform" type="rotate" from="37.0" to="397.0" dur="2.40s" repeatCount="indefinite"/>
+                <circle cx="-3.4" cy="-2.2" r="3.6" fill="#3f7a3c"/><circle cx="4" cy="3.6" r="2.9" fill="#4c8a44"/><ellipse cx="0.5" cy="-5.5" rx="6.4" ry="2.0" fill="#eaf4ff" opacity="0.8"/><ellipse cx="-1" cy="5.8" rx="5.6" ry="1.7" fill="#eaf4ff" opacity="0.6"/>
+                <path d="M 0 -14 A 14 14 0 0 1 0 14 Z" fill="#05071a" opacity="0.82" filter="url(#softNight)"/>
+              </g>
+            
+        </g>
+      </g>
+        </g>
+      </g>
+
+    <g transform="translate(500.0,445.0)">
+      <g>
+        <animateTransform attributeName="transform" type="rotate" from="330.00" to="690.00" dur="19.523s" repeatCount="indefinite"/>
+          <line x1="0" y1="-46" x2="0" y2="-247.0" stroke="#6e4f22" stroke-width="3.4" stroke-linecap="round" opacity="0.95"/><line x1="0" y1="-46" x2="0" y2="-247.0" stroke="#d9b56a" stroke-width="1.3" stroke-linecap="round" opacity="0.9"/><circle cx="0" cy="-102.3" r="2.1" fill="#d9b56a" stroke="#6e4f22" stroke-width="0.7"/><circle cx="0" cy="-150.5" r="2.1" fill="#d9b56a" stroke="#6e4f22" stroke-width="0.7"/><circle cx="0" cy="-198.8" r="2.1" fill="#d9b56a" stroke="#6e4f22" stroke-width="0.7"/><ellipse cx="0" cy="-261.9" rx="13.8" ry="4.6" fill="url(#softShadow)" opacity="0.55"/>
+          
+      <g transform="translate(0,-247.0)">
+        <g>
+          <animateTransform attributeName="transform" type="rotate" from="-330.00" to="-690.00" dur="19.523s" repeatCount="indefinite"/>
+            
+            <circle cx="0" cy="0" r="15.5" fill="url(#knobGrad)" stroke="#3a2a10" stroke-width="1"/>
+            <circle cx="0" cy="0" r="11" fill="url(#pg_Mars)"/>
+            <circle cx="0" cy="0" r="11" fill="url(#limbGrad)"/>
+            <path d="M -10.25 -3.33 A 10.78 10.78 0 0 1 -3.33 -10.25" fill="none" stroke="#fff3d0" stroke-width="1.7" opacity="0.55" stroke-linecap="round"/>
+            <g>
+              <animateTransform attributeName="transform" type="rotate" from="107.0" to="467.0" dur="2.90s" repeatCount="indefinite"/>
+                <circle cx="3" cy="3" r="1.7" fill="#7c3620"/><circle cx="-4" cy="-2.5" r="1.2" fill="#7c3620"/><path d="M -7 -6.5 A 10 10 0 0 1 7 -6.5 L 7 -8 A 10 10 0 0 0 -7 -8 Z" fill="#f3ddc9" opacity="0.85"/>
+                <path d="M 0 -11 A 11 11 0 0 1 0 11 Z" fill="#05071a" opacity="0.82" filter="url(#softNight)"/>
+              </g>
+            
+        </g>
+      </g>
+        </g>
+      </g>
+
+    <g transform="translate(500.0,445.0)">
+      <g>
+        <animateTransform attributeName="transform" type="rotate" from="95.00" to="455.00" dur="123.127s" repeatCount="indefinite"/>
+          <line x1="0" y1="-46" x2="0" y2="-293.0" stroke="#6e4f22" stroke-width="3.4" stroke-linecap="round" opacity="0.95"/><line x1="0" y1="-46" x2="0" y2="-293.0" stroke="#d9b56a" stroke-width="1.3" stroke-linecap="round" opacity="0.9"/><circle cx="0" cy="-115.2" r="2.1" fill="#d9b56a" stroke="#6e4f22" stroke-width="0.7"/><circle cx="0" cy="-174.4" r="2.1" fill="#d9b56a" stroke="#6e4f22" stroke-width="0.7"/><circle cx="0" cy="-233.7" r="2.1" fill="#d9b56a" stroke="#6e4f22" stroke-width="0.7"/><ellipse cx="0" cy="-326.8" rx="31.2" ry="10.5" fill="url(#softShadow)" opacity="0.55"/>
+          
+      <g transform="translate(0,-293.0)">
+        <g>
+          <animateTransform attributeName="transform" type="rotate" from="-95.00" to="-455.00" dur="123.127s" repeatCount="indefinite"/>
+            
+            <circle cx="0" cy="0" r="29.5" fill="url(#knobGrad)" stroke="#3a2a10" stroke-width="1"/>
+            <circle cx="0" cy="0" r="25" fill="url(#pg_Jupiter)"/>
+            <circle cx="0" cy="0" r="25" fill="url(#limbGrad)"/>
+            <path d="M -23.30 -7.57 A 24.50 24.50 0 0 1 -7.57 -23.30" fill="none" stroke="#fff3d0" stroke-width="1.7" opacity="0.55" stroke-linecap="round"/>
+            <g>
+              <animateTransform attributeName="transform" type="rotate" from="232.0" to="592.0" dur="3.60s" repeatCount="indefinite"/>
+                <g clip-path="url(#clip_Jupiter)"><rect x="-26" y="-17" width="52" height="6" fill="#b98d5f"/><rect x="-26" y="-7.5" width="52" height="5" fill="#e8d2a8" opacity="0.9"/><rect x="-26" y="-0.7" width="52" height="6.2" fill="#a87c4d"/><rect x="-26" y="8.2" width="52" height="5.4" fill="#caa06f"/><ellipse cx="6.5" cy="8" rx="5" ry="3" fill="#c25a3a"/></g>
+                <path d="M 0 -25 A 25 25 0 0 1 0 25 Z" fill="#05071a" opacity="0.82" filter="url(#softNight)"/>
+              </g>
+            
+        </g>
+      </g>
+        </g>
+      </g>
+
+    <g transform="translate(500.0,445.0)">
+      <g>
+        <animateTransform attributeName="transform" type="rotate" from="205.00" to="565.00" dur="305.763s" repeatCount="indefinite"/>
+          <line x1="0" y1="-46" x2="0" y2="-342.0" stroke="#6e4f22" stroke-width="3.4" stroke-linecap="round" opacity="0.95"/><line x1="0" y1="-46" x2="0" y2="-342.0" stroke="#d9b56a" stroke-width="1.3" stroke-linecap="round" opacity="0.9"/><circle cx="0" cy="-128.9" r="2.1" fill="#d9b56a" stroke="#6e4f22" stroke-width="0.7"/><circle cx="0" cy="-199.9" r="2.1" fill="#d9b56a" stroke="#6e4f22" stroke-width="0.7"/><circle cx="0" cy="-271.0" r="2.1" fill="#d9b56a" stroke="#6e4f22" stroke-width="0.7"/><ellipse cx="0" cy="-370.4" rx="26.2" ry="8.8" fill="url(#softShadow)" opacity="0.55"/>
+          
+      <g transform="translate(0,-342.0)">
+        <g>
+          <animateTransform attributeName="transform" type="rotate" from="-205.00" to="-565.00" dur="305.763s" repeatCount="indefinite"/>
+            <ellipse cx="0" cy="1.5" rx="34.0" ry="10.5" fill="none" stroke="url(#ringGrad)" stroke-width="9" opacity="0.95"/><ellipse cx="0" cy="1.5" rx="34.0" ry="10.5" fill="none" stroke="#5f441c" stroke-width="0.9" opacity="0.7" stroke-dasharray="3.2 2.6"/>
+            <circle cx="0" cy="0" r="25.5" fill="url(#knobGrad)" stroke="#3a2a10" stroke-width="1"/>
+            <circle cx="0" cy="0" r="21" fill="url(#pg_Saturn)"/>
+            <circle cx="0" cy="0" r="21" fill="url(#limbGrad)"/>
+            <path d="M -19.57 -6.36 A 20.58 20.58 0 0 1 -6.36 -19.57" fill="none" stroke="#fff3d0" stroke-width="1.7" opacity="0.55" stroke-linecap="round"/>
+            <g>
+              <animateTransform attributeName="transform" type="rotate" from="342.0" to="702.0" dur="3.30s" repeatCount="indefinite"/>
+                <g clip-path="url(#clip_Saturn)"><rect x="-23" y="-12" width="46" height="4.8" fill="#c8ab6d" opacity="0.9"/><rect x="-23" y="-3.2" width="46" height="5" fill="#f0dfae" opacity="0.75"/><rect x="-23" y="5.8" width="46" height="4.6" fill="#b8985e" opacity="0.85"/></g>
+                <path d="M 0 -21 A 21 21 0 0 1 0 21 Z" fill="#05071a" opacity="0.82" filter="url(#softNight)"/>
+              </g>
+            <path d="M -34.9 1.5 A 34.9 10.9 0 0 0 34.9 1.5" fill="none" stroke="url(#ringGrad)" stroke-width="8.6" stroke-linecap="round"/><path d="M -34.9 1.5 A 34.9 10.9 0 0 0 34.9 1.5" fill="none" stroke="#5f441c" stroke-width="0.9" stroke-dasharray="3.2 2.6" opacity="0.8"/>
+        </g>
+      </g>
+        </g>
+      </g>
+
+  
+  <circle cx="500.0" cy="445.0" r="378.0" fill="none" stroke="url(#bandGrad)" stroke-width="14"/>
+  <circle cx="500.0" cy="445.0" r="386.0" fill="none" stroke="#3a2a10" stroke-width="2"/>
+  <circle cx="500.0" cy="445.0" r="370.0" fill="none" stroke="#3a2a10" stroke-width="2"/>
+  <circle cx="878.0" cy="445.0" r="4.2" fill="#d9b56a" stroke="#4a3413" stroke-width="1.1"/><circle cx="868.5" cy="529.1" r="4.2" fill="#d9b56a" stroke="#4a3413" stroke-width="1.1"/><circle cx="840.6" cy="609.0" r="4.2" fill="#d9b56a" stroke="#4a3413" stroke-width="1.1"/><circle cx="795.5" cy="680.7" r="4.2" fill="#d9b56a" stroke="#4a3413" stroke-width="1.1"/><circle cx="735.7" cy="740.5" r="4.2" fill="#d9b56a" stroke="#4a3413" stroke-width="1.1"/><circle cx="664.0" cy="785.6" r="4.2" fill="#d9b56a" stroke="#4a3413" stroke-width="1.1"/><circle cx="584.1" cy="813.5" r="4.2" fill="#d9b56a" stroke="#4a3413" stroke-width="1.1"/><circle cx="500.0" cy="823.0" r="4.2" fill="#d9b56a" stroke="#4a3413" stroke-width="1.1"/><circle cx="415.9" cy="813.5" r="4.2" fill="#d9b56a" stroke="#4a3413" stroke-width="1.1"/><circle cx="336.0" cy="785.6" r="4.2" fill="#d9b56a" stroke="#4a3413" stroke-width="1.1"/><circle cx="264.3" cy="740.5" r="4.2" fill="#d9b56a" stroke="#4a3413" stroke-width="1.1"/><circle cx="204.5" cy="680.7" r="4.2" fill="#d9b56a" stroke="#4a3413" stroke-width="1.1"/><circle cx="159.4" cy="609.0" r="4.2" fill="#d9b56a" stroke="#4a3413" stroke-width="1.1"/><circle cx="131.5" cy="529.1" r="4.2" fill="#d9b56a" stroke="#4a3413" stroke-width="1.1"/><circle cx="122.0" cy="445.0" r="4.2" fill="#d9b56a" stroke="#4a3413" stroke-width="1.1"/><circle cx="131.5" cy="360.9" r="4.2" fill="#d9b56a" stroke="#4a3413" stroke-width="1.1"/><circle cx="159.4" cy="281.0" r="4.2" fill="#d9b56a" stroke="#4a3413" stroke-width="1.1"/><circle cx="204.5" cy="209.3" r="4.2" fill="#d9b56a" stroke="#4a3413" stroke-width="1.1"/><circle cx="264.3" cy="149.5" r="4.2" fill="#d9b56a" stroke="#4a3413" stroke-width="1.1"/><circle cx="336.0" cy="104.4" r="4.2" fill="#d9b56a" stroke="#4a3413" stroke-width="1.1"/><circle cx="415.9" cy="76.5" r="4.2" fill="#d9b56a" stroke="#4a3413" stroke-width="1.1"/><circle cx="500.0" cy="67.0" r="4.2" fill="#d9b56a" stroke="#4a3413" stroke-width="1.1"/><circle cx="584.1" cy="76.5" r="4.2" fill="#d9b56a" stroke="#4a3413" stroke-width="1.1"/><circle cx="664.0" cy="104.4" r="4.2" fill="#d9b56a" stroke="#4a3413" stroke-width="1.1"/><circle cx="735.7" cy="149.5" r="4.2" fill="#d9b56a" stroke="#4a3413" stroke-width="1.1"/><circle cx="795.5" cy="209.3" r="4.2" fill="#d9b56a" stroke="#4a3413" stroke-width="1.1"/><circle cx="840.6" cy="281.0" r="4.2" fill="#d9b56a" stroke="#4a3413" stroke-width="1.1"/><circle cx="868.5" cy="360.9" r="4.2" fill="#d9b56a" stroke="#4a3413" stroke-width="1.1"/>
+  
+  <rect x="260" y="836" width="480" height="142" rx="18" fill="url(#panelGrad)" stroke="#6e4f22" stroke-width="2.6"/>
+  <rect x="271" y="847" width="458" height="120" rx="12" fill="none" stroke="#54380f" stroke-width="1.2" opacity="0.9"/>
+  <circle cx="276" cy="852" r="3.6" fill="#d9b56a" stroke="#4a3413" stroke-width="1"/><circle cx="724" cy="852" r="3.6" fill="#d9b56a" stroke="#4a3413" stroke-width="1"/><circle cx="276" cy="962" r="3.6" fill="#d9b56a" stroke="#4a3413" stroke-width="1"/><circle cx="724" cy="962" r="3.6" fill="#d9b56a" stroke="#4a3413" stroke-width="1"/>
+  
+    <g transform="translate(333.75,898.00)">
+      <g>
+        <animateTransform attributeName="transform" type="rotate" from="0.000" to="360.000" dur="2.618s" repeatCount="indefinite"/>
+        <path d="M 31.77 -4.01 L 37.35 -2.70 L 37.35 2.70 L 31.77 4.01 L 31.68 4.68 L 31.58 5.34 L 31.46 6.00 L 36.36 8.97 L 34.69 14.11 L 28.98 13.64 L 28.69 14.24 L 28.38 14.84 L 28.06 15.43 L 31.81 19.77 L 28.63 24.14 L 23.35 21.92 L 22.88 22.41 L 22.41 22.88 L 21.92 23.35 L 24.14 28.63 L 19.77 31.81 L 15.43 28.06 L 14.84 28.38 L 14.24 28.69 L 13.64 28.98 L 14.11 34.69 L 8.97 36.36 L 6.00 31.46 L 5.34 31.58 L 4.68 31.68 L 4.01 31.77 L 2.70 37.35 L -2.70 37.35 L -4.01 31.77 L -4.68 31.68 L -5.34 31.58 L -6.00 31.46 L -8.97 36.36 L -14.11 34.69 L -13.64 28.98 L -14.24 28.69 L -14.84 28.38 L -15.43 28.06 L -19.77 31.81 L -24.14 28.63 L -21.92 23.35 L -22.41 22.88 L -22.88 22.41 L -23.35 21.92 L -28.63 24.14 L -31.81 19.77 L -28.06 15.43 L -28.38 14.84 L -28.69 14.24 L -28.98 13.64 L -34.69 14.11 L -36.36 8.97 L -31.46 6.00 L -31.58 5.34 L -31.68 4.68 L -31.77 4.01 L -37.35 2.70 L -37.35 -2.70 L -31.77 -4.01 L -31.68 -4.68 L -31.58 -5.34 L -31.46 -6.00 L -36.36 -8.97 L -34.69 -14.11 L -28.98 -13.64 L -28.69 -14.24 L -28.38 -14.84 L -28.06 -15.43 L -31.81 -19.77 L -28.63 -24.14 L -23.35 -21.92 L -22.88 -22.41 L -22.41 -22.88 L -21.92 -23.35 L -24.14 -28.63 L -19.77 -31.81 L -15.43 -28.06 L -14.84 -28.38 L -14.24 -28.69 L -13.64 -28.98 L -14.11 -34.69 L -8.97 -36.36 L -6.00 -31.46 L -5.34 -31.58 L -4.68 -31.68 L -4.01 -31.77 L -2.70 -37.35 L 2.70 -37.35 L 4.01 -31.77 L 4.68 -31.68 L 5.34 -31.58 L 6.00 -31.46 L 8.97 -36.36 L 14.11 -34.69 L 13.64 -28.98 L 14.24 -28.69 L 14.84 -28.38 L 15.43 -28.06 L 19.77 -31.81 L 24.14 -28.63 L 21.92 -23.35 L 22.41 -22.88 L 22.88 -22.41 L 23.35 -21.92 L 28.63 -24.14 L 31.81 -19.77 L 28.06 -15.43 L 28.38 -14.84 L 28.69 -14.24 L 28.98 -13.64 L 34.69 -14.11 L 36.36 -8.97 L 31.46 -6.00 Z" fill="url(#brassGear)" stroke="#3a2a10" stroke-width="1.1" stroke-linejoin="round"/>
+        <circle cx="0" cy="0" r="28.02" fill="none" stroke="#5f441c" stroke-width="2.4"/>
+        <circle cx="0" cy="0" r="22.02" fill="none" stroke="#3d2c10" stroke-width="1.2" opacity="0.8"/>
+        <g transform="rotate(0.0)"><rect x="-2.6" y="9" width="5.2" height="18.0" rx="2" fill="#4a3413"/></g><g transform="rotate(72.0)"><rect x="-2.6" y="9" width="5.2" height="18.0" rx="2" fill="#4a3413"/></g><g transform="rotate(144.0)"><rect x="-2.6" y="9" width="5.2" height="18.0" rx="2" fill="#4a3413"/></g><g transform="rotate(216.0)"><rect x="-2.6" y="9" width="5.2" height="18.0" rx="2" fill="#4a3413"/></g><g transform="rotate(288.0)"><rect x="-2.6" y="9" width="5.2" height="18.0" rx="2" fill="#4a3413"/></g>
+        <circle cx="0" cy="0" r="10" fill="#2b1d0c" stroke="#d9b56a" stroke-width="1.6"/>
+        <circle cx="0" cy="0" r="3.4" fill="#0d0905"/>
+      </g>
+    </g>
+
+    <g transform="translate(409.00,898.00)">
+      <g>
+        <animateTransform attributeName="transform" type="rotate" from="0.000" to="360.000" dur="3.011s" repeatCount="indefinite"/>
+        <path d="M 37.05 -4.07 L 42.62 -2.68 L 42.62 2.68 L 37.05 4.07 L 36.97 4.74 L 36.88 5.41 L 36.78 6.08 L 41.76 8.92 L 40.31 14.08 L 34.58 13.91 L 34.32 14.54 L 34.05 15.16 L 33.77 15.78 L 37.80 19.85 L 35.02 24.43 L 29.55 22.73 L 29.13 23.26 L 28.70 23.79 L 28.26 24.30 L 31.05 29.32 L 27.13 32.98 L 22.32 29.85 L 21.77 30.26 L 21.22 30.65 L 20.66 31.03 L 21.99 36.60 L 17.23 39.07 L 13.44 34.77 L 12.80 35.01 L 12.16 35.23 L 11.52 35.45 L 11.30 41.18 L 6.05 42.27 L 3.56 37.10 L 2.88 37.16 L 2.20 37.21 L 1.53 37.24 L -0.23 42.70 L -5.58 42.33 L -6.58 36.69 L -7.25 36.56 L -7.92 36.42 L -8.58 36.27 L -11.74 41.05 L -16.80 39.26 L -16.24 33.55 L -16.85 33.25 L -17.45 32.94 L -18.05 32.62 L -22.39 36.36 L -26.77 33.27 L -24.69 27.93 L -25.19 27.47 L -25.69 27.01 L -26.18 26.54 L -31.37 28.97 L -34.75 24.81 L -31.31 20.23 L -31.67 19.66 L -32.02 19.08 L -32.37 18.49 L -38.02 19.44 L -40.16 14.52 L -35.60 11.03 L -35.80 10.38 L -35.98 9.73 L -36.15 9.07 L -41.85 8.46 L -42.58 3.15 L -37.26 1.02 L -37.27 0.34 L -37.27 -0.34 L -37.26 -1.02 L -42.58 -3.15 L -41.85 -8.46 L -36.15 -9.07 L -35.98 -9.73 L -35.80 -10.38 L -35.60 -11.03 L -40.16 -14.52 L -38.02 -19.44 L -32.37 -18.49 L -32.02 -19.08 L -31.67 -19.66 L -31.31 -20.23 L -34.75 -24.81 L -31.37 -28.97 L -26.18 -26.54 L -25.69 -27.01 L -25.19 -27.47 L -24.69 -27.93 L -26.77 -33.27 L -22.39 -36.36 L -18.05 -32.62 L -17.45 -32.94 L -16.85 -33.25 L -16.24 -33.55 L -16.80 -39.26 L -11.74 -41.05 L -8.58 -36.27 L -7.92 -36.42 L -7.25 -36.56 L -6.58 -36.69 L -5.58 -42.33 L -0.23 -42.70 L 1.53 -37.24 L 2.20 -37.21 L 2.88 -37.16 L 3.56 -37.10 L 6.05 -42.27 L 11.30 -41.18 L 11.52 -35.45 L 12.16 -35.23 L 12.80 -35.01 L 13.44 -34.77 L 17.23 -39.07 L 21.99 -36.60 L 20.66 -31.03 L 21.22 -30.65 L 21.77 -30.26 L 22.32 -29.85 L 27.13 -32.98 L 31.05 -29.32 L 28.26 -24.30 L 28.70 -23.79 L 29.13 -23.26 L 29.55 -22.73 L 35.02 -24.43 L 37.80 -19.85 L 33.77 -15.78 L 34.05 -15.16 L 34.32 -14.54 L 34.58 -13.91 L 40.31 -14.08 L 41.76 -8.92 L 36.78 -6.08 Z" fill="url(#brassGear)" stroke="#3a2a10" stroke-width="1.1" stroke-linejoin="round"/>
+        <circle cx="0" cy="0" r="33.27" fill="none" stroke="#5f441c" stroke-width="2.4"/>
+        <circle cx="0" cy="0" r="27.27" fill="none" stroke="#3d2c10" stroke-width="1.2" opacity="0.8"/>
+        <g transform="rotate(0.0)"><rect x="-2.6" y="9" width="5.2" height="23.3" rx="2" fill="#4a3413"/></g><g transform="rotate(72.0)"><rect x="-2.6" y="9" width="5.2" height="23.3" rx="2" fill="#4a3413"/></g><g transform="rotate(144.0)"><rect x="-2.6" y="9" width="5.2" height="23.3" rx="2" fill="#4a3413"/></g><g transform="rotate(216.0)"><rect x="-2.6" y="9" width="5.2" height="23.3" rx="2" fill="#4a3413"/></g><g transform="rotate(288.0)"><rect x="-2.6" y="9" width="5.2" height="23.3" rx="2" fill="#4a3413"/></g>
+        <circle cx="0" cy="0" r="10" fill="#2b1d0c" stroke="#d9b56a" stroke-width="1.6"/>
+        <circle cx="0" cy="0" r="3.4" fill="#0d0905"/>
+      </g>
+    </g>
+
+    <g transform="translate(477.25,898.00)">
+      <g>
+        <animateTransform attributeName="transform" type="rotate" from="0.000" to="360.000" dur="2.094s" repeatCount="indefinite"/>
+        <path d="M 24.72 -3.91 L 30.33 -2.75 L 30.33 2.75 L 24.72 3.91 L 24.61 4.56 L 24.48 5.20 L 24.33 5.84 L 29.07 9.07 L 26.97 14.14 L 21.34 13.08 L 20.99 13.63 L 20.62 14.17 L 20.25 14.71 L 23.39 19.50 L 19.50 23.39 L 14.71 20.25 L 14.17 20.62 L 13.63 20.99 L 13.08 21.34 L 14.14 26.97 L 9.07 29.07 L 5.84 24.33 L 5.20 24.48 L 4.56 24.61 L 3.91 24.72 L 2.75 30.33 L -2.75 30.33 L -3.91 24.72 L -4.56 24.61 L -5.20 24.48 L -5.84 24.33 L -9.07 29.07 L -14.14 26.97 L -13.08 21.34 L -13.63 20.99 L -14.17 20.62 L -14.71 20.25 L -19.50 23.39 L -23.39 19.50 L -20.25 14.71 L -20.62 14.17 L -20.99 13.63 L -21.34 13.08 L -26.97 14.14 L -29.07 9.07 L -24.33 5.84 L -24.48 5.20 L -24.61 4.56 L -24.72 3.91 L -30.33 2.75 L -30.33 -2.75 L -24.72 -3.91 L -24.61 -4.56 L -24.48 -5.20 L -24.33 -5.84 L -29.07 -9.07 L -26.97 -14.14 L -21.34 -13.08 L -20.99 -13.63 L -20.62 -14.17 L -20.25 -14.71 L -23.39 -19.50 L -19.50 -23.39 L -14.71 -20.25 L -14.17 -20.62 L -13.63 -20.99 L -13.08 -21.34 L -14.14 -26.97 L -9.07 -29.07 L -5.84 -24.33 L -5.20 -24.48 L -4.56 -24.61 L -3.91 -24.72 L -2.75 -30.33 L 2.75 -30.33 L 3.91 -24.72 L 4.56 -24.61 L 5.20 -24.48 L 5.84 -24.33 L 9.07 -29.07 L 14.14 -26.97 L 13.08 -21.34 L 13.63 -20.99 L 14.17 -20.62 L 14.71 -20.25 L 19.50 -23.39 L 23.39 -19.50 L 20.25 -14.71 L 20.62 -14.17 L 20.99 -13.63 L 21.34 -13.08 L 26.97 -14.14 L 29.07 -9.07 L 24.33 -5.84 Z" fill="url(#brassGear)" stroke="#3a2a10" stroke-width="1.1" stroke-linejoin="round"/>
+        <circle cx="0" cy="0" r="21.02" fill="none" stroke="#5f441c" stroke-width="2.4"/>
+        <circle cx="0" cy="0" r="15.02" fill="none" stroke="#3d2c10" stroke-width="1.2" opacity="0.8"/>
+        <g transform="rotate(0.0)"><rect x="-2.6" y="9" width="5.2" height="11.0" rx="2" fill="#4a3413"/></g><g transform="rotate(72.0)"><rect x="-2.6" y="9" width="5.2" height="11.0" rx="2" fill="#4a3413"/></g><g transform="rotate(144.0)"><rect x="-2.6" y="9" width="5.2" height="11.0" rx="2" fill="#4a3413"/></g><g transform="rotate(216.0)"><rect x="-2.6" y="9" width="5.2" height="11.0" rx="2" fill="#4a3413"/></g><g transform="rotate(288.0)"><rect x="-2.6" y="9" width="5.2" height="11.0" rx="2" fill="#4a3413"/></g>
+        <circle cx="0" cy="0" r="10" fill="#2b1d0c" stroke="#d9b56a" stroke-width="1.6"/>
+        <circle cx="0" cy="0" r="3.4" fill="#0d0905"/>
+      </g>
+    </g>
+
+    <g transform="translate(550.75,898.00)">
+      <g>
+        <animateTransform attributeName="transform" type="rotate" from="0.000" to="360.000" dur="3.403s" repeatCount="indefinite"/>
+        <path d="M 42.33 -4.10 L 47.88 -2.66 L 47.88 2.66 L 42.33 4.10 L 42.25 4.79 L 42.17 5.47 L 42.08 6.14 L 47.12 8.87 L 45.85 14.04 L 40.11 14.11 L 39.88 14.76 L 39.64 15.40 L 39.39 16.04 L 43.63 19.89 L 41.15 24.61 L 35.57 23.30 L 35.19 23.87 L 34.80 24.44 L 34.40 25.00 L 37.60 29.75 L 34.07 33.74 L 28.96 31.14 L 28.45 31.60 L 27.94 32.06 L 27.42 32.50 L 29.39 37.89 L 25.00 40.91 L 20.67 37.17 L 20.07 37.49 L 19.46 37.81 L 18.85 38.12 L 19.47 43.82 L 14.49 45.71 L 11.17 41.03 L 10.51 41.21 L 9.84 41.37 L 9.18 41.52 L 8.42 47.21 L 3.13 47.85 L 1.03 42.51 L 0.34 42.52 L -0.34 42.52 L -1.03 42.51 L -3.13 47.85 L -8.42 47.21 L -9.18 41.52 L -9.84 41.37 L -10.51 41.21 L -11.17 41.03 L -14.49 45.71 L -19.47 43.82 L -18.85 38.12 L -19.46 37.81 L -20.07 37.49 L -20.67 37.17 L -25.00 40.91 L -29.39 37.89 L -27.42 32.50 L -27.94 32.06 L -28.45 31.60 L -28.96 31.14 L -34.07 33.74 L -37.60 29.75 L -34.40 25.00 L -34.80 24.44 L -35.19 23.87 L -35.57 23.30 L -41.15 24.61 L -43.63 19.89 L -39.39 16.04 L -39.64 15.40 L -39.88 14.76 L -40.11 14.11 L -45.85 14.04 L -47.12 8.87 L -42.08 6.14 L -42.17 5.47 L -42.25 4.79 L -42.33 4.10 L -47.88 2.66 L -47.88 -2.66 L -42.33 -4.10 L -42.25 -4.79 L -42.17 -5.47 L -42.08 -6.14 L -47.12 -8.87 L -45.85 -14.04 L -40.11 -14.11 L -39.88 -14.76 L -39.64 -15.40 L -39.39 -16.04 L -43.63 -19.89 L -41.15 -24.61 L -35.57 -23.30 L -35.19 -23.87 L -34.80 -24.44 L -34.40 -25.00 L -37.60 -29.75 L -34.07 -33.74 L -28.96 -31.14 L -28.45 -31.60 L -27.94 -32.06 L -27.42 -32.50 L -29.39 -37.89 L -25.00 -40.91 L -20.67 -37.17 L -20.07 -37.49 L -19.46 -37.81 L -18.85 -38.12 L -19.47 -43.82 L -14.49 -45.71 L -11.17 -41.03 L -10.51 -41.21 L -9.84 -41.37 L -9.18 -41.52 L -8.42 -47.21 L -3.13 -47.85 L -1.03 -42.51 L -0.34 -42.52 L 0.34 -42.52 L 1.03 -42.51 L 3.13 -47.85 L 8.42 -47.21 L 9.18 -41.52 L 9.84 -41.37 L 10.51 -41.21 L 11.17 -41.03 L 14.49 -45.71 L 19.47 -43.82 L 18.85 -38.12 L 19.46 -37.81 L 20.07 -37.49 L 20.67 -37.17 L 25.00 -40.91 L 29.39 -37.89 L 27.42 -32.50 L 27.94 -32.06 L 28.45 -31.60 L 28.96 -31.14 L 34.07 -33.74 L 37.60 -29.75 L 34.40 -25.00 L 34.80 -24.44 L 35.19 -23.87 L 35.57 -23.30 L 41.15 -24.61 L 43.63 -19.89 L 39.39 -16.04 L 39.64 -15.40 L 39.88 -14.76 L 40.11 -14.11 L 45.85 -14.04 L 47.12 -8.87 L 42.08 -6.14 Z" fill="url(#brassGear)" stroke="#3a2a10" stroke-width="1.1" stroke-linejoin="round"/>
+        <circle cx="0" cy="0" r="38.52" fill="none" stroke="#5f441c" stroke-width="2.4"/>
+        <circle cx="0" cy="0" r="32.52" fill="none" stroke="#3d2c10" stroke-width="1.2" opacity="0.8"/>
+        <g transform="rotate(0.0)"><rect x="-2.6" y="9" width="5.2" height="28.5" rx="2" fill="#4a3413"/></g><g transform="rotate(72.0)"><rect x="-2.6" y="9" width="5.2" height="28.5" rx="2" fill="#4a3413"/></g><g transform="rotate(144.0)"><rect x="-2.6" y="9" width="5.2" height="28.5" rx="2" fill="#4a3413"/></g><g transform="rotate(216.0)"><rect x="-2.6" y="9" width="5.2" height="28.5" rx="2" fill="#4a3413"/></g><g transform="rotate(288.0)"><rect x="-2.6" y="9" width="5.2" height="28.5" rx="2" fill="#4a3413"/></g>
+        <circle cx="0" cy="0" r="10" fill="#2b1d0c" stroke="#d9b56a" stroke-width="1.6"/>
+        <circle cx="0" cy="0" r="3.4" fill="#0d0905"/>
+      </g>
+    </g>
+
+    <g transform="translate(619.00,898.00)">
+      <g>
+        <animateTransform attributeName="transform" type="rotate" from="168.750" to="528.750" dur="1.702s" repeatCount="indefinite"/>
+        <path d="M 19.41 -3.80 L 25.04 -2.80 L 25.04 2.80 L 19.41 3.80 L 19.27 4.42 L 19.12 5.04 L 18.95 5.65 L 23.47 9.16 L 20.88 14.11 L 15.42 12.38 L 15.01 12.87 L 14.59 13.35 L 14.15 13.81 L 16.53 19.02 L 11.93 22.20 L 7.90 18.13 L 7.31 18.37 L 6.71 18.60 L 6.11 18.81 L 5.79 24.52 L 0.24 25.20 L -1.43 19.72 L -2.07 19.67 L -2.70 19.59 L -3.33 19.49 L -6.27 24.41 L -11.49 22.43 L -10.43 16.80 L -10.97 16.45 L -11.49 16.09 L -12.01 15.71 L -16.89 18.70 L -20.60 14.52 L -17.05 10.03 L -17.36 9.47 L -17.66 8.91 L -17.93 8.33 L -23.65 8.71 L -24.99 3.28 L -19.75 0.96 L -19.77 0.32 L -19.77 -0.32 L -19.75 -0.96 L -24.99 -3.28 L -23.65 -8.71 L -17.93 -8.33 L -17.66 -8.91 L -17.36 -9.47 L -17.05 -10.03 L -20.60 -14.52 L -16.89 -18.70 L -12.01 -15.71 L -11.49 -16.09 L -10.97 -16.45 L -10.43 -16.80 L -11.49 -22.43 L -6.27 -24.41 L -3.33 -19.49 L -2.70 -19.59 L -2.07 -19.67 L -1.43 -19.72 L 0.24 -25.20 L 5.79 -24.52 L 6.11 -18.81 L 6.71 -18.60 L 7.31 -18.37 L 7.90 -18.13 L 11.93 -22.20 L 16.53 -19.02 L 14.15 -13.81 L 14.59 -13.35 L 15.01 -12.87 L 15.42 -12.38 L 20.88 -14.11 L 23.47 -9.16 L 18.95 -5.65 Z" fill="url(#brassGear)" stroke="#3a2a10" stroke-width="1.1" stroke-linejoin="round"/>
+        <circle cx="0" cy="0" r="15.77" fill="none" stroke="#5f441c" stroke-width="2.4"/>
+        <circle cx="0" cy="0" r="9.77" fill="none" stroke="#3d2c10" stroke-width="1.2" opacity="0.8"/>
+        <g transform="rotate(0.0)"><rect x="-2.6" y="9" width="5.2" height="5.8" rx="2" fill="#4a3413"/></g><g transform="rotate(72.0)"><rect x="-2.6" y="9" width="5.2" height="5.8" rx="2" fill="#4a3413"/></g><g transform="rotate(144.0)"><rect x="-2.6" y="9" width="5.2" height="5.8" rx="2" fill="#4a3413"/></g><g transform="rotate(216.0)"><rect x="-2.6" y="9" width="5.2" height="5.8" rx="2" fill="#4a3413"/></g><g transform="rotate(288.0)"><rect x="-2.6" y="9" width="5.2" height="5.8" rx="2" fill="#4a3413"/></g>
+        <circle cx="0" cy="0" r="10" fill="#2b1d0c" stroke="#d9b56a" stroke-width="1.6"/>
+        <circle cx="0" cy="0" r="3.4" fill="#0d0905"/>
+      </g>
+    </g>
+
+    <g transform="translate(666.25,898.00)">
+      <g>
+        <animateTransform attributeName="transform" type="rotate" from="180.000" to="540.000" dur="1.833s" repeatCount="indefinite"/>
+        <path d="M 21.18 -3.84 L 26.81 -2.78 L 26.81 2.78 L 21.18 3.84 L 21.05 4.48 L 20.91 5.10 L 20.75 5.73 L 25.36 9.13 L 22.95 14.13 L 17.41 12.65 L 17.03 13.17 L 16.63 13.67 L 16.21 14.16 L 18.88 19.23 L 14.54 22.69 L 10.20 18.95 L 9.63 19.25 L 9.05 19.53 L 8.46 19.79 L 8.67 25.52 L 3.26 26.75 L 0.97 21.50 L 0.32 21.52 L -0.32 21.52 L -0.97 21.50 L -3.26 26.75 L -8.67 25.52 L -8.46 19.79 L -9.05 19.53 L -9.63 19.25 L -10.20 18.95 L -14.54 22.69 L -18.88 19.23 L -16.21 14.16 L -16.63 13.67 L -17.03 13.17 L -17.41 12.65 L -22.95 14.13 L -25.36 9.13 L -20.75 5.73 L -20.91 5.10 L -21.05 4.48 L -21.18 3.84 L -26.81 2.78 L -26.81 -2.78 L -21.18 -3.84 L -21.05 -4.48 L -20.91 -5.10 L -20.75 -5.73 L -25.36 -9.13 L -22.95 -14.13 L -17.41 -12.65 L -17.03 -13.17 L -16.63 -13.67 L -16.21 -14.16 L -18.88 -19.23 L -14.54 -22.69 L -10.20 -18.95 L -9.63 -19.25 L -9.05 -19.53 L -8.46 -19.79 L -8.67 -25.52 L -3.26 -26.75 L -0.97 -21.50 L -0.32 -21.52 L 0.32 -21.52 L 0.97 -21.50 L 3.26 -26.75 L 8.67 -25.52 L 8.46 -19.79 L 9.05 -19.53 L 9.63 -19.25 L 10.20 -18.95 L 14.54 -22.69 L 18.88 -19.23 L 16.21 -14.16 L 16.63 -13.67 L 17.03 -13.17 L 17.41 -12.65 L 22.95 -14.13 L 25.36 -9.13 L 20.75 -5.73 Z" fill="url(#brassGear)" stroke="#3a2a10" stroke-width="1.1" stroke-linejoin="round"/>
+        <circle cx="0" cy="0" r="17.52" fill="none" stroke="#5f441c" stroke-width="2.4"/>
+        <circle cx="0" cy="0" r="11.52" fill="none" stroke="#3d2c10" stroke-width="1.2" opacity="0.8"/>
+        <g transform="rotate(0.0)"><rect x="-2.6" y="9" width="5.2" height="7.5" rx="2" fill="#4a3413"/></g><g transform="rotate(72.0)"><rect x="-2.6" y="9" width="5.2" height="7.5" rx="2" fill="#4a3413"/></g><g transform="rotate(144.0)"><rect x="-2.6" y="9" width="5.2" height="7.5" rx="2" fill="#4a3413"/></g><g transform="rotate(216.0)"><rect x="-2.6" y="9" width="5.2" height="7.5" rx="2" fill="#4a3413"/></g><g transform="rotate(288.0)"><rect x="-2.6" y="9" width="5.2" height="7.5" rx="2" fill="#4a3413"/></g>
+        <circle cx="0" cy="0" r="10" fill="#2b1d0c" stroke="#d9b56a" stroke-width="1.6"/>
+        <circle cx="0" cy="0" r="3.4" fill="#0d0905"/>
+      </g>
+    </g>
+
+    <g transform="translate(666.25,898.00)">
+      <g>
+        <animateTransform attributeName="transform" type="rotate" from="180.000" to="540.000" dur="1.833s" repeatCount="indefinite"/>
+          <rect x="-2.6" y="0" width="5.2" height="42" fill="#b08a3e" stroke="#3a2a10" stroke-width="0.8"/>
+          <circle cx="0" cy="42" r="7.2" fill="#1c1208" stroke="#d9b56a" stroke-width="2"/>
+      </g>
+    </g>
+  <text x="500" y="966" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="10.5" letter-spacing="4" fill="#c9a45e">ORRERY · ANTIQUE CLOCKWORK</text>
+
+  <rect width="1000" height="1000" fill="url(#vignette)" opacity="0.1"/>
+</svg>
