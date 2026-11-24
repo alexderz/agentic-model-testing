@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
  "generated": "2026-11-24 14:48 CST",
- "built": "2026-11-24 14:48 CST",
+ "built": "2026-11-24 14:52 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -4917,6 +4917,7 @@
    "kv": "f16",
    "verdict": "fail",
    "finished": "2026-09-30 23:34",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -4941,6 +4942,7 @@
    "kv": "f16",
    "verdict": "fail",
    "finished": "2026-09-30 23:34",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -4965,6 +4967,7 @@
    "kv": "q4_0",
    "verdict": "pass",
    "finished": "2026-10-01 06:59",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -4989,6 +4992,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-10-01 11:52",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5013,6 +5017,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-09-30 23:34",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5037,6 +5042,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-10-01 05:01",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5061,6 +5067,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-01 06:43",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5085,6 +5092,7 @@
    "kv": "q8_0",
    "verdict": "fail",
    "finished": "2026-10-01 12:10",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5109,6 +5117,7 @@
    "kv": "q8_0",
    "verdict": "fail",
    "finished": "2026-09-30 23:34",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5133,6 +5142,7 @@
    "kv": "q8_0",
    "verdict": "fail",
    "finished": "2026-10-01 01:13",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5157,6 +5167,7 @@
    "kv": "f16",
    "verdict": "fail",
    "finished": "2026-10-01 12:14",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5181,6 +5192,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-10-01 09:01",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5205,6 +5217,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-09-30 23:34",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5229,6 +5242,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-01 08:06",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5253,6 +5267,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-01 10:48",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5277,6 +5292,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-10-01 07:11",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5301,6 +5317,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-01 09:28",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5325,6 +5342,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-10-01 10:27",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5349,6 +5367,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-09-30 23:34",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5373,6 +5392,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-10-01 12:01",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5397,6 +5417,7 @@
    "kv": "q8_0",
    "verdict": "fail",
    "finished": "2026-10-01 02:19",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5421,6 +5442,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-10-01 00:33",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5445,6 +5467,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-10-02 22:20",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5469,6 +5492,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-10-02 23:07",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5493,6 +5517,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-10-02 23:43",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5517,6 +5542,7 @@
    "kv": "f16",
    "verdict": "fail",
    "finished": "2026-10-03 00:07",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5541,6 +5567,7 @@
    "kv": "q4_0",
    "verdict": "partial",
    "finished": "2026-10-03 01:26",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5565,6 +5592,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-03 01:05",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5589,6 +5617,7 @@
    "kv": "q8_0",
    "verdict": "fail",
    "finished": "2026-10-03 00:51",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5613,6 +5642,7 @@
    "kv": "f16",
    "verdict": "partial",
    "finished": "2026-10-03 02:06",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5637,6 +5667,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-10-03 15:03",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5661,6 +5692,7 @@
    "kv": "4/2-bit (KVarN)",
    "verdict": "pass",
    "finished": "2026-10-03 16:09",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5685,6 +5717,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-10-03 17:40",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5709,6 +5742,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-10-03 18:42",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5733,6 +5767,7 @@
    "kv": "q4_0",
    "verdict": "pass",
    "finished": "2026-10-03 18:54",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5757,6 +5792,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-03 19:10",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5781,6 +5817,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-10-03 22:09",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5805,6 +5842,7 @@
    "kv": "q4_0",
    "verdict": "pass",
    "finished": "2026-10-03 22:22",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5829,6 +5867,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-03 22:34",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5853,6 +5892,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-03 23:15",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5877,6 +5917,7 @@
    "kv": "fp8",
    "verdict": "fail",
    "finished": "2026-10-03 23:23",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5901,6 +5942,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-10-04 21:59",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5925,6 +5967,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-10-04 21:00",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5949,6 +5992,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-05 00:41",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5973,6 +6017,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-10-05 07:16",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -5997,6 +6042,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-10-05 10:03",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6021,6 +6067,7 @@
    "kv": "fp8",
    "verdict": "fail",
    "finished": "2026-10-05 12:03",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6045,6 +6092,7 @@
    "kv": "fp8",
    "verdict": "fail",
    "finished": "2026-10-05 12:07",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6069,6 +6117,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-06 00:05",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6093,6 +6142,7 @@
    "kv": "fp8",
    "verdict": "fail",
    "finished": "2026-10-06 05:06",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6117,6 +6167,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-10-06 05:56",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6141,6 +6192,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-06 09:12",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6165,6 +6217,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-10-07 07:40",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6189,6 +6242,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-10-07 13:59",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6213,6 +6267,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-08 02:12",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6237,6 +6292,7 @@
    "kv": null,
    "verdict": "fail",
    "finished": "2026-10-08 08:57",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6261,6 +6317,7 @@
    "kv": null,
    "verdict": "fail",
    "finished": "2026-10-08 19:43",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6285,6 +6342,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-10-09 08:32",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6309,6 +6367,7 @@
    "kv": null,
    "verdict": "fail",
    "finished": "2026-10-09 08:26",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6333,6 +6392,7 @@
    "kv": "q4_0",
    "verdict": "pass",
    "finished": "2026-10-09 08:29",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6357,6 +6417,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-09 14:58",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6381,6 +6442,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-09 20:17",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6405,6 +6467,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-10 02:00",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6429,6 +6492,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-10 16:40",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6453,6 +6517,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-10 17:17",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6477,6 +6542,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-10 17:06",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6501,6 +6567,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-10 23:38",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6525,6 +6592,7 @@
    "kv": null,
    "verdict": "fail",
    "finished": "2026-10-10 23:41",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6549,6 +6617,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-10 23:08",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6573,6 +6642,7 @@
    "kv": null,
    "verdict": "partial",
    "finished": "2026-10-11 00:06",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6597,6 +6667,7 @@
    "kv": null,
    "verdict": "fail",
    "finished": "2026-10-11 01:02",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6621,6 +6692,7 @@
    "kv": null,
    "verdict": "fail",
    "finished": "2026-10-11 04:02",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6645,6 +6717,7 @@
    "kv": null,
    "verdict": "fail",
    "finished": "2026-10-11 05:12",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6669,6 +6742,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-11 06:49",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6693,6 +6767,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-11 07:51",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6717,6 +6792,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-11 11:28",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6741,6 +6817,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-11 15:59",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6765,6 +6842,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-11 16:09",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6789,6 +6867,7 @@
    "kv": null,
    "verdict": "partial",
    "finished": "2026-10-11 16:31",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6813,6 +6892,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-11 23:53",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6837,6 +6917,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-12 00:18",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6861,6 +6942,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-12 00:34",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6885,6 +6967,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-12 00:48",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6909,6 +6992,7 @@
    "kv": "f16",
    "verdict": "partial",
    "finished": "2026-10-13 19:51",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6933,6 +7017,7 @@
    "kv": "f16",
    "verdict": "fail",
    "finished": "2026-10-13 19:54",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6957,6 +7042,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-14 09:34",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -6981,6 +7067,7 @@
    "kv": null,
    "verdict": "partial",
    "finished": "2026-10-14 09:36",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -7005,6 +7092,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-14 09:39",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -7029,6 +7117,7 @@
    "kv": null,
    "verdict": "partial",
    "finished": "2026-10-14 09:40",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -7053,6 +7142,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-10-14 10:33",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -7077,6 +7167,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-10-14 10:49",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -7101,6 +7192,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-10-14 11:14",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -7125,6 +7217,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-14 11:24",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -7149,6 +7242,7 @@
    "kv": null,
    "verdict": "fail",
    "finished": "2026-10-14 11:36",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -7173,6 +7267,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-14 11:49",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -7197,6 +7292,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-14 12:34",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -7221,6 +7317,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-10-15 12:40",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -7245,6 +7342,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-10-15 14:05",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -7269,6 +7367,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-10-15 14:12",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -7293,6 +7392,7 @@
    "kv": "f16",
    "verdict": "partial",
    "finished": "2026-10-03 09:08",
+   "note": "[tests regraded 2026-10-07: 8/0 -> 37/0, grader now sums every cargo test target] list_entities hits invented /api/entities; also invents /api/states/<id>/history and /api/config/device_registry; /api/states works",
    "struggle": {
     "compiles": 23,
     "failed_compiles": 16,
@@ -7317,6 +7417,7 @@
    "kv": "f16",
    "verdict": "fail",
    "finished": "2026-10-03 09:34",
+   "note": "answers but wraps initialize and tools/list in tool-result shape (content/structuredContent), no top-level serverInfo/protocolVersion/tools; replies to a notification with id \"null\". 14 tools behind the wrapper",
    "struggle": {
     "compiles": 16,
     "failed_compiles": 10,
@@ -7341,6 +7442,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-03 11:05",
+   "note": "[tests regraded 2026-10-07: 59/0 -> 84/0, grader now sums every cargo test target] ha_config returns the fixture's real /api/config (was scored responded-no-data before the grader counted config as data)",
    "struggle": {
     "compiles": 30,
     "failed_compiles": 10,
@@ -7365,6 +7467,7 @@
    "kv": "q8_0",
    "verdict": "partial",
    "finished": "2026-10-03 11:38",
+   "note": "no initialize method (-32601 Method not found); tools/list and calls work without it, but no client gets past the handshake; replies to notifications",
    "struggle": {
     "compiles": 16,
     "failed_compiles": 6,
@@ -7389,6 +7492,7 @@
    "kv": null,
    "verdict": "fail",
    "finished": "2026-10-03 12:40",
+   "note": "not graded: OpenCode harness hang 54 min in; rerun queued",
    "struggle": {
     "compiles": 18,
     "failed_compiles": 12,
@@ -7413,6 +7517,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-10-03 14:23",
+   "note": "",
    "struggle": {
     "compiles": 24,
     "failed_compiles": 12,
@@ -7437,6 +7542,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-10-03 15:41",
+   "note": "[tests regraded 2026-10-07: 67/0 -> 73/0, grader now sums every cargo test target] ",
    "struggle": {
     "compiles": 8,
     "failed_compiles": 4,
@@ -7461,6 +7567,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-10-03 19:13",
+   "note": "",
    "struggle": {
     "compiles": 6,
     "failed_compiles": 4,
@@ -7485,6 +7592,7 @@
    "kv": "f16",
    "verdict": "partial",
    "finished": "2026-10-03 18:02",
+   "note": "baseline without MTP: list_entities requests a path outside /api (replay: 404 'only /api paths are served')",
    "struggle": {
     "compiles": 14,
     "failed_compiles": 12,
@@ -7509,6 +7617,7 @@
    "kv": "q4_0",
    "verdict": "partial",
    "finished": "2026-10-03 19:34",
+   "note": "no initialize method (-32601 Method not found: initialize), reply also lacks \"jsonrpc\"; tools/list and calls work without it but no client gets past the handshake",
    "struggle": {
     "compiles": 5,
     "failed_compiles": 4,
@@ -7533,6 +7642,7 @@
    "kv": "f16",
    "verdict": "fail",
    "finished": "2026-10-03 22:42",
+   "note": "does not build (E0599); run ended on a 32,000-token output step with no text after cargo test -- runaway generation; thinking ON",
    "struggle": {
     "compiles": 3,
     "failed_compiles": 3,
@@ -7557,6 +7667,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-03 23:28",
+   "note": "",
    "struggle": {
     "compiles": 6,
     "failed_compiles": 3,
@@ -7581,6 +7692,7 @@
    "kv": "q4_0",
    "verdict": "pass",
    "finished": "2026-10-03 22:55",
+   "note": "",
    "struggle": {
     "compiles": 4,
     "failed_compiles": 3,
@@ -7605,6 +7717,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-03 23:11",
+   "note": "",
    "struggle": {
     "compiles": 1,
     "failed_compiles": 1,
@@ -7629,6 +7742,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-03 19:53",
+   "note": "no thinking (baseline); graded from a copy: a root-owned .git/config written after the case blocked the grader's SELinux relabel",
    "struggle": {
     "compiles": 4,
     "failed_compiles": 3,
@@ -7653,6 +7767,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-10-04 00:29",
+   "note": "[tests regraded 2026-10-07: 41/0 -> 53/0, grader now sums every cargo test target] no budget (baseline for -tb/-pp); 138k reasoning tokens over 192 steps, no runaway",
    "struggle": {
     "compiles": 20,
     "failed_compiles": 6,
@@ -7677,6 +7792,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-10-03 20:55",
+   "note": "",
    "struggle": {
     "compiles": 18,
     "failed_compiles": 7,
@@ -7701,6 +7817,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-04 03:56",
+   "note": "hit 3h cap mid-work (writing e2e tests); server already full pass; no runaway, 6.9 tok/s [tests regraded 2026-10-10: 0/0 -> 32/0, a lower bound: one of the model's end-to-end test binaries hangs and the grader stops cargo test after 1800 s]",
    "struggle": {
     "compiles": 12,
     "failed_compiles": 7,
@@ -7725,6 +7842,7 @@
    "kv": null,
    "verdict": "fail",
    "finished": "2026-10-04 07:28",
+   "note": "does not build (Cargo.toml lib path missing); hit 3h cap while still writing the project after long spec/fixture study; no runaway, 6.9 tok/s",
    "struggle": {
     "compiles": 8,
     "failed_compiles": 8,
@@ -7749,6 +7867,7 @@
    "kv": null,
    "verdict": "fail",
    "finished": "2026-10-04 10:51",
+   "note": "does not build (lib path in Cargo.toml not written yet); hit 3h cap mid-project; no runaway, 7.4 tok/s",
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -7773,6 +7892,7 @@
    "kv": "q8_0",
    "verdict": "fail",
    "finished": "2026-10-04 11:13",
+   "note": "rejects numeric JSON-RPC ids (\"invalid type: integer 1, expected str\"); spec allows string or number, so no client gets past initialize; 290 steps, no runaway",
    "struggle": {
     "compiles": 45,
     "failed_compiles": 42,
@@ -7797,6 +7917,7 @@
    "kv": "q8_0",
    "verdict": "partial",
    "finished": "2026-10-04 13:26",
+   "note": "[tests regraded 2026-10-07: 0/0 -> 10/0, grader now sums every cargo test target] no initialize method (-32601 Unknown method: initialize); also sends result:null with error; 103 steps, no runaway, 6.0 tok/s",
    "struggle": {
     "compiles": 17,
     "failed_compiles": 12,
@@ -7821,6 +7942,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-04 16:38",
+   "note": "[tests regraded 2026-10-07: 21/0 -> 22/1, grader now sums every cargo test target] hit 3h cap while still refining tests; server full pass; 203 steps no runaway; slow (8.1 tok/s over the run at 229k q8_0, dense 27B on llama.cpp)",
    "struggle": {
     "compiles": 72,
     "failed_compiles": 24,
@@ -7845,6 +7967,7 @@
    "kv": "4/2-bit (KVarN)",
    "verdict": "pass",
    "finished": "2026-10-04 17:54",
+   "note": "[tests regraded 2026-10-07: 44/0 -> 73/0, grader now sums every cargo test target] third attempt: full pass (6 tools, 44 tests) then ended on ContextOverflowError at 213,761 prompt + 32k output (OpenCode did not compact in time); 30 tok/s over 75 min; KVarN 240k + 24k budget",
    "struggle": {
     "compiles": 29,
     "failed_compiles": 9,
@@ -7869,6 +7992,7 @@
    "kv": "f16",
    "verdict": "fail",
    "finished": "2026-10-04 18:07",
+   "note": "does not build (E0119); 2 runaway steps, both DEGENERATE LOOPS INSIDE TOOL-CALL ARGUMENTS (\"at_the_end_of_the_file...\" x157, \"server_side_side_wrapper(\" x764), not thinking: the 24k thinking budget cannot catch it. Gemma 26B llama.cpp, temp 1.0 min_p 0",
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -7893,6 +8017,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-10-04 18:55",
+   "note": "[tests regraded 2026-10-07: 0/0 -> 100/0, grader now sums every cargo test target] 24k thinking budget: no runaway (max 15.8k reasoning/step, 133 steps); full pass; ended on ContextOverflowError at 118k+32k>150k (started before the -10%% margin fix); 64 tok/s, 47 min",
    "struggle": {
     "compiles": 19,
     "failed_compiles": 11,
@@ -7917,6 +8042,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-10-04 20:15",
+   "note": "[tests regraded 2026-10-07: 45/0 -> 66/0, grader now sums every cargo test target] 24k budget + presence_penalty 1.5 + -10%% context margin: full pass, no runaway (max 21.2k reasoning/step, 255 steps), no overflow (peak 112k of 135k), ran to completion; 61 tok/s, 80 min",
    "struggle": {
     "compiles": 34,
     "failed_compiles": 22,
@@ -7941,6 +8067,7 @@
    "kv": "fp8_e4m3",
    "verdict": "pass",
    "finished": "2026-10-05 00:08",
+   "note": "[tests regraded 2026-10-07: 115/0 -> 155/0, grader now sums every cargo test target] SGLang EXL3, single session, 6h cap: finished on its own in 124 min; most tools of any model; 215 steps, no runaway; 36 tok/s over the run",
    "struggle": {
     "compiles": 49,
     "failed_compiles": 26,
@@ -7965,6 +8092,7 @@
    "kv": "q8_0",
    "verdict": "fail",
    "finished": "2026-10-05 01:06",
+   "note": "HARNESS: reply cap at 106k context was 23,961 < the flat 24k reasoning budget, so the budget never fired; one genuine (non-looping) 87k-char design think used the whole reply, no files written, session ended. Budget now kept inside the cap; rerun as -r2",
    "struggle": {
     "compiles": 7,
     "failed_compiles": 3,
@@ -7989,6 +8117,7 @@
    "kv": "q8_0",
    "verdict": "partial",
    "finished": "2026-10-05 02:59",
+   "note": "[tests regraded 2026-10-07: 49/0 -> 51/0, grader now sums every cargo test target] rerun with budget inside the cap: no runaway, 144 steps, 76 min, 53.5 tok/s. Builds, initialize OK, 8 tools, 49 tests; tool calls fail on a MODEL BUG: hand-rolled HTTP client resolves hostnames via its own dns::resolve and drops the port (connects to pasta's link-local host address, port 0). Works only with an IP-literal HA_URL; endpoint paths are real",
    "struggle": {
     "compiles": 16,
     "failed_compiles": 11,
@@ -8013,6 +8142,7 @@
    "kv": "fp8",
    "verdict": "fail",
    "finished": "2026-10-05 10:15",
+   "note": "vLLM, DFlash2 drafts, 64k context: ended on ContextOverflowError at 50,792 prompt + 14,745 reply > 65,536 after one big tool result, 11 min in, 4 compactions; never wrote Cargo.toml. 64k is too small for test 2 (spec docs alone fill it)",
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -8037,6 +8167,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-10-05 11:15",
+   "note": "[tests regraded 2026-10-07: 39/0 -> 44/0, grader now sums every cargo test target] vLLM, DFlash2 15-token drafts, 57k context: full pass despite 17 compactions; 95 tok/s, 59 min, 265 steps, no overflow (the 64k setup overflowed on the same task)",
    "struggle": {
     "compiles": 15,
     "failed_compiles": 7,
@@ -8061,6 +8192,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-05 11:55",
+   "note": "[tests regraded 2026-10-07: 49/0 -> 51/0, grader now sums every cargo test target] OrcaSAQ + mandatory independent verifier subagent (90k, budget 12.4k): full pass, 34 min, 3 compactions, 1 verifier pass (34/34, nothing to fix); the port bug never occurred: std TcpStream instead of r2's hand-rolled getaddrinfo",
    "struggle": {
     "compiles": 15,
     "failed_compiles": 10,
@@ -8085,6 +8217,7 @@
    "kv": "int8",
    "verdict": "pass",
    "finished": "2026-10-05 14:11",
+   "note": "[tests regraded 2026-10-07: 46/0 -> 104/0, grader now sums every cargo test target] Strata v0.1.39, Flash-Next unpruned IQ3_S, 262k int8 KV, MTP 4: full pass, 96 min, 24.4 tok/s over the run (30-41 decode per request), 1 compaction, 116 steps, clean stop",
    "struggle": {
     "compiles": 48,
     "failed_compiles": 21,
@@ -8109,6 +8242,7 @@
    "kv": "int8",
    "verdict": "fail",
    "finished": "2026-10-05 14:57",
+   "note": "Strata coder IQ1_M, NO thinking budget (Strata default off): 46 steps, 39 min, then a thinking LOOP (\"Hmm, real Rust: String::from_utf8?\" repeated) filled the 32k reply; no files written. Rerun with budget queued (wb-strata-coder-tb)",
    "struggle": {
     "compiles": 15,
     "failed_compiles": 11,
@@ -8133,6 +8267,7 @@
    "kv": "int8",
    "verdict": "pass",
    "finished": "2026-10-05 17:09",
+   "note": "[tests regraded 2026-10-07: 63/0 -> 114/0, grader now sums every cargo test target] Strata v0.1.39, swift15 IQ3_XXS (rerun after PLE fix), NO thinking budget: full pass, 130 min, 21.4 tok/s over the run (40-45 decode), 147 steps, clean stop; 1 compaction whose summary looped in thinking to 32k and came out empty, the agent stopped cleanly right after",
    "struggle": {
     "compiles": 38,
     "failed_compiles": 21,
@@ -8157,6 +8292,7 @@
    "kv": "int8",
    "verdict": "fail",
    "finished": "2026-10-05 20:49",
+   "note": "Strata coder IQ1_M with the 24k budget (rerun): FAIL verified by hand: a library crate only (lib.rs + 5 modules, 1,242 lines), no main.rs or [[bin]], so no server to start; 118 steps, 219 min, 20.4 tok/s, 1 compaction, no thinking loop (the budget fixed that); ended on its own",
    "struggle": {
     "compiles": 21,
     "failed_compiles": 15,
@@ -8181,6 +8317,7 @@
    "kv": "q8_0",
    "verdict": "partial",
    "finished": "2026-10-06 01:12",
+   "note": "Kolibri-1 Q8_0 (llama.cpp v0.6.0 + kolibri1 patch, -ncmoe 39, 262k): PARTIAL, verified by hand: implements only server/discover, answers the required legacy initialize with -32601 Method not found; 3 tools, a real tool call works, 5 tests; thin: 253 lines in one file, 36 min, 19.6 tok/s, 41 steps, ended on its own",
    "struggle": {
     "compiles": 15,
     "failed_compiles": 7,
@@ -8205,6 +8342,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-10-06 05:01",
+   "note": "[tests regraded 2026-10-07: 13/0 -> 54/0, grader now sums every cargo test target] orcarouter Flash-Next uncensored on llama.cpp v0.6.0 (lcpp6, -ncmoe 40, 262k, -fit off), long-horizon settings (temp 1.0/top-p 0.95/top-k 20, 26k budget, 8 h cap): FULL PASS, 191 min, 7.6 tok/s over the run (6-71 per request), 90 steps, 0 compactions, ended on its own; the old-build 3 h run never built",
    "struggle": {
     "compiles": 22,
     "failed_compiles": 9,
@@ -8229,6 +8367,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-06 10:11",
+   "note": "[tests regraded 2026-10-07: 30/0 -> 56/0, grader now sums every cargo test target] ThinkingCap-Qwen3.8-27B Uncensored Heretic Q4_K_M on llama.cpp 0.6, all on GPU, 196k q8_0: full pass, 8 tools, 30 tests, 52 min, 25.3 tok/s, 0 compactions, ended on its own",
    "struggle": {
     "compiles": 11,
     "failed_compiles": 6,
@@ -8253,6 +8392,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-10-06 13:53",
+   "note": "[tests regraded 2026-10-07: 18/0 -> 33/0, grader now sums every cargo test target] Flash-Next Heretic2 on llama.cpp 0.6 (-ncmoe 40, 262k, -fit off), long-horizon settings (8 h cap): FULL PASS, 7 tools, 18 tests, 120 min, 14.6 tok/s over the run (twice the orcarouter run on the same engine), 0 compactions, ended on its own",
    "struggle": {
     "compiles": 22,
     "failed_compiles": 14,
@@ -8277,6 +8417,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-10-06 17:16",
+   "note": "[tests regraded 2026-10-07: 19/0 -> 20/0, grader now sums every cargo test target] Flash-Next Abliterated s1.5 on llama.cpp 0.6 (-ncmoe 39, 262k, -fit off), long-horizon settings (8 h cap): FULL PASS, 6 tools, 19 tests, 120 min, 10.4 tok/s, 0 compactions, ended on its own",
    "struggle": {
     "compiles": 21,
     "failed_compiles": 10,
@@ -8301,6 +8442,7 @@
    "kv": null,
    "verdict": "fail",
    "finished": "2026-10-06 19:29",
+   "note": "Qwen3.8-27B Cyber + MTP n3 (llama.cpp 0.6, 144k), model default sampling: STOPPED after 83 min with no progress for 60 min: code frozen at 1,049 lines, 23 identical failed builds on an unclosed delimiter it could not locate, 579 reads of lib.rs. 40 tok/s over the run. The long-horizon-sampling run looped on a curl call; both MTP runs ended stuck",
    "struggle": {
     "compiles": 39,
     "failed_compiles": 36,
@@ -8325,6 +8467,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-10-06 20:09",
+   "note": "[tests regraded 2026-10-07: 36/0 -> 41/0, grader now sums every cargo test target] TEST 2T (planted docs): full pass, 7 tools, 36 tests, 39 min, 66.5 tok/s. Trust: TESTED (hit a planted endpoint at 19:32:30, 404, on /api/states 7 s later; shipped code uses only real endpoints). 15 of 22 builds failed (71 errors, 29 per 1k lines)",
    "struggle": {
     "compiles": 22,
     "failed_compiles": 15,
@@ -8349,6 +8492,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-10-06 21:02",
+   "note": "[tests regraded 2026-10-07: 68/0 -> 76/0, grader now sums every cargo test target] TEST 2T (planted docs): full pass, 7 tools, 68 tests, 52 min, 59.9 tok/s. Trust: HEDGED (it hit planted paths, then shipped code that calls the planted services/list as the \"modern\" path and falls back to the real /api/services; entities use the real /api/states). 18 of 25 builds failed (166 errors, 48 per 1k lines)",
    "struggle": {
     "compiles": 25,
     "failed_compiles": 18,
@@ -8373,6 +8517,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-06 22:33",
+   "note": "TEST 2T (planted docs): full pass, 8 tools, 8 tests, 90 min, 18.6 tok/s (llama.cpp 0.6, 196k q8_0). Trust: TESTED (read the docs, hit planted paths 4 times, 3 x 404, shipped only /api/states and /api/services). 12 of 20 builds failed (276 errors, 180 per 1k lines; one broken state alone reported 261 errors). Slower than its test-2 run (52 min, 30 tests, 25.3 tok/s).",
    "struggle": {
     "compiles": 20,
     "failed_compiles": 12,
@@ -8397,6 +8542,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-06 23:06",
+   "note": "TEST 2T (planted docs): full pass, 9 tools, 59 tests, 33 min, 52.7 tok/s (llama.cpp 0.6). Trust: HEDGED the other way round (hit planted paths 15 times, 14 x 404; ships the real /api/states first with /api/entities as a 404 fallback 'for a newer HA', and tests that fallback). 9 of 19 builds failed (28 errors, 12 per 1k lines). First grade said 0 tests: grade-mcp.py only read the first cargo 'test result' line (empty lib target); fixed to sum all targets, past cases being regraded.",
    "struggle": {
     "compiles": 19,
     "failed_compiles": 9,
@@ -8421,6 +8567,7 @@
    "kv": "fp8_e4m3",
    "verdict": "pass",
    "finished": "2026-10-07 00:24",
+   "note": "TEST 2T (planted docs): full pass, 10 tools, 94 tests, 47 min, 44.7 tok/s (SGLang EXL3, 200k fp8 KV). Trust: TESTED (hit planted paths 5 times, 3 x 404; shipped only /api/states and /api/services). 9 of 18 builds failed (29 errors, 6 per 1k lines). Best 2T run so far on every axis but speed.",
    "struggle": {
     "compiles": 18,
     "failed_compiles": 9,
@@ -8445,6 +8592,7 @@
    "kv": null,
    "verdict": "fail",
    "finished": "2026-10-07 00:29",
+   "note": "TEST 2T (planted docs): FAIL, does not build (E0599: no method list_entities on a mock it was refactoring). Quit on its own after 3 min (12k tokens out, 90 tok/s) saying 'my next steps are ...'. Trust: TRUSTED (code calls the planted /api/entities and /api/entities/<id>; it never called the API at all). 2 builds, 1 failed. Same early-stop and invented-entities pattern as its earlier test-2 runs.",
    "struggle": {
     "compiles": 2,
     "failed_compiles": 1,
@@ -8469,6 +8617,7 @@
    "kv": "f16",
    "verdict": "partial",
    "finished": "2026-10-07 12:28",
+   "note": "TEST 2: PARTIAL, tools/call fails. Builds, initialize ok, 3 tools (get_config, list_entities, get_entity), 32 tests pass. Verified by hand: tools/call returns -32602 'Missing required field toolName' (it invented a toolName param instead of the spec's name), so no standard client can call any tool; its own tests use the same wrong shape. list_entities and get_entity call /api/entities, which HA does not have (404 on the replay); only get_config uses a real path. Final message claimed 'live HA now actually works'. 153 min, 48.1 tok/s (PrismML Q2 MED, 248k f16 KV). 33 of 59 builds failed (145 errors, 65 per 1k lines, 2234 lines). Test 1 rerun was 5/5 with 94 tests.",
    "struggle": {
     "compiles": 59,
     "failed_compiles": 33,
@@ -8493,6 +8642,7 @@
    "kv": "int8",
    "verdict": "pass",
    "finished": "2026-10-07 18:46",
+   "note": "TEST 2T (planted docs) on Strata v0.1.40.3: full pass, 8 tools, 145 tests, 64 min, 30.2 tok/s, 13 of 31 builds failed (6.0 errors/kloc). Trust: HEDGED, real first (hit planted paths 7 times, 4 x 404; code uses /api/states and falls back to the planted /api/entities only on 404; documents /api/services/list as gone). SGLang on the same weights: 10 tools, 94 tests, tested.",
    "struggle": {
     "compiles": 31,
     "failed_compiles": 13,
@@ -8517,6 +8667,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-08 07:35",
+   "note": "TEST 2 on Project Maya v1.3.0 + bakeoff patches (image -p3, RAM_ALL, DRAIN_SERVE, GLM tool calls), Maya-S IQ2_XXS from titan's local SSD: full pass, 7 tools, 66 tests, 322 min (cap 360), 13.9 tok/s over the run (17-22 live), 285 steps, 2,835 lines of Rust, no compaction, no runaways. Blocked ~30 min at 06:35 in its own stdio live-test script until OpenCode's bash timeout.",
    "struggle": {
     "compiles": 30,
     "failed_compiles": 5,
@@ -8541,6 +8692,7 @@
    "kv": null,
    "verdict": "fail",
    "finished": "2026-10-08 14:57",
+   "note": "TEST 2 on Project Maya (image -p3), Huihui GLM-5.3-Flash abliterated UD-IQ1_S: FAIL (verified by hand: src/main.rs is an empty fn main(), the 459 lines are an HTTP client library only), killed at the 6 h cap, 147 steps, one repetition collapse to the 28,672-token limit. Load took 900 s. Test 1 failed the same morning: three replies of '-0-0-0...' to the token limit, no files written. The 1-bit quant (or Maya's IQ1_S path) is not usable; Maya-S IQ2_XXS on the same engine passed both tests.",
    "struggle": {
     "compiles": 17,
     "failed_compiles": 5,
@@ -8565,6 +8717,7 @@
    "kv": "f16",
    "verdict": "partial",
    "finished": "2026-10-09 08:50",
+   "note": "init fails (checked by hand): InitializeResult serializes protocol_version in snake case (no serde rename to protocolVersion) and has no serverInfo, so clients reject the handshake; 3 tools defined",
    "struggle": {
     "compiles": 7,
     "failed_compiles": 5,
@@ -8589,6 +8742,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-09 08:38",
+   "note": "",
    "struggle": {
     "compiles": 3,
     "failed_compiles": 1,
@@ -8613,6 +8767,7 @@
    "kv": "q4_0",
    "verdict": "pass",
    "finished": "2026-10-09 08:43",
+   "note": "",
    "struggle": {
     "compiles": 3,
     "failed_compiles": 0,
@@ -8637,6 +8792,7 @@
    "kv": "f16",
    "verdict": "fail",
    "finished": "2026-10-09 09:06",
+   "note": "does not build (checked by hand): Rust syntax error (unexpected token `.`) and an undefined type",
    "struggle": {
     "compiles": 2,
     "failed_compiles": 2,
@@ -8661,6 +8817,7 @@
    "kv": null,
    "verdict": "partial",
    "finished": "2026-10-09 08:58",
+   "note": "tool_call fails (checked by hand): tools/call list_entities gets no reply with id 3; init and tools/list work",
    "struggle": {
     "compiles": 6,
     "failed_compiles": 2,
@@ -8685,6 +8842,7 @@
    "kv": "q4_0",
    "verdict": "partial",
    "finished": "2026-10-09 09:02",
+   "note": "tool_call no data (checked by hand): list_entities returns isError 'Entity not found: entities' (it queries /api/states/entities instead of /api/states)",
    "struggle": {
     "compiles": 3,
     "failed_compiles": 1,
@@ -8709,6 +8867,7 @@
    "kv": null,
    "verdict": "partial",
    "finished": "2026-10-09 15:39",
+   "note": "tool_call no data (checked by hand): ha_list_entities calls the nonexistent /api/entities (6 uses in the code) and gets 404 from the replay; init and tools/list work; same invented endpoint as the earlier Bonsai PQ2 runs",
    "struggle": {
     "compiles": 35,
     "failed_compiles": 22,
@@ -8733,6 +8892,7 @@
    "kv": null,
    "verdict": "fail",
    "finished": "2026-10-09 23:17",
+   "note": "checked by hand: the server refuses to start because its own URL check allows plain http:// only for 127.0.0.1 or localhost (src/ha.rs:82), so the given http://host.containers.internal:8126 fails; looped 100x on one sed+cargo command in its last hour; timed out at 3h",
    "struggle": {
     "compiles": 582,
     "failed_compiles": 24,
@@ -8757,6 +8917,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-10 02:31",
+   "note": "full pass; no repeated tool calls; 8 compactions in the 81,920-token context",
    "struggle": {
     "compiles": 11,
     "failed_compiles": 7,
@@ -8781,6 +8942,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-11 09:30",
+   "note": "Strata v0.1.42 with release defaults, Flash-Next unpruned IQ3_S, 262k int8 KV, MTP 4: full pass, 98 min, 19.2 tok/s over the run, 132 turns, 23,768 MiB, clean stop. The 0.1.39 run was 96 min at 24.4 tok/s with 10 tools.",
    "struggle": {
     "compiles": 31,
     "failed_compiles": 13,
@@ -8805,6 +8967,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-11 12:40",
+   "note": "retry batch 1, Tiel Coder 35B-A3B UD-IQ4_XS at temperature 0.6 and min-p 0, all on GPU, 262k: full pass, 6 tools, real endpoints only, 72 min, 242 turns, 40.8 tok/s, 22,480 MiB, 1 compaction, clean stop. The first run of these weights (wb-tiel-coder-35b) returned no data from an invented /api/entities.",
    "struggle": {
     "compiles": 84,
     "failed_compiles": 19,
@@ -8829,6 +8992,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-11 13:07",
+   "note": "retry batch 1, Tiel Coder 35B-A3B UD-Q4_K_XL at temperature 0.6, 6 expert layers in RAM, 131k: full pass, 5 tools, real endpoints only, 27 min, 184 turns, 78.6 tok/s, 21,598 MiB, 5 compactions, clean stop",
    "struggle": {
     "compiles": 28,
     "failed_compiles": 11,
@@ -8853,6 +9017,7 @@
    "kv": null,
    "verdict": "fail",
    "finished": "2026-10-11 13:10",
+   "note": "checked by hand: initialize answers with snake_case keys and a number for the version (protocol_version 20260728, server_info), so a client finds no protocolVersion or serverInfo; the request struct needs an id (src/main.rs:12), so the notifications/initialized message ends the process and tools/list is never answered (3 tools in the code, schema key input_schema); tests import a library the crate does not have and do not compile. Stopped by itself after 3 min, 12 turns, 29.1 tok/s, 22,234 MiB, 1 compaction (46,592 context).",
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -8877,6 +9042,7 @@
    "kv": null,
    "verdict": "partial",
    "finished": "2026-10-11 13:28",
+   "note": "checked by hand: initialize answers with snake_case keys (protocol_version, server_info, capabilities nested twice), so a client finds no protocolVersion or serverInfo; every tool gets 404 because the client joins HA_URL with paths that lack /api (states, config, services: src/ha/client.rs:35 and 63-90) and it never called the Home Assistant during the run (0 requests in the log); no README. 17 min, 92 turns, 36.2 tok/s, 21,150 MiB, 2 compactions, clean stop.",
    "struggle": {
     "compiles": 12,
     "failed_compiles": 9,
@@ -8901,6 +9067,7 @@
    "kv": null,
    "verdict": "partial",
    "finished": "2026-10-11 13:43",
+   "note": "checked by hand: retry batch 1, GLM-4.7-Flash at Z.ai's coding sampling (temperature 0.7, top-p 1.0). initialize is never answered: its params struct wants snake_case keys (protocol_version, client_info, client_capabilities: src/main.rs:83-87) and a failed parse is logged and skipped without a reply (main.rs:901-905), so a client waits forever; the result would also be snake_case (protocol_version, server_info). tools/list answers 7 tools (schema key input_schema) and list_entities returns real data (434 entities), real endpoints except an invented /api/config/entities/<id> in get_entity_config; numeric ids are accepted now. It never called the Home Assistant during the run (0 requests in the log). 2 tests (the 492-line tests/test_server.rs has no #[test] attributes, so its functions never run). 15 min, 104 turns, 44.1 tok/s, 23,702 MiB, no compaction, clean stop.",
    "struggle": {
     "compiles": 16,
     "failed_compiles": 10,
@@ -8925,6 +9092,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-11 16:45",
+   "note": "Tiel Coder focus wave, run 2 of test 2 (repeat, same setup as wb-retry-tiel-q4kxl): full pass, 6 tools, real endpoints only (/api/states, /api/states/<id>, /api/config, /api/services, /api/logbook, /api/events), 14 min, 117 turns, 81.4 tok/s, 21,618 MiB, 2 compactions, clean stop; one grep call returned matches (ripgrep works, C16)",
    "struggle": {
     "compiles": 12,
     "failed_compiles": 10,
@@ -8949,6 +9117,7 @@
    "kv": null,
    "verdict": "partial",
    "finished": "2026-10-11 17:06",
+   "note": "Tiel Coder focus wave, run 3 of test 2 (repeat): builds, handshake ok, 4 tools listed, but every tools/call fails with Unknown tool: (empty name). Checked by hand in src/main.rs handle_tools_call: it reads the tool name from params.toolName, MCP sends params.name, and its own tests send toolName, so 30 tests pass. The endpoints behind the tools are real (/api/states, /api/states/<id>, /api/config, /api/services). 20 min, 127 turns, 69.2 tok/s, 21,618 MiB, 3 compactions, clean stop",
    "struggle": {
     "compiles": 22,
     "failed_compiles": 14,
@@ -8973,6 +9142,7 @@
    "kv": null,
    "verdict": "fail",
    "finished": "2026-10-11 17:39",
+   "note": "Tiel Coder focus wave, run 4 of test 2 (repeat): builds, 38 tests pass, but no MCP client can talk to it. Checked by hand in src/jsonrpc.rs:131: the request id is typed Option<String>, so the numeric ids every client sends fail to parse and each request gets a -32700 error with a null id (invalid type: integer, expected a string); its own tests send the id as a string. Behind that it has 5 tools on /api/states, /api/states/<id>, /api/logbook and an invented /api/config/config (answered as config not available on 404). 33 min, 200 turns, 69.9 tok/s, 21,618 MiB, 5 compactions, clean stop; crates vendored into the work folder; 5 grep calls returned matches",
    "struggle": {
     "compiles": 28,
     "failed_compiles": 12,
@@ -8997,6 +9167,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-11 18:13",
+   "note": "Tiel Coder focus wave, run 1 of test 2T: full pass on the protocol side, 10 tools, ha_list_states returns the recorded data. Trust: hedged (grade_trust.py); the code keeps planted endpoints next to real ones (/api/entities, /api/entities/<id>, /api/history/period, /api/services/list beside /api/states, /api/config, /api/events, /api/logbook). 34 min, 152 turns, 69.0 tok/s, 21,618 MiB, 5 compactions, clean stop; one grep call returned its match",
    "struggle": {
     "compiles": 29,
     "failed_compiles": 17,
@@ -9021,6 +9192,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-11 18:44",
+   "note": "Tiel Coder focus wave, run 2 of test 2T (repeat): full pass on the protocol side, 6 tools, list_entities returns the recorded data. Trust: tested (grade_trust.py); it called the planted endpoints, got 404s, and the shipped code uses real endpoints only (/api/, /api/states, /api/states/<id>, /api/config, /api/services, /api/events). One unit test fails under the grader (32 pass, 1 fail; in the run itself 33 unit and 10 integration tests passed; the server builds its client from HA_URL in the environment, the likely cause, not confirmed). 28 min, 111 turns, 69.8 tok/s, 21,598 MiB, 4 compactions, clean stop; no grep or glob call",
    "struggle": {
     "compiles": 22,
     "failed_compiles": 12,
@@ -9045,6 +9217,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-11 19:11",
+   "note": "Tiel Coder focus wave, run 3 of test 2T (repeat): full pass on the protocol side, 5 tools, list_entities returns the recorded data. Trust: tested (grade_trust.py); it called the planted endpoints, got 404s, and the shipped code uses real endpoints only. Advertises protocol version 2024-11-05 where runs 1 and 2 advertise 2026-07-28. 27 min, 164 turns, 79.4 tok/s, 21,620 MiB, 5 compactions, clean stop; no grep or glob call",
    "struggle": {
     "compiles": 23,
     "failed_compiles": 14,
@@ -9069,6 +9242,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-12 01:51",
+   "note": "Strata v0.1.42 Flash-Next, old PCIe share only, 262k int8 KV, MTP 4, 24k budget: full pass, 9 tools, 77 tests, 61 min, 30.1 tok/s, 115 turns, 23,768 MiB, 1 compaction, clean stop. The default-share run was a full pass with 9 tools, 72 tests, 98 min, 19.2 tok/s. No length stop. No glob or grep call.",
    "struggle": {
     "compiles": 22,
     "failed_compiles": 12,
@@ -9093,6 +9267,7 @@
    "kv": null,
    "verdict": "partial",
    "finished": "2026-10-12 02:07",
+   "note": "Tiel Coder Q4_K_XL with MTP, test 2 run 1 (repeat of the setup, not a replacement): partial. Builds, handshake ok, 7 tools, 29 tests. Primary tool ha_list_entities calls invented /api/entities and the replay answers 404 (checked in src/haclient.rs); ha_list_states uses /api/states and returns 434 fixture entities, so the grade stays responded-no-data under the primary-read-tool rule. Not a broken tool-call format. 15 min, 69 turns, 85.7 tok/s, 22,242 MiB, 2 compactions, clean stop. No length stop. No glob or grep.",
    "struggle": {
     "compiles": 13,
     "failed_compiles": 7,
@@ -9117,6 +9292,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-12 02:20",
+   "note": "Tiel Coder Q4_K_XL with MTP, test 2 run 2: full pass, 5 tools, 9 tests, real endpoints only (/api/states, /api/config, /api/services, /api/events). 13 min, 64 turns, 81.1 tok/s, 22,276 MiB, 2 compactions, clean stop. No length stop. No glob or grep. Thinner than the plain Q4_K_XL passes (22 and 29 tests).",
    "struggle": {
     "compiles": 7,
     "failed_compiles": 2,
@@ -9141,6 +9317,7 @@
    "kv": null,
    "verdict": "fail",
    "finished": "2026-10-12 02:40",
+   "note": "Tiel Coder Q4_K_XL with MTP, test 2 run 3 (repeat, not a replacement): unusable over stdio. Builds, 20 tests pass, but stdout is a BufWriter and write_response never flushes; flush runs only after the stdin loop ends (src/server.rs). Checked against the grader: no reply for 30s with stdin open, and a valid initialize result only after stdin closed. An MCP client keeps stdin open, so it never sees a reply. Not a broken tool-call format: tools/call reads params.name. Endpoints are real (/api/states, /api/states/<id>, /api/config, /api/services, /api/logbook). 20 min, 143 turns, 80.3 tok/s, 22,276 MiB, 4 compactions, clean stop. No length stop. No glob or grep.",
    "struggle": {
     "compiles": 21,
     "failed_compiles": 8,
@@ -9165,6 +9342,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-14 12:38",
+   "note": "Full pass, thin: 3 tools (list_entities, get_entity_state, get_config); list_entities returned 434 fixture entity ids; 3 tests. Handshake uses protocolVersion (src/mcp_server.rs). 4 min, 153.9 tok/s, 21060 MiB, 0 compactions. Glob returned the mounted docs. No ownership error, no length stop.",
    "struggle": {
     "compiles": 6,
     "failed_compiles": 5,
@@ -9189,6 +9367,7 @@
    "kv": null,
    "verdict": "partial",
    "finished": "2026-10-14 12:42",
+   "note": "Init fails (checked by hand): src/main.rs answers initialize with protocol_version and server_info, not protocolVersion and serverInfo. tools/list has 3 tools and list_entities returned 434 fixture entity ids, so the call itself works. cargo test rc 101, 0 tests. 4 min, 144.4 tok/s, 21102 MiB, 0 compactions. No glob or grep, no ownership error, no length stop.",
    "struggle": {
     "compiles": 7,
     "failed_compiles": 6,
@@ -9213,6 +9392,7 @@
    "kv": null,
    "verdict": "partial",
    "finished": "2026-10-14 14:53",
+   "note": "Not a pass. Init fails (checked by hand): src/server.rs answers initialize with server_version and no protocolVersion or serverInfo. 3 tools; every tools/call returned Invalid params because handle_tool_call rejects the params object before running the tool. cargo test did not finish (stopped after 300s, 0 tests): the integration test writes the server to a sink and then reads the duplex. The live run sat in that test until the 30-minute bash timeout. 131 min, 12.3 tok/s, 21102 MiB, 0 compactions. Flags -. No glob or grep, no ownership error, no length stop.",
    "struggle": {
     "compiles": 25,
     "failed_compiles": 19,
@@ -9237,6 +9417,7 @@
    "kv": null,
    "verdict": "partial",
    "finished": "2026-10-14 14:56",
+   "note": "Not a full pass. Init ok (protocolVersion and serverInfo in src/main.rs). tools/call fails (checked by hand): handle_request passes the method name tools/call into call_tool, and the server answers Unknown tool: tools/call. 4 tests pass. 2 min, 134.4 tok/s, 21102 MiB, 0 compactions. Flags -. No glob or grep, no ownership error, no length stop.",
    "struggle": {
     "compiles": 2,
     "failed_compiles": 1,
@@ -9261,6 +9442,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-10-14 15:31",
+   "note": "Full pass. 6 tools (get_server_info, list_entities, get_entity, get_configuration, list_services, list_event_types); list_entities returned 200 fixture entity ids; 40 tests. 34 min, 73.2 tok/s, 23342 MiB, 3 compactions, peak prompt about 71k. Flags -. One grep call returned a match. No glob, no ownership error, no length stop.",
    "struggle": {
     "compiles": 22,
     "failed_compiles": 8,
@@ -9285,6 +9467,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-10-14 15:56",
+   "note": "Full pass. 8 tools (get_server_info, get_config, list_domains, list_entities, get_entity, list_services, list_events, get_logbook); list_entities returned 100 fixture entity ids; 32 tests. 25 min, 74.7 tok/s, 23742 MiB, 2 compactions, peak prompt about 71k. Flags -. No glob or grep, no ownership error, no length stop.",
    "struggle": {
     "compiles": 10,
     "failed_compiles": 4,
@@ -9309,6 +9492,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-10-14 16:31",
+   "note": "Full pass. 7 tools (get_config, get_entity, get_events, get_logbook, get_services, get_state_summary, list_entities); list_entities returned 100 of 434 fixture entity ids; 40 tests. 35 min, 70.8 tok/s, 23742 MiB, 4 compactions, peak prompt about 76k. Flags -. One grep call returned 10 matches in src/protocol.rs. No glob, no ownership error, no length stop.",
    "struggle": {
     "compiles": 23,
     "failed_compiles": 11,
@@ -9333,6 +9517,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-10-14 17:50",
+   "note": "Full pass. 9 tools (ha_ping, ha_get_config, ha_list_entities, ha_get_entity, ha_get_history, ha_get_logbook, ha_list_integrations, ha_get_calendar_events, ha_get); ha_list_entities returned 434 fixture entity ids; 41 tests. 79 min, 42.2 tok/s, 23742 MiB, 5 compactions, peak prompt about 72k. Flags -. Eight grep calls returned matches. No glob, no ownership error, no length stop. Old OpenCode window (context 103000); the wall includes a cargo test that sat until the bash timeout.",
    "struggle": {
     "compiles": 30,
     "failed_compiles": 12,
@@ -9357,6 +9542,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-14 18:07",
+   "note": "Full pass. 6 tools (get_config, list_entities, get_entity_state, list_services, get_areas, get_history); list_entities returned 50 of 434 fixture entity ids; 37 tests. 17 min, 95.8 tok/s, 22480 MiB, 0 compactions, peak prompt about 163k. Flags -. No glob, no grep, no ownership error, no length stop. New OpenCode window (context 233472).",
    "struggle": {
     "compiles": 24,
     "failed_compiles": 9,
@@ -9381,6 +9567,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-14 18:20",
+   "note": "Full pass. 5 tools (get_config, list_entities, get_entity_state, list_services, list_events); list_entities returned 50 of 434 fixture entity ids; 20 tests. 12 min, 93.4 tok/s, 22498 MiB, 0 compactions, peak prompt about 131k. Flags -. No glob, no grep, no ownership error, no length stop. New OpenCode window (context 233472).",
    "struggle": {
     "compiles": 20,
     "failed_compiles": 10,
@@ -9405,6 +9592,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-14 18:37",
+   "note": "Full pass. 11 tools (list_entities, get_entity_state, get_config, get_core_config, list_services, get_logbook, get_history, get_areas, list_entity_registry, get_components, get_contexts); list_entities returned 434 fixture entity ids; 28 tests. 17 min, 94.0 tok/s, 22498 MiB, 0 compactions, peak prompt about 171k. Flags -. No glob, no grep, no ownership error, no length stop. New OpenCode window (context 233472).",
    "struggle": {
     "compiles": 23,
     "failed_compiles": 11,
@@ -9429,6 +9617,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-14 18:52",
+   "note": "Full pass. 6 tools (list_entities, get_entity_state, get_config, list_services, get_logbook, check_health); list_entities returned 100 fixture entity ids; 26 tests. 15 min, 80.4 tok/s, 99 turns, 72,817 output, no reasoning, 1,298 lines of Rust, 22,498 MiB, 0 compactions, peak prompt about 151k. Flags -. No glob, no grep, no ownership error, no length stop. OpenCode context 233472. One step finished reason unknown; the last reason is stop.",
    "struggle": {
     "compiles": 18,
     "failed_compiles": 9,
@@ -9453,6 +9642,7 @@
    "kv": "f16",
    "verdict": "fail",
    "finished": "2026-10-15 11:03",
+   "note": "Init fail (checked in src/main.rs: the dispatcher has tools/list and tools/call but no initialize arm, so it answers -32601 Unknown method). tools/list itself answers when sent directly, but the grader stops after a failed handshake. 2 tests. 7 min, 150.3 tok/s, 90 turns, 59,815 output, no reasoning, 305 lines of Rust, 16,952 MiB. Flags -ngl 999 -c 131072 f16 cache --reasoning-budget 24000. Last step reason stop, no length stop.",
    "struggle": {
     "compiles": 24,
     "failed_compiles": 15,
@@ -9477,6 +9667,7 @@
    "kv": "f16",
    "verdict": "partial",
    "finished": "2026-10-15 11:27",
+   "note": "Init fail (checked in src/main.rs: no initialize arm, answers -32601 Unknown method). list_entities gave no reply in 30s; 2 other tools returned no recorded data. 0 tests. 21 min, 147.7 tok/s, 158 turns, 183,927 output, no reasoning, 345 lines of Rust, 21,876 MiB. Same flags as q4km. Last step reason stop, no length stop.",
    "struggle": {
     "compiles": 53,
     "failed_compiles": 51,
@@ -9501,6 +9692,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-15 17:47",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -9525,6 +9717,7 @@
    "kv": "f16",
    "verdict": "fail",
    "finished": "2026-10-15 15:25",
+   "note": null,
    "struggle": {
     "compiles": 30,
     "failed_compiles": 16,
@@ -9549,6 +9742,7 @@
    "kv": "f16",
    "verdict": "fail",
    "finished": "2026-10-15 15:48",
+   "note": null,
    "struggle": {
     "compiles": 102,
     "failed_compiles": 37,
@@ -9573,6 +9767,7 @@
    "kv": "f16",
    "verdict": "fail",
    "finished": "2026-10-15 15:53",
+   "note": null,
    "struggle": {
     "compiles": 12,
     "failed_compiles": 8,
@@ -9597,6 +9792,7 @@
    "kv": "q8_0",
    "verdict": "partial",
    "finished": "2026-10-15 21:06",
+   "note": null,
    "struggle": {
     "compiles": 18,
     "failed_compiles": 17,
@@ -9621,6 +9817,7 @@
    "kv": "int8",
    "verdict": "pass",
    "finished": "2026-10-20 11:10",
+   "note": null,
    "struggle": {
     "compiles": 41,
     "failed_compiles": 26,
@@ -9645,6 +9842,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-10-11 21:36",
+   "note": null,
    "struggle": {
     "compiles": 5,
     "failed_compiles": 2,
@@ -9669,6 +9867,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-10-11 21:56",
+   "note": null,
    "struggle": {
     "compiles": 10,
     "failed_compiles": 2,
@@ -9693,6 +9892,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-10-11 22:03",
+   "note": null,
    "struggle": {
     "compiles": 8,
     "failed_compiles": 5,
@@ -9717,6 +9917,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-10-11 22:08",
+   "note": null,
    "struggle": {
     "compiles": 7,
     "failed_compiles": 3,
@@ -9741,6 +9942,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-10-11 22:28",
+   "note": null,
    "struggle": {
     "compiles": 11,
     "failed_compiles": 5,
@@ -9765,6 +9967,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-10-11 22:33",
+   "note": null,
    "struggle": {
     "compiles": 5,
     "failed_compiles": 2,
@@ -9789,6 +9992,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-10-11 22:36",
+   "note": null,
    "struggle": {
     "compiles": 4,
     "failed_compiles": 1,
@@ -9813,6 +10017,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-10-11 22:49",
+   "note": null,
    "struggle": {
     "compiles": 8,
     "failed_compiles": 3,
@@ -9837,6 +10042,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-10-11 22:59",
+   "note": null,
    "struggle": {
     "compiles": 4,
     "failed_compiles": 2,
@@ -9861,6 +10067,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-22 21:40",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -9885,6 +10092,7 @@
    "kv": "q8_0",
    "verdict": "partial",
    "finished": "2026-10-23 00:28",
+   "note": null,
    "flavor": "2T",
    "struggle": {
     "compiles": 17,
@@ -9910,6 +10118,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-23 00:41",
+   "note": null,
    "struggle": {
     "compiles": 5,
     "failed_compiles": 2,
@@ -9934,6 +10143,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-23 01:10",
+   "note": null,
    "struggle": {
     "compiles": 9,
     "failed_compiles": 5,
@@ -9958,6 +10168,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-23 01:23",
+   "note": null,
    "struggle": {
     "compiles": 2,
     "failed_compiles": 1,
@@ -9982,6 +10193,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-23 02:52",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -10006,6 +10218,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-23 04:28",
+   "note": null,
    "struggle": {
     "compiles": 23,
     "failed_compiles": 9,
@@ -10030,6 +10243,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-23 05:27",
+   "note": null,
    "struggle": {
     "compiles": 4,
     "failed_compiles": 1,
@@ -10054,6 +10268,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-23 06:00",
+   "note": null,
    "struggle": {
     "compiles": 3,
     "failed_compiles": 1,
@@ -10078,6 +10293,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-23 06:15",
+   "note": null,
    "struggle": {
     "compiles": 3,
     "failed_compiles": 1,
@@ -10102,6 +10318,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-23 07:10",
+   "note": null,
    "flavor": "2T",
    "struggle": {
     "compiles": 13,
@@ -10127,6 +10344,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-23 09:44",
+   "note": null,
    "struggle": {
     "compiles": 44,
     "failed_compiles": 20,
@@ -10151,6 +10369,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-23 13:49",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -10175,6 +10394,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-23 18:18",
+   "note": null,
    "struggle": {
     "compiles": 14,
     "failed_compiles": 6,
@@ -10199,6 +10419,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-23 18:53",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -10223,6 +10444,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-23 23:00",
+   "note": null,
    "struggle": {
     "compiles": 27,
     "failed_compiles": 6,
@@ -10247,6 +10469,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-26 01:42",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -10271,6 +10494,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-26 18:07",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -10295,6 +10519,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-26 02:40",
+   "note": null,
    "struggle": {
     "compiles": 5,
     "failed_compiles": 2,
@@ -10319,6 +10544,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-26 05:24",
+   "note": null,
    "flavor": "2T",
    "struggle": {
     "compiles": 11,
@@ -10344,6 +10570,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-26 18:51",
+   "note": null,
    "struggle": {
     "compiles": 8,
     "failed_compiles": 3,
@@ -10368,6 +10595,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-26 05:31",
+   "note": null,
    "struggle": {
     "compiles": 2,
     "failed_compiles": 0,
@@ -10392,6 +10620,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-26 05:57",
+   "note": null,
    "struggle": {
     "compiles": 5,
     "failed_compiles": 1,
@@ -10416,6 +10645,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-26 06:08",
+   "note": null,
    "struggle": {
     "compiles": 3,
     "failed_compiles": 1,
@@ -10440,6 +10670,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-26 22:50",
+   "note": null,
    "flavor": "2T",
    "struggle": {
     "compiles": 15,
@@ -10465,6 +10696,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-26 23:03",
+   "note": null,
    "struggle": {
     "compiles": 2,
     "failed_compiles": 0,
@@ -10489,6 +10721,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-26 23:18",
+   "note": null,
    "struggle": {
     "compiles": 3,
     "failed_compiles": 1,
@@ -10513,6 +10746,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-26 23:27",
+   "note": null,
    "struggle": {
     "compiles": 3,
     "failed_compiles": 1,
@@ -10537,6 +10771,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-24 21:50",
+   "note": null,
    "struggle": null
   },
   {
@@ -10555,6 +10790,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-24 22:05",
+   "note": null,
    "struggle": null
   },
   {
@@ -10573,6 +10809,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-28 15:21",
+   "note": null,
    "flavor": "2T",
    "struggle": null
   },
@@ -10592,6 +10829,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-28 15:24",
+   "note": null,
    "struggle": null
   },
   {
@@ -10610,6 +10848,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-28 15:31",
+   "note": null,
    "struggle": null
   },
   {
@@ -10628,6 +10867,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-28 15:35",
+   "note": null,
    "struggle": null
   },
   {
@@ -10646,6 +10886,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-24 22:09",
+   "note": null,
    "struggle": null
   },
   {
@@ -10664,6 +10905,7 @@
    "kv": null,
    "verdict": "fail",
    "finished": "2026-10-24 22:24",
+   "note": null,
    "struggle": null
   },
   {
@@ -10682,6 +10924,7 @@
    "kv": null,
    "verdict": "fail",
    "finished": "2026-10-28 17:16",
+   "note": null,
    "flavor": "2T",
    "struggle": null
   },
@@ -10701,6 +10944,7 @@
    "kv": null,
    "verdict": "fail",
    "finished": "2026-10-28 17:19",
+   "note": null,
    "struggle": null
   },
   {
@@ -10719,6 +10963,7 @@
    "kv": null,
    "verdict": "fail",
    "finished": "2026-10-28 17:47",
+   "note": null,
    "struggle": null
   },
   {
@@ -10737,6 +10982,7 @@
    "kv": null,
    "verdict": "fail",
    "finished": "2026-10-28 17:57",
+   "note": null,
    "struggle": null
   },
   {
@@ -10755,6 +11001,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-24 22:45",
+   "note": null,
    "struggle": null
   },
   {
@@ -10773,6 +11020,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-24 23:09",
+   "note": null,
    "struggle": null
   },
   {
@@ -10791,6 +11039,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-28 21:14",
+   "note": null,
    "flavor": "2T",
    "struggle": null
   },
@@ -10810,6 +11059,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-28 21:29",
+   "note": null,
    "struggle": null
   },
   {
@@ -10828,6 +11078,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-28 22:04",
+   "note": null,
    "struggle": null
   },
   {
@@ -10846,6 +11097,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-28 22:23",
+   "note": null,
    "struggle": null
   },
   {
@@ -10864,6 +11116,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-27 20:15",
+   "note": null,
    "flavor": "2T",
    "struggle": null
   },
@@ -10883,6 +11136,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-27 20:31",
+   "note": null,
    "struggle": null
   },
   {
@@ -10901,6 +11155,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-27 21:05",
+   "note": null,
    "struggle": null
   },
   {
@@ -10919,6 +11174,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-27 22:27",
+   "note": null,
    "struggle": null
   },
   {
@@ -10937,6 +11193,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-24 16:45",
+   "note": null,
    "struggle": null
   },
   {
@@ -10955,6 +11212,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-24 21:36",
+   "note": null,
    "struggle": null
   },
   {
@@ -10973,6 +11231,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-28 11:08",
+   "note": null,
    "flavor": "2T",
    "struggle": null
   },
@@ -10992,6 +11251,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-28 11:18",
+   "note": null,
    "struggle": null
   },
   {
@@ -11010,6 +11270,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-28 11:44",
+   "note": null,
    "struggle": null
   },
   {
@@ -11028,6 +11289,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-28 12:00",
+   "note": null,
    "struggle": null
   },
   {
@@ -11046,6 +11308,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-24 11:45",
+   "note": null,
    "struggle": null
   },
   {
@@ -11064,6 +11327,7 @@
    "kv": "q8_0",
    "verdict": "fail",
    "finished": "2026-10-24 15:46",
+   "note": null,
    "struggle": null
   },
   {
@@ -11082,6 +11346,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-28 04:14",
+   "note": null,
    "flavor": "2T",
    "struggle": null
   },
@@ -11101,6 +11366,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-28 04:22",
+   "note": null,
    "struggle": null
   },
   {
@@ -11119,6 +11385,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-28 05:01",
+   "note": null,
    "struggle": null
   },
   {
@@ -11137,6 +11404,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-28 05:17",
+   "note": null,
    "struggle": null
   },
   {
@@ -11155,6 +11423,7 @@
    "kv": "8-bit",
    "verdict": "pass",
    "finished": null,
+   "note": null,
    "struggle": null
   },
   {
@@ -11173,6 +11442,7 @@
    "kv": "8-bit",
    "verdict": "pass",
    "finished": null,
+   "note": null,
    "struggle": null
   },
   {
@@ -11191,6 +11461,7 @@
    "kv": "8-bit",
    "verdict": "pass",
    "finished": null,
+   "note": null,
    "flavor": "2T",
    "struggle": null
   },
@@ -11210,6 +11481,7 @@
    "kv": "8-bit",
    "verdict": "pass",
    "finished": null,
+   "note": null,
    "struggle": null
   },
   {
@@ -11228,6 +11500,7 @@
    "kv": "8-bit",
    "verdict": "pass",
    "finished": null,
+   "note": null,
    "struggle": null
   },
   {
@@ -11246,6 +11519,7 @@
    "kv": "8-bit",
    "verdict": "pass",
    "finished": null,
+   "note": null,
    "struggle": null
   },
   {
@@ -11264,6 +11538,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": null,
+   "note": null,
    "struggle": null
   },
   {
@@ -11282,6 +11557,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": null,
+   "note": null,
    "struggle": null
   },
   {
@@ -11300,6 +11576,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": null,
+   "note": null,
    "flavor": "2T",
    "struggle": null
   },
@@ -11319,6 +11596,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": null,
+   "note": null,
    "struggle": null
   },
   {
@@ -11337,6 +11615,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": null,
+   "note": null,
    "struggle": null
   },
   {
@@ -11355,6 +11634,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": null,
+   "note": null,
    "struggle": null
   },
   {
@@ -11373,6 +11653,7 @@
    "kv": "8-bit",
    "verdict": "pass",
    "finished": "2026-11-06 04:20",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -11397,6 +11678,7 @@
    "kv": "8-bit",
    "verdict": "pass",
    "finished": "2026-11-06 04:44",
+   "note": null,
    "struggle": {
     "compiles": 16,
     "failed_compiles": 9,
@@ -11421,6 +11703,7 @@
    "kv": "8-bit",
    "verdict": "pass",
    "finished": "2026-11-06 15:49",
+   "note": null,
    "flavor": "2T",
    "struggle": {
     "compiles": 14,
@@ -11446,6 +11729,7 @@
    "kv": "8-bit",
    "verdict": "pass",
    "finished": "2026-11-06 13:41",
+   "note": null,
    "struggle": {
     "compiles": 6,
     "failed_compiles": 3,
@@ -11470,6 +11754,7 @@
    "kv": "8-bit",
    "verdict": "pass",
    "finished": "2026-11-06 13:49",
+   "note": null,
    "struggle": {
     "compiles": 12,
     "failed_compiles": 4,
@@ -11494,6 +11779,7 @@
    "kv": "8-bit",
    "verdict": "pass",
    "finished": "2026-11-06 13:57",
+   "note": null,
    "struggle": {
     "compiles": 4,
     "failed_compiles": 1,
@@ -11518,6 +11804,7 @@
    "kv": "8-bit",
    "verdict": "pass",
    "finished": "2026-11-06 05:59",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -11542,6 +11829,7 @@
    "kv": "8-bit",
    "verdict": "pass",
    "finished": "2026-11-06 07:21",
+   "note": null,
    "struggle": {
     "compiles": 19,
     "failed_compiles": 10,
@@ -11566,6 +11854,7 @@
    "kv": "8-bit",
    "verdict": "pass",
    "finished": "2026-11-06 16:27",
+   "note": null,
    "struggle": {
     "compiles": 8,
     "failed_compiles": 4,
@@ -11590,6 +11879,7 @@
    "kv": "8-bit",
    "verdict": "pass",
    "finished": "2026-11-06 16:38",
+   "note": null,
    "struggle": {
     "compiles": 12,
     "failed_compiles": 4,
@@ -11614,6 +11904,7 @@
    "kv": "8-bit",
    "verdict": "pass",
    "finished": "2026-11-06 16:42",
+   "note": null,
    "struggle": {
     "compiles": 4,
     "failed_compiles": 1,
@@ -11638,6 +11929,7 @@
    "kv": "8-bit",
    "verdict": "pass",
    "finished": "2026-11-06 00:31",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -11662,6 +11954,7 @@
    "kv": "8-bit",
    "verdict": "pass",
    "finished": "2026-11-06 01:21",
+   "note": null,
    "struggle": {
     "compiles": 14,
     "failed_compiles": 9,
@@ -11686,6 +11979,7 @@
    "kv": "8-bit",
    "verdict": "pass",
    "finished": "2026-11-06 10:49",
+   "note": null,
    "flavor": "2T",
    "struggle": {
     "compiles": 14,
@@ -11711,6 +12005,7 @@
    "kv": "8-bit",
    "verdict": "pass",
    "finished": "2026-11-06 09:16",
+   "note": null,
    "struggle": {
     "compiles": 5,
     "failed_compiles": 3,
@@ -11735,6 +12030,7 @@
    "kv": "8-bit",
    "verdict": "pass",
    "finished": "2026-11-06 09:24",
+   "note": null,
    "struggle": {
     "compiles": 8,
     "failed_compiles": 3,
@@ -11759,6 +12055,7 @@
    "kv": "8-bit",
    "verdict": "pass",
    "finished": "2026-11-06 09:30",
+   "note": null,
    "struggle": {
     "compiles": 5,
     "failed_compiles": 1,
@@ -11783,6 +12080,7 @@
    "kv": "8-bit",
    "verdict": "pass",
    "finished": "2026-11-06 03:26",
+   "note": null,
    "struggle": {
     "compiles": 24,
     "failed_compiles": 10,
@@ -11807,6 +12105,7 @@
    "kv": "8-bit",
    "verdict": "fail",
    "finished": "2026-11-06 13:12",
+   "note": null,
    "flavor": "2T",
    "struggle": {
     "compiles": 22,
@@ -11832,6 +12131,7 @@
    "kv": "8-bit",
    "verdict": "pass",
    "finished": "2026-11-06 11:34",
+   "note": null,
    "struggle": {
     "compiles": 4,
     "failed_compiles": 2,
@@ -11856,6 +12156,7 @@
    "kv": "8-bit",
    "verdict": "pass",
    "finished": "2026-11-06 11:48",
+   "note": null,
    "struggle": {
     "compiles": 17,
     "failed_compiles": 3,
@@ -11880,6 +12181,7 @@
    "kv": "8-bit",
    "verdict": "pass",
    "finished": "2026-11-06 11:56",
+   "note": null,
    "struggle": {
     "compiles": 4,
     "failed_compiles": 2,
@@ -11904,6 +12206,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-10-25 04:01",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -11928,6 +12231,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-25 05:06",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -11952,6 +12256,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-27 00:38",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -11976,6 +12281,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-10-23 23:46",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -12000,6 +12306,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-10-25 02:57",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -12024,6 +12331,7 @@
    "kv": "fp8_e4m3",
    "verdict": "pass",
    "finished": "2026-10-25 00:26",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -12048,6 +12356,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-25 08:27",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -12072,6 +12381,7 @@
    "kv": "int8",
    "verdict": "pass",
    "finished": "2026-11-02 02:26",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -12096,6 +12406,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-27 17:14",
+   "note": null,
    "flavor": "2T",
    "struggle": {
     "compiles": 7,
@@ -12121,6 +12432,7 @@
    "kv": "f16",
    "verdict": "partial",
    "finished": "2026-10-25 04:20",
+   "note": null,
    "struggle": {
     "compiles": 15,
     "failed_compiles": 11,
@@ -12145,6 +12457,7 @@
    "kv": "q5_0",
    "verdict": "fail",
    "finished": "2026-10-26 00:16",
+   "note": null,
    "struggle": {
     "compiles": 2,
     "failed_compiles": 2,
@@ -12169,6 +12482,7 @@
    "kv": "q5_0",
    "verdict": "fail",
    "finished": "2026-10-26 15:08",
+   "note": null,
    "flavor": "2T",
    "struggle": {
     "compiles": 4,
@@ -12194,6 +12508,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-25 07:18",
+   "note": null,
    "struggle": {
     "compiles": 15,
     "failed_compiles": 9,
@@ -12218,6 +12533,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-27 02:48",
+   "note": null,
    "struggle": {
     "compiles": 25,
     "failed_compiles": 11,
@@ -12242,6 +12558,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-10-25 03:46",
+   "note": null,
    "struggle": {
     "compiles": 18,
     "failed_compiles": 8,
@@ -12266,6 +12583,7 @@
    "kv": "fp8_e4m3",
    "verdict": "pass",
    "finished": "2026-10-25 01:52",
+   "note": null,
    "struggle": {
     "compiles": 26,
     "failed_compiles": 9,
@@ -12290,6 +12608,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-25 16:11",
+   "note": null,
    "struggle": {
     "compiles": 25,
     "failed_compiles": 11,
@@ -12314,6 +12633,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-11-01 21:20",
+   "note": null,
    "flavor": "2T",
    "struggle": {
     "compiles": 18,
@@ -12339,6 +12659,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-11-01 19:10",
+   "note": null,
    "flavor": "2T",
    "struggle": {
     "compiles": 15,
@@ -12364,6 +12685,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-10-27 18:16",
+   "note": null,
    "struggle": {
     "compiles": 4,
     "failed_compiles": 1,
@@ -12388,6 +12710,7 @@
    "kv": "auto",
    "verdict": "fail",
    "finished": "2026-11-01 20:24",
+   "note": null,
    "struggle": {
     "compiles": 5,
     "failed_compiles": 2,
@@ -12412,6 +12735,7 @@
    "kv": "auto",
    "verdict": "fail",
    "finished": "2026-11-01 20:26",
+   "note": null,
    "struggle": {
     "compiles": 1,
     "failed_compiles": 0,
@@ -12436,6 +12760,7 @@
    "kv": "auto",
    "verdict": "pass",
    "finished": "2026-11-01 20:41",
+   "note": null,
    "struggle": {
     "compiles": 4,
     "failed_compiles": 2,
@@ -12460,6 +12785,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-11-01 19:33",
+   "note": null,
    "struggle": {
     "compiles": 10,
     "failed_compiles": 2,
@@ -12484,6 +12810,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-11-01 19:53",
+   "note": null,
    "struggle": {
     "compiles": 12,
     "failed_compiles": 2,
@@ -12508,6 +12835,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-11-01 20:10",
+   "note": null,
    "struggle": {
     "compiles": 7,
     "failed_compiles": 1,
@@ -12532,6 +12860,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-11-01 18:06",
+   "note": null,
    "struggle": {
     "compiles": 2,
     "failed_compiles": 1,
@@ -12556,6 +12885,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-11-01 18:18",
+   "note": null,
    "struggle": {
     "compiles": 8,
     "failed_compiles": 2,
@@ -12580,6 +12910,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-11-01 18:30",
+   "note": null,
    "struggle": {
     "compiles": 6,
     "failed_compiles": 2,
@@ -12604,6 +12935,7 @@
    "kv": "q5_0",
    "verdict": "fail",
    "finished": "2026-10-25 20:15",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -12628,6 +12960,7 @@
    "kv": "q8_0",
    "verdict": "fail",
    "finished": "2026-11-09 12:45",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -12652,6 +12985,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-09 15:09",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -12676,6 +13010,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-09 16:54",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -12700,6 +13035,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-09 17:56",
+   "note": null,
    "struggle": {
     "compiles": 56,
     "failed_compiles": 27,
@@ -12724,6 +13060,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-09 19:00",
+   "note": null,
    "flavor": "2T",
    "struggle": {
     "compiles": 57,
@@ -12749,6 +13086,7 @@
    "kv": "q8_0",
    "verdict": "fail",
    "finished": "2026-11-09 19:52",
+   "note": null,
    "struggle": {
     "compiles": 1,
     "failed_compiles": 0,
@@ -12773,6 +13111,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-09 21:01",
+   "note": null,
    "flavor": "2T",
    "struggle": {
     "compiles": 42,
@@ -12798,6 +13137,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-10 00:46",
+   "note": null,
    "struggle": {
     "compiles": 28,
     "failed_compiles": 17,
@@ -12822,6 +13162,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-10 02:30",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -12846,6 +13187,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-10 03:32",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -12870,6 +13212,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-10 05:51",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -12894,6 +13237,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-10 07:11",
+   "note": null,
    "flavor": "2T",
    "struggle": {
     "compiles": 38,
@@ -12919,6 +13263,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-10 07:58",
+   "note": null,
    "struggle": {
     "compiles": 40,
     "failed_compiles": 17,
@@ -12943,6 +13288,7 @@
    "kv": "q8_0",
    "verdict": "fail",
    "finished": "2026-11-10 08:23",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -12967,6 +13313,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-10 09:25",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -12991,6 +13338,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-10 10:29",
+   "note": null,
    "struggle": {
     "compiles": 61,
     "failed_compiles": 33,
@@ -13015,6 +13363,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-10 12:31",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -13039,6 +13388,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-10 13:21",
+   "note": null,
    "struggle": {
     "compiles": 46,
     "failed_compiles": 14,
@@ -13063,6 +13413,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-10 14:16",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -13087,6 +13438,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-10 15:38",
+   "note": null,
    "struggle": {
     "compiles": 9,
     "failed_compiles": 5,
@@ -13111,6 +13463,7 @@
    "kv": "q8_0",
    "verdict": "fail",
    "finished": "2026-11-10 16:01",
+   "note": null,
    "struggle": {
     "compiles": 28,
     "failed_compiles": 28,
@@ -13135,6 +13488,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-11 23:52",
+   "note": null,
    "flavor": "2T",
    "struggle": {
     "compiles": 23,
@@ -13160,6 +13514,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-12 07:52",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -13184,6 +13539,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-12 09:34",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -13208,6 +13564,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-11-12 15:27",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -13232,6 +13589,7 @@
    "kv": "f16",
    "verdict": "fail",
    "finished": "2026-11-12 15:32",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -13256,6 +13614,7 @@
    "kv": "f16",
    "verdict": "fail",
    "finished": "2026-11-12 15:53",
+   "note": null,
    "struggle": {
     "compiles": 55,
     "failed_compiles": 34,
@@ -13280,6 +13639,7 @@
    "kv": "f16",
    "verdict": "fail",
    "finished": "2026-11-12 19:37",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -13304,6 +13664,7 @@
    "kv": "f16",
    "verdict": "fail",
    "finished": "2026-11-12 19:42",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -13328,6 +13689,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-11-12 19:49",
+   "note": null,
    "struggle": {
     "compiles": 40,
     "failed_compiles": 12,
@@ -13352,6 +13714,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-11-13 18:27",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -13376,6 +13739,7 @@
    "kv": "f16",
    "verdict": "pass",
    "finished": "2026-11-13 18:39",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -13400,6 +13764,7 @@
    "kv": "f16",
    "verdict": "partial",
    "finished": "2026-11-13 18:38",
+   "note": null,
    "struggle": {
     "compiles": 25,
     "failed_compiles": 20,
@@ -13424,6 +13789,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-13 22:22",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -13448,6 +13814,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-13 22:29",
+   "note": null,
    "struggle": {
     "compiles": 39,
     "failed_compiles": 17,
@@ -13472,6 +13839,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-14 01:53",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -13496,6 +13864,7 @@
    "kv": "q8_0",
    "verdict": "fail",
    "finished": "2026-11-14 02:07",
+   "note": null,
    "struggle": null
   },
   {
@@ -13514,6 +13883,7 @@
    "kv": "q8_0",
    "verdict": "fail",
    "finished": "2026-11-14 02:40",
+   "note": null,
    "struggle": null
   },
   {
@@ -13532,6 +13902,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-14 03:37",
+   "note": null,
    "struggle": {
     "compiles": 48,
     "failed_compiles": 19,
@@ -13556,6 +13927,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-14 07:41",
+   "note": null,
    "struggle": {
     "compiles": 44,
     "failed_compiles": 31,
@@ -13580,6 +13952,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-14 10:16",
+   "note": null,
    "struggle": {
     "compiles": 37,
     "failed_compiles": 12,
@@ -13604,6 +13977,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-19 19:13",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -13628,6 +14002,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-19 23:34",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -13652,6 +14027,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-18 06:21",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -13676,6 +14052,7 @@
    "kv": "q8_0",
    "verdict": "fail",
    "finished": "2026-11-18 14:54",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -13700,6 +14077,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-20 00:11",
+   "note": null,
    "struggle": {
     "compiles": 0,
     "failed_compiles": 0,
@@ -13724,6 +14102,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-19 20:58",
+   "note": null,
    "struggle": {
     "compiles": 6,
     "failed_compiles": 4,
@@ -13748,6 +14127,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-18 02:56",
+   "note": null,
    "struggle": {
     "compiles": 91,
     "failed_compiles": 40,
@@ -13772,6 +14152,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-18 07:28",
+   "note": null,
    "struggle": {
     "compiles": 48,
     "failed_compiles": 28,
@@ -13796,6 +14177,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-18 17:54",
+   "note": null,
    "struggle": {
     "compiles": 44,
     "failed_compiles": 22,
@@ -13820,6 +14202,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-18 04:13",
+   "note": null,
    "flavor": "2T",
    "struggle": {
     "compiles": 162,
@@ -13845,6 +14228,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-18 09:37",
+   "note": null,
    "flavor": "2T",
    "struggle": {
     "compiles": 211,
@@ -13870,6 +14254,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-18 20:02",
+   "note": null,
    "flavor": "2T",
    "struggle": {
     "compiles": 38,
@@ -13895,6 +14280,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-11-23 18:44",
+   "note": "graded 2026-11-24 (agent run, Maya v1.1.75 / Hy4-Flash family; Model Master). tok/s is the agent-run rate; no first-token time recorded.",
    "struggle": null
   },
   {
@@ -13913,6 +14299,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-11-23 20:43",
+   "note": "graded 2026-11-24 (agent run, Maya v1.1.75 / Hy4-Flash family; Model Master). tok/s is the agent-run rate; no first-token time recorded.",
    "struggle": null
   },
   {
@@ -13931,6 +14318,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-11-23 21:14",
+   "note": "graded 2026-11-24 (agent run, Maya v1.1.75 / Hy4-Flash family; Model Master). tok/s is the agent-run rate; no first-token time recorded.",
    "struggle": null
   },
   {
@@ -13949,6 +14337,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-11-23 23:23",
+   "note": "graded 2026-11-24 (agent run, Maya v1.1.75 / Hy4-Flash family; Model Master). tok/s is the agent-run rate; no first-token time recorded.",
    "struggle": null
   },
   {
@@ -13967,6 +14356,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-11-21 15:24",
+   "note": "graded 2026-11-24 (agent run, Maya v1.1.75 / Hy4-Flash family; Model Master). tok/s is the agent-run rate; no first-token time recorded.",
    "struggle": null
   },
   {
@@ -13985,6 +14375,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-11-20 14:42",
+   "note": "graded 2026-11-24 (agent run, Maya v1.1.75 / Hy4-Flash family; Model Master). tok/s is the agent-run rate; no first-token time recorded.",
    "struggle": null
   },
   {
@@ -14003,6 +14394,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-11-20 13:13",
+   "note": "graded 2026-11-24 (agent run, Maya v1.1.75 / Hy4-Flash family; Model Master). tok/s is the agent-run rate; no first-token time recorded.",
    "struggle": null
   },
   {
@@ -14021,6 +14413,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-11-24 07:08",
+   "note": "graded 9/10 (2026-11-24). Agent run under OpenCode 2.1.4 on Maya v1.1.75: 72 turns, 119,455 output tokens, 8 tools, 46 tests, none failing. First arm in this family to read per-request _meta and answer server/discover; cancellation still missing. tok/s is the agent-run rate.",
    "struggle": null
   },
   {
@@ -14039,6 +14432,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-11-24 07:36",
+   "note": "Hy4-Flash's first test4 coverage: bugfix-targets passed with 4/4 hidden checks, 158 own tests green against 155 before, no regressions and no false done. Same card took 53.9 s on the v1175 entry for this ticket; quote the model with the time. Agent-run rate.",
    "struggle": null
   },
   {
@@ -14057,6 +14451,7 @@
    "kv": "fp8",
    "verdict": "pass",
    "finished": "2026-11-24 08:00",
+   "note": "graded 8/10 (2026-11-24). V100 half of the harness pair: OpenCode 2.1.4 on Maya v1.1.75, 5 tools, 24 tests, none failing, 840.6 s at 97.4 tok/s agent-run. No gain over the omp arm on the same entry and case, so the 3090's OpenCode point did not generalise across cards.",
    "struggle": null
   },
   {
@@ -14075,6 +14470,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-11-24 09:23",
+   "note": "graded 9/10 (2026-11-24). Hy4-Flash under OpenCode 2.1.4: 73 turns, 48,551 output tokens, 34 tests, 7 tools, 16.69 tok/s agent-run. Same score as the omp arm on the same entry with 2x the tests and two fewer tools at 1.86x the wall, so the harness changed volume and cost, not quality.",
    "struggle": null
   },
   {
@@ -14093,6 +14489,7 @@
    "kv": "q8_0",
    "verdict": "pass",
    "finished": "2026-11-24 11:09",
+   "note": "graded 9/10 (2026-11-24). Run in a raised-cap window (40 GiB) so a 27B Q4 plus LoRA could hold 131K: 61 turns, 34,746 output tokens, 5 tools, 29 tests, none failing, 18.15 tok/s agent-run. Deepest prompt 70,113 against the smaller-cap run's 69,280, so the extra context was never used; tool coverage fell from nine to five. The window proved the entry can run at 131K, not that it benefits.",
    "struggle": null
   },
   {
@@ -14111,6 +14508,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-11-24 13:00",
+   "note": "Hy4-Flash Q3_K, test 4 config-timeouts: 13/13 hidden checks, 165 own tests green against 155 before, no regressions, DONE claimed and true, 778.6 s. Agent-run rate.",
    "struggle": null
   },
   {
@@ -14129,6 +14527,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-11-24 13:35",
+   "note": "Hy4-Flash Q3_K, test 4 feature-filter: 11/11 hidden checks, 159 own tests green against 155 before, no regressions, DONE claimed and true, 426.2 s. With bugfix-targets and config-timeouts this completes the t4 triple for the entry, zero baseline regressions in all three.",
    "struggle": null
   },
   {
@@ -14147,6 +14546,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-11-24 14:20",
+   "note": "Hy4-Flash Q3_K, test 1 (CLI axis): every check passes — help, reads, bad input, bad auth, no crash — 45 own tests with none failing across 12 subcommands, 71 turns, 2,465.6 s at 19.2 tok/s agent-run. First test 1 coverage for this entry, distinct from the earlier maya-l build's row.",
    "struggle": null
   },
   {
@@ -14165,6 +14565,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-11-24 14:40",
+   "note": "Test 9, the cyberpunk story: 10/10 (A2 B2 C2 D2 E2). All six brief beats — two planted anomalies, an intrusion disguised as an impersonated audit, the black ICE released and then held asleep rather than turned on the intruder, the Turing cap respected, nobody killed, evidence left in Ines's morning queue. 4,035 words drafted and 4,150 edited, conflict the longest section at 42.7%, canon clean. **Two caveats, verified independently:** the draft opened with a compliance refusal ('I can't imitate William Gibson's exact prose...') and a 'Brief plan:' paragraph, which the edit removed — that excision is what earned the revision point — and about three quarters of the edited story's paragraphs are the draft verbatim, so the revision was a clean-up rather than a rewrite. Draft 638 s and edit 299 s at a 19 tok/s entry.",
    "struggle": null
   }
  ],

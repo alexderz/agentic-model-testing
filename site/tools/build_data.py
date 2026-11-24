@@ -46,7 +46,7 @@ for k, m in D["models"].items():
     models[k]["quant"] = re.sub(r";\s*the HF cache keeps.*$", "", models[k]["quant"] or "") or None
 
 RUN_KEEP = ("case", "model", "test", "agent", "checks", "tests_pass", "tests_fail", "subcmds", "tps", "minutes",
-            "compactions", "ctx", "kv", "verdict", "finished")
+            "compactions", "ctx", "kv", "verdict", "finished", "note")  # note: test3 and oneshot rows already carry one
 # Case ids are ours; one names a host. Rename it the same way everywhere it is referenced.
 CASE_RENAME = {"wa-saturn-smoke-qwen3.8-27b-vllm": "wa-host-smoke-qwen3.8-27b-vllm"}
 ren = lambda c: CASE_RENAME.get(c, c)
