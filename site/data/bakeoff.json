@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
  "generated": "2026-11-24 00:40 CST",
- "built": "2026-11-24 00:40 CST",
+ "built": "2026-11-24 04:51 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -25124,6 +25124,26 @@
     "note": "0 of 10 (A0 B0 C0 D0 E0). Timeout at the same 3-hour cap as the OpenCode run of this exact case, which also scored 0/10: two harnesses, one model, both out of time. No maze was delivered and all ten hidden seeds failed, so nothing was gradeable. 58 requests, 57 complete with HTTP 200, largest reply 85,653 tokens (OpenCode: 93,474), one successful compaction, no length or context finish. 21.48 tokens/s agent-run decode, median first token 2.192 s. Both harnesses failed within the allowance; this makes no claim about whether the cap or the harness caused it. Inkling 2 Mini UD-Q8_K_XL on llama.cpp b12622 mainline, V100 alone, 204,800 context, 8-bit KV, thinking on at effort 0.9; V100 at 250 W, 3090 idle. Harness: Oh My Pi 18.22.2 in the bakeoff sandbox, plain omp. One round.",
     "frames": [],
     "live": null
+   },
+   {
+    "case": "t7-v1175-3090-r2-omp",
+    "entry": "inkling2-mini-q4kxl-v1175-3090",
+    "test": 7,
+    "finish": "agent done",
+    "tokens": 334007.0,
+    "wall_s": 8563.3,
+    "tok_s": 39.0,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 0.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 8.0,
+    "note": "Agent run under omp 18.22.2 on Maya v1.1.75, 232 turns and 236 requests with zero stream failures; 39.0 tok/s is the agent-run rate, 153.2 tok/s is client-side decode, median first token 0.54 s, deepest prompt 185,316 tokens. Full marks on the showcase maze (768 cells all reachable, 10,000-cell junk test) and on ten unseen seeds, all passing with identical repeats; both hand sections 2 (walkable from the map, notes audit clean). No extra credit: route 345 cells against 320 required, 4 floor changes against 6. The completion-token total includes 1,268,139 characters of reasoning across 570 parts, because with a tools array in the request this engine reasons even with thinking off asked for at both levels - the number is not answer text.",
+    "frames": [],
+    "live": null
    }
   ]
  },
@@ -25131,7 +25151,7 @@
   "models": 157,
   "runs": 392,
   "test3": 86,
-  "oneshots": 236,
+  "oneshots": 237,
   "frames": 418,
   "pass": 293,
   "live": 137
