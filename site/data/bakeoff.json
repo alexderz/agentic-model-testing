@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-11-24 08:57 CST",
- "built": "2026-11-24 08:57 CST",
+ "generated": "2026-11-24 09:26 CST",
+ "built": "2026-11-24 09:26 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -14040,6 +14040,24 @@
    "verdict": "pass",
    "finished": "2026-11-24 07:36",
    "struggle": null
+  },
+  {
+   "case": "t2-v1175-v100-oc-r1",
+   "model": "inkling2-mini-q4kxl-v1175-v100",
+   "test": 2,
+   "agent": "OpenCode 2.1.4",
+   "checks": null,
+   "tests_pass": 24,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 97.4,
+   "minutes": 14.0,
+   "compactions": null,
+   "ctx": 524288,
+   "kv": "fp8",
+   "verdict": "pass",
+   "finished": "2026-11-24 08:00",
+   "struggle": null
   }
  ],
  "test3": [
@@ -15160,6 +15178,19 @@
    "tps": 16.7,
    "minutes": 14,
    "finished": "2026-11-01 18:44"
+  },
+  {
+   "case": "t3g-v1175-v100-r1",
+   "model": "inkling2-mini-q4kxl-v1175-v100",
+   "flavor": "3G",
+   "mcp_facts": "14/14",
+   "api_facts": "14/14",
+   "judgement_right": true,
+   "rubric": 12,
+   "note": "V100 half of the 3G pair: Maya v1.1.75 on the V100 audits the known-good server and reaches the right verdict (14/14 strict both sides, judgment right, server unchanged) with 21 probe calls and six REST cross-checks. 457 s at 100.8 tok/s, OpenCode 1.18.35, stall gate 2400.",
+   "tps": null,
+   "minutes": null,
+   "finished": null
   }
  ],
  "ab": [
@@ -25209,11 +25240,11 @@
  },
  "counts": {
   "models": 157,
-  "runs": 394,
-  "test3": 86,
+  "runs": 395,
+  "test3": 87,
   "oneshots": 238,
   "frames": 421,
-  "pass": 295,
+  "pass": 296,
   "live": 138
  }
 }

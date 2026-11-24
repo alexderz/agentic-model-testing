@@ -1,7 +1,7 @@
 {
  "schema": "history/1",
  "generated_from": "private bake-off grades through 2026-11-24: Maya v1.1.75 on both cards, Hy4-Flash, Qwen3.8-27B-pi; agent runs t1-t8 and one-shots",
- "generated": "2026-11-24 08:57 CST",
+ "generated": "2026-11-24 09:26 CST",
  "runs_new": [
   {
    "case": "wa-saluki-27b-iq2",
@@ -4504,6 +4504,24 @@
    "verdict": "pass",
    "finished": "2026-11-24 07:36",
    "note": "Hy4-Flash's first test4 coverage: bugfix-targets passed with 4/4 hidden checks, 158 own tests green against 155 before, no regressions and no false done. Same card took 53.9 s on the v1175 entry for this ticket; quote the model with the time. Agent-run rate."
+  },
+  {
+   "case": "t2-v1175-v100-oc-r1",
+   "model": "inkling2-mini-q4kxl-v1175-v100",
+   "test": 2,
+   "agent": "OpenCode 2.1.4",
+   "checks": null,
+   "tests_pass": 24,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 97.4,
+   "minutes": 14.0,
+   "compactions": null,
+   "ctx": 524288,
+   "kv": "fp8",
+   "verdict": "pass",
+   "finished": "2026-11-24 08:00",
+   "note": "graded 8/10 (2026-11-24). V100 half of the harness pair: OpenCode 2.1.4 on Maya v1.1.75, 5 tools, 24 tests, none failing, 840.6 s at 97.4 tok/s agent-run. No gain over the omp arm on the same entry and case, so the 3090's OpenCode point did not generalise across cards."
   }
  ],
  "test3_new": [
@@ -4987,6 +5005,16 @@
    "tps": 16.7,
    "minutes": 14,
    "finished": "2026-11-01 18:44"
+  },
+  {
+   "case": "t3g-v1175-v100-r1",
+   "model": "inkling2-mini-q4kxl-v1175-v100",
+   "flavor": "3G",
+   "mcp_facts": "14/14",
+   "api_facts": "14/14",
+   "judgement_right": true,
+   "rubric": 12,
+   "note": "V100 half of the 3G pair: Maya v1.1.75 on the V100 audits the known-good server and reaches the right verdict (14/14 strict both sides, judgment right, server unchanged) with 21 probe calls and six REST cross-checks. 457 s at 100.8 tok/s, OpenCode 1.18.35, stall gate 2400."
   }
  ],
  "models_new": {
