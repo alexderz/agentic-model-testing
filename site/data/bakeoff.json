@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-11-24 09:32 CST",
- "built": "2026-11-24 09:32 CST",
+ "generated": "2026-11-24 09:41 CST",
+ "built": "2026-11-24 09:41 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -14058,6 +14058,24 @@
    "verdict": "pass",
    "finished": "2026-11-24 08:00",
    "struggle": null
+  },
+  {
+   "case": "t2-hy4f-3090-oc-r1",
+   "model": "hy4f-q3k-3090",
+   "test": 2,
+   "agent": "OpenCode 2.1.4",
+   "checks": null,
+   "tests_pass": 34,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 16.7,
+   "minutes": 48.5,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-11-24 09:23",
+   "struggle": null
   }
  ],
  "test3": [
@@ -25240,11 +25258,11 @@
  },
  "counts": {
   "models": 157,
-  "runs": 395,
+  "runs": 396,
   "test3": 87,
   "oneshots": 238,
   "frames": 421,
-  "pass": 296,
+  "pass": 297,
   "live": 138
  }
 }

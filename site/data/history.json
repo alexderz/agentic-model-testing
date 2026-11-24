@@ -1,7 +1,7 @@
 {
  "schema": "history/1",
  "generated_from": "private bake-off grades through 2026-11-24: Maya v1.1.75 on both cards, Hy4-Flash, Qwen3.8-27B-pi; agent runs t1-t8 and one-shots",
- "generated": "2026-11-24 09:32 CST",
+ "generated": "2026-11-24 09:41 CST",
  "runs_new": [
   {
    "case": "wa-saluki-27b-iq2",
@@ -4522,6 +4522,24 @@
    "verdict": "pass",
    "finished": "2026-11-24 08:00",
    "note": "graded 8/10 (2026-11-24). V100 half of the harness pair: OpenCode 2.1.4 on Maya v1.1.75, 5 tools, 24 tests, none failing, 840.6 s at 97.4 tok/s agent-run. No gain over the omp arm on the same entry and case, so the 3090's OpenCode point did not generalise across cards."
+  },
+  {
+   "case": "t2-hy4f-3090-oc-r1",
+   "model": "hy4f-q3k-3090",
+   "test": 2,
+   "agent": "OpenCode 2.1.4",
+   "checks": null,
+   "tests_pass": 34,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 16.7,
+   "minutes": 48.5,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-11-24 09:23",
+   "note": "graded 9/10 (2026-11-24). Hy4-Flash under OpenCode 2.1.4: 73 turns, 48,551 output tokens, 34 tests, 7 tools, 16.69 tok/s agent-run. Same score as the omp arm on the same entry with 2x the tests and two fewer tools at 1.86x the wall, so the harness changed volume and cost, not quality."
   }
  ],
  "test3_new": [
