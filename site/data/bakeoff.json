@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
  "generated": "2026-11-24 11:12 CST",
- "built": "2026-11-24 11:12 CST",
+ "built": "2026-11-24 13:06 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -23903,6 +23903,26 @@
      "frames/agent-orrery/t8-orrery-ink2q8v-uncapped-r2/frame-6000.webp"
     ],
     "live": "live/agent-orrery/t8-orrery-ink2q8v-uncapped-r2/orrery.svg"
+   },
+   {
+    "case": "t8-orrery-hy4f-3090-r1",
+    "entry": "hy4f-q3k-3090",
+    "test": 8,
+    "finish": "agent exit 0",
+    "tokens": 22991.0,
+    "wall_s": 1437.9,
+    "tok_s": 26.5,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 1.0,
+     "E": 1.0
+    },
+    "total": 8.0,
+    "note": "Agentic orrery on Hy4-Flash Q3_K with the sealed browser: 46 of 46 clean requests, period ratios exact to 0.1%, but the gear train is one constant multiplier and the dark side turns with the planet — the loop fixed neither. 3.8 s median first token, 38.7 s at p90 (the Q3_K expert tail).",
+    "frames": [],
+    "live": null
    }
   ],
   "agent-pagoda": [
@@ -24349,6 +24369,26 @@
      "frames/agent-pagoda/t8-pagoda-fnb-v31-udq3kxl-r1/frame-10000.webp"
     ],
     "live": "live/agent-pagoda/t8-pagoda-fnb-v31-udq3kxl-r1/page.html"
+   },
+   {
+    "case": "t8-pagoda-hy4f-3090-r1",
+    "entry": "hy4f-q3k-3090",
+    "test": 8,
+    "finish": "agent exit 0",
+    "tokens": 9492.0,
+    "wall_s": 523.7,
+    "tok_s": 29.6,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 10.0,
+    "note": "Agentic pagoda on Hy4-Flash Q3_K with the sealed browser, OpenCode 1.18.35, 131K served. 29.6 tok/s is client median decode, 3.1 s median first token; deepest prompt 29,236. 15,207-byte page against the one-shot's 16,578, for the same 10/10 — so on this task the agent loop was quicker than the one-shot (523.7 s against 882.4 s) and not worse, which is the opposite of the Inkling arm's result.",
+    "frames": [],
+    "live": null
    }
   ],
   "labyrinth": [
@@ -25278,7 +25318,7 @@
   "models": 157,
   "runs": 397,
   "test3": 87,
-  "oneshots": 238,
+  "oneshots": 240,
   "frames": 421,
   "pass": 298,
   "live": 138
