@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-11-24 13:08 CST",
- "built": "2026-11-24 13:08 CST",
+ "generated": "2026-11-24 13:10 CST",
+ "built": "2026-11-24 13:10 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -23921,8 +23921,12 @@
     },
     "total": 8.0,
     "note": "Agentic orrery on Hy4-Flash Q3_K with the sealed browser: 46 of 46 clean requests, period ratios exact to 0.1%, but the gear train is one constant multiplier and the dark side turns with the planet — the loop fixed neither. 3.8 s median first token, 38.7 s at p90 (the Q3_K expert tail).",
-    "frames": [],
-    "live": null
+    "frames": [
+     "frames/agent-orrery/t8-orrery-hy4f-3090-r1/frame-100.webp",
+     "frames/agent-orrery/t8-orrery-hy4f-3090-r1/frame-2000.webp",
+     "frames/agent-orrery/t8-orrery-hy4f-3090-r1/frame-6000.webp"
+    ],
+    "live": "live/agent-orrery/t8-orrery-hy4f-3090-r1/orrery.svg"
    }
   ],
   "agent-pagoda": [
@@ -24387,8 +24391,12 @@
     },
     "total": 10.0,
     "note": "Agentic pagoda on Hy4-Flash Q3_K with the sealed browser, OpenCode 1.18.35, 131K served. 29.6 tok/s is client median decode, 3.1 s median first token; deepest prompt 29,236. 15,207-byte page against the one-shot's 16,578, for the same 10/10 — so on this task the agent loop was quicker than the one-shot (523.7 s against 882.4 s) and not worse, which is the opposite of the Inkling arm's result.",
-    "frames": [],
-    "live": null
+    "frames": [
+     "frames/agent-pagoda/t8-pagoda-hy4f-3090-r1/frame-1500.webp",
+     "frames/agent-pagoda/t8-pagoda-hy4f-3090-r1/frame-5000.webp",
+     "frames/agent-pagoda/t8-pagoda-hy4f-3090-r1/frame-10000.webp"
+    ],
+    "live": "live/agent-pagoda/t8-pagoda-hy4f-3090-r1/page.html"
    }
   ],
   "labyrinth": [
@@ -25319,8 +25327,8 @@
   "runs": 397,
   "test3": 87,
   "oneshots": 240,
-  "frames": 421,
+  "frames": 427,
   "pass": 298,
-  "live": 138
+  "live": 140
  }
 }

@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voxel Japanese Pagoda</title>
+<style>
+  html,body{margin:0;padding:0;overflow:hidden;background:#bcd9ef;}
+  canvas{display:block;}
+</style>
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js"}}
+</script>
+</head>
+<body>
+<script type="module">
+import * as THREE from 'three';
+
+// ---------- setup ----------
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xbcd9ef);
+scene.fog = new THREE.Fog(0xbcd9ef, 42, 95);
+
+const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 250);
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFShadowMap;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+document.body.appendChild(renderer.domElement);
+
+// ---------- helpers: everything is a box ----------
+const BOX = new THREE.BoxGeometry(1,1,1);
+const mats = {};
+function mat(name, color, opts={}){
+  mats[name] = new THREE.MeshStandardMaterial({color, roughness:0.85, metalness:0.02, ...opts});
+  return mats[name];
+}
+mat('grass',   0x6fa05a);
+mat('grass2',  0x79ab61);
+mat('stone',   0x9aa2a6);
+mat('stone2',  0x858e93);
+mat('stoneD',  0x717b81);
+mat('wood',    0x8b4a32);
+mat('woodD',   0x6e3826);
+mat('woodL',   0xa55c3c);
+mat('wall',    0xe8d7b0);
+mat('wall2',   0xdfcba1);
+mat('roof',    0x355663);
+mat('roof2',   0x406674);
+mat('roofEdge',0x243e49);
+mat('gold',    0xd9ad4a, {metalness:0.55, roughness:0.35});
+mat('bark',    0x6b4a39);
+mat('bark2',   0x7d5542);
+mat('pink',    0xf7b6cf);
+mat('pink2',   0xffc9de);
+mat('pink3',   0xef9bbd);
+mat('white',   0xfdf3e3);
+mat('water',   0x4f9fc4, {roughness:0.2, metalness:0.15});
+mat('water2',  0x62b2d4, {roughness:0.2, metalness:0.15});
+mat('torii',   0xc0392b);
+mat('toriiD',  0x9d2e23);
+mat('sand',    0xcbbd96);
+mat('leaf',    0x79a05a);
+
+const sceneRoot = new THREE.Group();
+scene.add(sceneRoot);
+
+// add a cube with size/position/rotation, optional material, shadows
+function cube(parent, m, x,y,z, sx,sy,sz, ry=0){
+  const mesh = new THREE.Mesh(BOX, m);
+  mesh.position.set(x,y,z);
+  mesh.scale.set(sx,sy,sz);
+  mesh.rotation.y = ry;
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  parent.add(mesh);
+  return mesh;
+}
+// deterministic pseudo-random
+let seed = 123457;
+function rand(){ seed = (seed*1103515245 + 12345) & 0x7fffffff; return seed/0x7fffffff; }
+function rr(a,b){ return a + rand()*(b-a); }
+function ri(a,b){ return Math.floor(rr(a,b+1)); }
+
+// ---------- ground: a voxel island ----------
+const GROUND_Y = 0;
+const G = 26; // half extent in voxels
+const ground = new THREE.Group();
+sceneRoot.add(ground);
+for(let x=-G;x<=G;x++){
+  for(let z=-G;z<=G;z++){
+    // rounded-ish square island
+    const d = Math.max(Math.abs(x), Math.abs(z));
+    if(d>22 && rand()<0.35) continue;
+    const y = (Math.sin(x*0.7)*Math.cos(z*0.6)>0.65)?0.25:0;
+    cube(ground, rand()>0.25?mats.grass:mats.grass2, x, GROUND_Y-0.5+y, z, 1.0, 1.0, 1.0);
+  }
+}
+// soil cliff under island edges
+for(let x=-G;x<=G;x++){
+  for(let z=-G;z<=G;z++){
+    const d = Math.max(Math.abs(x), Math.abs(z));
+    if(d<19) continue;
+    if(d>22 && rand()<0.35) continue;
+    if(rand()>0.75) continue;
+    cube(ground, rand()>0.5?mats.stone2:mats.stoneD, x, -1.5, z, 1,1,1);
+    if(rand()>0.6) cube(ground, mats.stoneD, x, -2.4, z, 1,0.9,1);
+  }
+}
+
+// ---------- stone platform ----------
+const plat = new THREE.Group();
+sceneRoot.add(plat);
+// base courses
+function platformLevel(y, half, m){
+  for(let x=-half;x<=half;x++) for(let z=-half;z<=half;z++){
+    if(Math.max(Math.abs(x),Math.abs(z))===half && rand()<0.08) continue;
+    cube(plat,m,x,y,z,0.98,0.5,0.98);
+  }
+}
+platformLevel(0.05, 9, mats.stone2);
+platformLevel(0.55, 9, mats.stone);
+platformLevel(1.05, 8, mats.stone2);
+// stairway on +z side
+for(let i=0;i<3;i++){
+  const w = 3 - i;
+  for(let x=-w;x<=w;x++) cube(plat, mats.stone, x, 0.1+i*0.35, 9+i, 0.98,0.4,0.98);
+}
+// stone lanterns flanking stairs
+function lantern(x,z){
+  const g=new THREE.Group(); g.position.set(x,0,z); sceneRoot.add(g);
+  cube(g,mats.stone,0,1,0,1.2,0.5,1.2);
+  cube(g,mats.stone2,0,1.6,0,0.7,0.9,0.7);
+  cube(g,mats.stone,0,2.15,0,1.3,0.35,1.3);
+  cube(g,mats.stone2,0,2.42,0,0.8,0.25,0.8);
+  cube(g,mats.gold,0,1.72,0,0.35,0.45,0.35);
+  cube(g,mats.stone,0,2.65,0,0.35,0.3,0.35);
+}
+lantern(-6,9.5); lantern(6,9.5);
+
+// ---------- pagoda ----------
+// each level: body walls, veranda, pillar detail, roofs with upturned eaves
+const pagoda = new THREE.Group();
+pagoda.position.y = 1.3;
+sceneRoot.add(pagoda);
+
+const LEVELS = 5;
+const baseHalf = [6.0, 5.0, 4.1, 3.2, 2.4];
+const bodyBaseY = [1.2, 4.0, 6.5, 8.7, 10.7];
+const bodyH = [2.4, 2.15, 1.9, 1.7, 1.5];
+
+function roof(level, half, y){
+  const g = new THREE.Group(); pagoda.add(g);
+  const layers = [
+    {h:half+1.6, y:y+0.25, m:mats.roofEdge},
+    {h:half+1.3, y:y+0.55, m:mats.roof},
+    {h:half+1.0, y:y+0.82, m:mats.roof2},
+    {h:half+0.7, y:y+1.06, m:mats.roof}
+  ];
+  for(const L of layers){
+    for(let ix=-L.h;ix<=L.h;ix++){
+      for(let iz=-L.h;iz<=L.h;iz++){
+        const edge = Math.max(Math.abs(ix),Math.abs(iz));
+        if(edge<Math.max(1,L.h-1) && (L!==layers[0])) continue; // hollow roof skins except bottom
+        if(edge===L.h && (Math.abs(ix)===L.h && Math.abs(iz)===L.h)){
+          // upturned corner: lift it
+          const c = cube(g, mats.roofEdge, ix, L.y+0.55, iz, 1.0,0.32,1.0);
+          c.rotation.y = 0;
+          continue;
+        }
+        const cornerLift = edge>=L.h-1 ? 0.35*(edge-(L.h-2)) : 0;
+        cube(g, L.m, ix, L.y+cornerLift, iz, 0.98,0.34,0.98);
+      }
+    }
+  }
+  // ridge beams along the four axes, capped by ridge tiles
+  for(let s=-1;s<=1;s+=2){
+    for(let i=-(half+1);i<=half+1;i++){
+      cube(g, mats.roofEdge, i, y+1.32, s*(half+0.45), 1.0,0.22,0.35);
+      cube(g, mats.roofEdge, s*(half+0.45), y+1.32, i, 0.35,0.22,1.0);
+    }
+  }
+  // corner golden ornaments
+  for(const sx of [-1,1]) for(const sz of [-1,1]){
+    cube(g, mats.gold, sx*(half+1.6), y+1.12, sz*(half+1.6), 0.35,0.5,0.35);
+  }
+}
+
+for(let L=0;L<LEVELS;L++){
+  const half = baseHalf[L];
+  const by = bodyBaseY[L];
+  const bh = bodyH[L];
+  const g = new THREE.Group(); pagoda.add(g);
+  // veranda deck
+  for(let x=-(half+1);x<=half+1;x++) for(let z=-(half+1);z<=half+1;z++){
+    if(Math.max(Math.abs(x),Math.abs(z))>=half+1 && (x+z)%3===0) continue;
+    cube(g, mats.woodD, x, by-0.25, z, 1.0,0.4,1.0);
+  }
+  // outer posts (dark red)
+  for(const sx of [-1,1]) for(const sz of [-1,1]){
+    for(let i=-half;i<=half;i+=2){
+      cube(g, mats.wood, i, by+bh/2, sz*half, 0.55,bh,0.55);
+      cube(g, mats.wood, sx*half, by+bh/2, i, 0.55,bh,0.55);
+    }
+  }
+  // walls: cream panels with wood lattice window openings
+  for(let x=-half+1;x<=half-1;x++){
+    for(const sz of [-1,1]){
+      const z = sz*half;
+      const center = (x>=-1 && x<=1);
+      cube(g, center?mats.woodD:mats.wall, x, by+bh*0.55, z, 0.92, bh*0.78, 0.32);
+      if(!center && Math.abs(x)%2===0){
+        cube(g, mats.woodD, x, by+bh*0.55, z+sz*0.19, 0.16, bh*0.7, 0.08);
+        cube(g, mats.woodD, x, by+bh*0.55, z+sz*0.19, 0.85, 0.14, 0.08);
+      }
+    }
+  }
+  for(let z=-half+1;z<=half-1;z++){
+    for(const sx of [-1,1]){
+      const x = sx*half;
+      const center = (z>=-1 && z<=1);
+      cube(g, center?mats.woodD:mats.wall2, x, by+bh*0.55, z, 0.32, bh*0.78, 0.92);
+      if(!center && Math.abs(z)%2===0){
+        cube(g, mats.woodD, x+sx*0.19, by+bh*0.55, z, 0.08, bh*0.7, 0.16);
+        cube(g, mats.woodD, x+sx*0.19, by+bh*0.55, z, 0.08, 0.14, 0.85);
+      }
+    }
+  }
+  // horizontal beam belts
+  for(const sx of [-1,1]) for(const sz of [-1,1]){
+    cube(g, mats.woodD, sx*half, by+0.15, 0, 0.65,0.28,half*2+0.7);
+    cube(g, mats.woodD, 0, by+0.15, sz*half, half*2+0.7,0.28,0.65);
+  }
+  // railings on veranda
+  for(const sx of [-1,1]){
+    for(let z=-(half+1);z<=half+1;z++){
+      cube(g, mats.woodL, sx*(half+1), by+0.35, z, 0.2,0.25,0.9);
+    }
+  }
+  for(const sz of [-1,1]){
+    for(let x=-(half+1);x<=half+1;x++){
+      cube(g, mats.woodL, x, by+0.35, sz*(half+1), 0.9,0.25,0.2);
+    }
+  }
+  roof(L, half, by+bh);
+}
+
+// finial / spire
+const spire = new THREE.Group(); pagoda.add(spire);
+const sy = bodyBaseY[4]+bodyH[4]+1.15;
+// base lotus dish
+for(let i=0;i<5;i++) cube(spire, mats.gold, 0, sy+i*0.16, 0, 2.2-i*0.32,0.18,2.2-i*0.32);
+// graduated rings
+for(let i=0;i<6;i++){
+  const w = 1.35-i*0.16;
+  cube(spire, mats.gold, 0, sy+1.0+i*0.33, 0, w,0.16,w);
+}
+// shaft
+cube(spire, mats.gold, 0, sy+3.1, 0, 0.42,1.7,0.42);
+cube(spire, mats.gold, 0, sy+4.1, 0, 0.66,0.2,0.66);
+cube(spire, mats.gold, 0, sy+4.45, 0, 0.22,0.6,0.22);
+
+// ---------- pond ----------
+const pond = new THREE.Group(); sceneRoot.add(pond);
+const PX = -15, PZ = 8;
+for(let x=-6;x<=6;x++) for(let z=-5;z<=5;z++){
+  const d = (x*x)/36 + (z*z)/25;
+  if(d>1.05) continue;
+  cube(pond, mats.sand, PX+x, 0.12, PZ+z, 1,0.3,1);
+  if(d<0.9){
+    cube(pond, rand()>0.4?mats.water:mats.water2, PX+x, 0.3, PZ+z, 0.98,0.1,0.98);
+  }
+}
+// water lilies & rocks
+for(const [lx,lz] of [[-3,1],[2,-2],[4,2],[-1,-3]]){
+  cube(pond, mats.leaf, PX+lx, 0.4, PZ+lz, 0.9,0.12,0.9);
+  if(rand()>0.5) cube(pond, mats.pink, PX+lx, 0.48, PZ+lz, 0.35,0.15,0.35);
+}
+for(const [rx,rz] of [[-6,-3],[6,4],[-5,5]]){
+  cube(pond, mats.stone, PX+rx, 0.45, PZ+rz, 1.1,0.8,0.9);
+  cube(pond, mats.stone2, PX+rx+0.5, 0.3, PZ+rz, 0.7,0.5,0.7);
+}
+
+// ---------- torii gate ----------
+const torii = new THREE.Group();
+torii.position.set(13, 0, 12);
+torii.rotation.y = -0.45;
+sceneRoot.add(torii);
+// stone steps leading up
+for(let i=0;i<2;i++) for(let x=-3;x<=3;x++) cube(torii, mats.stone, x, 0.1+i*0.3, 3+i, 0.95,0.3,0.95);
+// pillars
+for(const s of [-1,1]){
+  cube(torii, mats.toriiD, s*3.4, 2.1, 0, 0.85,4.2,0.85);
+  cube(torii, mats.stone, s*3.4, 0.3, 0, 1.25,0.6,1.25);
+}
+// lower crossbeam (nuki)
+cube(torii, mats.torii, 0, 3.1, 0, 8.6,0.65,0.8);
+// upper lintel (kasagi) with upturned ends
+cube(torii, mats.toriiD, 0, 4.7, 0, 9.6,0.6,1.1);
+cube(torii, mats.torii, 0, 5.05, 0, 10.2,0.35,1.3);
+for(const s of [-1,1]){
+  const e = cube(torii, mats.torii, s*5.0, 5.35, 0, 0.9,0.5,1.4);
+  e.rotation.z = -s*0.25;
+}
+// central plaque
+cube(torii, mats.woodD, 0, 3.9, 0.65, 0.8,1.0,0.15);
+cube(torii, mats.gold, 0, 3.9, 0.75, 0.45,0.65,0.08);
+
+// ---------- cherry blossom trees ----------
+function cherryTree(tx,tz,scale,phase){
+  const g = new THREE.Group();
+  g.position.set(tx,0,tz);
+  g.scale.setScalar(scale);
+  sceneRoot.add(g);
+  // trunk
+  cube(g, mats.bark, 0, 2.0, 0, 1.2,4.0,1.2);
+  cube(g, mats.bark2, 0.2, 3.5, 0.1, 0.8,1.6,0.8);
+  // branches
+  const branches = [
+    [-2.2,4.6,0], [2.2,4.9,0.5], [0,5.4,-2.0], [0.7,5.2,2.0],
+    [-1.5,6.0,1.4], [1.6,6.2,-1.3]
+  ];
+  for(const [bx,by,bz] of branches){
+    cube(g, mats.bark, bx*0.55, by-0.7, bz*0.55, 0.55, Math.abs(bx)+1.6, 0.55);
+  }
+  // blossom canopy: voxel clumps, slightly irregular
+  const centers = [
+    [-2.6,5.6,0],[2.6,5.9,0.5],[0,6.5,-2.3],[0.8,6.2,2.3],
+    [-1.5,7.2,1.2],[1.7,7.3,-1.4],[0,7.8,0]
+  ];
+  const used = new Set();
+  for(const [cx,cy,cz] of centers){
+    for(let x=-2;x<=2;x++) for(let y=-2;y<=2;y++) for(let z=-2;z<=2;z++){
+      const dd = x*x/4.5+y*y/4.0+z*z/4.5;
+      if(dd>1.0) continue;
+      if(rand()<0.13) continue;
+      const key = `${cx+x},${cy+y},${cz+z}`;
+      if(used.has(key)) continue;
+      used.add(key);
+      const m = rand()<0.42?mats.pink:(rand()<0.6?mats.pink2:mats.pink3);
+      cube(g, m, cx+x, cy+y, cz+z, 1.02,1.02,1.02);
+    }
+  }
+  // few white highlights
+  for(let i=0;i<18;i++){
+    const c = centers[ri(0,centers.length-1)];
+    cube(g, mats.white, c[0]+ri(-2,2), c[1]+ri(-1,2), c[2]+ri(-2,2), 0.7,0.7,0.7);
+  }
+  return {group:g, phase};
+}
+const trees = [
+  cherryTree(-11, -7, 1.05, 0),
+  cherryTree(-15, -3, 0.85, 1.7),
+  cherryTree(10, -8, 0.95, 3.1),
+  cherryTree(16, -2, 0.8, 0.9),
+  cherryTree(8, 8, 0.75, 2.2),
+  cherryTree(-8, -13, 0.85, 4.0)
+];
+// stone benches and little bushes
+for(const [x,z] of [[-12,3],[11,3],[-3,13]]){
+  cube(sceneRoot, mats.stone2, x,0.55,z,2.4,0.6,0.9);
+  cube(sceneRoot, mats.stone, x,0.95,z,2.2,0.2,0.8);
+}
+for(let i=0;i<30;i++){
+  const x=ri(-22,22), z=ri(-22,22);
+  if(Math.abs(x)<10 && Math.abs(z)<11) continue;
+  if(x<-9 && z>2 && z<15) continue;
+  cube(sceneRoot, mats.leaf, x,0.25,z, 0.8,0.6,0.8);
+  if(rand()>0.6) cube(sceneRoot, mats.leaf, x+0.5,0.2,z+0.4,0.6,0.5,0.6);
+}
+
+// ---------- drifting petals ----------
+const petals = [];
+const petalGeo = new THREE.BoxGeometry(0.34, 0.06, 0.24);
+for(let i=0;i<70;i++){
+  const p = new THREE.Mesh(petalGeo, [mats.pink, mats.pink2, mats.pink3][ri(0,2)]);
+  p.castShadow = false;
+  p.position.set(rr(-20,20), rr(2,16), rr(-20,20));
+  p.rotation.set(rr(0,6.28),rr(0,6.28),rr(0,6.28));
+  p.userData = {vy: rr(0.35,0.8), sway: rr(0.5,1.6), phase: rr(0,6.28), spin: rr(-1.2,1.2)};
+  sceneRoot.add(p);
+  petals.push(p);
+}
+
+// ---------- lighting ----------
+scene.add(new THREE.HemisphereLight(0xd9ecff, 0x6b6a55, 1.15));
+const sun = new THREE.DirectionalLight(0xfff1cf, 2.4);
+sun.position.set(22, 32, 16);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048,2048);
+sun.shadow.camera.left = -34; sun.shadow.camera.right = 34;
+sun.shadow.camera.top = 34; sun.shadow.camera.bottom = -34;
+sun.shadow.camera.near = 1; sun.shadow.camera.far = 90;
+sun.shadow.bias = -0.0006;
+sun.shadow.normalBias = 0.02;
+scene.add(sun);
+const fill = new THREE.DirectionalLight(0xa9c8e8, 0.45);
+fill.position.set(-18, 12, -20);
+scene.add(fill);
+
+// ---------- clouds (voxel, far away) ----------
+const cloudMat = new THREE.MeshStandardMaterial({color:0xf7fbff, roughness:1, transparent:true, opacity:0.85});
+for(let i=0;i<6;i++){
+  const g = new THREE.Group();
+  const a = i/6*Math.PI*2 + 0.4;
+  g.position.set(Math.cos(a)*70, rr(20,28), Math.sin(a)*70);
+  scene.add(g);
+  for(let j=0;j<ri(3,5);j++){
+    cube(g, cloudMat, j*2.2-ri(1,3), rr(-0.4,0.5), rr(-1,1), rr(2.2,3.4), rr(1.0,1.6), rr(1.8,2.6));
+  }
+}
+
+// ---------- resize & animate ----------
+function resize(){
+  const w = window.innerWidth, h = window.innerHeight;
+  renderer.setSize(w,h,false);
+  camera.aspect = w/h;
+  camera.updateProjectionMatrix();
+}
+window.addEventListener('resize', resize);
+resize();
+
+const startTime = performance.now();
+const target = new THREE.Vector3(0, 6.2, 0);
+function animate(){
+  requestAnimationFrame(animate);
+  const t = (performance.now() - startTime)/1000;
+  // slow orbit
+  const ang = 0.45 + t*0.085;
+  const rad = 44 + Math.sin(t*0.07)*2;
+  camera.position.set(Math.cos(ang)*rad, 27 + Math.sin(t*0.11)*2, Math.sin(ang)*rad);
+  camera.lookAt(target);
+  // petals drift
+  for(const p of petals){
+    const d = p.userData;
+    p.position.y -= d.vy * 0.016;
+    p.position.x += Math.sin(t*d.sway + d.phase)*0.012;
+    p.position.z += Math.cos(t*d.sway*0.8 + d.phase)*0.010;
+    p.rotation.x += d.spin*0.012;
+    p.rotation.z += d.spin*0.008;
+    if(p.position.y < 0.4){
+      p.position.set(rr(-20,20), rr(10,18), rr(-20,20));
+    }
+  }
+  renderer.render(scene,camera);
+}
+animate();
+</script>
+</body>
+</html>
