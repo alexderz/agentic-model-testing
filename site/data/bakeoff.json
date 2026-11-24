@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
  "generated": "2026-11-24 00:40 CST",
- "built": "2026-11-24 04:51 CST",
+ "built": "2026-11-24 05:43 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -23426,6 +23426,30 @@
      "frames/pagoda/t6hy4-mayal-p1-r1-hy4-flash-maya-l/frame-10000.webp"
     ],
     "live": "live/pagoda/t6hy4-mayal-p1-r1-hy4-flash-maya-l/page.html"
+   },
+   {
+    "case": "t6-maya-v1175-r2",
+    "entry": "inkling2-mini-q4kxl-v1175-3090",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 10331.0,
+    "wall_s": 70.9,
+    "tok_s": 161.0,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 10.0,
+    "note": "One-shot pagoda on Maya v1.1.75, 161.0 tok/s decode (145.7 completion tokens per wall second including prefill), 10,331 completion tokens, 13,292 characters of reasoning in a request with no tools. Renders cleanly: five stepped storeys with raised eave corners and a gold finial, one B() box helper plus an InstancedMesh, all four setting elements, autoRotate with falling petals and sun shadows. Ties the agentic run on this task at 10/10, so the agent loop and the sealed browser added nothing measurable here. One composition miss recorded rather than smoothed: the torii is built correctly at (-5.3, 0, -6.7) but sits behind the pagoda and is not visible in any sampled frame, where the agentic run put its torii in the opening camera's view.",
+    "frames": [
+     "frames/pagoda/t6-maya-v1175-r2/frame-1500.webp",
+     "frames/pagoda/t6-maya-v1175-r2/frame-5000.webp",
+     "frames/pagoda/t6-maya-v1175-r2/frame-10000.webp"
+    ],
+    "live": "live/pagoda/t6-maya-v1175-r2/page.html"
    }
   ],
   "agent-orrery": [
@@ -25151,9 +25175,9 @@
   "models": 157,
   "runs": 392,
   "test3": 86,
-  "oneshots": 237,
-  "frames": 418,
+  "oneshots": 238,
+  "frames": 421,
   "pass": 293,
-  "live": 137
+  "live": 138
  }
 }

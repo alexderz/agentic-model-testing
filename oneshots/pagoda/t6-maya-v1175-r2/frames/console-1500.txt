@@ -1,0 +1,2 @@
+[1:1:1124/114252.902624:INFO:CONSOLE:2023] "THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.", source: file:///in/three/build/three.core.js (2023)
+[1:1:1124/114252.912339:INFO:CONSOLE:2023] "THREE.WebGLShadowMap: PCFSoftShadowMap has been removed. Using PCFShadowMap instead.", source: file:///in/three/build/three.core.js (2023)
