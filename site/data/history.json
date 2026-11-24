@@ -1,7 +1,7 @@
 {
  "schema": "history/1",
  "generated_from": "private bake-off grades through 2026-11-24: Maya v1.1.75 on both cards, Hy4-Flash, Qwen3.8-27B-pi; agent runs t1-t8 and one-shots",
- "generated": "2026-11-24 11:12 CST",
+ "generated": "2026-11-24 13:08 CST",
  "runs_new": [
   {
    "case": "wa-saluki-27b-iq2",
