@@ -1,7 +1,7 @@
 {
  "schema": "history/1",
  "generated_from": "private bake-off grades through 2026-11-24: Maya v1.1.75 on both cards, Hy4-Flash, Qwen3.8-27B-pi; agent runs t1-t8 and one-shots",
- "generated": "2026-11-24 13:10 CST",
+ "generated": "2026-11-24 13:28 CST",
  "runs_new": [
   {
    "case": "wa-saluki-27b-iq2",
@@ -4558,6 +4558,42 @@
    "verdict": "pass",
    "finished": "2026-11-24 11:09",
    "note": "graded 9/10 (2026-11-24). Run in a raised-cap window (40 GiB) so a 27B Q4 plus LoRA could hold 131K: 61 turns, 34,746 output tokens, 5 tools, 29 tests, none failing, 18.15 tok/s agent-run. Deepest prompt 70,113 against the smaller-cap run's 69,280, so the extra context was never used; tool coverage fell from nine to five. The window proved the entry can run at 131K, not that it benefits."
+  },
+  {
+   "case": "t4-config-timeouts-hy4f-3090-r1",
+   "model": "hy4f-q3k-3090",
+   "test": 4,
+   "agent": "OpenCode 1.18.35",
+   "checks": "13/13 hidden",
+   "tests_pass": 165,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 13.4,
+   "minutes": 13.0,
+   "compactions": 0,
+   "ctx": 131072,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-11-24 13:00",
+   "note": "Hy4-Flash Q3_K, test 4 config-timeouts: 13/13 hidden checks, 165 own tests green against 155 before, no regressions, DONE claimed and true, 778.6 s. Agent-run rate."
+  },
+  {
+   "case": "t4-feature-filter-hy4f-3090-r1",
+   "model": "hy4f-q3k-3090",
+   "test": 4,
+   "agent": "OpenCode 1.18.35",
+   "checks": "11/11 hidden",
+   "tests_pass": 159,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 13.6,
+   "minutes": 7.1,
+   "compactions": 0,
+   "ctx": 131072,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-11-24 13:35",
+   "note": "Hy4-Flash Q3_K, test 4 feature-filter: 11/11 hidden checks, 159 own tests green against 155 before, no regressions, DONE claimed and true, 426.2 s. With bugfix-targets and config-timeouts this completes the t4 triple for the entry, zero baseline regressions in all three."
   }
  ],
  "test3_new": [
