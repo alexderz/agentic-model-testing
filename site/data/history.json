@@ -1,7 +1,7 @@
 {
  "schema": "history/1",
- "generated_from": "private bake-off grades through 2026-11-24: Maya v1.1.75 on both cards, Hy4-Flash, Qwen3.8-27B-pi, agent runs t1-t4",
- "generated": "2026-11-24 00:40 CST",
+ "generated_from": "private bake-off grades through 2026-11-24: Maya v1.1.75 on both cards, Hy4-Flash, Qwen3.8-27B-pi; agent runs t1-t8 and one-shots",
+ "generated": "2026-11-24 08:57 CST",
  "runs_new": [
   {
    "case": "wa-saluki-27b-iq2",
@@ -4468,6 +4468,42 @@
    "verdict": "pass",
    "finished": "2026-11-20 13:13",
    "note": "graded 2026-11-24 (agent run, Maya v1.1.75 / Hy4-Flash family; Model Master). tok/s is the agent-run rate; no first-token time recorded."
+  },
+  {
+   "case": "t2-v1175-3090-oc-r1",
+   "model": "inkling2-mini-q4kxl-v1175-3090",
+   "test": 2,
+   "agent": "OpenCode 2.1.4",
+   "checks": null,
+   "tests_pass": 46,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 133.0,
+   "minutes": 15.0,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "fp8",
+   "verdict": "pass",
+   "finished": "2026-11-24 07:08",
+   "note": "graded 9/10 (2026-11-24). Agent run under OpenCode 2.1.4 on Maya v1.1.75: 72 turns, 119,455 output tokens, 8 tools, 46 tests, none failing. First arm in this family to read per-request _meta and answer server/discover; cancellation still missing. tok/s is the agent-run rate."
+  },
+  {
+   "case": "t4-bugfix-targets-hy4f-3090-r1",
+   "model": "hy4f-q3k-3090",
+   "test": 4,
+   "agent": "OpenCode 1.18.35",
+   "checks": "4/4 hidden",
+   "tests_pass": 158,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 13.9,
+   "minutes": 15.2,
+   "compactions": 0,
+   "ctx": 131072,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-11-24 07:36",
+   "note": "Hy4-Flash's first test4 coverage: bugfix-targets passed with 4/4 hidden checks, 158 own tests green against 155 before, no regressions and no false done. Same card took 53.9 s on the v1175 entry for this ticket; quote the model with the time. Agent-run rate."
   }
  ],
  "test3_new": [

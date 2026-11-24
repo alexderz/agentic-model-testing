@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-11-24 00:40 CST",
- "built": "2026-11-24 05:43 CST",
+ "generated": "2026-11-24 08:57 CST",
+ "built": "2026-11-24 08:57 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -14004,6 +14004,42 @@
    "verdict": "pass",
    "finished": "2026-11-20 13:13",
    "struggle": null
+  },
+  {
+   "case": "t2-v1175-3090-oc-r1",
+   "model": "inkling2-mini-q4kxl-v1175-3090",
+   "test": 2,
+   "agent": "OpenCode 2.1.4",
+   "checks": null,
+   "tests_pass": 46,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 133.0,
+   "minutes": 15.0,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": "fp8",
+   "verdict": "pass",
+   "finished": "2026-11-24 07:08",
+   "struggle": null
+  },
+  {
+   "case": "t4-bugfix-targets-hy4f-3090-r1",
+   "model": "hy4f-q3k-3090",
+   "test": 4,
+   "agent": "OpenCode 1.18.35",
+   "checks": "4/4 hidden",
+   "tests_pass": 158,
+   "tests_fail": 0,
+   "subcmds": null,
+   "tps": 13.9,
+   "minutes": 15.2,
+   "compactions": 0,
+   "ctx": 131072,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-11-24 07:36",
+   "struggle": null
   }
  ],
  "test3": [
@@ -25173,11 +25209,11 @@
  },
  "counts": {
   "models": 157,
-  "runs": 392,
+  "runs": 394,
   "test3": 86,
   "oneshots": 238,
   "frames": 421,
-  "pass": 293,
+  "pass": 295,
   "live": 138
  }
 }
