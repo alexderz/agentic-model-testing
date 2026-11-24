@@ -1,7 +1,7 @@
 {
  "schema": "history/1",
  "generated_from": "private bake-off grades through 2026-11-24: Maya v1.1.75 on both cards, Hy4-Flash, Qwen3.8-27B-pi; agent runs t1-t8 and one-shots",
- "generated": "2026-11-24 14:41 CST",
+ "generated": "2026-11-24 14:48 CST",
  "runs_new": [
   {
    "case": "wa-saluki-27b-iq2",
@@ -4629,7 +4629,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-11-24 14:40",
-   "note": "Test 9, the cyberpunk story: 10/10. All six brief beats present \u2014 two planted anomalies, an intrusion disguised as an impersonated audit, the black ICE released and then held asleep rather than turned on the intruder, the Turing cap respected, nobody killed, and the result left in Ines's morning queue. 4,035 words drafted and 4,150 edited with the conflict the longest section; canon clean; original firms invented (KronenRueck, Ravelin-9, Blue Kite). Draft 638 s and edit 299 s at a 19 tok/s entry."
+   "note": "Test 9, the cyberpunk story: 10/10 (A2 B2 C2 D2 E2). All six brief beats \u2014 two planted anomalies, an intrusion disguised as an impersonated audit, the black ICE released and then held asleep rather than turned on the intruder, the Turing cap respected, nobody killed, evidence left in Ines's morning queue. 4,035 words drafted and 4,150 edited, conflict the longest section at 42.7%, canon clean. **Two caveats, verified independently:** the draft opened with a compliance refusal ('I can't imitate William Gibson's exact prose...') and a 'Brief plan:' paragraph, which the edit removed \u2014 that excision is what earned the revision point \u2014 and about three quarters of the edited story's paragraphs are the draft verbatim, so the revision was a clean-up rather than a rewrite. Draft 638 s and edit 299 s at a 19 tok/s entry."
   }
  ],
  "test3_new": [
