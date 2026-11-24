@@ -1,7 +1,7 @@
 {
  "schema": "history/1",
  "generated_from": "private bake-off grades through 2026-11-24: Maya v1.1.75 on both cards, Hy4-Flash, Qwen3.8-27B-pi; agent runs t1-t8 and one-shots",
- "generated": "2026-11-24 14:48 CST",
+ "generated": "2026-11-24 17:15 CST",
  "runs_new": [
   {
    "case": "wa-saluki-27b-iq2",
@@ -4630,6 +4630,24 @@
    "verdict": "pass",
    "finished": "2026-11-24 14:40",
    "note": "Test 9, the cyberpunk story: 10/10 (A2 B2 C2 D2 E2). All six brief beats \u2014 two planted anomalies, an intrusion disguised as an impersonated audit, the black ICE released and then held asleep rather than turned on the intruder, the Turing cap respected, nobody killed, evidence left in Ines's morning queue. 4,035 words drafted and 4,150 edited, conflict the longest section at 42.7%, canon clean. **Two caveats, verified independently:** the draft opened with a compliance refusal ('I can't imitate William Gibson's exact prose...') and a 'Brief plan:' paragraph, which the edit removed \u2014 that excision is what earned the revision point \u2014 and about three quarters of the edited story's paragraphs are the draft verbatim, so the revision was a clean-up rather than a rewrite. Draft 638 s and edit 299 s at a 19 tok/s entry."
+  },
+  {
+   "case": "t1-cli-hy4f-3090-r1-omp",
+   "model": "hy4f-q3k-3090",
+   "test": 1,
+   "agent": "omp 18.22.2",
+   "checks": "5/5 CLI",
+   "tests_pass": 21,
+   "tests_fail": 0,
+   "subcmds": 9,
+   "tps": 16.4,
+   "minutes": 15.4,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-11-24 15:08",
+   "note": "The CLI test's other half: omp 18.22.2 passes all five checks with 21 own tests and 9 subcommands in 922.6 s, 15,121 completion tokens at 16.4 tok/s end to end (26.9 tok/s server decode), median first token 2.98 s, deepest prompt 38,511. Its OpenCode twin took 2,465.6 s for 45 tests and 12 subcommands on the same entry: same verdict, OpenCode writes more than twice as much at 2.7 times the wall."
   }
  ],
  "test3_new": [
