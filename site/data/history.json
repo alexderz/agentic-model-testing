@@ -1,7 +1,7 @@
 {
  "schema": "history/1",
  "generated_from": "private bake-off grades through 2026-11-24: Maya v1.1.75 on both cards, Hy4-Flash, Qwen3.8-27B-pi; agent runs t1-t8 and one-shots",
- "generated": "2026-11-24 14:21 CST",
+ "generated": "2026-11-24 14:41 CST",
  "runs_new": [
   {
    "case": "wa-saluki-27b-iq2",
@@ -4612,6 +4612,24 @@
    "verdict": "pass",
    "finished": "2026-11-24 14:20",
    "note": "Hy4-Flash Q3_K, test 1 (CLI axis): every check passes \u2014 help, reads, bad input, bad auth, no crash \u2014 45 own tests with none failing across 12 subcommands, 71 turns, 2,465.6 s at 19.2 tok/s agent-run. First test 1 coverage for this entry, distinct from the earlier maya-l build's row."
+  },
+  {
+   "case": "t9-hy4f-3090-r1",
+   "model": "hy4f-q3k-3090",
+   "test": 9,
+   "agent": "one-shot (draft then edit)",
+   "checks": "10/10",
+   "tests_pass": null,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 19.0,
+   "minutes": 15.6,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-11-24 14:40",
+   "note": "Test 9, the cyberpunk story: 10/10. All six brief beats present \u2014 two planted anomalies, an intrusion disguised as an impersonated audit, the black ICE released and then held asleep rather than turned on the intruder, the Turing cap respected, nobody killed, and the result left in Ines's morning queue. 4,035 words drafted and 4,150 edited with the conflict the longest section; canon clean; original firms invented (KronenRueck, Ravelin-9, Blue Kite). Draft 638 s and edit 299 s at a 19 tok/s entry."
   }
  ],
  "test3_new": [
