@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
  "generated": "2026-11-25 07:59 CST",
- "built": "2026-11-25 07:59 CST",
+ "built": "2026-11-25 08:15 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -14662,6 +14662,44 @@
    "finished": "2026-11-25 07:56",
    "note": "Test 1 CLI, all five checks pass on the first attempt in 6 min 11 s: 34 tests, 0 fail, 6 subcommands, 862 lines over 6 files. 35 requests, 0 errors, 20,170 output tokens, deepest prompt 34,712. 61.37 tok/s client decode, the highest single-stream figure recorded on this card; TTFT 1.64 s median but 24.45 s p90. Same 34 tests that the qwen 27B pi arm wrote in 25 min 39 s, so the arm is cheap on the mechanical rubric — though it ran a 42,599-token OpenCode window against that arm's 86,784, so the files are smaller as well as fewer.",
    "struggle": null
+  },
+  {
+   "case": "switch-hy4f-test1-r1-opencode",
+   "model": "hy4f-q3k-3090",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 58,
+   "tests_fail": 0,
+   "subcmds": 13,
+   "tps": 26.62,
+   "minutes": 55.76,
+   "compactions": null,
+   "ctx": 131072,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-11-20 11:09",
+   "note": "graded 2026-11-20 (agent run, 3090 300 W, V100 idle; module entrypoint hactl). Five core checks; 58 model-written tests across 13 commands. Thinking was on: 103,265 characters retained in 66 of 93 messages, while meta's reasoning_tokens reads 0 - the client's counter reports nothing, so 0 means unmeasured, not 'no thinking'. tok/s is the agent-run decode rate; 32,000-token cap.",
+   "struggle": null
+  },
+  {
+   "case": "switch-hy4f-test1-r1-omp",
+   "model": "hy4f-q3k-3090",
+   "test": 1,
+   "agent": "Oh My Pi",
+   "checks": 5,
+   "tests_pass": 20,
+   "tests_fail": 0,
+   "subcmds": 9,
+   "tps": 25.16,
+   "minutes": 57.68,
+   "compactions": 1,
+   "ctx": 131072,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-11-20 12:23",
+   "note": "graded 2026-11-20 (agent run, 3090 300 W, V100 idle; module entrypoint hacli). Five core checks; 20 model-written tests, 22 collected with 2 skipped, across 9 commands. Thinking was on: 102,506 characters in 79 of 86 messages; this client does not report reasoning_tokens. tok/s is the agent-run decode rate; 32,000-token cap.",
+   "struggle": null
   }
  ],
  "test3": [
@@ -25892,11 +25930,11 @@
  },
  "counts": {
   "models": 157,
-  "runs": 406,
+  "runs": 408,
   "test3": 87,
   "oneshots": 240,
   "frames": 427,
-  "pass": 305,
+  "pass": 307,
   "live": 140
  }
 }
