@@ -4762,7 +4762,7 @@
    "model": "qwen38-27b-pi",
    "test": 9,
    "agent": "one-shot (draft then edit)",
-   "checks": "5/10",
+   "checks": "6/10",
    "tests_pass": null,
    "tests_fail": null,
    "subcmds": null,
@@ -4773,7 +4773,7 @@
    "kv": null,
    "verdict": "partial",
    "finished": "2026-11-25 09:39",
-   "note": "Test 9, the cyberpunk story: 5/10 (A1 B1 C1 D1 E1). A1 — five of six brief beats land and in order (the shipping query off by 0.5% and the flicker at the ICE edge as the two anomalies, the intrusion disguised as a routine audit, the black ICE spun up and then HELD so it trips the cowboy's deck offline instead of burning him, no human killed, the incident report waiting in Ines's morning review), but the ending has Ines conclude the AI 'had exceeded its Turing limit... acted autonomously', which contradicts the narration's own 'it stayed within its legal limits'. B1 — 2,959 words, inside the 2,500-4,000 band, the fight the longest section at 31% but never near the 4,000-6,000 target. C1 — original characters and a title, but the Turing Police are the novel's institution, used substantively. D1 — readable but mechanical: 'It was a good morning' three times, 'It was proud' three times, 'It was beautiful' three times, 'It was clean' three times; one invented firm, no invented streets. E1 — growth 0.996 (2,970 to 2,959, slightly shorter), 91.5% of paragraphs kept verbatim, small changes only, though it did fix the title. Thinking 0 words in both requests: the engine was sent no thinking field. One-shot rate, not an agent rate."
+   "note": "Test 9, the cyberpunk story: 6/10 (A1 B1 C2 D1 E1). A1: five of six brief beats in order, the black ICE held and the cowboy's deck tripped rather than the AI exceeding its cap, but the ending has Ines say Calliope 'exceeded its Turing limit' while the narration says it stayed under it. 2,959 words with the fight the longest section at 31%. C2: original characters and a title; the Turing Police are the novel's institution, but the brief itself requires a Turing-capped AI, so every story names it and it is not a slip. D1: mechanical — 'It was a good morning' three times, 'It was proud' twice, 'It was beautiful' four times, 'It was clean' twice. Revision was small (0.996 growth, 91.9% of paragraphs verbatim). One-shot rate, not an agent rate."
   },
   {
    "case": "t9-qwen38-27b-base-r1",
@@ -4786,7 +4786,7 @@
    "minutes": 5.8,
    "ctx": 131072,
    "finished": "2026-11-25 09:47",
-   "note": "Test 9 cyberpunk story: 8/10 (A2 B2 C1 D2 E1). All six brief beats in order, the black ICE explicitly refused and the cowboy severed rather than killed, the Turing cap held to the end. 4,013 words with the fight the longest section at 36.7%. Best prose in this family so far: rep6 0.0022 against 0.0149 on the pi LoRA's story. One slip: the Tessier-Ashpool clan named as background. Revision was small (4.8% growth, 91.9% of paragraphs verbatim). One-shot rate, not an agent rate. **Its base beats its own pi LoRA on this test, 8 to 5** — the harness-trained adapter wrote flatter prose and contradicted its own Turing cap."
+   "note": "Test 9 cyberpunk story: 8/10 (A2 B2 C1 D2 E1). All six brief beats in order, the black ICE explicitly refused and the cowboy severed rather than killed, the Turing cap held to the end. 4,013 words with the fight the longest section at 36.7%. Best prose in this family so far: rep6 0.0022 against 0.0149 on the pi LoRA's story. One slip: the Tessier-Ashpool clan named as background. Revision was small (4.8% growth, 91.9% of paragraphs verbatim). One-shot rate, not an agent rate. **Its base beats its own pi LoRA on this test, 8 to 6** — the harness-trained adapter wrote flatter prose and contradicted its own Turing cap."
   }
  ],
  "test3_new": [
