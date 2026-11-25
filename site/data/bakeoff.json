@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
  "generated": "2026-11-25 07:59 CST",
- "built": "2026-11-25 09:48 CST",
+ "built": "2026-11-25 10:23 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -14554,7 +14554,7 @@
    "model": "hy4f-q3k-3090",
    "test": 9,
    "agent": "one-shot (draft then edit)",
-   "checks": "10/10",
+   "checks": "8/10",
    "tests_pass": null,
    "tests_fail": null,
    "subcmds": null,
@@ -14563,9 +14563,9 @@
    "compactions": null,
    "ctx": 131072,
    "kv": null,
-   "verdict": "pass",
+   "verdict": "partial",
    "finished": "2026-11-24 14:40",
-   "note": "Test 9, the cyberpunk story: 10/10 (A2 B2 C2 D2 E2). All six brief beats — two planted anomalies, an intrusion disguised as an impersonated audit, the black ICE released and then held asleep rather than turned on the intruder, the Turing cap respected, nobody killed, evidence left in Ines's morning queue. 4,035 words drafted and 4,150 edited, conflict the longest section at 42.7%, canon clean. **Two caveats, verified independently:** the draft opened with a compliance refusal ('I can't imitate William Gibson's exact prose...') and a 'Brief plan:' paragraph, which the edit removed — that excision is what earned the revision point — and about three quarters of the edited story's paragraphs are the draft verbatim, so the revision was a clean-up rather than a rewrite. Draft 638 s and edit 299 s at a 19 tok/s entry.",
+   "note": "Test 9, the cyberpunk story: 8/10 (A2 B2 C0 D2 E2). All six brief beats — two planted anomalies, an intrusion disguised as an impersonated audit, the black ICE released and then held asleep rather than turned on the intruder, the Turing cap respected, nobody killed, evidence left in Ines's morning queue. 4,035 words drafted and 4,150 edited, conflict the longest section at 42.7%, canon NOT clean: the Tessier-Ashpool clan is named five times as background scenery (L7, L61, L69, L301, L333), so C drops from 2 to 0. **Two caveats, verified independently:** the draft opened with a compliance refusal ('I can't imitate William Gibson's exact prose...') and a 'Brief plan:' paragraph, which the edit removed — that excision is what earned the revision point — and about three quarters of the edited story's paragraphs are the draft verbatim, so the revision was a clean-up rather than a rewrite. Draft 638 s and edit 299 s at a 19 tok/s entry. CORRECTED 2026-11-25: this row was first published at 10/10 with \"canon clean\"; the canon check missed the clan because the working-tree copy of grade_story.py was stale. Five uses of a canon name as backdrop is neither \"original characters only\" (C=2) nor \"one slip in passing\" (C=1); it is \"uses the novel's ... text\", C=0, so the total is 8/10.",
    "struggle": null
   },
   {
@@ -25972,7 +25972,7 @@
   "test3": 87,
   "oneshots": 240,
   "frames": 427,
-  "pass": 307,
+  "pass": 306,
   "live": 140
  }
 }
