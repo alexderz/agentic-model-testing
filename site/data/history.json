@@ -1,7 +1,7 @@
 {
  "schema": "history/1",
  "generated_from": "private bake-off grades through 2026-11-24: Maya v1.1.75 on both cards, Hy4-Flash, Qwen3.8-27B-pi; agent runs t1-t8 and one-shots",
- "generated": "2026-11-25 07:46 CST",
+ "generated": "2026-11-25 07:59 CST",
  "runs_new": [
   {
    "case": "wa-saluki-27b-iq2",
@@ -4702,6 +4702,24 @@
    "verdict": "partial",
    "finished": "2026-11-25 07:42",
    "note": "Test 9, the cyberpunk story: 5/10 (A2 B0 C1 D1 E1). A2 — all six brief beats present and in order (both planted anomalies, the intrusion disguised as an audit, the black ICE held rather than used to kill, the Turing cap respected, evidence left for Ines). B0 — 2,237 words against a ~5,000 target, under the 2,500 floor, so length costs it despite the fight being the longest section at 44%. C1 — original characters and a title, but the Tessier-Ashpool clan appears twice in passing. D1 — real imagery, dragged down by verbatim sentence duplication (6-gram repetition 0.0717 against 0.001 on the Hy4 10). E1 — the edit grew 7.8% toward the target and repetition got worse, not better. **The comparison is the finding:** the shipped sibling arm also scored 5/10 on this task, so the control bump 0.2.21 → 0.2.21.1 changed nothing measurable here. Rates: 57.8 tok/s decode and 1,725 tok/s prefill on the draft, 39% draft acceptance. This engine does report reasoning tokens (52 on the draft), unlike the LFM entries."
+  },
+  {
+   "case": "switch-strata0167-test1-r1-opencode",
+   "model": "strata-inkling-v100-0167",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": 5,
+   "tests_pass": 34,
+   "tests_fail": 0,
+   "subcmds": 6,
+   "tps": 61.37,
+   "minutes": 6.2,
+   "compactions": null,
+   "ctx": 65536,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-11-25 07:56",
+   "note": "Test 1 CLI, all five checks pass on the first attempt in 6 min 11 s: 34 tests, 0 fail, 6 subcommands, 862 lines over 6 files. 35 requests, 0 errors, 20,170 output tokens, deepest prompt 34,712. 61.37 tok/s client decode, the highest single-stream figure recorded on this card; TTFT 1.64 s median but 24.45 s p90. Same 34 tests that the qwen 27B pi arm wrote in 25 min 39 s, so the arm is cheap on the mechanical rubric — though it ran a 42,599-token OpenCode window against that arm's 86,784, so the files are smaller as well as fewer."
   }
  ],
  "test3_new": [
