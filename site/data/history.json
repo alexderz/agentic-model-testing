@@ -1,7 +1,7 @@
 {
  "schema": "history/1",
  "generated_from": "private bake-off grades through 2026-11-24: Maya v1.1.75 on both cards, Hy4-Flash, Qwen3.8-27B-pi; agent runs t1-t8 and one-shots",
- "generated": "2026-11-24 17:15 CST",
+ "generated": "2026-11-24 23:21 CST",
  "runs_new": [
   {
    "case": "wa-saluki-27b-iq2",
@@ -4648,6 +4648,24 @@
    "verdict": "pass",
    "finished": "2026-11-24 15:08",
    "note": "The CLI test's other half: omp 18.22.2 passes all five checks with 21 own tests and 9 subcommands in 922.6 s, 15,121 completion tokens at 16.4 tok/s end to end (26.9 tok/s server decode), median first token 2.98 s, deepest prompt 38,511. Its OpenCode twin took 2,465.6 s for 45 tests and 12 subcommands on the same entry: same verdict, OpenCode writes more than twice as much at 2.7 times the wall."
+  },
+  {
+   "case": "switch-daily-test1-r1-opencode",
+   "model": "orcarouter-fn-uncensored-b3-512k",
+   "test": 1,
+   "agent": "OpenCode",
+   "checks": "3/5 CLI",
+   "tests_pass": 0,
+   "tests_fail": 0,
+   "subcmds": 7,
+   "tps": 55.1,
+   "minutes": 68.0,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": null,
+   "verdict": "partial",
+   "finished": "2026-11-24 22:26",
+   "note": "First data anywhere for the b3 daily driver: three of five CLI checks pass (help, reads, bad input), auth handling and the no-crash check fail, and it wrote no tests. The deliverable itself is real - 2,465 lines across eight modules and seven subcommands, 305 of 305 requests clean, deepest prompt 221,666 - at 55.1 tok/s agent rate, 1.19 s median time to first token (2.09 s p90), on the 3090 alone. Two harness defects came out of this cell and both are fixed: a HEAD reply that hung curl clients, and a table with no way to say 'failed' as distinct from 'not measured'."
   }
  ],
  "test3_new": [
