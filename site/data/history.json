@@ -1,7 +1,7 @@
 {
  "schema": "history/1",
  "generated_from": "private bake-off grades through 2026-11-24: Maya v1.1.75 on both cards, Hy4-Flash, Qwen3.8-27B-pi; agent runs t1-t8 and one-shots",
- "generated": "2026-11-24 23:21 CST",
+ "generated": "2026-11-25 01:24 CST",
  "runs_new": [
   {
    "case": "wa-saluki-27b-iq2",
@@ -4666,6 +4666,24 @@
    "verdict": "partial",
    "finished": "2026-11-24 22:26",
    "note": "First data anywhere for the b3 daily driver: three of five CLI checks pass (help, reads, bad input), auth handling and the no-crash check fail, and it wrote no tests. The deliverable itself is real - 2,465 lines across eight modules and seven subcommands, 305 of 305 requests clean, deepest prompt 221,666 - at 55.1 tok/s agent rate, 1.19 s median time to first token (2.09 s p90), on the 3090 alone. Two harness defects came out of this cell and both are fixed: a HEAD reply that hung curl clients, and a table with no way to say 'failed' as distinct from 'not measured'."
+  },
+  {
+   "case": "switch-pi27-test1-r1-omp",
+   "model": "qwen3.8-27b-pi",
+   "test": 1,
+   "agent": "omp",
+   "checks": "5/5 CLI",
+   "tests_pass": 34,
+   "tests_fail": 0,
+   "subcmds": 7,
+   "tps": 22.7,
+   "minutes": 25.7,
+   "compactions": null,
+   "ctx": 262144,
+   "kv": null,
+   "verdict": "pass",
+   "finished": "2026-11-24 23:24",
+   "note": "The other half of the harness pair on this entry, V100 alone: all five CLI checks pass with 34 tests against its OpenCode twin's 75 - same verdict, and the harness that wrote more than twice the tests bought nothing in the checks. 22.7 tok/s agent-run client rate, 1.07 s median time to first token (2.16 s p90), 25 min 39 s wall including a 13.6 s load, 60 of 61 requests clean, deepest prompt 53,987."
   }
  ],
  "test3_new": [
