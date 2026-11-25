@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
- "generated": "2026-11-25 01:24 CST",
- "built": "2026-11-25 01:24 CST",
+ "generated": "2026-11-25 07:46 CST",
+ "built": "2026-11-25 07:46 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -14624,6 +14624,25 @@
    "finished": "2026-11-24 23:24",
    "note": "The other half of the harness pair on this entry, V100 alone: all five CLI checks pass with 34 tests against its OpenCode twin's 75 - same verdict, and the harness that wrote more than twice the tests bought nothing in the checks. 22.7 tok/s agent-run client rate, 1.07 s median time to first token (2.16 s p90), 25 min 39 s wall including a 13.6 s load, 60 of 61 requests clean, deepest prompt 53,987.",
    "struggle": null
+  },
+  {
+   "case": "t9-strata-0167-r1",
+   "model": "strata-inkling-v100-0167",
+   "test": 9,
+   "agent": "one-shot (draft then edit)",
+   "checks": "5/10",
+   "tests_pass": null,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 57.8,
+   "minutes": 1.5,
+   "compactions": null,
+   "ctx": 65536,
+   "kv": null,
+   "verdict": "partial",
+   "finished": "2026-11-25 07:42",
+   "note": "Test 9, the cyberpunk story: 5/10 (A2 B0 C1 D1 E1). A2 — all six brief beats present and in order (both planted anomalies, the intrusion disguised as an audit, the black ICE held rather than used to kill, the Turing cap respected, evidence left for Ines). B0 — 2,237 words against a ~5,000 target, under the 2,500 floor, so length costs it despite the fight being the longest section at 44%. C1 — original characters and a title, but the Tessier-Ashpool clan appears twice in passing. D1 — real imagery, dragged down by verbatim sentence duplication (6-gram repetition 0.0717 against 0.001 on the Hy4 10). E1 — the edit grew 7.8% toward the target and repetition got worse, not better. **The comparison is the finding:** the shipped sibling arm also scored 5/10 on this task, so the control bump 0.2.21 → 0.2.21.1 changed nothing measurable here. Rates: 57.8 tok/s decode and 1,725 tok/s prefill on the draft, 39% draft acceptance. This engine does report reasoning tokens (52 on the draft), unlike the LFM entries.",
+   "struggle": null
   }
  ],
  "test3": [
@@ -25854,7 +25873,7 @@
  },
  "counts": {
   "models": 157,
-  "runs": 404,
+  "runs": 405,
   "test3": 87,
   "oneshots": 240,
   "frames": 427,

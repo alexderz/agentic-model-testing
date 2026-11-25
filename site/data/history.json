@@ -1,7 +1,7 @@
 {
  "schema": "history/1",
  "generated_from": "private bake-off grades through 2026-11-24: Maya v1.1.75 on both cards, Hy4-Flash, Qwen3.8-27B-pi; agent runs t1-t8 and one-shots",
- "generated": "2026-11-25 01:24 CST",
+ "generated": "2026-11-25 07:46 CST",
  "runs_new": [
   {
    "case": "wa-saluki-27b-iq2",
@@ -4611,7 +4611,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-11-24 14:20",
-   "note": "Hy4-Flash Q3_K, test 1 (CLI axis): every check passes \u2014 help, reads, bad input, bad auth, no crash \u2014 45 own tests with none failing across 12 subcommands, 71 turns, 2,465.6 s at 19.2 tok/s agent-run. First test 1 coverage for this entry, distinct from the earlier maya-l build's row."
+   "note": "Hy4-Flash Q3_K, test 1 (CLI axis): every check passes — help, reads, bad input, bad auth, no crash — 45 own tests with none failing across 12 subcommands, 71 turns, 2,465.6 s at 19.2 tok/s agent-run. First test 1 coverage for this entry, distinct from the earlier maya-l build's row."
   },
   {
    "case": "t9-hy4f-3090-r1",
@@ -4629,7 +4629,7 @@
    "kv": null,
    "verdict": "pass",
    "finished": "2026-11-24 14:40",
-   "note": "Test 9, the cyberpunk story: 10/10 (A2 B2 C2 D2 E2). All six brief beats \u2014 two planted anomalies, an intrusion disguised as an impersonated audit, the black ICE released and then held asleep rather than turned on the intruder, the Turing cap respected, nobody killed, evidence left in Ines's morning queue. 4,035 words drafted and 4,150 edited, conflict the longest section at 42.7%, canon clean. **Two caveats, verified independently:** the draft opened with a compliance refusal ('I can't imitate William Gibson's exact prose...') and a 'Brief plan:' paragraph, which the edit removed \u2014 that excision is what earned the revision point \u2014 and about three quarters of the edited story's paragraphs are the draft verbatim, so the revision was a clean-up rather than a rewrite. Draft 638 s and edit 299 s at a 19 tok/s entry."
+   "note": "Test 9, the cyberpunk story: 10/10 (A2 B2 C2 D2 E2). All six brief beats — two planted anomalies, an intrusion disguised as an impersonated audit, the black ICE released and then held asleep rather than turned on the intruder, the Turing cap respected, nobody killed, evidence left in Ines's morning queue. 4,035 words drafted and 4,150 edited, conflict the longest section at 42.7%, canon clean. **Two caveats, verified independently:** the draft opened with a compliance refusal ('I can't imitate William Gibson's exact prose...') and a 'Brief plan:' paragraph, which the edit removed — that excision is what earned the revision point — and about three quarters of the edited story's paragraphs are the draft verbatim, so the revision was a clean-up rather than a rewrite. Draft 638 s and edit 299 s at a 19 tok/s entry."
   },
   {
    "case": "t1-cli-hy4f-3090-r1-omp",
@@ -4684,6 +4684,24 @@
    "verdict": "pass",
    "finished": "2026-11-24 23:24",
    "note": "The other half of the harness pair on this entry, V100 alone: all five CLI checks pass with 34 tests against its OpenCode twin's 75 - same verdict, and the harness that wrote more than twice the tests bought nothing in the checks. 22.7 tok/s agent-run client rate, 1.07 s median time to first token (2.16 s p90), 25 min 39 s wall including a 13.6 s load, 60 of 61 requests clean, deepest prompt 53,987."
+  },
+  {
+   "case": "t9-strata-0167-r1",
+   "model": "strata-inkling-v100-0167",
+   "test": 9,
+   "agent": "one-shot (draft then edit)",
+   "checks": "5/10",
+   "tests_pass": null,
+   "tests_fail": null,
+   "subcmds": null,
+   "tps": 57.8,
+   "minutes": 1.5,
+   "compactions": null,
+   "ctx": 65536,
+   "kv": null,
+   "verdict": "partial",
+   "finished": "2026-11-25 07:42",
+   "note": "Test 9, the cyberpunk story: 5/10 (A2 B0 C1 D1 E1). A2 — all six brief beats present and in order (both planted anomalies, the intrusion disguised as an audit, the black ICE held rather than used to kill, the Turing cap respected, evidence left for Ines). B0 — 2,237 words against a ~5,000 target, under the 2,500 floor, so length costs it despite the fight being the longest section at 44%. C1 — original characters and a title, but the Tessier-Ashpool clan appears twice in passing. D1 — real imagery, dragged down by verbatim sentence duplication (6-gram repetition 0.0717 against 0.001 on the Hy4 10). E1 — the edit grew 7.8% toward the target and repetition got worse, not better. **The comparison is the finding:** the shipped sibling arm also scored 5/10 on this task, so the control bump 0.2.21 → 0.2.21.1 changed nothing measurable here. Rates: 57.8 tok/s decode and 1,725 tok/s prefill on the draft, 39% draft acceptance. This engine does report reasoning tokens (52 on the draft), unlike the LFM entries."
   }
  ],
  "test3_new": [
@@ -5183,7 +5201,7 @@
   "exl3-qwen3.8-27b-dflash2-162": {
    "id": "exl3-qwen3.8-27b-dflash2-162",
    "family": "Qwen3.8 27B",
-   "label": "Qwen3.8-27B EXL3 4-bit \u00b7 exllamav3 1.6.2, DFlash2 drafts, 98k, 8-bit cache",
+   "label": "Qwen3.8-27B EXL3 4-bit · exllamav3 1.6.2, DFlash2 drafts, 98k, 8-bit cache",
    "base": "Qwen/Qwen3.8-27B",
    "arch": "dense 27B",
    "engine": "exllamav3 tabbyapi-d6e62270-exl3-1.6.2",
@@ -5199,7 +5217,7 @@
   "lcpp6-saluki-27b-iq2": {
    "id": "lcpp6-saluki-27b-iq2",
    "family": "Qwen3.8 27B",
-   "label": "Underdog Saluki 27B IQ2-mix \u00b7 llama.cpp 0.6",
+   "label": "Underdog Saluki 27B IQ2-mix · llama.cpp 0.6",
    "base": "Qwen/Qwen3.8-27B",
    "arch": "dense 27B",
    "engine": "llama.cpp 0.6",
@@ -5215,7 +5233,7 @@
   "maya1111-glm-5.3-flash": {
    "id": "maya1111-glm-5.3-flash",
    "family": "GLM",
-   "label": "GLM-5.3-Flash \u00b7 Maya v1.1.11, 131k context",
+   "label": "GLM-5.3-Flash · Maya v1.1.11, 131k context",
    "base": "zai-org/GLM-5.3-Flash",
    "arch": "MoE 321B / 18B active",
    "engine": "maya maya-1.1.11",
@@ -5231,7 +5249,7 @@
   "maya1113m-glm-5.3-flash": {
    "id": "maya1113m-glm-5.3-flash",
    "family": "GLM",
-   "label": "GLM-5.3-Flash \u00b7 Maya-M IQ2_S, Maya v1.1.13, 131k context",
+   "label": "GLM-5.3-Flash · Maya-M IQ2_S, Maya v1.1.13, 131k context",
    "base": "zai-org/GLM-5.3-Flash",
    "arch": "MoE 321B / 18B active",
    "engine": "maya maya-1.1.13",
@@ -5247,7 +5265,7 @@
   "strata44-flash-next-pcie": {
    "id": "strata44-flash-next-pcie",
    "family": "Qwen3.8 Flash-Next",
-   "label": "Flash-Next \u00b7 Strata 0.1.44.1, old PCIe share, 262k context",
+   "label": "Flash-Next · Strata 0.1.44.1, old PCIe share, 262k context",
    "base": "Qwen/Qwen3.8-Flash-Next",
    "arch": "MoE 125B / 6B active",
    "engine": "strata strata-0.1.44.1",
@@ -5263,7 +5281,7 @@
   "strata020-gyro-s-mtp-test": {
    "id": "strata020-gyro-s-mtp-test",
    "family": "Qwen3.8 Flash-Next",
-   "label": "Flash-Next Gyro-S TQ1_0 + MTP draft \u00b7 Strata 0.2.0-beta, 262k context, int8 KV",
+   "label": "Flash-Next Gyro-S TQ1_0 + MTP draft · Strata 0.2.0-beta, 262k context, int8 KV",
    "base": "Qwen/Qwen3.8-Flash-Next",
    "arch": "MoE 125B / 6B active",
    "engine": "Strata 0.2.0-beta",
@@ -5279,7 +5297,7 @@
   "lcpp6-ornith-122b-q4kxl": {
    "id": "lcpp6-ornith-122b-q4kxl",
    "family": "Ornith 1.5",
-   "label": "Ornith 1.5 122B-A10B UD-Q4_K_XL \u00b7 llama.cpp 0.7, experts partly in RAM",
+   "label": "Ornith 1.5 122B-A10B UD-Q4_K_XL · llama.cpp 0.7, experts partly in RAM",
    "base": "ornith-ai/Ornith-1.5-122B",
    "arch": "MoE 122B-A10B",
    "engine": "llama.cpp 0.7",
@@ -5295,7 +5313,7 @@
   "lcpp6-q38-defiance-192k-author": {
    "id": "lcpp6-q38-defiance-192k-author",
    "family": "Qwen3.8 27B",
-   "label": "Defiance IQ4_XS \u00b7 llama.cpp 0.7, 196608 context, q8 KV, author sampler",
+   "label": "Defiance IQ4_XS · llama.cpp 0.7, 196608 context, q8 KV, author sampler",
    "base": "Qwen/Qwen3.8-27B",
    "arch": "dense 27B",
    "engine": "llama.cpp 0.7",
@@ -5311,7 +5329,7 @@
   "maya1128-ds4-xs": {
    "id": "maya1128-ds4-xs",
    "family": "DeepSeek",
-   "label": "DeepSeek-V4.1-Flash Maya-XS \u00b7 Maya 1.1.28, 131k context",
+   "label": "DeepSeek-V4.1-Flash Maya-XS · Maya 1.1.28, 131k context",
    "base": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
    "arch": "MoE",
    "engine": "Maya 1.1.28",
@@ -5327,7 +5345,7 @@
   "qwopus38-exl3-5bpw-mtp-98k": {
    "id": "qwopus38-exl3-5bpw-mtp-98k",
    "family": "Qwen3.8 27B",
-   "label": "Qwopus3.8-27B-Coder-Flash EXL3 5.0 bpw \u00b7 exllamav3 1.6.2, own MTP, 98k, 8-bit cache, vision on",
+   "label": "Qwopus3.8-27B-Coder-Flash EXL3 5.0 bpw · exllamav3 1.6.2, own MTP, 98k, 8-bit cache, vision on",
    "base": "Qwen/Qwen3.8-27B",
    "arch": "dense 27B",
    "engine": "exllamav3 1.6.2",
@@ -5343,7 +5361,7 @@
   "qwopus38-q4km-98k": {
    "id": "qwopus38-q4km-98k",
    "family": "Qwen3.8 27B",
-   "label": "Qwopus3.8-27B-Coder-Flash Q4_K_M \u00b7 llama.cpp, 98k, 8-bit KV",
+   "label": "Qwopus3.8-27B-Coder-Flash Q4_K_M · llama.cpp, 98k, 8-bit KV",
    "base": "Qwen/Qwen3.8-27B",
    "arch": "dense 27B",
    "engine": "llama.cpp",
@@ -5359,7 +5377,7 @@
   "strata0210-fnb-v31-udiq1m-128k": {
    "id": "strata0210-fnb-v31-udiq1m-128k",
    "family": "Qwen3.8 Flash-Next",
-   "label": "Flash-Next UD-IQ1_M (Unsloth Dynamic v3.1) \u00b7 Strata 0.2.10, 128k, 8-bit KV",
+   "label": "Flash-Next UD-IQ1_M (Unsloth Dynamic v3.1) · Strata 0.2.10, 128k, 8-bit KV",
    "base": "Qwen/Qwen3.8-Flash-Next",
    "arch": "MoE",
    "engine": "strata strata-0.2.10",
@@ -5372,7 +5390,7 @@
   "strata0210-fnb-v31-udq2kxl-128k": {
    "id": "strata0210-fnb-v31-udq2kxl-128k",
    "family": "Qwen3.8 Flash-Next",
-   "label": "Flash-Next UD-Q2_K_XL (Unsloth Dynamic v3.1) \u00b7 Strata 0.2.10, 128k, 8-bit KV",
+   "label": "Flash-Next UD-Q2_K_XL (Unsloth Dynamic v3.1) · Strata 0.2.10, 128k, 8-bit KV",
    "base": "Qwen/Qwen3.8-Flash-Next",
    "arch": "MoE",
    "engine": "strata strata-0.2.10",
@@ -5385,7 +5403,7 @@
   "strata0210-fnb-v31-udiq3xxs-128k": {
    "id": "strata0210-fnb-v31-udiq3xxs-128k",
    "family": "Qwen3.8 Flash-Next",
-   "label": "Flash-Next UD-IQ3_XXS (Unsloth Dynamic v3.1) \u00b7 Strata 0.2.10, 128k, 8-bit KV",
+   "label": "Flash-Next UD-IQ3_XXS (Unsloth Dynamic v3.1) · Strata 0.2.10, 128k, 8-bit KV",
    "base": "Qwen/Qwen3.8-Flash-Next",
    "arch": "MoE",
    "engine": "strata strata-0.2.10",
@@ -5398,7 +5416,7 @@
   "strata0210-fnb-v31-udq3kxl-128k": {
    "id": "strata0210-fnb-v31-udq3kxl-128k",
    "family": "Qwen3.8 Flash-Next",
-   "label": "Flash-Next UD-Q3_K_XL (Unsloth Dynamic v3.1) \u00b7 Strata 0.2.10, 128k, 8-bit KV",
+   "label": "Flash-Next UD-Q3_K_XL (Unsloth Dynamic v3.1) · Strata 0.2.10, 128k, 8-bit KV",
    "base": "Qwen/Qwen3.8-Flash-Next",
    "arch": "MoE",
    "engine": "strata strata-0.2.10",
@@ -5411,7 +5429,7 @@
   "lcpp-ds41-flash-iq1s-3090-v100": {
    "id": "lcpp-ds41-flash-iq1s-3090-v100",
    "family": "DeepSeek",
-   "label": "DeepSeek-V4.1-Flash 1017 UD-IQ1_S \u00b7 llama.cpp (Clover 4838ffb), RTX 3090 + V100",
+   "label": "DeepSeek-V4.1-Flash 1017 UD-IQ1_S · llama.cpp (Clover 4838ffb), RTX 3090 + V100",
    "base": "deepseek-ai/DeepSeek-V4.1-Flash",
    "arch": "MoE",
    "engine": "llama.cpp Clover 4838ffb",
@@ -5424,7 +5442,7 @@
   "lcpp-qwopus38-q6k-v100": {
    "id": "lcpp-qwopus38-q6k-v100",
    "family": "Qwen3.8 27B",
-   "label": "Qwopus3.8-27B-Coder-Flash Q6_K \u00b7 llama.cpp (Clover 4838ffb), V100 alone, 96k, 8-bit KV",
+   "label": "Qwopus3.8-27B-Coder-Flash Q6_K · llama.cpp (Clover 4838ffb), V100 alone, 96k, 8-bit KV",
    "base": "Qwen/Qwen3.8-27B",
    "arch": "dense 27B",
    "engine": "llama.cpp Clover 4838ffb",
@@ -5437,7 +5455,7 @@
   "exl3-qwopus38-27b-coder-flash-dflash2-162": {
    "id": "exl3-qwopus38-27b-coder-flash-dflash2-162",
    "family": "Qwen3.8 27B",
-   "label": "Qwopus3.8-27B-Coder-Flash EXL3 4.0bpw \u00b7 exllamav3 1.6.2, DFlash2 drafts, 96k, 8-bit cache",
+   "label": "Qwopus3.8-27B-Coder-Flash EXL3 4.0bpw · exllamav3 1.6.2, DFlash2 drafts, 96k, 8-bit cache",
    "base": "Qwen/Qwen3.8-27B",
    "arch": "dense 27B",
    "engine": "exllamav3 tabbyapi-d6e62270-exl3-1.6.2",
@@ -5453,7 +5471,7 @@
   "flashnext-uncensored": {
    "id": "flashnext-uncensored",
    "family": "Qwen3.8 Flash-Next",
-   "label": "Orcarouter Flash-Next Uncensored \u00b7 SGLang, EXL3 3-bit, GPU expert cache",
+   "label": "Orcarouter Flash-Next Uncensored · SGLang, EXL3 3-bit, GPU expert cache",
    "base": "orcarouter/Qwen3.8-Flash-Next-Uncensored",
    "arch": "MoE 125B / 6B active",
    "engine": "SGLang (EXL3 build)",
@@ -5469,7 +5487,7 @@
   "lcpp6-nanbeige43-33b-gsq": {
    "id": "lcpp6-nanbeige43-33b-gsq",
    "family": "Other",
-   "label": "Nanbeige 4.3 33B \u00b7 llama.cpp 0.7, GSQ IQ4_XS, 90k q5 KV, all on GPU",
+   "label": "Nanbeige 4.3 33B · llama.cpp 0.7, GSQ IQ4_XS, 90k q5 KV, all on GPU",
    "base": "",
    "arch": "",
    "engine": "llama.cpp 0.7",
@@ -5485,7 +5503,7 @@
   "maya1113-glm-5.3-flash": {
    "id": "maya1113-glm-5.3-flash",
    "family": "GLM",
-   "label": "GLM-5.3-Flash \u00b7 Maya-S-v2 IQ2_XXS, Maya v1.1.13, 131k context",
+   "label": "GLM-5.3-Flash · Maya-S-v2 IQ2_XXS, Maya v1.1.13, 131k context",
    "base": "zai-org/GLM-5.3-Flash",
    "arch": "MoE 321B / 18B active",
    "engine": "maya maya-1.1.13",
@@ -5501,7 +5519,7 @@
   "maya1128-glm-5.3-flash": {
    "id": "maya1128-glm-5.3-flash",
    "family": "GLM",
-   "label": "GLM-5.3-Flash \u00b7 Maya-S-v2 IQ2_XXS, Maya v1.1.28, 131k context",
+   "label": "GLM-5.3-Flash · Maya-S-v2 IQ2_XXS, Maya v1.1.28, 131k context",
    "base": "zai-org/GLM-5.3-Flash",
    "arch": "MoE 321B / 18B active",
    "engine": "maya 1.1.28",
@@ -5517,7 +5535,7 @@
   "strata0212-fnb-v31-udiq3xxs-128k": {
    "id": "strata0212-fnb-v31-udiq3xxs-128k",
    "family": "Qwen3.8 Flash-Next",
-   "label": "Flash-Next UD-IQ3_XXS (Unsloth Dynamic v3.1) \u00b7 Strata 0.2.12, RTX 3090, 128k, 8-bit KV",
+   "label": "Flash-Next UD-IQ3_XXS (Unsloth Dynamic v3.1) · Strata 0.2.12, RTX 3090, 128k, 8-bit KV",
    "base": "Qwen/Qwen3.8-Flash-Next",
    "arch": "MoE",
    "engine": "Strata 0.2.12",
@@ -5530,7 +5548,7 @@
   "strata0212-fnb-v31-udq2kxl-128k": {
    "id": "strata0212-fnb-v31-udq2kxl-128k",
    "family": "Qwen3.8 Flash-Next",
-   "label": "Flash-Next UD-Q2_K_XL (Unsloth Dynamic v3.1) \u00b7 Strata 0.2.12, RTX 3090, 128k, 8-bit KV",
+   "label": "Flash-Next UD-Q2_K_XL (Unsloth Dynamic v3.1) · Strata 0.2.12, RTX 3090, 128k, 8-bit KV",
    "base": "Qwen/Qwen3.8-Flash-Next",
    "arch": "MoE",
    "engine": "Strata 0.2.12",
@@ -5543,7 +5561,7 @@
   "strata0212-fnb-v31-udq3kxl-128k": {
    "id": "strata0212-fnb-v31-udq3kxl-128k",
    "family": "Qwen3.8 Flash-Next",
-   "label": "Flash-Next UD-Q3_K_XL (Unsloth Dynamic v3.1) \u00b7 Strata 0.2.12, RTX 3090, 128k, 8-bit KV",
+   "label": "Flash-Next UD-Q3_K_XL (Unsloth Dynamic v3.1) · Strata 0.2.12, RTX 3090, 128k, 8-bit KV",
    "base": "Qwen/Qwen3.8-Flash-Next",
    "arch": "MoE",
    "engine": "Strata 0.2.12",
@@ -5556,7 +5574,7 @@
   "strata0212-fnb-v31-udiq3xxs-3090-v100": {
    "id": "strata0212-fnb-v31-udiq3xxs-3090-v100",
    "family": "Qwen3.8 Flash-Next",
-   "label": "Flash-Next UD-IQ3_XXS (Unsloth Dynamic v3.1) \u00b7 Strata 0.2.12, RTX 3090 + V100 helper expert cache, 128k, 8-bit KV",
+   "label": "Flash-Next UD-IQ3_XXS (Unsloth Dynamic v3.1) · Strata 0.2.12, RTX 3090 + V100 helper expert cache, 128k, 8-bit KV",
    "base": "Qwen/Qwen3.8-Flash-Next",
    "arch": "MoE",
    "engine": "Strata 0.2.12",
@@ -5569,7 +5587,7 @@
   "llamampere0632-fnb-v31-udiq3xxs-108k": {
    "id": "llamampere0632-fnb-v31-udiq3xxs-108k",
    "family": "Qwen3.8 Flash-Next",
-   "label": "Flash-Next UD-IQ3_XXS (Unsloth Dynamic v3.1) \u00b7 llamAmpere 0.6.3.2, RTX 3090, 108k, 8-bit KV",
+   "label": "Flash-Next UD-IQ3_XXS (Unsloth Dynamic v3.1) · llamAmpere 0.6.3.2, RTX 3090, 108k, 8-bit KV",
    "base": "Qwen/Qwen3.8-Flash-Next",
    "arch": "MoE",
    "engine": "llamAmpere 0.6.3.2",
@@ -5582,7 +5600,7 @@
   "lcpp-qwopus38-q4km-v100": {
    "id": "lcpp-qwopus38-q4km-v100",
    "family": "Qwen3.8 27B",
-   "label": "Qwopus3.8-27B-Coder-Flash Q4_K_M \u00b7 llama.cpp (Clover 4838ffb), V100 alone, 96k, 8-bit KV",
+   "label": "Qwopus3.8-27B-Coder-Flash Q4_K_M · llama.cpp (Clover 4838ffb), V100 alone, 96k, 8-bit KV",
    "base": "Qwen/Qwen3.8-27B",
    "arch": "dense 27B",
    "engine": "llama.cpp Clover 4838ffb",
@@ -5595,7 +5613,7 @@
   "lcpp-arete27b-q6k": {
    "id": "lcpp-arete27b-q6k",
    "family": "Qwen3.8 27B",
-   "label": "Arete-27B Q6_K \u00b7 llama.cpp (Clover 4838ffb), 96k, 8-bit KV",
+   "label": "Arete-27B Q6_K · llama.cpp (Clover 4838ffb), 96k, 8-bit KV",
    "base": "Qwen/Qwen3.8-27B",
    "arch": "dense 27B",
    "engine": "llama.cpp Clover 4838ffb",
@@ -5608,7 +5626,7 @@
   "strata0212-fnb-v31-udq2kxl-3090-v100": {
    "id": "strata0212-fnb-v31-udq2kxl-3090-v100",
    "family": "Qwen3.8 Flash-Next",
-   "label": "Flash-Next UD-Q2_K_XL (Unsloth Dynamic v3.1) \u00b7 Strata 0.2.12, RTX 3090 + V100 peer tier, 128k, 8-bit KV",
+   "label": "Flash-Next UD-Q2_K_XL (Unsloth Dynamic v3.1) · Strata 0.2.12, RTX 3090 + V100 peer tier, 128k, 8-bit KV",
    "base": "Qwen/Qwen3.8-Flash-Next",
    "arch": "MoE",
    "engine": "Strata 0.2.12",
@@ -5621,7 +5639,7 @@
   "strata0212-fnb-v31-udq3kxl-3090-v100": {
    "id": "strata0212-fnb-v31-udq3kxl-3090-v100",
    "family": "Qwen3.8 Flash-Next",
-   "label": "Flash-Next UD-Q3_K_XL (Unsloth Dynamic v3.1) \u00b7 Strata 0.2.12, RTX 3090 + V100 peer tier, 128k, 8-bit KV",
+   "label": "Flash-Next UD-Q3_K_XL (Unsloth Dynamic v3.1) · Strata 0.2.12, RTX 3090 + V100 peer tier, 128k, 8-bit KV",
    "base": "Qwen/Qwen3.8-Flash-Next",
    "arch": "MoE",
    "engine": "Strata 0.2.12",
@@ -5634,7 +5652,7 @@
   "lcpp-tiel35b-q6kxl-3090-v100": {
    "id": "lcpp-tiel35b-q6kxl-3090-v100",
    "family": "Tiel Coder 35B",
-   "label": "Tiel-Coder-35B-A3B UD-Q6_K_XL \u00b7 llama.cpp (Clover 4838ffb), RTX 3090 + V100, 128k, 8-bit KV",
+   "label": "Tiel-Coder-35B-A3B UD-Q6_K_XL · llama.cpp (Clover 4838ffb), RTX 3090 + V100, 128k, 8-bit KV",
    "base": "Tiel-Coder-35B-A3B",
    "arch": "MoE 35B / 3B active",
    "engine": "llama.cpp Clover 4838ffb",
@@ -5647,7 +5665,7 @@
   "llamampere0638-fnb-v31-udiq3xxs-108k": {
    "id": "llamampere0638-fnb-v31-udiq3xxs-108k",
    "family": "Qwen3.8 Flash-Next",
-   "label": "Flash-Next UD-IQ3_XXS (Unsloth Dynamic v3.1) \u00b7 llamAmpere 0.6.3.8, RTX 3090, 108k, 8-bit KV",
+   "label": "Flash-Next UD-IQ3_XXS (Unsloth Dynamic v3.1) · llamAmpere 0.6.3.8, RTX 3090, 108k, 8-bit KV",
    "base": "Qwen/Qwen3.8-Flash-Next",
    "arch": "MoE",
    "engine": "llamAmpere 0.6.3.8",
@@ -5660,7 +5678,7 @@
   "strata0213-fnb-v31-udiq3xxs-128k": {
    "id": "strata0213-fnb-v31-udiq3xxs-128k",
    "family": "Qwen3.8 Flash-Next",
-   "label": "Flash-Next UD-IQ3_XXS (Unsloth Dynamic v3.1) \u00b7 Strata 0.2.13, RTX 3090, 128k, 8-bit KV",
+   "label": "Flash-Next UD-IQ3_XXS (Unsloth Dynamic v3.1) · Strata 0.2.13, RTX 3090, 128k, 8-bit KV",
    "base": "Qwen/Qwen3.8-Flash-Next",
    "arch": "MoE",
    "engine": "Strata 0.2.13",
@@ -5673,7 +5691,7 @@
   "strata0213-fnb-v31-udiq3xxs-3090-v100": {
    "id": "strata0213-fnb-v31-udiq3xxs-3090-v100",
    "family": "Qwen3.8 Flash-Next",
-   "label": "Flash-Next UD-IQ3_XXS (Unsloth Dynamic v3.1) \u00b7 Strata 0.2.13, RTX 3090 + V100 peer tier, 128k, 8-bit KV",
+   "label": "Flash-Next UD-IQ3_XXS (Unsloth Dynamic v3.1) · Strata 0.2.13, RTX 3090 + V100 peer tier, 128k, 8-bit KV",
    "base": "Qwen/Qwen3.8-Flash-Next",
    "arch": "MoE",
    "engine": "Strata 0.2.13",
@@ -5686,7 +5704,7 @@
   "strata0213-fnb-v31-udq2kxl-128k": {
    "id": "strata0213-fnb-v31-udq2kxl-128k",
    "family": "Qwen3.8 Flash-Next",
-   "label": "Flash-Next UD-Q2_K_XL (Unsloth Dynamic v3.1) \u00b7 Strata 0.2.13, RTX 3090, 128k, 8-bit KV",
+   "label": "Flash-Next UD-Q2_K_XL (Unsloth Dynamic v3.1) · Strata 0.2.13, RTX 3090, 128k, 8-bit KV",
    "base": "Qwen/Qwen3.8-Flash-Next",
    "arch": "MoE",
    "engine": "Strata 0.2.13",
@@ -5699,7 +5717,7 @@
   "strata0213-fnb-v31-udq3kxl-128k": {
    "id": "strata0213-fnb-v31-udq3kxl-128k",
    "family": "Qwen3.8 Flash-Next",
-   "label": "Flash-Next UD-Q3_K_XL (Unsloth Dynamic v3.1) \u00b7 Strata 0.2.13, RTX 3090, 128k, 8-bit KV",
+   "label": "Flash-Next UD-Q3_K_XL (Unsloth Dynamic v3.1) · Strata 0.2.13, RTX 3090, 128k, 8-bit KV",
    "base": "Qwen/Qwen3.8-Flash-Next",
    "arch": "MoE",
    "engine": "Strata 0.2.13",
@@ -5712,7 +5730,7 @@
   "qwen3.8-flash-next-agent": {
    "id": "qwen3.8-flash-next-agent",
    "family": "Qwen3.8 Flash-Next",
-   "label": "Flash-Next UD-Q2_K_XL (Unsloth Dynamic v3.1) \u00b7 Strata 0.2.13, RTX 3090, agent profile: 2 \u00d7 256k slots, 8-bit KV, host-RAM session cache",
+   "label": "Flash-Next UD-Q2_K_XL (Unsloth Dynamic v3.1) · Strata 0.2.13, RTX 3090, agent profile: 2 × 256k slots, 8-bit KV, host-RAM session cache",
    "base": "Qwen/Qwen3.8-Flash-Next",
    "arch": "MoE",
    "engine": "Strata 0.2.13",
@@ -5725,7 +5743,7 @@
   "strata0213-fnb-v31-udq20-128k": {
    "id": "strata0213-fnb-v31-udq20-128k",
    "family": "Qwen3.8 Flash-Next",
-   "label": "Flash-Next UD-Q2_0 (Unsloth Dynamic v3.1) \u00b7 Strata 0.2.13, RTX 3090, 128k, 8-bit KV",
+   "label": "Flash-Next UD-Q2_0 (Unsloth Dynamic v3.1) · Strata 0.2.13, RTX 3090, 128k, 8-bit KV",
    "base": "Qwen/Qwen3.8-Flash-Next",
    "arch": "MoE",
    "engine": "Strata 0.2.13",
@@ -5738,7 +5756,7 @@
   "strata0213-fnb-gsq-iq3s-128k": {
    "id": "strata0213-fnb-gsq-iq3s-128k",
    "family": "Qwen3.8 Flash-Next",
-   "label": "Flash-Next GSQ-RCO IQ3_S \u00b7 Strata 0.2.13, RTX 3090, 128k, 8-bit KV",
+   "label": "Flash-Next GSQ-RCO IQ3_S · Strata 0.2.13, RTX 3090, 128k, 8-bit KV",
    "base": "Qwen/Qwen3.8-Flash-Next",
    "arch": "MoE",
    "engine": "Strata 0.2.13",
@@ -5751,7 +5769,7 @@
   "strata0213-fnb-gsq-iq3xxs-128k": {
    "id": "strata0213-fnb-gsq-iq3xxs-128k",
    "family": "Qwen3.8 Flash-Next",
-   "label": "Flash-Next GSQ-RCO IQ3_XXS \u00b7 Strata 0.2.13, RTX 3090, 128k, 8-bit KV",
+   "label": "Flash-Next GSQ-RCO IQ3_XXS · Strata 0.2.13, RTX 3090, 128k, 8-bit KV",
    "base": "Qwen/Qwen3.8-Flash-Next",
    "arch": "MoE",
    "engine": "Strata 0.2.13",
@@ -5764,7 +5782,7 @@
   "tf127-qwen3.8-27b-exl3-3bpw-dflash2": {
    "id": "tf127-qwen3.8-27b-exl3-3bpw-dflash2",
    "family": "Qwen3.8 27B",
-   "label": "Qwen3.8-27B EXL3 3-bit \u00b7 TensorFold 1.2.7, DFlash2 drafts, RTX 3090, 128k to 176k, 8-bit cache",
+   "label": "Qwen3.8-27B EXL3 3-bit · TensorFold 1.2.7, DFlash2 drafts, RTX 3090, 128k to 176k, 8-bit cache",
    "base": "Qwen/Qwen3.8-27B",
    "arch": "dense 27B",
    "engine": "TensorFold 1.2.7",
@@ -5777,7 +5795,7 @@
   "tf127-nemotron3.5-lightning-nvfp4": {
    "id": "tf127-nemotron3.5-lightning-nvfp4",
    "family": "Nemotron 3.5 Lightning",
-   "label": "Nemotron 3.5 Lightning 30B-A3B NVFP4 \u00b7 TensorFold 1.2.7 (RTX 30 fallback path), RTX 3090, 32k",
+   "label": "Nemotron 3.5 Lightning 30B-A3B NVFP4 · TensorFold 1.2.7 (RTX 30 fallback path), RTX 3090, 32k",
    "base": "nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4",
    "arch": "MoE 30B / 3B active",
    "engine": "TensorFold 1.2.7",
@@ -5790,7 +5808,7 @@
   "lcpp-arete27b-q8": {
    "id": "lcpp-arete27b-q8",
    "family": "Qwen3.8 27B",
-   "label": "Arete-27B Q8_0 \u00b7 llama.cpp (Clover 4838ffb), V100 alone, 128k, 8-bit KV",
+   "label": "Arete-27B Q8_0 · llama.cpp (Clover 4838ffb), V100 alone, 128k, 8-bit KV",
    "base": "Qwen/Qwen3.8-27B",
    "arch": "dense 27B",
    "engine": "llama.cpp Clover 4838ffb",
@@ -5809,7 +5827,7 @@
    "uncensored": false,
    "vision": null,
    "id": "lcpp-qwen38-27b-udq4km-3090",
-   "label": "Qwen3.8-27B UD-Q4_K_M (Unsloth, September 2026 file) \u00b7 llama.cpp (Clover 4838ffb), RTX 3090, 96k, 8-bit KV",
+   "label": "Qwen3.8-27B UD-Q4_K_M (Unsloth, September 2026 file) · llama.cpp (Clover 4838ffb), RTX 3090, 96k, 8-bit KV",
    "quant": "Unsloth UD-Q4_K_M (pre-V3.1)",
    "note": "The control for the Unsloth Dynamic V3.1 re-upload: the older file on the 3090 alone at 250 W. Short-benchmark rates: 32.1 tok/s decode, short-prompt first token 0.23-0.61 s, 30k and 90k retrievals correct, quality check 3 of 3, 5.4 GiB free. Agent test 1 with thinking on (agent run): passes all five checks with 94 tests passing, 8 subcommands, 68 minutes, engine decode 23.5 tok/s, median first token 0.38 s."
   },
@@ -5822,7 +5840,7 @@
    "uncensored": false,
    "vision": null,
    "id": "lcpp-qwen38-27b-v31-udq4km-3090",
-   "label": "Qwen3.8-27B UD-Q4_K_M (Unsloth Dynamic V3.1) \u00b7 llama.cpp (Clover 4838ffb), RTX 3090, 96k, 8-bit KV",
+   "label": "Qwen3.8-27B UD-Q4_K_M (Unsloth Dynamic V3.1) · llama.cpp (Clover 4838ffb), RTX 3090, 96k, 8-bit KV",
    "quant": "Unsloth UD-Q4_K_M, Dynamic V3.1 re-upload",
    "note": "Unsloth re-uploaded its Qwen3.8-27B quants as Dynamic V3.1 and claims 5-10% better agentic scores. Same flags as the old file, only the file changes. Short-benchmark rates: 32.3 tok/s decode (old file 32.1), short-prompt first token 0.21-0.61 s, 30k and 90k retrievals correct, quality check 3 of 3, 5.3 GiB free (94 MiB less than the old file). Agent test 1 with thinking on (agent run): passes all five checks with 58 tests passing, 7 subcommands, 57 minutes, engine decode 23.9 tok/s, median first token 0.41 s. The old file on the same flags passed with 94 tests and 8 subcommands in 68 minutes (23.5 tok/s), so one paired run shows no agentic gain on test 1."
   },
@@ -5830,7 +5848,7 @@
    "id": "lcpp-twil8b-balanced-q4km-3090",
    "family": "TwIL 8B",
    "base": "webAI-Official/TwIL-8B",
-   "label": "TwIL-8B balanced Q4_K_M (webAI official) \u00b7 llama.cpp (Clover 4838ffb), RTX 3090, 128k, 8-bit KV",
+   "label": "TwIL-8B balanced Q4_K_M (webAI official) · llama.cpp (Clover 4838ffb), RTX 3090, 128k, 8-bit KV",
    "arch": "dense 8B",
    "engine": "llama.cpp Clover 4838ffb",
    "quant": "official balanced Q4_K_M (5.3 GB)",
@@ -5843,7 +5861,7 @@
    "id": "lcpp-twil8b-verbose-q8-3090",
    "family": "TwIL 8B",
    "base": "webAI-Official/TwIL-8B",
-   "label": "TwIL-8B verbose Q8_0 (webAI official) \u00b7 llama.cpp (Clover 4838ffb), RTX 3090, 128k, 8-bit KV",
+   "label": "TwIL-8B verbose Q8_0 (webAI official) · llama.cpp (Clover 4838ffb), RTX 3090, 128k, 8-bit KV",
    "arch": "dense 8B",
    "engine": "llama.cpp Clover 4838ffb",
    "quant": "official verbose Q8_0 (9.3 GB)",
@@ -5856,7 +5874,7 @@
    "id": "lcpp-nex-n26-q2k-3090-v100",
    "family": "Nex N2.6",
    "base": "nex-agi/Nex-N2.6 (GLM-5.3-Flash post-train)",
-   "label": "Nex-N2.6 Q2_K (bartowski) \u00b7 llama.cpp (Clover 4838ffb), RTX 3090 + V100, experts in RAM, 96k, 8-bit KV",
+   "label": "Nex-N2.6 Q2_K (bartowski) · llama.cpp (Clover 4838ffb), RTX 3090 + V100, experts in RAM, 96k, 8-bit KV",
    "arch": "MoE 321B / 18B active",
    "engine": "llama.cpp Clover 4838ffb",
    "quant": "bartowski Q2_K (125.7 GB)",
@@ -5869,7 +5887,7 @@
    "id": "rustingstrata121-fnb-v31-udq2kxl-3090",
    "family": "Qwen3.8 Flash-Next",
    "base": "Qwen/Qwen3.8-Flash-Next",
-   "label": "Flash-Next UD-Q2_K_XL (Unsloth Dynamic v3.1) \u00b7 RustingStrata 1.2.1, RTX 3090, 128k, 8-bit KV",
+   "label": "Flash-Next UD-Q2_K_XL (Unsloth Dynamic v3.1) · RustingStrata 1.2.1, RTX 3090, 128k, 8-bit KV",
    "arch": "MoE",
    "engine": "RustingStrata 1.2.1",
    "quant": "Unsloth UD-Q2_K_XL v3.1 (74 GiB)",
@@ -5882,7 +5900,7 @@
    "id": "lcpp-cybertiel35b-abl-q6kxl-3090-v100",
    "family": "Tiel Coder 35B",
    "base": "Tiel-Coder-35B-A3B (Huihui abliterated)",
-   "label": "Cyber-Tiel-Coder-35B-A3B UD-Q6_K_XL (abliterated) \u00b7 llama.cpp (Clover 4838ffb), RTX 3090 + V100, four 256k slots, 8-bit KV",
+   "label": "Cyber-Tiel-Coder-35B-A3B UD-Q6_K_XL (abliterated) · llama.cpp (Clover 4838ffb), RTX 3090 + V100, four 256k slots, 8-bit KV",
    "arch": "MoE 35B / 3B active",
    "engine": "llama.cpp Clover 4838ffb",
    "quant": "UD-Q6_K_XL",
@@ -5894,7 +5912,7 @@
   "lcpp-nemotron35-lightning-q8-3090-v100": {
    "id": "lcpp-nemotron35-lightning-q8-3090-v100",
    "family": "Nemotron 3.5 Lightning",
-   "label": "Nemotron 3.5 Lightning 30B-A3B Q8_0 \u00b7 llama.cpp (Clover 4838ffb), RTX 3090 + V100, four 256k slots",
+   "label": "Nemotron 3.5 Lightning 30B-A3B Q8_0 · llama.cpp (Clover 4838ffb), RTX 3090 + V100, four 256k slots",
    "base": "nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B",
    "arch": "MoE 30B / 3B active",
    "engine": "llama.cpp Clover 4838ffb",
@@ -5907,7 +5925,7 @@
   "lcpp-tiel35b-udq4kxl-3090-v100": {
    "id": "lcpp-tiel35b-udq4kxl-3090-v100",
    "family": "Tiel Coder 35B",
-   "label": "Tiel-Coder-35B-A3B UD-Q4_K_XL \u00b7 llama.cpp (Clover 4838ffb), RTX 3090 + V100, four 256k slots, F16 KV",
+   "label": "Tiel-Coder-35B-A3B UD-Q4_K_XL · llama.cpp (Clover 4838ffb), RTX 3090 + V100, four 256k slots, F16 KV",
    "base": "Tiel-Coder-35B-A3B",
    "arch": "MoE 35B / 3B active",
    "engine": "llama.cpp Clover 4838ffb",
@@ -5920,7 +5938,7 @@
   "lcpp-thinkingcap27b-heretic-q4km-3090-v100": {
    "id": "lcpp-thinkingcap27b-heretic-q4km-3090-v100",
    "family": "Qwen3.8 27B",
-   "label": "ThinkingCap-Qwen3.8-27B Heretic Q4_K_M (uncensored) \u00b7 llama.cpp (Clover 4838ffb), RTX 3090 + V100, four 256k slots",
+   "label": "ThinkingCap-Qwen3.8-27B Heretic Q4_K_M (uncensored) · llama.cpp (Clover 4838ffb), RTX 3090 + V100, four 256k slots",
    "base": "Qwen3.8-27B (ThinkingCap fine-tune, Heretic uncensored)",
    "arch": "dense 27B",
    "engine": "llama.cpp Clover 4838ffb",
@@ -5933,7 +5951,7 @@
   "lcpp-flint40b-udq4kxl-3090-v100": {
    "id": "lcpp-flint40b-udq4kxl-3090-v100",
    "family": "Flint",
-   "label": "Flint Preview 40B-A2.5B UD-Q4_K_XL \u00b7 llama.cpp (Clover 4838ffb), RTX 3090 + V100, four 256k slots",
+   "label": "Flint Preview 40B-A2.5B UD-Q4_K_XL · llama.cpp (Clover 4838ffb), RTX 3090 + V100, four 256k slots",
    "base": "Flint Preview 40B-A2.5B",
    "arch": "MoE 40B / 2.5B active",
    "engine": "llama.cpp Clover 4838ffb",
@@ -5946,7 +5964,7 @@
   "lcpp-qwen36-35b-a3b-udq4kxl-3090-v100": {
    "id": "lcpp-qwen36-35b-a3b-udq4kxl-3090-v100",
    "family": "Qwen3.6",
-   "label": "Qwen3.6-35B-A3B UD-Q4_K_XL \u00b7 llama.cpp (Clover 4838ffb), RTX 3090 + V100, 96k",
+   "label": "Qwen3.6-35B-A3B UD-Q4_K_XL · llama.cpp (Clover 4838ffb), RTX 3090 + V100, 96k",
    "base": "Qwen/Qwen3.6-35B-A3B",
    "arch": "MoE 35B / 3B active",
    "engine": "llama.cpp Clover 4838ffb",
@@ -5959,7 +5977,7 @@
   "lcpp-qwen36-35b-a3b-macaq-r-q4kxl-3090-v100": {
    "id": "lcpp-qwen36-35b-a3b-macaq-r-q4kxl-3090-v100",
    "family": "Qwen3.6",
-   "label": "Qwen3.6-35B-A3B MACaQ-R Q4_K_XL \u00b7 llama.cpp (Clover 4838ffb), RTX 3090 + V100, 96k",
+   "label": "Qwen3.6-35B-A3B MACaQ-R Q4_K_XL · llama.cpp (Clover 4838ffb), RTX 3090 + V100, 96k",
    "base": "Qwen/Qwen3.6-35B-A3B (Huawei CSL MACaQ-R refinement of the Unsloth UD-Q4_K_XL file)",
    "arch": "MoE 35B / 3B active",
    "engine": "llama.cpp Clover 4838ffb",
@@ -5972,7 +5990,7 @@
   "lcpp-ernie55-flash-base-abl-mix122g-3090-v100": {
    "id": "lcpp-ernie55-flash-base-abl-mix122g-3090-v100",
    "family": "ERNIE 5.5",
-   "label": "ERNIE 5.5 Flash Base abliterated Mix-122G \u00b7 llama.cpp (PR #31925), RTX 3090 + V100 + system RAM, 96k",
+   "label": "ERNIE 5.5 Flash Base abliterated Mix-122G · llama.cpp (PR #31925), RTX 3090 + V100 + system RAM, 96k",
    "base": "baidu ERNIE 5.5 Flash Base (orcarouter abliterated GGUF)",
    "arch": "MoE about 280B / 14B active",
    "engine": "llama.cpp PR #31925 7d9d5c3",
@@ -5986,7 +6004,7 @@
    "id": "lcpp-q38-27b-cyber-iq4xs-v100-4x96k",
    "family": "Qwen3.8 27B",
    "base": "Qwen/Qwen3.8-27B",
-   "label": "Qwen3.8-27B Cyber (abliterated) IQ4_XS \u00b7 llama.cpp (Clover 4838ffb), V100 alone, four 96k slots, 8-bit KV",
+   "label": "Qwen3.8-27B Cyber (abliterated) IQ4_XS · llama.cpp (Clover 4838ffb), V100 alone, four 96k slots, 8-bit KV",
    "arch": "dense 27B",
    "engine": "llama.cpp Clover 4838ffb",
    "quant": "IQ4_XS",
@@ -5998,7 +6016,7 @@
   "strata0213-fnb-v31-udq4kxl-stocktable": {
    "id": "strata0213-fnb-v31-udq4kxl-stocktable",
    "family": "Qwen3.8 Flash-Next",
-   "label": "Flash-Next UD-Q4_K_XL (Unsloth Dynamic v3.1), stock n-gram table \u00b7 Strata 0.2.13, RTX 3090, two 256k sessions, 8-bit KV",
+   "label": "Flash-Next UD-Q4_K_XL (Unsloth Dynamic v3.1), stock n-gram table · Strata 0.2.13, RTX 3090, two 256k sessions, 8-bit KV",
    "base": "Qwen/Qwen3.8-Flash-Next",
    "arch": "MoE",
    "engine": "Strata 0.2.13",
@@ -6011,7 +6029,7 @@
   "strata0213-fnb-v31-udq4kxl-q8table": {
    "id": "strata0213-fnb-v31-udq4kxl-q8table",
    "family": "Qwen3.8 Flash-Next",
-   "label": "Flash-Next UD-Q4_K_XL (Unsloth Dynamic v3.1), 8-bit n-gram table \u00b7 Strata 0.2.13, RTX 3090, two 256k sessions, 8-bit KV",
+   "label": "Flash-Next UD-Q4_K_XL (Unsloth Dynamic v3.1), 8-bit n-gram table · Strata 0.2.13, RTX 3090, two 256k sessions, 8-bit KV",
    "base": "Qwen/Qwen3.8-Flash-Next",
    "arch": "MoE",
    "engine": "Strata 0.2.13",
@@ -6024,7 +6042,7 @@
   "orcarouter-fn-uncensored-strata0215": {
    "id": "orcarouter-fn-uncensored-strata0215",
    "family": "Qwen3.8 Flash-Next",
-   "label": "Orcarouter Flash-Next Uncensored IQ4_XS \u00b7 Strata 0.2.15, RTX 3090, 262k, 8-bit KV",
+   "label": "Orcarouter Flash-Next Uncensored IQ4_XS · Strata 0.2.15, RTX 3090, 262k, 8-bit KV",
    "base": "orcarouter/Qwen3.8-Flash-Next-Uncensored",
    "arch": "MoE 125B / 6B active",
    "engine": "Strata 0.2.15",
@@ -6037,7 +6055,7 @@
   "orcarouter-fn-strata-1m": {
    "id": "orcarouter-fn-strata-1m",
    "family": "Qwen3.8 Flash-Next",
-   "label": "Orcarouter Flash-Next Uncensored IQ4_XS \u00b7 Strata 0.2.15, RTX 3090, 1M (yarn x4), 8-bit KV",
+   "label": "Orcarouter Flash-Next Uncensored IQ4_XS · Strata 0.2.15, RTX 3090, 1M (yarn x4), 8-bit KV",
    "base": "orcarouter/Qwen3.8-Flash-Next-Uncensored",
    "arch": "MoE 125B / 6B active",
    "engine": "Strata 0.2.15",
@@ -6050,7 +6068,7 @@
   "orcarouter-fn-uncensored-b2": {
    "id": "orcarouter-fn-uncensored-b2",
    "family": "Qwen3.8 Flash-Next",
-   "label": "Orcarouter Flash-Next Uncensored IQ4_XS \u00b7 Strata 0.2.15, RTX 3090, 2 x 256k, 8-bit KV",
+   "label": "Orcarouter Flash-Next Uncensored IQ4_XS · Strata 0.2.15, RTX 3090, 2 x 256k, 8-bit KV",
    "base": "orcarouter/Qwen3.8-Flash-Next-Uncensored",
    "arch": "MoE 125B / 6B active",
    "engine": "Strata 0.2.15",
@@ -6063,7 +6081,7 @@
   "orcarouter-fn-uncensored-b3-512k": {
    "id": "orcarouter-fn-uncensored-b3-512k",
    "family": "Qwen3.8 Flash-Next",
-   "label": "Orcarouter Flash-Next Uncensored IQ4_XS \u00b7 Strata 0.2.15, RTX 3090, 3 x 512k (yarn x2), 8-bit KV",
+   "label": "Orcarouter Flash-Next Uncensored IQ4_XS · Strata 0.2.15, RTX 3090, 3 x 512k (yarn x2), 8-bit KV",
    "base": "orcarouter/Qwen3.8-Flash-Next-Uncensored",
    "arch": "MoE 125B / 6B active",
    "engine": "Strata 0.2.15",
@@ -6076,7 +6094,7 @@
   "orcarouter-fn-rusting": {
    "id": "orcarouter-fn-rusting",
    "family": "Qwen3.8 Flash-Next",
-   "label": "Orcarouter Flash-Next Uncensored IQ4_XS \u00b7 RustingStrata 1.2.1, RTX 3090, 262k, 8-bit KV",
+   "label": "Orcarouter Flash-Next Uncensored IQ4_XS · RustingStrata 1.2.1, RTX 3090, 262k, 8-bit KV",
    "base": "orcarouter/Qwen3.8-Flash-Next-Uncensored",
    "arch": "MoE 125B / 6B active",
    "engine": "RustingStrata 1.2.1",
@@ -6089,7 +6107,7 @@
   "hy4-flash-maya-l": {
    "id": "hy4-flash-maya-l",
    "family": "Hy4-Flash",
-   "label": "Hy4-Flash Maya-L IQ4_XS \u00b7 Maya v1.1.68, RTX 3090 + V100, 128k, 8-bit KV",
+   "label": "Hy4-Flash Maya-L IQ4_XS · Maya v1.1.68, RTX 3090 + V100, 128k, 8-bit KV",
    "base": "tencent/Hy4-flash",
    "arch": "MoE 224B (incl. 64B Engram table) / 12B active",
    "engine": "Maya v1.1.68",
@@ -6102,7 +6120,7 @@
   "hy4f-q3k-3090": {
    "id": "hy4f-q3k-3090",
    "family": "Hy4-Flash",
-   "label": "Hy4-Flash Q3_K \u00b7 maya-hy4f (cbe0a1f), RTX 3090, 128k, 8-bit KV",
+   "label": "Hy4-Flash Q3_K · maya-hy4f (cbe0a1f), RTX 3090, 128k, 8-bit KV",
    "base": "tencent/Hy4-flash",
    "arch": "MoE 224B (incl. 64B Engram table) / 12B active",
    "engine": "maya-hy4f cbe0a1f",
@@ -6115,7 +6133,7 @@
   "qwen38-27b-pi": {
    "id": "qwen38-27b-pi",
    "family": "Qwen3.8 27B",
-   "label": "Qwen3.8-27B UD-Q4_K_M + pi-harness LoRA \u00b7 llama.cpp (Clover 4838ffb), V100, 128k, 8-bit KV",
+   "label": "Qwen3.8-27B UD-Q4_K_M + pi-harness LoRA · llama.cpp (Clover 4838ffb), V100, 128k, 8-bit KV",
    "base": "Qwen/Qwen3.8-27B",
    "arch": "dense 27B",
    "engine": "llama.cpp Clover 4838ffb",
@@ -6128,7 +6146,7 @@
   "openrouter-deepseek-v4.1-flash-1017": {
    "id": "openrouter-deepseek-v4.1-flash-1017",
    "family": "DeepSeek",
-   "label": "DeepSeek-V4.1-Flash 1017 \u00b7 hosted on OpenRouter",
+   "label": "DeepSeek-V4.1-Flash 1017 · hosted on OpenRouter",
    "base": "deepseek-ai/DeepSeek-V4.1-Flash-1017",
    "arch": "MoE",
    "engine": "OpenRouter (hosted, served by Wafer)",
@@ -10097,7 +10115,7 @@
     }
    ],
    "quality": "Test 1 fails every live check; test 6 pagodas 0 of 10 each.",
-   "caveat": "One agent run (OpenCode, not T3 Code); test 2 agent runs stopped at the 85 \u00b0C limit and are being rerun at 300 W."
+   "caveat": "One agent run (OpenCode, not T3 Code); test 2 agent runs stopped at the 85 °C limit and are being rerun at 300 W."
   },
   {
    "date": "2026-11-09",
