@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Voxel Japanese Pagoda</title>
+<style>
+  body { margin:0; overflow:hidden; }
+  canvas { display:block; }
+</style>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+    "three/examples/jsm/controls/OrbitControls.js": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/controls/OrbitControls.js"
+  }
+}
+</script>
+</head>
+<body>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+
+// Scene, camera, renderer
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x87CEEB); // sky blue
+
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+camera.position.set(0, 6, 12);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+document.body.appendChild(renderer.domElement);
+
+// Lights with shadows
+const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+dirLight.position.set(10, 15, 10);
+dirLight.castShadow = true;
+scene.add(dirLight);
+
+const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+scene.add(ambientLight);
+
+// Stone platform (base)
+const platformGeo = new THREE.BoxGeometry(8, 1, 8);
+const platformMat = new THREE.MeshStandardMaterial({ color: 0x555555 });
+const platform = new THREE.Mesh(platformGeo, platformMat);
+platform.position.y = -0.5;
+platform.castShadow = true;
+platform.receiveShadow = true;
+scene.add(platform);
+
+// Five‑story pagoda built from cubes
+const storyHeight = 2;
+const baseWidth = 4;
+const offset = 0.5;
+const pagodaColor = 0x8B4513;
+
+for (let i = 0; i < 5; i++) {
+  const width = baseWidth - i * offset;
+  const depth = width;
+  const geo = new THREE.BoxGeometry(width, storyHeight, depth);
+  const mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: pagodaColor }));
+  mesh.position.y = (i + 0.5) * storyHeight;
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  scene.add(mesh);
+}
+
+// Upturned eaves – roof block
+const roofGeo = new THREE.BoxGeometry(3, 0.5, 3);
+const roofMesh = new THREE.Mesh(roofGeo, new THREE.MeshStandardMaterial({ color: pagodaColor }));
+roofMesh.position.y = 10 + 0.25;
+roofMesh.castShadow = true;
+roofMesh.receiveShadow = true;
+scene.add(roofMesh);
+
+// Spire (stacked cubes)
+for (let j = 0; j < 4; j++) {
+  const w = 2 - j * 0.5;
+  const geo = new THREE.BoxGeometry(w, 1, w);
+  const mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: pagodaColor }));
+  mesh.position.y = 10 + j * 1;
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  scene.add(mesh);
+}
+
+// Small pond
+const pondGeo = new THREE.BoxGeometry(6, 0.2, 4);
+const pondMat = new THREE.MeshStandardMaterial({ color: 0x0000ff });
+const pond = new THREE.Mesh(pondGeo, pondMat);
+pond.position.y = 0;
+pond.castShadow = true;
+pond.receiveShadow = true;
+scene.add(pond);
+
+// Red torii gate
+const toriiColor = 0xff0000;
+const postHeight = 2.5;
+const postWidth = 0.4;
+const postDepth = 0.4;
+const beamHeight = 0.3;
+
+// Left post
+const postLeftGeo = new THREE.BoxGeometry(postWidth, postHeight, postDepth);
+const postLeft = new THREE.Mesh(postLeftGeo, new THREE.MeshStandardMaterial({ color: toriiColor }));
+postLeft.position.set(-2, postHeight / 2, 0);
+postLeft.castShadow = true;
+scene.add(postLeft);
+
+// Right post
+const postRight = postLeft.clone();
+postRight.position.x = 2;
+postRight.castShadow = true;
+scene.add(postRight);
+
+// Top beam
+const beamGeo = new THREE.BoxGeometry(4, beamHeight, postDepth);
+const beam = new THREE.Mesh(beamGeo, new THREE.MeshStandardMaterial({ color: toriiColor }));
+beam.position.y = postHeight;
+beam.castShadow = true;
+scene.add(beam);
+
+// Cherry blossom trees (voxel style)
+function createTree(xPos) {
+  // Trunk
+  const trunkGeo = new THREE.BoxGeometry(0.3, 3, 0.3);
+  const trunk = new THREE.Mesh(trunkGeo, new THREE.MeshStandardMaterial({ color: 0x5d4037 }));
+  trunk.position.y = 1.5;
+  trunk.castShadow = true;
+  scene.add(trunk);
+
+  // Foliage (stack of small cubes)
+  const foliageGroup = new THREE.Group();
+  const leafGeo = new THREE.BoxGeometry(0.3, 0.3, 0.3);
+  const colors = [0x00aa00, 0x008000];
+  for (let i = 0; i < 6; i++) {
+    const ox = (i % 2 === 0 ? 0.3 : -0.3);
+    const oz = (i % 3 === 0 ? 0.3 : -0.3);
+    const leaf = new THREE.Mesh(leafGeo, new THREE.MeshStandardMaterial({ color: colors[i % 2] }));
+    leaf.position.set(ox, 2.5, oz);
+    foliageGroup.add(leaf);
+  }
+  scene.add(foliageGroup);
+
+  // Blossoms (tiny pink cubes)
+  for (let i = 0; i < 4; i++) {
+    const blossomGeo = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+    const blossom = new THREE.Mesh(blossomGeo, new THREE.MeshStandardMaterial({ color: 0xff66cc }));
+    blossom.position.set(ox * 0.5, 2.8 + i * 0.05, oz * 0.5);
+    scene.add(blossom);
+  }
+}
+createTree(-5);
+createTree(5);
+
+// Drifting cherry blossom petals
+const petals = [];
+const petalCount = 15;
+for (let i = 0; i < petalCount; i++) {
+  const geo = new THREE.BoxGeometry(0.08, 0.08, 0.08);
+  const mat = new THREE.MeshStandardMaterial({ color: 0xff66cc });
+  const petal = new THREE.Mesh(geo, mat);
+  let x = -5 + Math.random() * 2; // between -5 and -3
+  let z = (Math.random() - 0.5) * 1.5;
+  petal.position.set(x, 4 + Math.random() * 1, z);
+  scene.add(petal);
+  petals.push(petal);
+}
+
+// Camera controls – slow orbit
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+controls.autoRotate = true;
+controls.autoRotateSpeed = 0.3;
+
+// Animation loop
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+
+  // Move petals downwards
+  for (let i = 0; i < petals.length; i++) {
+    const p = petals[i];
+    p.position.y -= 0.025;
+    if (p.position.y < -10) {
+      scene.remove(p);
+      petals.splice(i, 1);
+      i--;
+    }
+  }
+}
+animate();
+
+// Handle window resize
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,390 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="760" viewBox="0 0 720 720" role="img" aria-label="Brass clockwork orrery: eight planets orbit the sun at true relative speeds, driven by visibly meshing gears; a fixed day/night shadow sweeps each planet.">
+<title>Brass Clockwork Orrery</title>
+<desc>Epicyclic gear train. One shared gear module; ring gears fixed on the orbits, sun-gear stack in the center, pinions on each planet arm. Orbital periods in true proportion (Earth = 12 s). The shadow terminator on each planet stays sunward as the planet turns.</desc>
+
+<defs>
+  <radialGradient id="bg" cx="50%" cy="45%" r="75%">
+    <stop offset="0" stop-color="#1d2720"/><stop offset="1" stop-color="#0a0d0a"/>
+  </radialGradient>
+  <radialGradient id="plate" cx="50%" cy="45%" r="60%">
+    <stop offset="0" stop-color="#233027"/><stop offset="0.75" stop-color="#141b16"/><stop offset="1" stop-color="#0c100d"/>
+  </radialGradient>
+  <radialGradient id="brassB" cx="38%" cy="32%" r="80%">
+    <stop offset="0" stop-color="#f2d488"/><stop offset="0.45" stop-color="#c99b4a"/><stop offset="0.8" stop-color="#8a5f22"/><stop offset="1" stop-color="#6e4a18"/>
+  </radialGradient>
+  <radialGradient id="brassS" cx="40%" cy="35%" r="75%">
+    <stop offset="0" stop-color="#e9c67d"/><stop offset="0.5" stop-color="#b8893c"/><stop offset="1" stop-color="#7a521d"/>
+  </radialGradient>
+  <radialGradient id="sunG" cx="42%" cy="38%" r="75%">
+    <stop offset="0" stop-color="#fff7d0"/><stop offset="0.5" stop-color="#ffce54"/><stop offset="0.85" stop-color="#e08a1e"/><stop offset="1" stop-color="#b2611a"/>
+  </radialGradient>
+  <radialGradient id="pG" cx="35%" cy="30%" r="80%">
+    <stop offset="0" stop-color="#ffe0a8"/><stop offset="0.55" stop-color="#cf9b52"/><stop offset="1" stop-color="#8a5a20"/>
+  </radialGradient>
+  <radialGradient id="night" cx="50%" cy="50%" r="50%">
+    <stop offset="0" stop-color="#131a26" stop-opacity="0.96"/>
+    <stop offset="0.62" stop-color="#1a2333" stop-opacity="0.8"/>
+    <stop offset="0.85" stop-color="#242f42" stop-opacity="0.42"/>
+    <stop offset="1" stop-color="#242f42" stop-opacity="0"/>
+  </radialGradient>
+
+  <path id="ringC" d="M -234 0 A 234 234 0 1 1 234 0 A 234 234 0 1 1 -234 0 Z"/>
+  <path id="dialC" d="M -196 0 A 196 196 0 1 1 196 0 A 196 196 0 1 1 -196 0 Z"/>
+  <path id="sunC" d="M -28.875 0 A 28.875 28.875 0 1 1 28.875 0 A 28.875 28.875 0 1 1 -28.875 0 Z"/>
+  <path id="sunGlowC" d="M -53 0 A 53 53 0 1 1 53 0 A 53 53 0 1 1 -53 0 Z"/>
+
+  <!-- One toothed wheel: dashed pitch ring (25 teeth) + body + rim. Scaled per gear; rotation on the use. -->
+  <g id="wheel">
+    <circle r="19.5" fill="none" stroke="#8a5f26" stroke-width="9" stroke-dasharray="1.835 1.103" stroke-dashoffset="1.835"/>
+    <circle r="15" fill="url(#brassB)" stroke="#59390f" stroke-width="1.3"/>
+    <circle r="19.5" fill="none" stroke="#6e4a18" stroke-width="1" opacity="0.85"/>
+  </g>
+
+  <circle id="screw" r="2.1" fill="url(#brassS)" stroke="#59390f" stroke-width="0.8"/>
+  <rect id="slot" x="-1.15" y="-1.15" width="2.3" height="2.3" fill="#40260c"/>
+  <g id="screwHead">
+    <use href="#screw"/>
+    <g transform="rotate(18)"><use href="#slot"/></g>
+  </g>
+
+  <g id="rivet"><circle r="3" fill="url(#brassS)" stroke="#59390f" stroke-width="0.8"/><circle r="1.1" fill="#40260c"/></g>
+
+  <g id="arm">
+    <rect x="10" y="-3.2" width="210" height="6.4" rx="3" fill="url(#brassS)" stroke="#59390f" stroke-width="1"/>
+    <line x1="16" y1="0" x2="212" y2="0" stroke="#5e3d10" stroke-width="1.2"/>
+    <circle cx="16" cy="0" r="3" fill="#5e3d10" opacity="0.8"/>
+  </g>
+
+  <!-- Static day/night mask: lit hemisphere faces the sun; night sweeps past as the planet turns -->
+  <mask id="maskNight" maskContentUnits="userSpaceOnUse">
+    <circle cx="0" cy="0" r="15" fill="#fff"/>
+    <circle cx="42" cy="0" r="18" fill="url(#night)"/>
+  </mask>
+  <!-- Surface markings, counter-rotating to show planetary spin -->
+  <g id="spin">
+    <circle r="7" fill="none" stroke="#7a4e14" stroke-width="0.9" opacity="0.55"/>
+    <circle r="11" fill="none" stroke="#7a4e14" stroke-width="0.9" opacity="0.4"/>
+    <path d="M -8.5 1.5 Q 0 -3.5 8.5 1.5" fill="none" stroke="#7a4e14" stroke-width="0.9" opacity="0.4"/>
+  </g>
+
+  <!-- ===== PLANETS (planet + arm + pinion; rotates as a rigid carrier) ===== -->
+  <g id="pMercury">
+    <use href="#arm"/>
+    <g transform="translate(126.667,0)">
+      <animateTransform attributeName="transform" type="rotate" additive="sum" values="15.844;15.844 0 720" dur="2.8987s" repeatCount="indefinite"/>
+      <use href="#wheel" transform="scale(1.2)"/>
+      <circle r="17" fill="url(#brassB)" stroke="#59390f" stroke-width="1"/>
+      <g transform="rotate(72)"><circle r="9.75" fill="none" stroke="#0d0f0c" stroke-width="2.6"/></g>
+      <circle r="5.2" fill="url(#brassS)" stroke="#59390f" stroke-width="0.9"/>
+      <circle r="2.1" fill="#0d0f0c"/>
+    </g>
+    <g transform="translate(218,0)">
+      <circle r="6.2" fill="url(#pG)" stroke="#59390f" stroke-width="1"/>
+      <g transform="translate(4,0)"><circle r="4.9" fill="url(#pG)" stroke="#59390f" stroke-width="0.8"/>
+        <animateTransform attributeName="transform" type="rotate" additive="sum" values="-18;-18 0 1440" dur="0.7247s" repeatCount="indefinite"/>
+        <g transform="scale(0.62)"><use href="#spin"/></g></g>
+      <use href="#screwHead"/>
+      <circle r="5.6" fill="#000" opacity="0.35" mask="url(#maskNight)"/>
+    </g>
+  </g>
+
+  <g id="pVenus">
+    <use href="#arm"/>
+    <g transform="translate(176,0)">
+      <animateTransform attributeName="transform" type="rotate" additive="sum" values="12.755;12.755 0 720" dur="7.3966s" repeatCount="indefinite"/>
+      <use href="#wheel" transform="scale(1.715)"/>
+      <circle r="25.73" fill="url(#brassB)" stroke="#59390f" stroke-width="1"/>
+      <g transform="rotate(72)"><circle r="15.32" fill="none" stroke="#0d0f0c" stroke-width="2.6"/></g>
+      <circle r="7.4" fill="url(#brassS)" stroke="#59390f" stroke-width="0.9"/>
+      <circle r="3" fill="#0d0f0c"/>
+    </g>
+    <g transform="translate(294,0)">
+      <circle r="8.8" fill="url(#pG)" stroke="#59390f" stroke-width="1"/>
+      <g transform="translate(4,0)"><circle r="7" fill="url(#pG)" stroke="#59390f" stroke-width="0.8"/>
+        <animateTransform attributeName="transform" type="rotate" additive="sum" values="-18;-18 0 1440" dur="1.8492s" repeatCount="indefinite"/>
+        <g transform="scale(0.87)"><use href="#spin"/></g></g>
+      <use href="#screwHead"/>
+      <circle r="8" fill="#000" opacity="0.38" mask="url(#maskNight)"/>
+    </g>
+  </g>
+
+  <g id="pEarth">
+    <use href="#arm"/>
+    <g transform="translate(224,0)">
+      <animateTransform attributeName="transform" type="rotate" additive="sum" values="9.667;9.667 0 720" dur="12s" repeatCount="indefinite"/>
+      <use href="#wheel" transform="scale(2.253)"/>
+      <circle r="33.8" fill="url(#brassB)" stroke="#59390f" stroke-width="1"/>
+      <g transform="rotate(72)"><circle r="20.14" fill="none" stroke="#0d0f0c" stroke-width="2.6"/></g>
+      <circle r="9.8" fill="url(#brassS)" stroke="#59390f" stroke-width="0.9"/>
+      <circle r="4" fill="#0d0f0c"/>
+    </g>
+    <g transform="translate(368,0">
+      <circle r="9.5" fill="url(#pG)" stroke="#59390f" stroke-width="1"/>
+      <g transform="translate(4,0)"><circle r="7.5" fill="url(#pG)" stroke="#59390f" stroke-width="0.8"/>
+        <animateTransform attributeName="transform" type="rotate" additive="sum" values="-18;-18 0 1440" dur="3s" repeatCount="indefinite"/>
+        <g transform="scale(0.94)"><use href="#spin"/></g></g>
+      <use href="#screwHead"/>
+      <circle r="8.6" fill="#000" opacity="0.4" mask="url(#maskNight)"/>
+    </g>
+  </g>
+
+  <g id="pMars">
+    <use href="#arm"/>
+    <g transform="translate(267.333,0)">
+      <animateTransform attributeName="transform" type="rotate" additive="sum" values="6.578;6.578 0 720" dur="22.599s" repeatCount="indefinite"/>
+      <use href="#wheel" transform="scale(2.701)"/>
+      <circle r="40.52" fill="url(#brassB)" stroke="#59390f" stroke-width="1"/>
+      <g transform="rotate(72)"><circle r="24.22" fill="none" stroke="#0d0f0c" stroke-width="2.6"/></g>
+      <circle r="11.7" fill="url(#brassS)" stroke="#59390f" stroke-width="0.9"/>
+      <circle r="4.7" fill="#0d0f0c"/>
+    </g>
+    <g transform="translate(448,0)">
+      <circle r="8" fill="url(#pG)" stroke="#59390f" stroke-width="1"/>
+      <g transform="translate(4,0)"><circle r="6.3" fill="url(#pG)" stroke="#59390f" stroke-width="0.8"/>
+        <animateTransform attributeName="transform" type="rotate" additive="sum" values="-18;-18 0 1440" dur="5.6498s" repeatCount="indefinite"/>
+        <g transform="scale(0.79)"><use href="#spin"/></g></g>
+      <use href="#screwHead"/>
+      <circle r="7.2" fill="#000" opacity="0.42" mask="url(#maskNight)"/>
+    </g>
+  </g>
+
+  <g id="pJupiter">
+    <use href="#arm"/>
+    <g transform="translate(328,0)">
+      <animateTransform attributeName="transform" type="rotate" additive="sum" values="3.489;3.489 0 720" dur="141.867s" repeatCount="indefinite"/>
+      <use href="#wheel" transform="scale(3.331)"/>
+      <circle r="50" fill="url(#brassB)" stroke="#59390f" stroke-width="1"/>
+      <g transform="rotate(72)"><circle r="30" fill="none" stroke="#0d0f0c" stroke-width="2.6"/></g>
+      <circle r="14.5" fill="url(#brassS)" stroke="#59390f" stroke-width="0.9"/>
+      <circle r="5.8" fill="#0d0f0c"/>
+    </g>
+    <g transform="translate(560,0)">
+      <circle r="12" fill="url(#pG)" stroke="#59390f" stroke-width="1"/>
+      <g transform="translate(4,0)"><circle r="9.4" fill="url(#pG)" stroke="#59390f" stroke-width="0.8"/>
+        <animateTransform attributeName="transform" type="rotate" additive="sum" values="-18;-18 0 1440" dur="35.467s" repeatCount="indefinite"/>
+        <g transform="scale(1.27)"><use href="#spin"/></g></g>
+      <use href="#screwHead"/>
+      <circle r="11" fill="#000" opacity="0.42" mask="url(#maskNight)"/>
+    </g>
+  </g>
+
+  <g id="pSaturn">
+    <use href="#arm"/>
+    <g transform="translate(398.667,0)">
+      <animateTransform attributeName="transform" type="rotate" additive="sum" values="1.944;1.944 0 720" dur="354.155s" repeatCount="indefinite"/>
+      <use href="#wheel" transform="scale(4.051)"/>
+      <circle r="60.77" fill="url(#brassB)" stroke="#59390f" stroke-width="1"/>
+      <g transform="rotate(72)"><circle r="36.52" fill="none" stroke="#0d0f0c" stroke-width="2.6"/></g>
+      <circle r="17.6" fill="url(#brassS)" stroke="#59390f" stroke-width="0.9"/>
+      <circle r="7.1" fill="#0d0f0c"/>
+    </g>
+    <g transform="translate(672,0)">
+      <circle r="10.5" fill="url(#pG)" stroke="#59390f" stroke-width="1"/>
+      <g transform="translate(4,0)"><circle r="8.2" fill="url(#pG)" stroke="#59390f" stroke-width="0.8"/>
+        <animateTransform attributeName="transform" type="rotate" additive="sum" values="-18;-18 0 1440" dur="88.539s" repeatCount="indefinite"/>
+        <g transform="scale(1.11)"><use href="#spin"/></g></g>
+      <use href="#screwHead"/>
+      <circle r="9.6" fill="#000" opacity="0.42" mask="url(#maskNight)"/>
+      <g transform="rotate(-16)"><ellipse rx="17" ry="4.6" fill="none" stroke="url(#brassS)" stroke-width="1.7"/></g>
+    </g>
+  </g>
+
+  <g id="pUranus">
+    <use href="#arm"/>
+    <g transform="translate(469.333,0)">
+      <animateTransform attributeName="transform" type="rotate" additive="sum" values="1.051;1.051 0 720" dur="1008.58s" repeatCount="indefinite"/>
+      <use href="#wheel" transform="scale(4.771)"/>
+      <circle r="71.56" fill="url(#brassB)" stroke="#59390f" stroke-width="1"/>
+      <g transform="rotate(72)"><circle r="42.98" fill="none" stroke="#0d0f0c" stroke-width="2.6"/></g>
+      <circle r="20.7" fill="url(#brassS)" stroke="#59390f" stroke-width="0.9"/>
+      <circle r="8.2" fill="#0d0f0c"/>
+    </g>
+    <g transform="translate(784,0)">
+      <circle r="7.6" fill="url(#pG)" stroke="#59390f" stroke-width="1"/>
+      <g transform="translate(4,0)"><circle r="6" fill="url(#pG)" stroke="#59390f" stroke-width="0.8"/>
+        <animateTransform attributeName="transform" type="rotate" additive="sum" values="-18;-18 0 1440" dur="252.145s" repeatCount="indefinite"/>
+        <g transform="scale(0.77)"><use href="#spin"/></g></g>
+      <use href="#screwHead"/>
+      <circle r="6.9" fill="#000" opacity="0.45" mask="url(#maskNight)"/>
+      <g transform="rotate(72)"><ellipse rx="12.5" ry="3.4" fill="none" stroke="url(#brassS)" stroke-width="1.4" opacity="0.9"/></g>
+    </g>
+  </g>
+
+  <g id="pNeptune">
+    <use href="#arm"/>
+    <g transform="translate(525.333,0)">
+      <animateTransform attributeName="transform" type="rotate" additive="sum" values="0.539;0.539 0 720" dur="1981.45s" repeatCount="indefinite"/>
+      <use href="#wheel" transform="scale(5.351)"/>
+      <circle r="80.26" fill="url(#brassB)" stroke="#59390f" stroke-width="1"/>
+      <g transform="rotate(72)"><circle r="48.18" fill="none" stroke="#0d0f0c" stroke-width="2.6"/></g>
+      <circle r="23.1" fill="url(#brassS)" stroke="#59390f" stroke-width="0.9"/>
+      <circle r="9.1" fill="#0d0f0c"/>
+    </g>
+    <g transform="translate(876,0)">
+      <circle r="7.2" fill="url(#pG)" stroke="#59390f" stroke-width="1"/>
+      <g transform="translate(4,0)"><circle r="5.6" fill="url(#pG)" stroke="#59390f" stroke-width="0.8"/>
+        <animateTransform attributeName="transform" type="rotate" additive="sum" values="-18;-18 0 1440" dur="495.36s" repeatCount="indefinite"/>
+        <g transform="scale(0.72)"><use href="#spin"/></g></g>
+      <use href="#screwHead"/>
+      <circle r="6.5" fill="#000" opacity="0.48" mask="url(#maskNight)"/>
+    </g>
+  </g>
+</defs>
+
+<!-- ============================ SCENE ============================ -->
+<rect width="720" height="720" fill="url(#bg)"/>
+<circle cx="360" cy="360" r="346" fill="url(#plate)"/>
+<circle cx="360" cy="360" r="346" fill="none" stroke="#8a5f26" stroke-width="2.5"/>
+<circle cx="360" cy="360" r="341" fill="none" stroke="#59390f" stroke-width="1" opacity="0.7"/>
+<use href="#rivet" x="360" y="23.5"/><use href="#rivet" x="696.5" y="360"/><use href="#rivet" x="360" y="696.5"/><use href="#rivet" x="23.5" y="360"/>
+<use href="#rivet" x="599.3" y="120.7"/><use href="#rivet" x="69.3" y="120.7"/><use href="#rivet" x="69.3" y="599.3"/><use href="#rivet" x="599.3" y="599.3"/>
+
+<!-- engraved degree dial -->
+<circle cx="360" cy="360" r="330" fill="none" stroke="#8a5f26" stroke-width="1.6" stroke-dasharray="1.6 23.674" opacity="0.55"/>
+<circle cx="360" cy="360" r="324" fill="none" stroke="#8a5f26" stroke-width="2.6" stroke-dasharray="2.6 46.451" opacity="0.65"/>
+
+<!-- main drive wheel (mainspring output, 96 s/rev) + fixed anchor gear -->
+<g transform="translate(360,360)"><g>
+  <animateTransform attributeName="transform" type="rotate" from="-4.844" to="355.156" dur="96s" repeatCount="indefinite"/>
+  <use href="#wheel" transform="scale(5.911)"/>
+  <circle r="88.66" fill="url(#brassB)" stroke="#59390f" stroke-width="1"/>
+  <g transform="rotate(72)"><circle r="53.23" fill="none" stroke="#0d0f0c" stroke-width="2.8"/></g>
+  <circle r="25.5" fill="url(#brassS)" stroke="#59390f"/>
+</g></g>
+<g transform="translate(469,360) rotate(19.697)">
+  <use href="#wheel" transform="scale(1.789)"/>
+  <circle r="26.84" fill="url(#brassB)" stroke="#59390f" stroke-width="1"/>
+  <circle r="16.01" fill="none" stroke="#0d0f0c" stroke-width="2.6"/>
+  <circle r="7.8" fill="url(#brassS)" stroke="#59390f" stroke-width="0.9"/>
+  <circle r="3.1" fill="#0d0f0c"/>
+</g>
+
+<!-- fixed ring gears (the orbits) -->
+<use href="#ringC" transform="translate(360,360) scale(1.2102) rotate(-11.52)" stroke="#8a5f26" fill="none"/>
+<use href="#ringC" transform="translate(360,360) scale(1.7161) rotate(16.14)" stroke="#8a5f26" fill="none"/>
+<use href="#ringC" transform="translate(360,360) scale(2.2528) rotate(5.069)" stroke="#8a5f26" fill="none"/>
+<use href="#ringC" transform="translate(360,360) scale(2.7006) rotate(-1.519)" stroke="#8a5f26" fill="none"/>
+<use href="#ringC" transform="translate(360,360) scale(3.3313) rotate(1.717)" stroke="#8a5f26" fill="none"/>
+<use href="#ringC" transform="translate(360,360) scale(4.0513) rotate(0.896)" stroke="#8a5f26" fill="none"/>
+<use href="#ringC" transform="translate(360,360) scale(4.7713) rotate(0.504)" stroke="#8a5f26" fill="none"/>
+<use href="#ringC" transform="translate(360,360) scale(5.3513) rotate(-0.225)" stroke="#8a5f26" fill="none"/>
+<circle cx="360" cy="360" r="106" fill="none" stroke="#8a5f26" stroke-width="1.4" stroke-dasharray="1.4 18.34" opacity="0.5"/>
+
+<!-- sun-gear stack (4× each planet's orbit rate) -->
+<g transform="translate(360,360)"><g>
+  <animateTransform attributeName="transform" type="rotate" from="-0.496" to="359.504" dur="495.36s" repeatCount="indefinite"/>
+  <use href="#wheel" transform="scale(4.524)"/>
+  <circle r="67.86" fill="url(#brassB)" fill-opacity="0.4" stroke="#59390f"/>
+  <g transform="rotate(72)"><circle r="40.71" fill="none" stroke="#0d0f0c" stroke-width="2.4" opacity="0.55"/></g>
+  <circle r="18.8" fill="url(#brassS)" fill-opacity="0.8" stroke="#59390f"/>
+  <circle r="7.5" fill="#0d0f0c"/>
+</g></g>
+<g transform="translate(360,360)"><g>
+  <animateTransform attributeName="transform" type="rotate" from="-1.051" to="358.949" dur="252.145s" repeatCount="indefinite"/>
+  <use href="#wheel" transform="scale(3.883)"/>
+  <circle r="58.25" fill="url(#brassB)" fill-opacity="0.42" stroke="#59390f"/>
+  <g transform="rotate(72)"><circle r="34.95" fill="none" stroke="#0d0f0c" stroke-width="2.4" opacity="0.55"/></g>
+  <circle r="16.1" fill="url(#brassS)" fill-opacity="0.8" stroke="#59390f"/>
+  <circle r="6.5" fill="#0d0f0c"/>
+</g></g>
+<g transform="translate(360,360)"><g>
+  <animateTransform attributeName="transform" type="rotate" from="-2.102" to="357.898" dur="88.539s" repeatCount="indefinite"/>
+  <use href="#wheel" transform="scale(3.126)"/>
+  <circle r="46.89" fill="url(#brassB)" fill-opacity="0.45" stroke="#59390f"/>
+  <g transform="rotate(72)"><circle r="28.13" fill="none" stroke="#0d0f0c" stroke-width="2.4" opacity="0.55"/></g>
+  <circle r="12.8" fill="url(#brassS)" fill-opacity="0.85" stroke="#59390f"/>
+  <circle r="5.2" fill="#0d0f0c"/>
+</g></g>
+<g transform="translate(360,360)"><g>
+  <animateTransform attributeName="transform" type="rotate" from="-3.896" to="356.104" dur="35.467s" repeatCount="indefinite"/>
+  <use href="#wheel" transform="scale(2.415)"/>
+  <circle r="36.23" fill="url(#brassB)" fill-opacity="0.5" stroke="#59390f"/>
+  <g transform="rotate(72)"><circle r="21.73" fill="none" stroke="#0d0f0c" stroke-width="2.4" opacity="0.6"/></g>
+  <circle r="9.9" fill="url(#brassS)" fill-opacity="0.9" stroke="#59390f"/>
+  <circle r="4" fill="#0d0f0c"/>
+</g></g>
+<g transform="translate(360,360)"><g>
+  <animateTransform attributeName="transform" type="rotate" from="-6.578" to="353.422" dur="22.599s" repeatCount="indefinite"/>
+  <use href="#wheel" transform="scale(1.824)"/>
+  <circle r="27.36" fill="url(#brassB)" fill-opacity="0.55" stroke="#59390f"/>
+  <g transform="rotate(72)"><circle r="16.41" fill="none" stroke="#0d0f0c" stroke-width="2.4" opacity="0.65"/></g>
+  <circle r="7.5" fill="url(#brassS)" fill-opacity="0.95" stroke="#59390f"/>
+  <circle r="3.1" fill="#0d0f0c"/>
+</g></g>
+<g transform="translate(360,360)"><g>
+  <animateTransform attributeName="transform" type="rotate" from="-9.667" to="350.333" dur="12s" repeatCount="indefinite"/>
+  <use href="#wheel" transform="scale(1.369)"/>
+  <circle r="20.53" fill="url(#brassB)" fill-opacity="0.65" stroke="#59390f"/>
+  <circle r="12.32" fill="none" stroke="#0d0f0c" stroke-width="2.4" opacity="0.7"/>
+  <circle r="5.7" fill="url(#brassS)" stroke="#59390f"/>
+  <circle r="2.4" fill="#0d0f0c"/>
+</g></g>
+<g transform="translate(360,360)"><g>
+  <animateTransform attributeName="transform" type="rotate" from="-12.755" to="347.245" dur="7.3966s" repeatCount="indefinite"/>
+  <use href="#wheel" transform="scale(0.958)"/>
+  <circle r="14.37" fill="url(#brassB)" fill-opacity="0.75" stroke="#59390f"/>
+  <circle r="8.62" fill="none" stroke="#0d0f0c" stroke-width="2.4" opacity="0.75"/>
+  <circle r="4" fill="url(#brassS)" stroke="#59390f"/>
+  <circle r="1.7" fill="#0d0f0c"/>
+</g></g>
+<g transform="translate(360,360)"><g>
+  <animateTransform attributeName="transform" type="rotate" from="-15.844" to="344.156" dur="0.7247s" repeatCount="indefinite"/>
+  <use href="#wheel" transform="scale(0.6)"/>
+  <circle r="9" fill="url(#brassB)" stroke="#59390f"/>
+  <circle r="5.4" fill="none" stroke="#0d0f0c" stroke-width="2.2"/>
+  <circle r="2.6" fill="url(#brassS)" stroke="#59390f" stroke-width="0.6"/>
+  <circle r="1" fill="#0d0f0c"/>
+</g></g>
+
+<!-- planet arms + pinions + planets (true orbital periods) -->
+<g transform="translate(360,360)"><g>
+  <animateTransform attributeName="transform" type="rotate" values="145;505" dur="2.8987s" repeatCount="indefinite"/>
+  <use href="#pMercury"/></g></g>
+<g transform="translate(360,360)"><g>
+  <animateTransform attributeName="transform" type="rotate" values="62;422" dur="7.3966s" repeatCount="indefinite"/>
+  <use href="#pVenus"/></g></g>
+<g transform="translate(360,360)"><g>
+  <animateTransform attributeName="transform" type="rotate" values="318;678" dur="12s" repeatCount="indefinite"/>
+  <use href="#pEarth"/></g></g>
+<g transform="translate(360,360)"><g>
+  <animateTransform attributeName="transform" type="rotate" values="192;552" dur="22.599s" repeatCount="indefinite"/>
+  <use href="#pMars"/></g></g>
+<g transform="translate(360,360)"><g>
+  <animateTransform attributeName="transform" type="rotate" values="38;398" dur="141.867s" repeatCount="indefinite"/>
+  <use href="#pJupiter"/></g></g>
+<g transform="translate(360,360)"><g>
+  <animateTransform attributeName="transform" type="rotate" values="248;608" dur="354.155s" repeatCount="indefinite"/>
+  <use href="#pSaturn"/></g></g>
+<g transform="translate(360,360)"><g>
+  <animateTransform attributeName="transform" type="rotate" values="118;478" dur="1008.58s" repeatCount="indefinite"/>
+  <use href="#pUranus"/></g></g>
+<g transform="translate(360,360)"><g>
+  <animateTransform attributeName="transform" type="rotate" values="31;391" dur="1981.45s" repeatCount="indefinite"/>
+  <use href="#pNeptune"/></g></g>
+
+<!-- sun -->
+<use href="#sunGlowC" transform="translate(360,360) scale(1.68)" fill="none" stroke="#ffca5f" stroke-width="0.55" stroke-opacity="0.18"/>
+<use href="#sunGlowC" transform="translate(360,360) scale(1.45)" fill="none" stroke="#ffca5f" stroke-width="0.8" stroke-opacity="0.3"/>
+<use href="#sunGlowC" transform="translate(360,360)" fill="none" stroke="#ffd873" stroke-width="2.2" stroke-dasharray="1.8 12.604" stroke-opacity="0.55"/>
+<circle cx="360" cy="360" r="23.6" fill="url(#sunG)"/>
+<use href="#sunC" transform="translate(360,360) rotate(2.7)" fill="none" stroke="#b26a10" stroke-width="5.5" stroke-dasharray="2.4 2.471"/>
+<circle cx="360" cy="360" r="23.6" fill="none" stroke="#6e420c" stroke-width="1"/>
+<circle cx="360" cy="360" r="6.5" fill="url(#brassS)" stroke="#59390f"/>
+<circle cx="360" cy="360" r="2.2" fill="#0d0f0c"/>
+
+<!-- planet labels (fade in) -->
+<g font-family="Georgia, 'Times New Roman', serif" font-size="9.5" letter-spacing="2" fill="#c9a35c" text-anchor="middle" opacity="0">
+  <animate attributeName="opacity" from="0" to="0.8" dur="3s" begin="0.6s" fill="freeze"/>
+  <text transform="translate(360,360) rotate(145)"><tspan x="54" y="-4">MERCURY</tspan></text>
+  <text transform="translate(360,360) rotate(62)"><tspan x="111.5" y="-4">VENUS</tspan></text>
+  <text transform="translate(360,360) rotate(318)"><tspan x="143" y="-4">EARTH</tspan></text>
+  <text transform="translate(360,360) rotate(192)"><tspan x="177" y="-4">MARS</tspan></text>
+  <text transform="translate(360,360) rotate(38)"><tspan x="213.5" y="-4">JUPITER</tspan></text>
+  <text transform="translate(360,360) rotate(248)"><tspan x="253.5" y="-4">SATURN</tspan></text>
+  <text transform="translate(360,360) rotate(118)"><tspan x="293.5" y="-4">URANUS</tspan></text>
+  <text transform="translate(360,360) rotate(31)"><tspan x="333.5" y="-4">NEPTUNE</tspan></text>
+</g>
+
+<!-- engraved plaque -->
+<text x="360" y="706" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="10" letter-spacing="3" fill="#c9a35c" opacity="0.6">ORRERY &#183; BRASS EPICYCLIC TRAIN &#183; TRUE RELATIVE PERIODS &#183; EARTH 12 S / ORBIT</text>
+</svg>

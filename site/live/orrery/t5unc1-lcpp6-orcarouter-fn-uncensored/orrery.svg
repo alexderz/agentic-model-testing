@@ -1,0 +1,338 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" width="1200" height="1200">
+  <defs>
+    <!-- Brass / metal palette -->
+    <linearGradient id="brass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f7e39b"/>
+      <stop offset=".25" stop-color="#d9ab48"/>
+      <stop offset=".55" stop-color="#b78324"/>
+      <stop offset="1" stop-color="#7a5514"/>
+    </linearGradient>
+
+    <linearGradient id="brassDark" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d0a85a"/>
+      <stop offset=".5" stop-color="#8e6520"/>
+      <stop offset="1" stop-color="#4f370d"/>
+    </linearGradient>
+
+    <radialGradient id="sunGrad" cx="50%" cy="50%" r="55%">
+      <stop offset="0" stop-color="#fff8dc"/>
+      <stop offset=".35" stop-color="#ffd77a"/>
+      <stop offset=".75" stop-color="#e0a134"/>
+      <stop offset="1" stop-color="#8f6019"/>
+    </radialGradient>
+
+    <radialGradient id="bg" cx="50%" cy="45%" r="65%">
+      <stop offset="0" stop-color="#241d12"/>
+      <stop offset=".55" stop-color="#15110b"/>
+      <stop offset="1" stop-color="#070605"/>
+    </radialGradient>
+
+    <!--
+      Orbital durations are proportional to real orbital periods, scaled for visibility:
+      Mercury 0.2408 Earth years -> 2.41s
+      Venus   0.6152 Earth years -> 6.15s
+      Earth   1      Earth year   -> 10s
+      Mars    1.8808 Earth years -> 18.81s
+      Jupiter 11.862 Earth years -> 118.62s
+      Saturn  29.457 Earth years -> 294.57s
+      Uranus  84.021 Earth years -> 840.21s
+      Neptune 164.79 Earth years -> 1647.90s
+
+      Each planet's local shadow is locked to the Sun direction, so the terminator sweeps
+      across the face of the planet as it is carried around by the mechanism.
+    -->
+
+    <style>
+      .orbit,
+      .ringGear,
+      .train,
+      .planetSurface {
+        transform-box: fill-box;
+        transform-origin: 0px 0px;
+      }
+
+      /* Real relative orbital periods, visual time scaled. */
+      .orbitMercury { animation: spin 2.408s linear infinite; }
+      .orbitVenus   { animation: spin 6.152s linear infinite; }
+      .orbitEarth   { animation: spin 10.000s linear infinite; }
+      .orbitMars    { animation: spin 18.808s linear infinite; }
+      .orbitJupiter { animation: spin 118.620s linear infinite; }
+      .orbitSaturn  { animation: spin 294.570s linear infinite; }
+      .orbitUranus  { animation: spin 840.210s linear infinite; }
+      .orbitNeptune { animation: spin 1647.900s linear infinite; }
+
+      /* Gear train rotates in opposite direction; speeds follow the same visual ratios. */
+      .gearMercury  { animation: spinReverse 4.816s linear infinite; }
+      .gearVenus    { animation: spinReverse 12.304s linear infinite; }
+      .gearEarth    { animation: spinReverse 20.000s linear infinite; }
+      .gearMars     { animation: spinReverse 37.616s linear infinite; }
+      .gearJupiter  { animation: spinReverse 237.240s linear infinite; }
+      .gearSaturn   { animation: spinReverse 589.140s linear infinite; }
+      .gearUranus   { animation: spinReverse 1680.420s linear infinite; }
+      .gearNeptune  { animation: spinReverse 3295.800s linear infinite; }
+
+      /* Stylized surface turn to make the shadow appear to sweep across the globe. */
+      .spinMercury  { animation: spin 3.0s linear infinite; }
+      .spinVenus    { animation: spinReverse 5.0s linear infinite; }
+      .spinEarth    { animation: spin 4.0s linear infinite; }
+      .spinMars     { animation: spin 4.2s linear infinite; }
+      .spinJupiter  { animation: spin 2.0s linear infinite; }
+      .spinSaturn   { animation: spin 2.2s linear infinite; }
+      .spinUranus   { animation: spinReverse 3.4s linear infinite; }
+      .spinNeptune  { animation: spin 3.6s linear infinite; }
+
+      @keyframes spin {
+        from { transform: rotate(0deg); }
+        to   { transform: rotate(360deg); }
+      }
+      @keyframes spinReverse {
+        from { transform: rotate(0deg); }
+        to   { transform: rotate(-360deg); }
+      }
+    </style>
+
+    <!-- Compact brass gear: dashed circle creates teeth; solid body behind. -->
+    <g id="gear">
+      <circle r="50" fill="url(#brass)" stroke="#2b1d08" stroke-width="1.2"/>
+      <circle r="50" fill="none" stroke="url(#brassDark)" stroke-width="14" stroke-dasharray="10 10"/>
+      <circle r="14" fill="#1c160d" stroke="#c89f4b" stroke-width="3"/>
+    </g>
+
+    <g id="smallGear">
+      <circle r="32" fill="url(#brassDark)" stroke="#201507" stroke-width="1"/>
+      <circle r="32" fill="none" stroke="#f2d27b" stroke-width="9" stroke-dasharray="7 7"/>
+      <circle r="9" fill="#2a2012" stroke="#d6ae55" stroke-width="2.5"/>
+    </g>
+
+    <!-- Planet base -->
+    <g id="planet">
+      <circle r="20" fill="currentColor" stroke="#1d160c" stroke-width="1.2"/>
+      <!-- Day/night terminator: left side is sunward, right side is shadow. -->
+      <path d="M0,-22 A22,22 0 0 1 0,22 L0,22 A22,22 0 0 1 0,-22 Z"
+            fill="#050302" opacity="0.62"/>
+      <path d="M0,-22 A22,22 0 0 0 0,22 L0,22 A22,22 0 0 0 0,-22 Z"
+            fill="#fff5c8" opacity="0.12"/>
+      <circle r="22" fill="none" stroke="#f5d78b" stroke-width="0.8" opacity=".45"/>
+    </g>
+
+    <g id="planetSurface">
+      <circle r="20" fill="none" stroke="currentColor" stroke-width="18"/>
+      <path d="M -18,-7 Q 0,-2 18,-7" fill="none" stroke="#000" stroke-width="3" opacity=".22"/>
+      <path d="M -19,3 Q 0,8 19,3" fill="none" stroke="#fff" stroke-width="2.2" opacity=".16"/>
+      <path d="M -16,13 Q 0,17 16,13" fill="none" stroke="#000" stroke-width="3" opacity=".20"/>
+    </g>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="1200" fill="url(#bg)"/>
+  <circle cx="600" cy="600" r="585" fill="none" stroke="#b28a34" stroke-width="6" opacity=".22"/>
+  <circle cx="600" cy="600" r="570" fill="none" stroke="#5a4214" stroke-width="2" opacity=".25"/>
+
+  <!-- Outer ornamental gear ring -->
+  <g transform="translate(600 600)">
+    <g class="train" style="animation-duration: 160s;">
+      <use href="#gear" transform="scale(11.0)" opacity=".16"/>
+    </g>
+  </g>
+
+  <!-- Central clockwork movement: visible meshing gears -->
+  <g id="movement" transform="translate(600 600)">
+    <!-- central sun/drive gear -->
+    <g class="train" style="animation-duration: 20s;">
+      <use href="#gear" transform="scale(1.35)" opacity=".95"/>
+    </g>
+
+    <!-- idler cluster -->
+    <g transform="translate(-104 -64)"><g class="gearMercury" style="animation-duration:12s;"><use href="#smallGear"/></g></g>
+    <g transform="translate(96 -92)"><g class="gearVenus" style="animation-duration:30s;"><use href="#smallGear"/></g></g>
+    <g transform="translate(112 82)"><g class="gearEarth" style="animation-duration:48s;"><use href="#smallGear"/></g></g>
+    <g transform="translate(-92 106)"><g class="gearMars" style="animation-duration:72s;"><use href="#smallGear"/></g></g>
+    <g transform="translate(-22 -128)"><g class="gearJupiter" style="animation-duration:110s;"><use href="#smallGear"/></g></g>
+    <g transform="translate(34 142)"><g class="gearSaturn" style="animation-duration:160s;"><use href="#smallGear"/></g></g>
+    <g transform="translate(-144 18)"><g class="gearUranus" style="animation-duration:210s;"><use href="#smallGear"/></g></g>
+    <g transform="translate(150 -18)"><g class="gearNeptune" style="animation-duration:260s;"><use href="#smallGear"/></g></g>
+
+    <!-- Sun face over central gear -->
+    <g class="train" style="animation-duration: 20s;">
+      <circle r="36" fill="url(#sunGrad)"/>
+      <g stroke="#6d4a14" stroke-width="2.2" opacity=".45">
+        <line x1="-34" y1="0" x2="34" y2="0"/>
+        <line x1="0" y1="-34" x2="0" y2="34"/>
+        <line x1="-24" y1="-24" x2="24" y2="24"/>
+        <line x1="24" y1="-24" x2="-24" y2="24"/>
+      </g>
+      <circle r="36" fill="none" stroke="#f7df9f" stroke-width="2" opacity=".75"/>
+    </g>
+  </g>
+
+  <!-- Mercury -->
+  <g transform="translate(600 600)">
+    <circle r="126" fill="none" stroke="#9a762e" stroke-width="1.4" opacity=".38"/>
+    <g class="orbitMercury">
+      <line x1="0" y1="0" x2="126" y2="0" stroke="url(#brass)" stroke-width="5"/>
+      <g transform="translate(126 0)">
+        <g class="spinMercury" style="color:#c8a56b;">
+          <use href="#planetSurface"/>
+        </g>
+        <g style="color:#c8a56b;">
+          <use href="#planet"/>
+        </g>
+        <g class="gearMercury">
+          <use href="#smallGear" transform="scale(.52)" opacity=".72"/>
+        </g>
+      </g>
+    </g>
+  </g>
+
+  <!-- Venus -->
+  <g transform="translate(600 600)">
+    <circle r="182" fill="none" stroke="#b4934d" stroke-width="1.4" opacity=".38"/>
+    <g class="orbitVenus">
+      <line x1="0" y1="0" x2="182" y2="0" stroke="url(#brass)" stroke-width="5"/>
+      <g transform="translate(182 0)">
+        <g class="spinVenus" style="color:#f2c87a;">
+          <use href="#planetSurface"/>
+        </g>
+        <g style="color:#f2c87a;">
+          <use href="#planet"/>
+        </g>
+        <g class="gearVenus">
+          <use href="#smallGear" transform="scale(.56)" opacity=".72"/>
+        </g>
+      </g>
+    </g>
+  </g>
+
+  <!-- Earth -->
+  <g transform="translate(600 600)">
+    <circle r="244" fill="none" stroke="#a97f2b" stroke-width="1.4" opacity=".38"/>
+    <g class="orbitEarth">
+      <line x1="0" y1="0" x2="244" y2="0" stroke="url(#brass)" stroke-width="5"/>
+      <g transform="translate(244 0)">
+        <g class="spinEarth" style="color:#69b29c;">
+          <use href="#planetSurface"/>
+        </g>
+        <g style="color:#69b29c;">
+          <use href="#planet"/>
+        </g>
+        <g class="gearEarth">
+          <use href="#smallGear" transform="scale(.60)" opacity=".72"/>
+        </g>
+        <!-- Moon -->
+        <g class="spinEarth" style="animation-duration:.82s;">
+          <line x1="0" y1="0" x2="34" y2="0" stroke="#c4a766" stroke-width="1.8" opacity=".55"/>
+          <circle cx="34" cy="0" r="4.2" fill="#e4d2a2"/>
+        </g>
+      </g>
+    </g>
+  </g>
+
+  <!-- Mars -->
+  <g transform="translate(600 600)">
+    <circle r="316" fill="none" stroke="#b8873c" stroke-width="1.4" opacity=".38"/>
+    <g class="orbitMars">
+      <line x1="0" y1="0" x2="316" y2="0" stroke="url(#brass)" stroke-width="5"/>
+      <g transform="translate(316 0)">
+        <g class="spinMars" style="color:#c86c42;">
+          <use href="#planetSurface"/>
+        </g>
+        <g style="color:#c86c42;">
+          <use href="#planet"/>
+        </g>
+        <g class="gearMars">
+          <use href="#smallGear" transform="scale(.63)" opacity=".72"/>
+        </g>
+      </g>
+    </g>
+  </g>
+
+  <!-- Jupiter -->
+  <g transform="translate(600 600)">
+    <circle r="394" fill="none" stroke="#b5924a" stroke-width="1.5" opacity=".36"/>
+    <g class="orbitJupiter">
+      <line x1="0" y1="0" x2="394" y2="0" stroke="url(#brass)" stroke-width="5"/>
+      <g transform="translate(394 0)">
+        <g class="spinJupiter" style="color:#caa56a;">
+          <use href="#planetSurface"/>
+          <ellipse rx="22" ry="18" fill="none" stroke="#8e6a33" stroke-width="3" opacity=".35"/>
+        </g>
+        <g style="color:#caa56a;">
+          <use href="#planet"/>
+        </g>
+        <g class="gearJupiter">
+          <use href="#smallGear" transform="scale(.68)" opacity=".72"/>
+        </g>
+      </g>
+    </g>
+  </g>
+
+  <!-- Saturn -->
+  <g transform="translate(600 600)">
+    <circle r="476" fill="none" stroke="#b99750" stroke-width="1.5" opacity=".36"/>
+    <g class="orbitSaturn">
+      <line x1="0" y1="0" x2="476" y2="0" stroke="url(#brass)" stroke-width="5"/>
+      <g transform="translate(476 0)">
+        <!-- Saturn rings behind body -->
+        <g transform="rotate(18)">
+          <ellipse rx="44" ry="15" fill="none" stroke="#e6c77a" stroke-width="3.5" opacity=".75"/>
+          <ellipse rx="36" ry="12" fill="none" stroke="#b99244" stroke-width="2" opacity=".65"/>
+        </g>
+        <g class="spinSaturn" style="color:#e2bd70;">
+          <use href="#planetSurface"/>
+        </g>
+        <g style="color:#e2bd70;">
+          <use href="#planet"/>
+        </g>
+        <g class="gearSaturn">
+          <use href="#smallGear" transform="scale(.74)" opacity=".72"/>
+        </g>
+      </g>
+    </g>
+  </g>
+
+  <!-- Uranus -->
+  <g transform="translate(600 600)">
+    <circle r="540" fill="none" stroke="#a99a72" stroke-width="1.2" opacity=".28"/>
+    <g class="orbitUranus">
+      <line x1="0" y1="0" x2="540" y2="0" stroke="url(#brass)" stroke-width="4.5"/>
+      <g transform="translate(540 0)">
+        <g class="spinUranus" style="color:#9fd2c9;">
+          <use href="#planetSurface"/>
+        </g>
+        <g style="color:#9fd2c9;">
+          <use href="#planet"/>
+        </g>
+        <g class="gearUranus">
+          <use href="#smallGear" transform="scale(.78)" opacity=".72"/>
+        </g>
+      </g>
+    </g>
+  </g>
+
+  <!-- Neptune -->
+  <g transform="translate(600 600)">
+    <circle r="580" fill="none" stroke="#a58d6a" stroke-width="1.2" opacity=".28"/>
+    <g class="orbitNeptune">
+      <line x1="0" y1="0" x2="580" y2="0" stroke="url(#brass)" stroke-width="4.5"/>
+      <g transform="translate(580 0)">
+        <g class="spinNeptune" style="color:#6b92d8;">
+          <use href="#planetSurface"/>
+        </g>
+        <g style="color:#6b92d8;">
+          <use href="#planet"/>
+        </g>
+        <g class="gearNeptune">
+          <use href="#smallGear" transform="scale(.82)" opacity=".72"/>
+        </g>
+      </g>
+    </g>
+  </g>
+
+  <!-- Decorative brass plate highlights -->
+  <g fill="none" stroke="#f5dc95" opacity=".07" stroke-width="1.1">
+    <circle cx="600" cy="600" r="510"/>
+    <circle cx="600" cy="600" r="430"/>
+    <circle cx="600" cy="600" r="350"/>
+    <circle cx="600" cy="600" r="270"/>
+  </g>
+</svg>
