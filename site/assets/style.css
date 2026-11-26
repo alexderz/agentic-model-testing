@@ -132,6 +132,7 @@ h1 { font-size: clamp(2.8rem, 7vw, 5.4rem); line-height: 0.98; background: linea
 .chip.kind { color: var(--muted); }
 .chip.kind.one-shot, .chip.kind.oneshot { border-color: var(--violet); color: var(--violet); }
 .chip.kind.agentic { border-color: var(--teal); color: var(--teal); }
+.chip.kind.unverified { border-color: var(--partial); color: var(--partial); }
 .chip.verdict .glyph { font-size: 0.95em; }
 .v-pass { color: var(--pass); } .v-partial { color: var(--partial); } .v-fail { color: var(--fail); } .v-unknown { color: var(--unknown); }
 .chip.verdict.v-pass { border-color: var(--pass); } .chip.verdict.v-partial { border-color: var(--partial); } .chip.verdict.v-fail { border-color: var(--fail); }

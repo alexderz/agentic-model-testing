@@ -481,6 +481,7 @@ export function oneshotCards(data, { test = 'all', sort = 'score', q = '' } = {}
       cards.push({
         ...r, set, setLabel: setLabel(set), kind: t.kind, modelLabel: m.label, short: shortLabel(m.label), family: m.family, color: colorOf(colors, m.family), uncensored: m.uncensored,
         testName: t.name, pointMax: pointMaxV, max, full: max > 0 && r.total != null && r.total >= max,
+        unverified: /no case (directory|folder)/i.test(r.note || ''),
         points: r.points.map((p, i) => ({ ...p, name: names[i] || p.key })),
         alt: `${setLabel(set)} by ${shortLabel(m.label)}, test ${r.test}`,
       });
@@ -529,7 +530,8 @@ export function agentPairs(data) {
     for (const [id, g] of byModel) {
       const m = modelOf(data, id), a = best(g.agent), o = best(g.oneshot);
       out.push({ model: id, label: m.label, short: shortLabel(m.label), family: m.family, color: colorOf(colors, m.family), uncensored: m.uncensored,
-        agent: a ? a.total : null, agentN: g.agent.length, agentCase: a ? a.case : '', oneshot: o ? o.total : null, oneshotN: g.oneshot.length, oneshotCase: o ? o.case : '' });
+        agent: a ? a.total : null, agentN: g.agent.length, agentCase: a ? a.case : '', oneshot: o ? o.total : null, oneshotN: g.oneshot.length, oneshotCase: o ? o.case : '',
+        oneshotUnverified: !!(o && /no case (directory|folder)/i.test(o.note || '')) });
     }
     out.sort((a, b) => (b.agent ?? -1) - (a.agent ?? -1) || (b.oneshot ?? -1) - (a.oneshot ?? -1) || a.label.localeCompare(b.label));
     const both = out.filter((r) => r.agent != null && r.oneshot != null);  // means over the same models on both sides

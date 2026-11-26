@@ -302,7 +302,8 @@ function renderPairs(data) {
   clear(host);
   block.hidden = !panels.length;
   if (!panels.length) return;
-  lede.textContent = 'Same model, same rubric; best of n one-shots.';
+  lede.textContent = 'Same model, same rubric; best of n one-shots.'
+    + (panels.some((p) => p.rows.some((r) => r.oneshotUnverified)) ? ' † No case folder behind that one-shot.' : '');
   const draw = () => {
     clear(host);
     const figs = panels.map((p) => {
@@ -355,8 +356,9 @@ function shotCard(c, onPlay) {
     if (c.full) pic.appendChild(el('span', { class: 'ribbon', 'aria-hidden': 'true' }, 'live'));
   }
   const [note, noteBtn] = noteBlock(c.note);
+  const filing = c.unverified ? el('span', { class: 'chip kind unverified', title: 'No case folder: a filing, not a re-derivable measurement.' }, 'no case folder') : null;
   const body = el('div', { class: 'body' },
-    el('div', {}, el('b', {}, c.short), el('div', { class: 'meta' }, familyChip(c.family, c.color), kindChip(c.setLabel, c.kind === 'agentic' ? 'agentic' : ''), c.uncensored ? kindChip('uncensored') : null,
+    el('div', {}, el('b', {}, c.short), el('div', { class: 'meta' }, familyChip(c.family, c.color), kindChip(c.setLabel, c.kind === 'agentic' ? 'agentic' : ''), c.uncensored ? kindChip('uncensored') : null, filing,
       el('span', {}, `${fmt(c.tok_s, 1)} tok/s`), /length|cap/i.test(c.finish) ? el('span', { class: 'cut' }, c.finish === 'length' ? 'hit the cap' : c.finish) : null, noteBtn)),
     petalScore(c), note);
   return el('article', { class: `shot${c.full && frames.length ? ' featured' : ''}${c.live ? ' playable' : ''}`, title: c.case, 'data-case': c.case, style: { '--c': c.color } }, pic, body);

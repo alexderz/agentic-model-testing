@@ -97,14 +97,14 @@ export function pairDumbbell(panel, width) {
   const draw = (r, i, cls = '') => {
     const cy = top + i * rowH + rowH / 2;
     const g = svg('g', { class: `pair ${cls}`, tabindex: 0 });
-    g.appendChild(svg('title', {}, `${r.label}: one-shot ${r.oneshot == null ? 'none' : fmt(r.oneshot) + (r.oneshotN > 1 ? ` (best of ${r.oneshotN})` : '')} → agent ${r.agent == null ? 'not graded' : fmt(r.agent)}${r.agentN > 1 ? ` (best of ${r.agentN})` : ''}`));
+    g.appendChild(svg('title', {}, `${r.label}: one-shot ${r.oneshot == null ? 'none' : fmt(r.oneshot) + (r.oneshotN > 1 ? ` (best of ${r.oneshotN})` : '') + (r.oneshotUnverified ? ' (no case folder)' : '')} → agent ${r.agent == null ? 'not graded' : fmt(r.agent)}${r.agentN > 1 ? ` (best of ${r.agentN})` : ''}`));
     const maxChars = Math.max(12, Math.floor((left - 14) / 7.2));
     const name = r.short.length > maxChars ? r.short.slice(0, maxChars - 1).trimEnd() + '…' : r.short;
     g.appendChild(svg('text', { x: left - 10, y: cy + 4, class: 'axis lbl', 'text-anchor': 'end' }, name));
     if (r.oneshot != null && r.agent != null) g.appendChild(svg('line', { x1: x(r.oneshot), x2: x(r.agent), y1: cy, y2: cy, class: `link ${r.agent > r.oneshot ? 'up' : r.agent < r.oneshot ? 'down' : 'flat'}` }));
     if (r.oneshot != null) g.appendChild(svg('circle', { cx: x(r.oneshot), cy, r: 5, class: 'one' }));
     if (r.agent != null) g.appendChild(svg('circle', { cx: x(r.agent), cy, r: 6, class: 'agent', style: { '--c': r.color } }));
-    g.appendChild(svg('text', { x: W - right + 8, y: cy + 4, class: 'axis num' }, `${r.oneshot == null ? '–' : fmt(r.oneshot)} → ${r.agent == null ? '–' : fmt(r.agent)}`));
+    g.appendChild(svg('text', { x: W - right + 8, y: cy + 4, class: 'axis num' }, `${r.oneshot == null ? '–' : fmt(r.oneshot) + (r.oneshotUnverified ? '†' : '')} → ${r.agent == null ? '–' : fmt(r.agent)}`));
     root.appendChild(g);
   };
   rows.forEach((r, i) => draw(r, i));
