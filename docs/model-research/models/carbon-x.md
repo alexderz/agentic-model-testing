@@ -23,7 +23,7 @@ A trial on 2026-10-22, not a pick. On llama.cpp (a newer build, 40k context,
 8-bit cache, one slot) it decodes at 52 tok/s, calls a tool correctly, and
 missed a needle at 36.7k tokens. On the card's sickle-cell DNA example it said
 "pathogenic" but gave the wrong reason. The pagoda and orrery one-shots ran
-(51 tok/s; the SVG parses) and are not graded. No agent test has run.
+(51 tok/s; the SVG parses) and are graded 5 of 10 and 2 of 10. No agent test has run.
 
 ## Trial results
 

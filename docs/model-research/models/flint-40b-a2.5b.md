@@ -23,7 +23,7 @@ at 129 tok/s on a short prompt and 106 at 11.7k of depth, and reads an 11.7k
 prompt at 5,357 tok/s. With f16 KV it does not fit. The Q4_K_XL file does not
 fit entirely: with 15 expert layers in RAM it decodes at 81 tok/s, with 24 at
 64, and with 10 layers at a 150k window at 95. The pagoda and orrery one-shots
-(Q3_K_XL) ran at 110 and 102 tok/s and are not graded.
+(Q3_K_XL) ran at 110 and 102 tok/s and are graded 8 of 10 and 4 of 10.
 
 ## Variants we ran
 
