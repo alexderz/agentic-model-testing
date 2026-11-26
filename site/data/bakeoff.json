@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
  "generated": "2026-11-25 07:59 CST",
- "built": "2026-11-26 11:16 CST",
+ "built": "2026-11-26 15:03 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -23140,7 +23140,7 @@
      "E": 1.0
     },
     "total": 8.0,
-    "note": "8: 3,735 B CSS-keyframe SVG, graded from source (no frames). 4 of 8 planets at 12/30/48/90 s for 88/225/365/687 d = within 4%, so C=2 for what is drawn; 3 decorative 8-tooth gears spin and drive nothing (D=1); the dark half is fixed in the planet's own rotating frame and the band slides +-80 px off a r=9 disc (E=1). One-shot prompt, not an agent-run rate. [entry from meta.model: inkling2-mini-q4kxl-v1181-vision-3090] [2026-11-26: 3 timed frames were rendered into frames/ after this note was written; they agree with the letters as written]",
+    "note": "8: 3,735 B CSS-keyframe SVG. 4 of 8 planets at 12/30/48/90 s for 88/225/365/687 d = within 4%, so C=2 for what is drawn; 3 decorative 8-tooth gears spin and drive nothing (D=1); the dark half is fixed in the planet's own rotating frame and the band slides +-80 px off a r=9 disc (E=1). 3 timed frames now exist in frames/ from an unseeded render (made before the 2026-11-26 seeding); an SVG carries no RNG, so the seed regime cannot change the picture, and the frames agree with the letters as written. Short one-shot benchmark, not an agent rate. [entry from meta.model: inkling2-mini-q4kxl-v1181-vision-3090]",
     "frames": [],
     "live": null
    },
@@ -23180,7 +23180,7 @@
      "E": 0.0
     },
     "total": 1.0,
-    "note": "1: saved orrery.svg (3,127 B) is a skeleton - #planets/#gears/#rings/#stars all empty, script 0 - so only the sun and a blank gear plate draw (A=1, B-E=0). The reply's HTML wrapper holds a ~13 KB script that would fill those groups (6 planets at real T, module-based gear teeth); extraction cut it out, so the artifact as saved draws nothing. Source only, no frames. One-shot prompt, not an agent-run rate. [entry from meta.model: inkling2-mini-q4kxl-3090] [2026-11-26: 3 timed frames were rendered into frames/ after this note was written; they agree with the letters as written]",
+    "note": "1: saved orrery.svg (3,127 B) is a skeleton - #planets/#gears/#rings/#stars all empty, script 0 - so only the sun and a blank gear plate draw (A=1, B-E=0). The reply's HTML wrapper holds a script that would fill those groups (6 planets at real T, module-based gear teeth); extraction cut it out, so the artifact as saved draws nothing. 3 timed frames now exist in frames/ from an unseeded render (made before the 2026-11-26 seeding); an SVG carries no RNG, so the seed regime cannot change the picture, and all three frames are byte-identical - what a static skeleton gives. Short one-shot benchmark, not an agent rate. [entry from meta.model: inkling2-mini-q4kxl-3090]",
     "frames": [],
     "live": null
    },
@@ -23200,7 +23200,7 @@
      "E": 0.0
     },
     "total": 0.0,
-    "note": "0: cap hit (finish=length). orrery-truncated.svg is 19,165 B cut mid-Saturn (7th planet) with unclosed tags, so it does not parse and draws nothing (A=0, B-E=0). The 32,000 tokens split: reasoning.txt 71,142 chars plus a 19,599-char reply carrying the truncated SVG. Source only, no frames. One-shot prompt, not an agent-run rate. [2026-11-26: 3 timed frames were rendered into frames/ after this note was written; they agree with the letters as written]",
+    "note": "0: cap hit (finish=length). orrery-truncated.svg is cut mid-Saturn (7th planet) with unclosed tags, so it does not parse and draws nothing (A=0, B-E=0). The 32,000 tokens split: reasoning.txt 71,142 chars plus a 19,599-char reply carrying the truncated SVG. 3 timed frames now exist in frames/ from an unseeded render (made before the 2026-11-26 seeding); an SVG carries no RNG, so the seed regime cannot change the picture, and all three frames are byte-identical and blank, as a file that does not parse must be. Short one-shot benchmark, not an agent rate.",
     "frames": [],
     "live": null
    },
@@ -23240,7 +23240,7 @@
      "E": 1.0
     },
     "total": 7.0,
-    "note": "7: 17.4 KB, 6 planets, 36 SMIL rotations, parses; source only, no frames. C=1: 12/18.7/24/45/285/708 s against 5.8/14.8/24/45/285/707 real (Mercury 2x slow, Venus 27% slow) and the orbit radii are inverted (Mercury 375 px, Saturn 145). D=1: equal-size decorative gears that never mesh. E=1: a fixed wedge spins with the planet instead of facing the sun. One-shot prompt, not an agent-run rate. [2026-11-26: 3 timed frames were rendered into frames/ after this note was written; they agree with the letters as written]",
+    "note": "7: 17.4 KB, 6 planets, 36 SMIL rotations, parses. C=1: 12/18.7/24/45/285/708 s against 5.8/14.8/24/45/285/707 real (Mercury 2x slow, Venus 27% slow) and the orbit radii are inverted (Mercury 375 px, Saturn 145). D=1: equal-size decorative gears that never mesh. E=1: a fixed wedge spins with the planet instead of facing the sun. 3 timed frames now exist in frames/ from an unseeded render (made before the 2026-11-26 seeding); an SVG carries no RNG, so the seed regime cannot change the picture, and the frames agree with the letters as written. Short one-shot benchmark, not an agent rate.",
     "frames": [],
     "live": null
    },
@@ -23841,6 +23841,86 @@
     },
     "total": 6.0,
     "note": "6/10 A2B2C1D1E0. RENDERED 2026-11-26, 3 timed frames. A2 clean, titled 'BRASS CLOCKWORK ORRERY'. B2 12 SMIL animates drive the orbits and the four gear wheels. C1: periods 4/6/9/10/12/16/18/24 s are ordered outward but the ratio spread is 6x against the real 684x, and the page's own caption says 'relative orbital periods, stylized not astronomically exact'. D1: four large toothed gears, decorative rather than meshing - they sit at the cardinal points and drive nothing. E0: no terminator or shaded dark side.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t5-inkling2-mini-q4kxl-v1175-3090-r1",
+    "entry": "inkling2-mini-q4kxl-v1175-3090",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 361.0,
+    "wall_s": 8.6,
+    "tok_s": 122.1,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0/10 A0B0C0D0E0. NOTHING TO SCORE: no orrery.svg was produced (meta static.svg_found=false); reply.txt is 1,434 B of prose sketching the orrery and ends by asking \"Want me to write the full SVG file now?\", with no <svg> element anywhere, so there is no artifact to parse or render and no frames exist. A0 no SVG; B to E 0 because nothing is drawn. 361 tokens of 32,000 at 122.1 tok/s, first token 5.7 s, wall 8.6 s. Short one-shot benchmark, not an agent rate; no render regime applies (nothing rendered).",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t5-inkling2-mini-q4kxl-v1175-v100-r1",
+    "entry": "inkling2-mini-q4kxl-v1175-v100",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 465.0,
+    "wall_s": 16.4,
+    "tok_s": 82.4,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0/10 A0B0C0D0E0. NOTHING TO SCORE: no orrery.svg was produced (meta static.svg_found=false); reply.txt is 1,889 B of prose on gear ratios and a day/night overlay, ending \"If you want, I can write out a full standalone SVG file ... Which would be most useful right now?\", with no <svg> element anywhere, so there is no artifact to parse or render and no frames exist. A0 no SVG; B to E 0 because nothing is drawn. 465 tokens of 32,000 at 82.4 tok/s, first token 10.7 s, wall 16.4 s. Short one-shot benchmark, not an agent rate; no render regime applies (nothing rendered).",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t5-inkling2-mini-abliterated-mix16g-3090-r1",
+    "entry": "inkling2-mini-abliterated-mix16g-3090",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 11397.0,
+    "wall_s": 214.7,
+    "tok_s": 55.3,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0/10 A0B0C0D0E0. NOTHING TO SCORE: no orrery.svg was produced (meta static.svg_found=false). reply.txt is 1,111 B that opens 'The file is ready: orrery.svg' and then stops mid-sentence at \"Here's the core structure of the file:\" with no <svg> element anywhere - the claim is untrue and nothing was written; the files present are meta.json, reply.txt and reasoning.txt only, so there is nothing to parse or render and no frames exist. A0 no SVG; B to E 0 because nothing is drawn. 11,397 tokens of 32,000 (finish stop, not the cap) at 55.3 tok/s, first token 8.7 s, wall 214.7 s, 14,476 chars of reasoning. Short one-shot benchmark, not an agent rate; no render regime applies (nothing rendered).",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t5-inkling2-mini-abliterated-mix12g-v100-r1",
+    "entry": "inkling2-mini-abliterated-mix12g-v100",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 8077.0,
+    "wall_s": 276.2,
+    "tok_s": 30.4,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 1.0,
+     "E": 1.0
+    },
+    "total": 8.0,
+    "note": "8/10 A2B2C2D1E1. RENDERED 2026-11-26, 3 timed frames 1.5/5/10 s, deterministic SMIL (no RNG; render-seed.txt). A2 clean brass plate, sun, four orbit rings, gold legend. B2 the SMIL arms turn - planet positions differ in every frame - and so does the tooth ring. C2 four planets only (nothing beyond Mars) but each matches: 88/225/365/687 d at 2.64/6.75/10.95/20.61 s, 33.33 d per second for all four, within 0.1 %. D1 one dashed tooth ring around the sun (31 bars, turns every 8 s) and four dashed pinion rings, but each pinion's own animateTransform replaces the g's translate, so the pinions fly off the canvas instead of riding the rim (one lands at y 753, below the 700-high viewBox); nothing meshes and no gear law is obeyed. E1 the fixed black half sits on the outward side, so the night side stays away from the sun (mean luminance 157 sunward against 79 outward on Mercury, same on the other three), but no surface sweeps under it - only a glint that rotates through the night half. Short one-shot benchmark, not an agent rate.",
     "frames": [],
     "live": null
    }
@@ -26830,7 +26910,7 @@
      "E": 2.0
     },
     "total": 9.0,
-    "note": "9: 17.4 KB, instanced 1-unit cubes, stopped early at 26,307 tok; source only, no frames. Five storeys and roofs seated on each other, raised corner blocks as upturned eaves, all four props, dt-based orbit + petals + shadows. C=1: the 3x3 finial plate floats 0.8 cube above the mast (y 25.7-26.5 empty; 0.2 under the mast base). One-shot prompt, not an agent-run rate. [entry from meta.model: inkling2-mini-q4kxl-v1181-vision-3090] [2026-11-26: 3 timed frames and 5 fixed views were rendered into frames/ and views/ after this note was written; they agree with A, B, D and E. The render looks worse than the score only on C for t6-orcarouter-fn-uncensored-r1, where the storeys telescope at the base — the source reading is the right one] [graded from an unseeded render: frames made before 2026-11-26 seeding, and a same-instant double render of such a page differs by 0.3 % when its animation is time-deterministic and 14-18 % when it draws on Math.random, so an A verdict from one draw is a sample]",
+    "note": "9: 17.4 KB, instanced 1-unit cubes, stopped early at 26,307 tok. Five storeys and roofs seated on each other, raised corner blocks as upturned eaves, all four props, dt-based orbit + petals + shadows. C=1: the 3x3 finial plate floats 0.8 cube above the mast (y 25.7-26.5 empty). 3 timed frames and 5 fixed views now exist in frames/ and views/, from an unseeded render (made before the 2026-11-26 seeding); the frames support A, B and D. E is from the source, not the frames: the loop sets the camera position from an orbit radius (camera.position.set(Math.sin(orbit) * radius, cameraHeight, Math.cos(orbit) * radius), line 522) and advances it by clock.getDelta() (line 516), and a delta-integrated orbit is not something the virtual-time capture can evidence. The page draws on Math.random, so a same-instant double render differs by 14-18 % and an A verdict from one draw is a sample. Short one-shot benchmark, not an agent rate. [entry from meta.model: inkling2-mini-q4kxl-v1181-vision-3090]",
     "frames": [],
     "live": null
    },
@@ -26850,7 +26930,7 @@
      "E": 2.0
     },
     "total": 10.0,
-    "note": "10: 11.5 KB, 21,021 tok; source only, no frames. Five storeys stacked 0.02 apart with two-slab eaves, raised corner blocks, spire seated on the top roof, all four props, dt orbit + falling petals + shadows. Flaw noted but not scored: the pond basin runs into the platform (water buried for x -4.9..-2.9; the visible part still reads as a pond). One-shot prompt, not an agent-run rate. [entry from meta.model: inkling2-mini-q4kxl-3090] [2026-11-26: 3 timed frames and 5 fixed views were rendered into frames/ and views/ after this note was written; they agree with A, B, D and E. The render looks worse than the score only on C for t6-orcarouter-fn-uncensored-r1, where the storeys telescope at the base — the source reading is the right one] [graded from an unseeded render: frames made before 2026-11-26 seeding, and a same-instant double render of such a page differs by 0.3 % when its animation is time-deterministic and 14-18 % when it draws on Math.random, so an A verdict from one draw is a sample]",
+    "note": "10: 11.5 KB, 21,021 tok. Five storeys with two-slab eaves, raised corner blocks, spire seated on the top roof, all four props, dt orbit + falling petals + shadows. Flaw noted but not scored: the pond basin runs into the platform (water buried for x -4.9..-2.9; the visible part still reads as a pond). 3 timed frames and 5 fixed views now exist in frames/ and views/, from an unseeded render (made before the 2026-11-26 seeding); the frames support A, B and D. E is from the source, not the frames: the loop sets the camera position from an orbit radius (camera.position.set(Math.cos(angle) * ORBIT_R, ORBIT_H, Math.sin(angle) * ORBIT_R), line 295) over a clock.getDelta() step (line 290), and a delta-integrated orbit is not something the virtual-time capture can evidence. The page draws on Math.random, so a same-instant double render differs by 14-18 % and an A verdict from one draw is a sample. Short one-shot benchmark, not an agent rate. [entry from meta.model: inkling2-mini-q4kxl-3090]",
     "frames": [],
     "live": null
    },
@@ -26890,7 +26970,7 @@
      "E": 1.0
     },
     "total": 8.0,
-    "note": "8: 16.5 KB, 6,680 tok; source only, no frames. C=1: the spire is displaced to x=-2.24 and overhangs the top roof edge (spans -3.24..-0.24 against a roof of -2..2), and every eave sits on a half-voxel grid. E=1: autoRotateSpeed is set but autoRotate is never enabled and the camera never moves, so no orbit (petals and shadows are there). All four props present. One-shot prompt, not an agent-run rate. [entry from meta.model: qwen3.8-flash-next-agent] [2026-11-26: 3 timed frames and 5 fixed views were rendered into frames/ and views/ after this note was written; they agree with A, B, D and E. The render looks worse than the score only on C for t6-orcarouter-fn-uncensored-r1, where the storeys telescope at the base — the source reading is the right one] [graded from an unseeded render: frames made before 2026-11-26 seeding, and a same-instant double render of such a page differs by 0.3 % when its animation is time-deterministic and 14-18 % when it draws on Math.random, so an A verdict from one draw is a sample]",
+    "note": "8: 16.5 KB, 6,680 tok. C=1: the spire is displaced to x=-2.24 and overhangs the top roof edge (spans -3.24..-0.24 against a roof of -2..2), and every eave sits on a half-voxel grid. E=1: autoRotateSpeed is set but autoRotate is never enabled and the camera never moves, so no orbit (petals and shadows are there). All four props present. 3 timed frames and 5 fixed views now exist in frames/ and views/, from an unseeded render (made before the 2026-11-26 seeding); they agree with A, B, D and E. The page draws on Math.random, so a same-instant double render differs by 14-18 % and an A verdict from one draw is a sample. Short one-shot benchmark, not an agent rate. [entry from meta.model: qwen3.8-flash-next-agent]",
     "frames": [],
     "live": null
    },
@@ -26910,7 +26990,7 @@
      "E": 2.0
     },
     "total": 7.0,
-    "note": "7: 15.9 KB instanced cubes; source only, no frames. addColumn() takes absolute y and the tier offset is never applied, so the five storeys telescope at the base and the spire floats ~18 voxels above the roof (A=1, C=1). The pond is built around the origin (x*x+z*z instead of cx/cz) and is buried under the platform, and both torii posts land at the origin with their beams unsupported at z=+/-8 (D=1, only platform and trees read). Orbit, petals and shadows all dt-based (E=2). One-shot prompt, not an agent-run rate. [2026-11-26: 3 timed frames and 5 fixed views were rendered into frames/ and views/ after this note was written; they agree with A, B, D and E. The render looks worse than the score only on C for t6-orcarouter-fn-uncensored-r1, where the storeys telescope at the base — the source reading is the right one] [graded from an unseeded render: frames made before 2026-11-26 seeding, and a same-instant double render of such a page differs by 0.3 % when its animation is time-deterministic and 14-18 % when it draws on Math.random, so an A verdict from one draw is a sample]",
+    "note": "7: 15.9 KB instanced cubes. addColumn() takes absolute y and the tier offset is never applied, so the five storeys telescope at the base and the spire floats ~18 voxels above the roof (A=1, C=1). The pond is built around the origin (x*x+z*z instead of cx/cz) and is buried under the platform, and both torii posts land at the origin with their beams unsupported at z=+/-8 (D=1, only platform and trees read). Orbit, petals and shadows all dt-based (E=2). 3 timed frames and 5 fixed views now exist in frames/ and views/, from an unseeded render (made before the 2026-11-26 seeding); they agree with A, B, D and E. The render reads worse than the letters on one axis only, C: the telescoped base is visible in the views, and the source reading (C=1) still stands. The page draws on Math.random, so a same-instant double render differs by 14-18 % and an A verdict from one draw is a sample. Short one-shot benchmark, not an agent rate.",
     "frames": [],
     "live": null
    },
@@ -27010,7 +27090,7 @@
      "E": 1.0
     },
     "total": 9.0,
-    "note": "Testing Master 2026-11-21: Inkling UD-Q4_K_XL / maya-ik2 be849da / 311296 context; one-shot, not agent harness; 32000 reply cap; reasoning_effort high, temperature 1.0, top_p 1.0; first token 0.4 s. Graded from frames + 5 fixed views (results-test6/t6-ink2maya/frames). E1: HUD says auto-orbit but the camera does not move across 1.5/5/10 s. Same-time double render 2026-11-26: 0.44 % change between frames against 0.30-0.43 % between two renders of one instant, so nothing animates beyond render noise; the single point is for static shadows (castShadow x3, shadowMap x2). Corrected 2026-11-26: this note previously read 'petals and shadows animate', which the baseline contradicts. [graded from an unseeded render: frames made before 2026-11-26 seeding, and a same-instant double render of such a page differs by 0.3 % when its animation is time-deterministic and 14-18 % when it draws on Math.random, so an A verdict from one draw is a sample]",
+    "note": "Testing Master 2026-11-21: Inkling UD-Q4_K_XL / maya-ik2 be849da / 311296 context; one-shot, not agent harness; 32000 reply cap; reasoning_effort high, temperature 1.0, top_p 1.0; first token 0.4 s. E1 because the page has NO camera orbit at all: it builds no OrbitControls, sets no autoRotate and never calls controls.update, so the HUD's 'auto-orbit' caption describes something the page does not implement. Petals and cast shadows are both present (castShadow x3, shadowMap x2) and the petals animate in a browser through clock.getDelta. Wording corrected 2026-11-26 twice: it first read 'petals and shadows animate' (right), then 'static shadows' after a same-time frame baseline showed 0.44 % change between frames against 0.30-0.43 % between two renders of one instant. That baseline cannot see this page's motion: the animation integrates clock.getDelta and the virtual-time capture does not advance it, which the DSpark pagoda row proved when code with autoRotate plus controls.update() in the loop rendered 0.08-0.11 % frame diffs. So the frames are silent on motion here, and E=1 rests on the source: no orbit, petals and shadows present, two of three. [graded from an unseeded render: frames made before 2026-11-26 seeding; an A verdict from one draw is a sample]",
     "frames": [],
     "live": null
    },
@@ -27331,10 +27411,70 @@
      "B": 2.0,
      "C": 2.0,
      "D": 2.0,
-     "E": 1.0
+     "E": 2.0
     },
-    "total": 9.0,
-    "note": "9/10 A2B2C2D2E1. RENDERED 2026-11-26, seeded (render seed 123456789), 3 timed frames + 5 fixed views. A2 clean draw, only THREE.Clock/PCFSoft deprecation warnings. B2 all voxel. C2 five tiers, upturned stepped eaves, gold spire. D2 platform, cherry trees, pond, torii all present. E1: the page sets rAF and autoRotate and the caption says 'camera auto-orbits', but the seeded frames differ by 0.08-0.11% across 1.5/5/10 s, which is inside same-instant noise - nothing moves, so the single life point is for the static shadows.",
+    "total": 10.0,
+    "note": "10/10 A2B2C2D2E2. Voxel pagoda one-shot on hy4f-style Inkling Q4_K_XL: five storeys whose raised, stepped eave corners rest on each other with the gold spire seated on the top roof; stone platform, four cherry trees, a walled pond and a torii at the foot; every body in the scene is a cube. A2 clean draw, only THREE.Clock and PCFSoftShadowMap deprecation notices; B2 all voxel; C2 five storeys, upturned eaves, spire; D2 all four setting items. E2: the camera genuinely orbits - the page builds OrbitControls, sets controls.autoRotate = true with autoRotateSpeed = 0.65, and calls controls.update() at line 378 inside its requestAnimationFrame loop - and petals fall and shadows are cast, all three. First read as E1 because the same-instant frame capture cannot see this page: its animation integrates clock.getDelta(), which virtual-time does not advance, so three frames 1.5/5/10 s apart differ by only 0.08-0.11 % while the orbit is real. Corrected 2026-11-26 on the source, and the note rewritten so the row does not carry both readings. 16,161 tokens at 56.4 tok/s, 286.4 s, seeded render (seed 123456789). Short one-shot benchmark, not an agent rate.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t6-strata-inkling-v100-think-r1",
+    "entry": "strata-inkling-v100-think",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 5169.0,
+    "wall_s": 82.8,
+    "tok_s": 74.8,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 10.0,
+    "note": "10/10 A2B2C2D2E2. RENDERED 2026-11-26, seeded (render seed 123456789), 1.5/5/10 s timed frames plus 5 fixed views. A2 draws cleanly: no uncaught errors, only THREE.Clock and PCFSoftShadowMap deprecation warnings, no z-fighting stripes and no gaps in any view; the far probe camera sits past the page's fog (40 to 110) so view-high looks washed out, a look note rather than a defect. B2 every object is a BoxGeometry, petals, trees, pond and torii included. C2 five storeys, each roof an overhanging slab with four raised corner blocks above the eave line, roofs meet their walls with no sky through them, gold spire stacked on the top roof. D2 stepped stone platform, four cherry trees, pond with lily pads and rocks, red torii, plus lanterns and stepping stones. E2 petals move between all three frames (0.79 per cent of pixels differ 1.5 vs 5 s, above same-instant noise), cast shadows on ground and platform, and the orbit is in the code (OrbitControls autoRotate true, autoRotateSpeed 0.6, update each frame), graded from the code as the rubric directs. 5,169 tokens of 32,000 at 74.8 tok/s, first token 13.7 s, wall 82.8 s. Short one-shot benchmark, not an agent rate.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t6-inkling2-mini-q4kxl-v1175-v100-r1",
+    "entry": "inkling2-mini-q4kxl-v1175-v100",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 5180.0,
+    "wall_s": 73.6,
+    "tok_s": 82.8,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 10.0,
+    "note": "10/10 A2B2C2D2E2. Five storeys, each a brown body with a dark door inset and two front pillars, on a three-layer stone platform; each roof is a flat slab with a raised corner cube at all four corners (clearly above the eave line) and a gold trim ring, and a five-step gold spire with a finial is seated on the top roof. Every body in the scene is a box. D2: layered stone platform, three cherry trees, a pond with stone border and lily pads, red torii. E2 from source: angle += dt*0.12 drives camera.position and lookAt every frame, 55 petals fall and respawn below y 0.15, shadowMap on with a 2048 sun shadow and every mesh casting; the 1500/5000/10000 ms frames differ (mean pixel delta 6.0 and 4.4 over 13% and 10% of pixels) so the orbit and petals do show on this page. A2 clean draw: only the THREE.Clock and PCFSoftShadowMap deprecation notices, no uncaught errors; door and pillar boxes overlap the wall face rather than sitting flush, so no z-fighting. There is a 0.175-unit shadow band under each storey between roof slab and next wall, bridged by the gold trim and the corner cubes, that reads as roof meeting wall in the front, right, left and back views with no sky through it. The 40-90 fog washes the top-down grader view out completely; the timed frames and four eye-level views are clear. The timed frames crop the spire at the top edge; view-front shows it whole. First token 11.0 s, 5,180 tokens at 82.8 tok/s, wall 73.6 s. Frames and views rendered 2026-11-26 (seeded). Short one-shot benchmark, not an agent rate.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t6-inkling2-mini-abliterated-mix12g-v100-r1",
+    "entry": "inkling2-mini-abliterated-mix12g-v100",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 5436.0,
+    "wall_s": 183.7,
+    "tok_s": 30.9,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 10.0,
+    "note": "10/10 A2B2C2D2E2. RENDERED 2026-11-26, seeded (render seed 123456789), 3 timed frames plus 5 fixed views. A2 draws cleanly: no uncaught errors, only the THREE.Clock and PCFSoftShadowMap deprecation warnings, no z-fighting stripes and no gaps in any view. B2 every object is a BoxGeometry (one box() helper; ground, platform, bodies, eaves, corner blocks, trees, pond tiles, torii, petals). C2 five storeys, 6.8 down to 3.8 wide, each a timber body under a solid eave slab that overhangs it with a 0.4 raised corner block at all four corners (0.47 above the eave line, tips reach 0.125 past the slab), and a four-piece spire whose pieces overlap each other and are seated 0.02 into the top roof. Flaw noted, not scored: each storey's body starts 0.005 above the roof below (y+1.95 against a roof top at y+1.945), which no view resolves. D2 all four: three-tier stone platform, three cherry trees, a 13-tile pond and a red torii. E2 the camera orbits (orbitAngle += 0.0018 per frame with lookAt) and the frames move 3.2 % and 12.5 % between them, 28 falling petals and cast shadows are visible. Short one-shot benchmark, not an agent rate.",
     "frames": [],
     "live": null
    }
@@ -29110,7 +29250,7 @@
   "models": 157,
   "runs": 410,
   "test3": 87,
-  "oneshots": 394,
+  "oneshots": 401,
   "frames": 472,
   "pass": 306,
   "live": 155
