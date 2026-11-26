@@ -1,0 +1,56 @@
+<svg viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
+<defs>
+ <radialGradient id="bp" cx="50%" cy="42%" r="75%"><stop offset="0" stop-color="#182720"/><stop offset=".55" stop-color="#101a15"/><stop offset="1" stop-color="#070b09"/></radialGradient>
+ <radialGradient id="sunFace" cx="46%" cy="44%" r="60%"><stop offset="0" stop-color="#fff7d6"/><stop offset=".3" stop-color="#ffd45e"/><stop offset=".62" stop-color="#ff9d26"/><stop offset=".88" stop-color="#f07f10"/><stop offset="1" stop-color="#b95c08"/></radialGradient>
+ <radialGradient id="sunG"><stop offset="0" stop-color="#ffd45e" stop-opacity=".55"/><stop offset=".35" stop-color="#ff9d26" stop-opacity=".45"/><stop offset=".7" stop-color="#e2620f" stop-opacity=".22"/><stop offset="1" stop-color="#e2620f" stop-opacity="0"/></radialGradient>
+ <radialGradient id="sunFl" cx="35%" cy="35%"><stop offset="0" stop-color="#fffbe6"/><stop offset=".45" stop-color="#ffe27a" stop-opacity=".85"/><stop offset="1" stop-color="#ff9d26" stop-opacity="0"/></radialGradient>
+ <radialGradient id="comet"><stop offset="0" stop-color="#fffef2"/><stop offset=".4" stop-color="#ffe9a8" stop-opacity=".9"/><stop offset="1" stop-color="#ffd45e" stop-opacity="0"/></radialGradient>
+ <linearGradient id="brass"><stop offset="0" stop-color="#8a5f2a"/><stop offset=".5" stop-color="#c89a4e"/><stop offset="1" stop-color="#f0cd7c"/></linearGradient>
+ ${defsP}
+</defs>
+
+<g transform="translate(600 600)">
+ <rect x="-700" y="-700" width="1400" height="1400" fill="url(#bp)"/>
+ <g transform="rotate(-40)"><rect x="-345" y="-345" width="690" height="690" fill="none" stroke="#223029" stroke-width="90" opacity=".55"/></g>
+ <rect x="-345" y="-345" width="690" height="690" fill="none" stroke="#1b2a23" stroke-width="90" opacity=".6"/>
+ <rect x="-556" y="-556" width="1112" height="1112" fill="none" stroke="#3b5547" stroke-width="1.2" opacity=".5"/>
+ <rect x="-408" y="-408" width="816" height="816" fill="none" stroke="#2c3a33" stroke-width="1" opacity=".55"/>
+
+ <g opacity=".05"><g><path d="${gA}" fill="#d8aa5e"/></g><g><path d="${gB}" fill="#d8aa5e"/></g></g>
+ <animateTransform attributeName="transform" type="rotate" from="0" to="-108" dur="47s" repeatCount="indefinite"/>
+ <g transform="translate(196 196) scale(1)"><g><path d="${gB}" fill="#d8aa5e"/></g></g>
+ <animateTransform attributeName="transform" type="rotate" from="0" to="72" dur="31s" repeatCount="indefinite"/>
+
+ <g id="FIELD" transform="translate(-108 -170)">${arcs}${glints}</g>
+
+ <g opacity=".85"><circle r="317" fill="#17231d"/><path d="${bezD}" fill="#a87f42" stroke="#5f411a" stroke-width="1"/>${bezS}</g>
+ <g opacity=".9">${[38.5,29,19.5].map(r=>`<circle r="${r}" fill="none" stroke="#3a2c13" stroke-width=".8" opacity=".5"/>`).join('')}
+  ${ticks}${pScrew}
+  <path d="M-340 -340L340 -340L340 340L-340 340Z" fill="none" stroke="#c9a35a" stroke-width="1" opacity=".4"/></g>
+
+ <g id="SCENE">
+  <g opacity=".9">${orbits}</g>
+  <g id="SUN">${sunG}
+    <circle r="30.5" fill="url(#sunFace)"/>
+    <circle cx="-9" cy="5" r="4" fill="#e2740f" opacity=".55"/><circle cx="8" cy="-9" r="5" fill="#e2740f" opacity=".5"/><circle cx="15" cy="9" r="2.6" fill="#d96a10" opacity=".6"/>
+    <circle r="8.8" fill="#b98a4a" stroke="#6d4a20"/><circle r="5.2" fill="#33250f"/><rect x="-5.4" y="-.7" width="10.8" height="1.4" fill="#c9a253"/></g>
+  ${arms}${bodies}${pinst}
+ </g>
+
+ <g transform="translate(-600 -600) rotate(-90)"><g id="CMB">
+   <path id="TAIL" fill="url(#tail)" opacity=".9"/><circle id="HEAD" r="9" fill="url(#comet)"/></g>
+  <path id="TRAIL" d="M174 0A174 174 0 0 1 -174 0" pathLength="349" fill="none" stroke="#ffe08a" stroke-width="2" stroke-linecap="round" stroke-dasharray="58 291" opacity=".8"/>
+ </g>
+
+ <g id="GLOW"><circle r="118" fill="url(#sunG)" opacity=".8"/></g>
+ <g id="FLASH"><circle r="36" fill="url(#sunFl)" opacity="0"/></g>
+
+ <g transform="translate(16 16)">${h1}${leg}${lsub}
+   ${[...Array(8)].map((_,i)=>`<circle cx="${[156,316,254,294,274,334,214,374][i]}" cy="${193+2*i}" r="1.4" fill="#c9a35a" opacity=".5"/>`).join('')}</g>
+ <g transform="translate(16 906)">${dl}${drows}</g>
+ <g transform="translate(1170 906)">${c1}${c2}${c3}${btns}</g>
+ <g transform="translate(600 1160)">${S({x:-400,y:4,t:'click = 3×  ·  space = pause  ·  3 = speed  ·  C = comet  ·  365.26 d per 1.4 s — sun 96T, pinions 6 → 399T'},'foot')}</g>
+
+ <line x1="0" y1="0" x2="1200" y2="1200" stroke="#000" stroke-width="46" opacity=".3"/>
+ <line x1="1200" y1="0" x2="0" y2="1200" stroke="#000" stroke-width="26" opacity=".2"/>
+</svg>

@@ -1,0 +1,85 @@
+<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+ <style>
+ .gear {
+ animation: spin-gear 8s linear infinite;
+ }
+ .gear-rev {
+ animation: spin-gear-reverse 8s linear infinite;
+ }
+ @keyframes spin-gear {
+ from { transform: rotate(0deg); }
+ to { transform: rotate(360deg); }
+ }
+ @keyframes spin-gear-reverse {
+ from { transform: rotate(0deg); }
+ to { transform: rotate(-360deg); }
+ }
+ </style>
+
+ <!-- Intermeshing gears (driving the mechanism) -->
+ <g class="gear">
+ <circle cx="250" cy="300" r="30" fill="#555" stroke="#333" stroke-width="2"/>
+ <path d="M 250 270 L 260 290 M 240 330 L 220 320" stroke="#333" stroke-width="2"/>
+ </g>
+ <g class="gear-rev">
+ <circle cx="550" cy="300" r="30" fill="#555" stroke="#333" stroke-width="2"/>
+ <path d="M 550 270 L 560 290 M 540 330 L 520 320" stroke="#333" stroke-width="2"/>
+ </g>
+
+ <!-- Sun -->
+ <circle cx="400" cy="300" r="50" fill="#FFA500" />
+
+ <!-- Invisible orbit paths (for reference) -->
+ <circle cx="400" cy="300" r="200" fill="none" stroke="#ccc" stroke-opacity="0.3"/>
+ <circle cx="400" cy="300" r="300" fill="none" stroke="#ccc" stroke-opacity="0.3"/>
+ <circle cx="400" cy="300" r="400" fill="none" stroke="#ccc" stroke-opacity="0.3"/>
+
+ <!-- Mercury (fast orbit, short period) -->
+ <g style="animateTransform: rotate(0 400 300) 20s linear infinite;">
+ <circle cx="400" cy="180" r="6" fill="#888"/>
+ <path d="M 394,180 A 6,6 0 0,1 400,-174" fill="rgba(0,0,0,0.5)"/>
+ </g>
+
+ <!-- Venus (medium orbit) -->
+ <g style="animateTransform: rotate(0 400 300) 40s linear infinite;">
+ <circle cx="400" cy="240" r="10" fill="#FFA500"/>
+ <path d="M 390,240 A 10,10 0 0,1 400,-230" fill="rgba(0,0,0,0.5)"/>
+ </g>
+
+ <!-- Earth (spins for day/night) -->
+ <g style="animateTransform: rotate(0 400 300) 80s linear infinite;">
+ <circle cx="400" cy="300" r="12" fill="#00FF00"/>
+ <path d="M 388,300 A 12,12 0 0,1 400,-288" fill="rgba(0,0,0,0.5)"/>
+ </g>
+
+ <!-- Mars (slower orbit, spins) -->
+ <g style="animateTransform: rotate(0 400 300) 120s linear infinite;">
+ <circle cx="400" cy="360" r="8" fill="#FF0000"/>
+ <path d="M 392,360 A 8,8 0 0,1 400,-352" fill="rgba(0,0,0,0.5)"/>
+ </g>
+
+ <!-- Day/night shadow sweep: each planet's terminator rotates with its spin -->
+ <g style="animateTransform: rotate(0 400 300) 80s linear infinite;">
+ <circle cx="400" cy="300" r="12" fill="#00FF00"/>
+ <path d="M 388,300 A 12,12 0 0,1 400,-288" fill="rgba(0,0,0,0.5)"
+ style="animateTransform: rotate(0 0 0) 10s linear infinite; transform-origin: 400 300;"/>
+ </g>
+
+ <g style="animateTransform: rotate(0 400 300) 40s linear infinite;">
+ <circle cx="400" cy="240" r="10" fill="#FFA500"/>
+ <path d="M 390,240 A 10,10 0 0,1 400,-230" fill="rgba(0,0,0,0.5)"
+ style="animateTransform: rotate(0 0 0) 8s linear infinite; transform-origin: 400 300;"/>
+ </g>
+
+ <g style="animateTransform: rotate(0 400 300) 20s linear infinite;">
+ <circle cx="400" cy="180" r="6" fill="#888"/>
+ <path d="M 394,180 A 6,6 0 0,1 400,-174" fill="rgba(0,0,0,0.5)"
+ style="animateTransform: rotate(0 0 0) 6s linear infinite; transform-origin: 400 300;"/>
+ </g>
+
+ <g style="animateTransform: rotate(0 400 300) 120s linear infinite;">
+ <circle cx="400" cy="360" r="8" fill="#FF0000"/>
+ <path d="M 392,360 A 8,8 0 0,1 400,-352" fill="rgba(0,0,0,0.5)"
+ style="animateTransform: rotate(0 0 0) 5s linear infinite; transform-origin: 400 300;"/>
+ </g>
+</svg>

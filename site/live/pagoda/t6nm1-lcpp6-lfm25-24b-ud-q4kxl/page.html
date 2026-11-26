@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Voxel Japanese Pagoda</title>
+<style>body{margin:0;overflow:hidden}</style>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+// ------------------------------------------------------------
+// Scene, camera, renderer
+// ------------------------------------------------------------
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xeef2ff);
+
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+camera.position.set(0, 8, 14);
+camera.lookAt(0, 2, 0);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.shadowMap.enabled = true;
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+// ------------------------------------------------------------
+// Lighting (with shadows)
+// ------------------------------------------------------------
+const ambient = new THREE.AmbientLight(0xffffff, 0.3);
+scene.add(ambient);
+
+const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+dirLight.position.set(5, 10, 5);
+dirLight.castShadow = true;
+dirLight.shadow.mapSize.width = 1024;
+dirLight.shadow.mapSize.height = 1024;
+scene.add(dirLight);
+
+// ------------------------------------------------------------
+// Materials
+// ------------------------------------------------------------
+const stoneMaterial = new THREE.MeshStandardMaterial({ color: 0x888888, roughness: 0.8 });
+const brownMaterial = new THREE.MeshStandardMaterial({ color: 0x8B4513, roughness: 0.7 });
+const redMaterial   = new THREE.MeshStandardMaterial({ color: 0xcc0000 });
+const waterMaterial = new THREE.MeshStandardMaterial({
+  color: 0x4682b4,
+  transparent: true,
+  opacity: 0.6,
+  side: THREE.BackSide
+});
+
+// ------------------------------------------------------------
+// Helper: create a cube mesh at a given position
+// ------------------------------------------------------------
+function createCube(pos, size, material) {
+  const geometry = new THREE.BoxGeometry(size, size, size);
+  const mesh = new THREE.Mesh(geometry, material);
+  mesh.position.set(pos[0], pos[1], pos[2]);
+  return mesh;
+}
+
+// ------------------------------------------------------------
+// Stone platform (base)
+// ------------------------------------------------------------
+const platform = createCube([0, 0.25, 0], 6, stoneMaterial);
+platform.castShadow = true;
+scene.add(platform);
+
+// ------------------------------------------------------------
+// Five‑story pagoda with upturned eaves
+// ------------------------------------------------------------
+for (let i = 0; i < 5; i++) {
+  const yBottom = 0.5 + i * 1;               // bottom of this story
+  // main story block
+  const story = createCube([0, yBottom + 0.5, 0], 1, stoneMaterial);
+  scene.add(story);
+  // upturned eaves – overhang cubes on each side
+  const eaveSize = 0.5;
+  // front
+  scene.add(createCube([0, yBottom + 1.5, eaveSize], 1, stoneMaterial));
+  // back
+  scene.add(createCube([0, yBottom + 1.5, -eaveSize], 1, stoneMaterial));
+  // left
+  scene.add(createCube([-eaveSize, yBottom + 1.5, 0], 1, stoneMaterial));
+  // right
+  scene.add(createCube([eaveSize, yBottom + 1.5, 0], 1, stoneMaterial));
+}
+
+// ------------------------------------------------------------
+// Spire on top of the pagoda
+// ------------------------------------------------------------
+for (let i = 0; i < 3; i++) {
+  const y = 5.5 + i * 1;
+  const spire = createCube([0, y + 0.5, 0], 0.5, stoneMaterial);
+  scene.add(spire);
+}
+const tip = createCube([0, 8.5, 0], 0.3, stoneMaterial);
+scene.add(tip);
+
+// ------------------------------------------------------------
+// Red torii gate
+// ------------------------------------------------------------
+// left post
+for (let j = 0; j < 3; j++) {
+  const post = createCube([-2, j, 0], 1, redMaterial);
+  scene.add(post);
+}
+// right post
+for (let j = 0; j < 3; j++) {
+  const post = createCube([2, j, 0], 1, redMaterial);
+  scene.add(post);
+}
+// horizontal beam (five cubes)
+for (let x = -2; x <= 2; x += 1) {
+  const beam = createCube([x, 3, 0], 1, redMaterial);
+  scene.add(beam);
+}
+
+// ------------------------------------------------------------
+// Cherry‑blossom trees (voxel style)
+// ------------------------------------------------------------
+function makeTree(x, z) {
+  // trunk
+  for (let i = 0; i < 4; i++) {
+    const trunk = createCube([x, i, z], 1, brownMaterial);
+    trunk.castShadow = true;
+    scene.add(trunk);
+  }
+  // simple branches at the top
+  const branch1 = createCube([x - 0.5, 4, z], 0.8, brownMaterial);
+  const branch2 = createCube([x + 0.5, 4, z], 0.8, brownMaterial);
+  scene.add(branch1);
+  scene.add(branch2);
+}
+// left tree
+makeTree(-3, 3);
+// right tree
+makeTree(3, -3);
+
+// ------------------------------------------------------------
+// Cherry‑blossom petals (tiny white cubes that drift down)
+// ------------------------------------------------------------
+const petalMaterial = new THREE.MeshStandardMaterial({
+  color: 0xffffff,
+  transparent: true,
+  opacity: 0.6
+});
+const petals = [];
+for (let i = 0; i < 20; i++) {
+  const x = (Math.random() - 0.5) * 4;
+  const z = (Math.random() - 0.5) * 4;
+  const y = 5 + Math.random() * 2;
+  const petal = createCube([x, y, z], 0.1, petalMaterial);
+  scene.add(petal);
+  petals.push(petal);
+}
+
+// ------------------------------------------------------------
+// Small pond (flat blue box)
+// ------------------------------------------------------------
+const pond = createCube([0, 0.1, 0], 4, waterMaterial);
+pond.castShadow = false;
+scene.add(pond);
+
+// ------------------------------------------------------------
+// Camera orbit controls
+// ------------------------------------------------------------
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.autoRotate = true;
+controls.autoRotateSpeed = 0.003;
+
+// ------------------------------------------------------------
+// Animation loop
+// ------------------------------------------------------------
+const clock = new THREE.Clock();
+
+function animate() {
+  requestAnimationFrame(animate);
+  const delta = clock.getDelta();
+
+  // drift petals down and reset when out of view
+  petals.forEach(p => {
+    p.position.y -= 0.03 * delta;
+    p.position.x += Math.sin(delta * 5) * 0.01;
+    if (p.position.y < -2) {
+      p.position.y = 6;
+      p.position.x = (Math.random() - 0.5) * 4;
+    }
+  });
+
+  controls.update();
+  renderer.render(scene, camera);
+}
+animate();
+
+// ------------------------------------------------------------
+// Handle window resize
+// ------------------------------------------------------------
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+</script>
+</body>
+</html>

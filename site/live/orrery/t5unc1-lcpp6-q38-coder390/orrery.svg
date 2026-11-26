@@ -1,0 +1,209 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" font-family="Georgia,'Times New Roman',serif">
+  <title>Brass clockwork orrery — true relative orbital periods, meshing gear train, day–night terminators</title>
+  <desc>A centred brass orrery. Sun arbor (42T) -> fixed arbors W1(12T)/P1(42T), W2(37T)/P2(22T), W3(47T)/P3(14T) ->
+       planet arbors: Mercury 29T/25T, Venus 17T/37T, Earth 12T/42T, Mars 7T/47T, Jupiter 21T/23T,
+       Saturn 47T/27T, Uranus 121T/33T, Neptune 35T/231T. Scale: 1 day = 0.2 s (Earth year = 73.05 s).</desc>
+
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="42%" r="75%">
+      <stop offset="0%" stop-color="#232838"/><stop offset="55%" stop-color="#141824"/><stop offset="100%" stop-color="#090b11"/>
+    </radialGradient>
+    <linearGradient id="brass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f6e3a4"/><stop offset="35%" stop-color="#d9ad5c"/>
+      <stop offset="70%" stop-color="#9c722e"/><stop offset="100%" stop-color="#5f4114"/>
+    </linearGradient>
+    <linearGradient id="brassSoft" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#caa15b"/><stop offset="100%" stop-color="#6d4c1d"/>
+    </linearGradient>
+    <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fff6c8" stop-opacity="0.55"/><stop offset="45%" stop-color="#ffd76e" stop-opacity="0.22"/>
+      <stop offset="75%" stop-color="#ffb84d" stop-opacity="0.07"/><stop offset="100%" stop-color="#ffb84d" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="sunBody" cx="38%" cy="34%" r="80%">
+      <stop offset="0%" stop-color="#fffbe8"/><stop offset="45%" stop-color="#ffe08a"/>
+      <stop offset="78%" stop-color="#f0a83c"/><stop offset="100%" stop-color="#b46d1a"/>
+    </radialGradient>
+    <radialGradient id="shadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0"/><stop offset="52%" stop-color="#000" stop-opacity="0"/>
+      <stop offset="82%" stop-color="#000" stop-opacity="0.42"/><stop offset="100%" stop-color="#000" stop-opacity="0.85"/>
+    </radialGradient>
+    <radialGradient id="night" cx="0%" cy="50%" r="100%">
+      <stop offset="0%" stop-color="#060a18" stop-opacity="0.97"/><stop offset="45%" stop-color="#060a18" stop-opacity="0.9"/>
+      <stop offset="78%" stop-color="#060a18" stop-opacity="0.42"/><stop offset="100%" stop-color="#060a18" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- planets: body + sunlit facet + day/night terminator. Sun sits at local (-r,0), so the dark side sweeps around the disc as the arm turns -->
+    <g id="pM"><circle r="6" fill="#b6a795"/><circle r="6" fill="url(#shadow)"/><circle cx="-2.7" cy="-1.8" r="2" fill="#e9dccb" opacity="0.75"/><circle r="6" fill="url(#night)"/></g>
+    <g id="pV"><circle r="9" fill="#e2b577"/><circle r="9" fill="url(#shadow)"/><circle cx="-4" cy="-2.5" r="3" fill="#f9e6bf" opacity="0.8"/><circle r="9" fill="url(#night)"/></g>
+    <g id="pE"><circle r="10" fill="#5e93bd"/><circle cx="-2" cy="-3" r="3" fill="#8fd0a0" opacity="0.9"/><circle cx="2.5" cy="2" r="3.4" fill="#6aa6c9" opacity="0.85"/><circle cx="-4" cy="4" r="2.4" fill="#7fb489" opacity="0.8"/><circle r="10" fill="url(#shadow)"/><circle cx="-4.5" cy="-3" r="2.2" fill="#eef6fa" opacity="0.9"/><circle r="10" fill="url(#night)"/></g>
+    <g id="pMa"><circle r="7.5" fill="#c25c33"/><circle r="7.5" fill="url(#shadow)"/><circle cx="-2.5" cy="-2.5" r="2" fill="#ecb08c" opacity="0.85"/><circle r="7.5" fill="url(#night)"/></g>
+    <g id="pJ"><circle r="20" fill="#c89a68"/><path d="M-19.4 -6Q0 -8.8 19.4 -6M-20 0Q0 -3 20 0M-19.4 6Q0 8.8 19.4 6" stroke="#a3744a" stroke-width="2.4" fill="none" opacity="0.85"/><circle cx="11" cy="7" r="3.4" fill="#c25c33" opacity="0.95"/><circle r="20" fill="url(#shadow)"/><circle cx="-9" cy="-6" r="5.5" fill="#f2ddba" opacity="0.8"/><circle r="20" fill="url(#night)"/></g>
+    <g id="pS"><ellipse rx="30" ry="8.5" fill="none" stroke="#d8c08a" stroke-width="3.4" opacity="0.9" transform="rotate(-16)"/><circle r="17" fill="#d9be7f"/><ellipse rx="30" ry="8.5" fill="none" stroke="#eedfae" stroke-width="1.6" opacity="0.75" transform="rotate(-16)"/><circle r="17" fill="url(#shadow)"/><circle cx="-7.5" cy="-5" r="4.5" fill="#f6ecc9" opacity="0.8"/><circle r="17" fill="url(#night)"/></g>
+    <g id="pU"><circle r="12" fill="#8fd3d9"/><circle r="12" fill="url(#shadow)"/><circle cx="-5" cy="-3.5" r="3.2" fill="#e2f7f9" opacity="0.85"/><circle r="12" fill="url(#night)"/></g>
+    <g id="pN"><circle r="12" fill="#3f66c4"/><path d="M-11 -4Q0 -6.5 11 -4M-11.5 3Q0 0.5 11.5 3" stroke="#2c4a97" stroke-width="2.2" fill="none" opacity="0.85"/><circle r="12" fill="url(#shadow)"/><circle cx="-5" cy="-3.5" r="3" fill="#a9c2f2" opacity="0.85"/><circle r="12" fill="url(#night)"/></g>
+    <g id="pMo"><circle r="3.4" fill="#cfc8bd"/><circle r="3.4" fill="url(#shadow)"/><circle r="3.4" fill="url(#night)"/></g>
+  </defs>
+
+  <rect width="1000" height="1000" fill="url(#bg)"/>
+
+  <!-- plate -->
+  <circle cx="500" cy="500" r="488" fill="#1c202c" stroke="url(#brass)" stroke-width="8"/>
+  <circle cx="500" cy="500" r="478" fill="none" stroke="#6d5020" stroke-width="1" opacity="0.8"/>
+  <g fill="url(#brass)" opacity="0.9">
+    <circle cx="40" cy="500" r="7"/><circle cx="960" cy="500" r="7"/><circle cx="500" cy="40" r="7"/><circle cx="500" cy="960" r="7"/>
+    <circle cx="156" cy="156" r="5"/><circle cx="844" cy="156" r="5"/><circle cx="156" cy="844" r="5"/><circle cx="844" cy="844" r="5"/>
+  </g>
+
+  <!-- slow-rotating engraved scale -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate" from="0 500 500" to="360 500 500" dur="1461s" repeatCount="indefinite"/>
+    <circle cx="500" cy="500" r="472" fill="none" stroke="#9c722e" stroke-width="3" stroke-dasharray="1.5 22.6" opacity="0.55"/>
+    <circle cx="500" cy="500" r="465" fill="none" stroke="#9c722e" stroke-width="5" stroke-dasharray="1.5 58.5" opacity="0.6"/>
+  </g>
+
+  <!-- sun light field -->
+  <circle cx="500" cy="500" r="170" fill="url(#sunGlow)"/>
+  <circle cx="500" cy="500" r="170" fill="none" stroke="#ffe9a8" stroke-width="1.2" opacity="0.4">
+    <animate attributeName="r" values="170;195;170" dur="10s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.4;0.1;0.4" dur="10s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- orbit rings -->
+  <g fill="none" stroke="#96733a">
+    <circle cx="500" cy="500" r="105" stroke-width="1.2" opacity="0.5"/>
+    <circle cx="500" cy="500" r="160" stroke-width="1.2" opacity="0.5"/>
+    <circle cx="500" cy="500" r="215" stroke-width="1.2" opacity="0.5"/>
+    <circle cx="500" cy="500" r="270" stroke-width="1.2" opacity="0.5"/>
+    <circle cx="500" cy="500" r="340" stroke-width="1.2" opacity="0.5"/>
+    <circle cx="500" cy="500" r="395" stroke-width="1.2" opacity="0.5"/>
+    <circle cx="500" cy="500" r="440" stroke-width="1.2" opacity="0.5"/>
+    <circle cx="500" cy="500" r="476" stroke-width="1.2" opacity="0.5"/>
+  </g>
+
+  <!-- planet arbors: nested ring gears at the centre. Each arm rotates on its own arbor at its true period -->
+  <g fill="none" stroke-linecap="round">
+    <!-- Neptune arbor (35T) -->
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0 500 500" to="360 500 500" dur="12038s" repeatCount="indefinite"/>
+      <circle cx="500" cy="500" r="33.42" stroke="url(#brassSoft)" stroke-width="5" stroke-dasharray="2.43 2.97" opacity="0.5"/>
+      <circle cx="500" cy="500" r="36.2" stroke="url(#brass)" stroke-width="1.6" opacity="0.6"/>
+      <line x1="533.4" y1="500" x2="976" y2="500" stroke="#8a6a2e" stroke-width="3.5" opacity="0.55"/>
+      <line x1="533.4" y1="500" x2="976" y2="500" stroke="#dcb76a" stroke-width="1" opacity="0.8"/>
+    </g>
+    <!-- Uranus arbor (121T) -->
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0 500 500" to="360 500 500" dur="6124s" repeatCount="indefinite"/>
+      <circle cx="500" cy="500" r="115.54" stroke="url(#brassSoft)" stroke-width="5" stroke-dasharray="2.43 2.97" opacity="0.5"/>
+      <circle cx="500" cy="500" r="119.9" stroke="url(#brass)" stroke-width="1.6" opacity="0.6"/>
+      <line x1="619.9" y1="500" x2="940" y2="500" stroke="#8a6a2e" stroke-width="3.5" opacity="0.55"/>
+      <line x1="619.9" y1="500" x2="940" y2="500" stroke="#dcb76a" stroke-width="1" opacity="0.8"/>
+    </g>
+    <!-- Saturn arbor (47T) -->
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0 500 500" to="360 500 500" dur="5891s" repeatCount="indefinite"/>
+      <circle cx="500" cy="500" r="44.88" stroke="url(#brassSoft)" stroke-width="5" stroke-dasharray="2.43 2.97" opacity="0.55"/>
+      <circle cx="500" cy="500" r="48.3" stroke="url(#brass)" stroke-width="1.8" opacity="0.65"/>
+      <line x1="548.3" y1="500" x2="895" y2="500" stroke="#8a6a2e" stroke-width="3.5" opacity="0.55"/>
+      <line x1="548.3" y1="500" x2="895" y2="500" stroke="#dcb76a" stroke-width="1" opacity="0.8"/>
+    </g>
+    <!-- Jupiter arbor (21T) -->
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0 500 500" to="360 500 500" dur="2373s" repeatCount="indefinite"/>
+      <circle cx="500" cy="500" r="20.05" stroke="url(#brassSoft)" stroke-width="5" stroke-dasharray="2.43 2.97" opacity="0.55"/>
+      <circle cx="500" cy="500" r="23.4" stroke="url(#brass)" stroke-width="1.8" opacity="0.65"/>
+      <line x1="523.4" y1="500" x2="840" y2="500" stroke="#8a6a2e" stroke-width="3.5" opacity="0.55"/>
+      <line x1="523.4" y1="500" x2="840" y2="500" stroke="#dcb76a" stroke-width="1" opacity="0.8"/>
+    </g>
+    <!-- Mars arbor (7T) -->
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0 500 500" to="360 500 500" dur="137.4s" repeatCount="indefinite"/>
+      <circle cx="500" cy="500" r="6.68" stroke="url(#brassSoft)" stroke-width="5" stroke-dasharray="2.43 2.97" opacity="0.65"/>
+      <circle cx="500" cy="500" r="10.2" stroke="url(#brass)" stroke-width="2" opacity="0.75"/>
+      <line x1="510.2" y1="500" x2="770" y2="500" stroke="#8a6a2e" stroke-width="3.5" opacity="0.6"/>
+      <line x1="510.2" y1="500" x2="770" y2="500" stroke="#dcb76a" stroke-width="1" opacity="0.85"/>
+    </g>
+    <!-- Earth arbor (12T) -->
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0 500 500" to="360 500 500" dur="73.05s" repeatCount="indefinite"/>
+      <circle cx="500" cy="500" r="11.46" stroke="url(#brassSoft)" stroke-width="5" stroke-dasharray="2.43 2.97" opacity="0.65"/>
+      <circle cx="500" cy="500" r="15.2" stroke="url(#brass)" stroke-width="2" opacity="0.75"/>
+      <line x1="515.2" y1="500" x2="715" y2="500" stroke="#8a6a2e" stroke-width="3.5" opacity="0.6"/>
+      <line x1="515.2" y1="500" x2="715" y2="500" stroke="#dcb76a" stroke-width="1" opacity="0.85"/>
+    </g>
+    <!-- Venus arbor (17T) -->
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0 500 500" to="360 500 500" dur="44.94s" repeatCount="indefinite"/>
+      <circle cx="500" cy="500" r="16.23" stroke="url(#brassSoft)" stroke-width="5" stroke-dasharray="2.43 2.97" opacity="0.65"/>
+      <circle cx="500" cy="500" r="20.6" stroke="url(#brass)" stroke-width="2" opacity="0.75"/>
+      <line x1="520.6" y1="500" x2="660" y2="500" stroke="#8a6a2e" stroke-width="3.5" opacity="0.6"/>
+      <line x1="520.6" y1="500" x2="660" y2="500" stroke="#dcb76a" stroke-width="1" opacity="0.85"/>
+    </g>
+    <!-- Mercury arbor (29T) -->
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0 500 500" to="360 500 500" dur="17.59s" repeatCount="indefinite"/>
+      <circle cx="500" cy="500" r="27.69" stroke="url(#brassSoft)" stroke-width="5" stroke-dasharray="2.43 2.97" opacity="0.65"/>
+      <circle cx="500" cy="500" r="32.6" stroke="url(#brass)" stroke-width="2" opacity="0.75"/>
+      <line x1="532.6" y1="500" x2="605" y2="500" stroke="#8a6a2e" stroke-width="3.5" opacity="0.6"/>
+      <line x1="532.6" y1="500" x2="605" y2="500" stroke="#dcb76a" stroke-width="1" opacity="0.85"/>
+    </g>
+  </g>
+
+  <!-- fixed arbors -->
+  <circle cx="551.5" cy="500" r="4.5" fill="#241c10" stroke="url(#brass)" stroke-width="1.5"/>
+  <circle cx="637.7" cy="500" r="4.5" fill="#241c10" stroke="url(#brass)" stroke-width="1.5"/>
+  <circle cx="775.6" cy="500" r="4.5" fill="#241c10" stroke="url(#brass)" stroke-width="1.5"/>
+
+  <!-- sun arbor & sun -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate" from="0 500 500" to="360 500 500" dur="73.05s" repeatCount="indefinite"/>
+    <circle cx="500" cy="500" r="40.08" stroke="url(#brass)" stroke-width="5.4" stroke-dasharray="2.43 2.97"/>
+    <circle cx="500" cy="500" r="44.5" fill="none" stroke="url(#brass)" stroke-width="2.2"/>
+    <circle cx="500" cy="500" r="29" fill="url(#sunBody)"/>
+    <circle cx="500" cy="500" r="23" fill="none" stroke="#fff3c2" stroke-width="1.6" stroke-dasharray="3 5" opacity="0.6"/>
+    <circle cx="500" cy="500" r="5.5" fill="#ffdf8a"/>
+  </g>
+
+  <!-- planet bodies on their arms -->
+  <g transform="translate(605 500)"><g><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="17.59s" repeatCount="indefinite"/><use href="#pM"/></g></g>
+  <g transform="translate(660 500)"><g><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="44.94s" repeatCount="indefinite"/><use href="#pV"/></g></g>
+  <g transform="translate(715 500)"><g><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="73.05s" repeatCount="indefinite"/><use href="#pE"/></g><g transform="translate(0 -19)"><g><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="2.72s" repeatCount="indefinite"/><circle cx="6.4" cy="0" r="3.4" fill="#cfc8bd"/><circle cx="6.4" cy="0" r="3.4" fill="url(#night)"/></g></g></g>
+  <g transform="translate(770 500)"><g><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="137.4s" repeatCount="indefinite"/><use href="#pMa"/></g></g>
+  <g transform="translate(840 500)"><g><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="2372.8s" repeatCount="indefinite"/><use href="#pJ"/></g></g>
+  <g transform="translate(895 500)"><g><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="5891.4s" repeatCount="indefinite"/><use href="#pS"/></g></g>
+  <g transform="translate(940 500)"><g><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="6137.4s" repeatCount="indefinite"/><use href="#pU"/></g></g>
+  <g transform="translate(976 500)"><g><animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="12038s" repeatCount="indefinite"/><use href="#pN"/></g></g>
+
+  <!-- driving pinions on the fixed arbors (tooth centred on the +x contact line) -->
+  <g fill="none">
+    <circle cx="551.5" cy="500" r="40.08" stroke="url(#brass)" stroke-width="5.4" stroke-dasharray="2.43 2.97"/>
+    <circle cx="637.7" cy="500" r="20.95" stroke="url(#brass)" stroke-width="5.4" stroke-dasharray="2.43 2.97"/>
+    <circle cx="775.6" cy="500" r="13.37" stroke="url(#brass)" stroke-width="5.4" stroke-dasharray="2.43 2.97"/>
+  </g>
+
+  <!-- fixed drive wheels (tooth centred on the -x contact line) -->
+  <g fill="none">
+    <circle cx="551.5" cy="500" r="11.46" stroke="url(#brass)" stroke-width="5.4" stroke-dasharray="1.215 4.185" stroke-dashoffset="2.43"/>
+    <circle cx="637.7" cy="500" r="35.32" stroke="url(#brass)" stroke-width="5.4" stroke-dasharray="1.215 4.185" stroke-dashoffset="2.43"/>
+    <circle cx="775.6" cy="500" r="44.88" stroke="url(#brass)" stroke-width="5.4" stroke-dasharray="1.215 4.185" stroke-dashoffset="2.43"/>
+  </g>
+  <circle cx="551.5" cy="500" r="5" fill="url(#brass)"/><circle cx="551.5" cy="500" r="2" fill="#241c10"/>
+  <circle cx="637.7" cy="500" r="5" fill="url(#brass)"/><circle cx="637.7" cy="500" r="2" fill="#241c10"/>
+  <circle cx="775.6" cy="500" r="5" fill="url(#brass)"/><circle cx="775.6" cy="500" r="2" fill="#241c10"/>
+
+  <!-- etched train diagram -->
+  <g font-size="12" fill="#96733a" opacity="0.85" letter-spacing="1">
+    <text x="500" y="899" text-anchor="middle">S 42T</text>
+    <text x="551.5" y="548" text-anchor="middle">12·42T</text>
+    <text x="637.7" y="548" text-anchor="middle">37·22T</text>
+    <text x="775.6" y="548" text-anchor="middle">47·14T</text>
+    <line x1="541" y1="500" x2="547" y2="500" stroke="#96733a" stroke-width="1"/>
+    <line x1="593.5" y1="500" x2="616.8" y2="500" stroke="#96733a" stroke-width="1"/>
+    <line x1="658.7" y1="500" x2="762.3" y2="500" stroke="#96733a" stroke-width="1"/>
+  </g>
+
+  <!-- title -->
+  <g fill="url(#brass)">
+    <text x="500" y="48" text-anchor="middle" font-size="19" letter-spacing="6">ORRERY</text>
+    <text x="500" y="70" text-anchor="middle" font-size="11" letter-spacing="2" fill="#96733a">TRUE RELATIVE PERIODS · 1 DAY = 0.2 s · SPACING NOT TO SCALE</text>
+  </g>
+</svg>
