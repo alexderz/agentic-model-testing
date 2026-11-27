@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
  "generated": "2026-11-25 07:59 CST",
- "built": "2026-11-26 15:03 CST",
+ "built": "2026-11-26 23:00 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -23923,6 +23923,66 @@
     "note": "8/10 A2B2C2D1E1. RENDERED 2026-11-26, 3 timed frames 1.5/5/10 s, deterministic SMIL (no RNG; render-seed.txt). A2 clean brass plate, sun, four orbit rings, gold legend. B2 the SMIL arms turn - planet positions differ in every frame - and so does the tooth ring. C2 four planets only (nothing beyond Mars) but each matches: 88/225/365/687 d at 2.64/6.75/10.95/20.61 s, 33.33 d per second for all four, within 0.1 %. D1 one dashed tooth ring around the sun (31 bars, turns every 8 s) and four dashed pinion rings, but each pinion's own animateTransform replaces the g's translate, so the pinions fly off the canvas instead of riding the rim (one lands at y 753, below the 700-high viewBox); nothing meshes and no gear law is obeyed. E1 the fixed black half sits on the outward side, so the night side stays away from the sun (mean luminance 157 sunward against 79 outward on Mercury, same on the other three), but no surface sweeps under it - only a glint that rotates through the night half. Short one-shot benchmark, not an agent rate.",
     "frames": [],
     "live": null
+   },
+   {
+    "case": "t5-lfm3-1.7b-q8-3090-r1",
+    "entry": "lfm3-1.7b-q8-3090",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 3115.0,
+    "wall_s": 13.9,
+    "tok_s": 272.3,
+    "points": {
+     "A": 2.0,
+     "B": 1.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 3.0,
+    "note": "3/10 A2B1C0D0E0. RENDERED 2026-11-26 with tools/render_svg.sh at 1.5/5/10 s (deterministic SMIL, no RNG). A2: parses (114 lines, 7,067 B) and draws cleanly - a gold sun disc and nine coloured discs joined by white arcs, nothing clipped. B1: something moves - the two white path 'd' values morph between the three frames - but no planet and no gear body moves and nothing orbits; the animateTransform on each disc spins a symmetric circle in place, so it is invisible. C0: the paths cycle on 2 s with no per-planet period, so the speeds are arbitrary. D0: the nine 'gears' are smooth filled circles, no teeth and no pinion. E0: no terminator or shaded half anywhere; the white strokes laid over the discs are the model's 'shadows' and shade nothing. The gear discs are not linked to the orbit paths at all. 3,115 tokens of 32,000 at 272.3 tok/s, first token 2.4 s, wall 13.9 s. Short one-shot benchmark, not an agent rate.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t5-strata-inkling-v100-0167-r1",
+    "entry": "strata-inkling-v100-0167",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 3553.0,
+    "wall_s": 57.9,
+    "tok_s": 81.9,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 1.0,
+     "D": 1.0,
+     "E": 1.0
+    },
+    "total": 7.0,
+    "note": "7/10 A2B2C1D1E1. RENDERED 2026-11-26 with tools/render_svg.sh at 1.5/5/10 s (deterministic SMIL, no RNG). A2: parses and draws cleanly - star field, five orbit rings, brass rim, sun and five planets, no z-fighting or clipping; the central gear covers the sun disc by design. B2: the planet groups rotate (positions differ between all three frames), the four gear wheels turn, the sun halo pulses. C1: five planets ordered correctly outward at 6/10/14/22/38 s, but with Earth's 14 s as the scale no period is within 5 % of the real ratio - Mercury 0.43 Earth-years against 0.24, Venus 0.71 against 0.62, Mars 1.57 against 1.88, Jupiter 2.71 against 11.86. D1: four toothed wheels, 8 teeth each from one shared symbol at scales 1.35/0.72/0.58/0.48, turning in alternate directions, but every gear has the same tooth count, they stand 40 px clear of each other so nothing meshes, and they drive no orbit. E1: each planet carries a fixed gradient shading one side plus a dark band that spins on its own 1.8-6 s cycle, so a shadow sweeps the surface but does not stay away from the sun. 3,553 tokens of 32,000 at 81.9 tok/s, first token 14.6 s, wall 57.9 s. Short one-shot benchmark, not an agent rate.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t5-inkling2-mini-q4kxl-v1181-352k-3090-r1",
+    "entry": "inkling2-mini-q4kxl-v1181-352k-3090",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 2046.0,
+    "wall_s": 21.3,
+    "tok_s": 123.0,
+    "points": {
+     "A": 2.0,
+     "B": 1.0,
+     "C": 1.0,
+     "D": 0.0,
+     "E": 1.0
+    },
+    "total": 5.0,
+    "note": "5/10 A2B1C1D0E1. RENDERED 2026-11-26 with tools/render_svg.sh at 1.5/5/10 s (deterministic SMIL, no RNG; render-seed.txt says so). A2: parses and the three frames draw cleanly - a 3,626 B brass-on-black plate with a sun and four planets on solid orbit rings. B1: the four orbit arms, the planets on them and a dashed base ring all turn, and each planet's shade band pulses, but no gear turns and the planets never spin; orbits and planets move, the train does not. C1: periods 8/20/34/55 s for Mercury-Mars are in the right order but far off - with Earth=12 s they should be 4.8/7.7/12/22.6, so Mercury is 67 % slow and Venus, Earth and Mars 2.6x, 2.8x and 2.4x slow. D0: the only 'gear' is one dashed circle (stroke-dasharray 14 10, r 150) turning under the sun; there is no toothed wheel, no pinion and nothing meshes, so the reply's claim of 'interleaved teeth' is not in the file. E1: each planet carries a dark rect anchored on its sun-facing edge (x 96-124 against a 98-122 body) whose width pulses 4-28, so the shaded side sits toward the sun and never sweeps a turning surface; the radial gradient beneath is the only outward shading. Only 4 of the 8 planets were drawn. Reply carries 1,541 chars of prose around the SVG. Short one-shot benchmark, not an agent rate.",
+    "frames": [],
+    "live": null
    }
   ],
   "pagoda": [
@@ -27477,6 +27537,206 @@
     "note": "10/10 A2B2C2D2E2. RENDERED 2026-11-26, seeded (render seed 123456789), 3 timed frames plus 5 fixed views. A2 draws cleanly: no uncaught errors, only the THREE.Clock and PCFSoftShadowMap deprecation warnings, no z-fighting stripes and no gaps in any view. B2 every object is a BoxGeometry (one box() helper; ground, platform, bodies, eaves, corner blocks, trees, pond tiles, torii, petals). C2 five storeys, 6.8 down to 3.8 wide, each a timber body under a solid eave slab that overhangs it with a 0.4 raised corner block at all four corners (0.47 above the eave line, tips reach 0.125 past the slab), and a four-piece spire whose pieces overlap each other and are seated 0.02 into the top roof. Flaw noted, not scored: each storey's body starts 0.005 above the roof below (y+1.95 against a roof top at y+1.945), which no view resolves. D2 all four: three-tier stone platform, three cherry trees, a 13-tile pond and a red torii. E2 the camera orbits (orbitAngle += 0.0018 per frame with lookAt) and the frames move 3.2 % and 12.5 % between them, 28 falling petals and cast shadows are visible. Short one-shot benchmark, not an agent rate.",
     "frames": [],
     "live": null
+   },
+   {
+    "case": "t6-strata-inkling-v100-0167-r1",
+    "entry": "strata-inkling-v100-0167",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 5090.0,
+    "wall_s": 76.6,
+    "tok_s": 76.1,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 10.0,
+    "note": "10/10 A2B2C2D2E2. RENDERED 2026-11-26, seeded (render seed 123456789), 1.5/5/10 s timed frames plus 5 fixed views. A2 draws cleanly: no uncaught errors, only THREE.Clock and PCFSoftShadowMap deprecation warnings, no z-fighting stripes in any view; the far probe view-high is washed out by the page's 40-110 fog, a look note rather than a defect. B2 every body is a BoxGeometry, trees, pond, torii and petals included. C2 five storeys, 2.2 down to 1.3 tall, each body under an overhanging two-slab eave with four raised corner blocks 0.25 above the eave line, and a gold spire seated on the top roof; a 0.1-unit shadow line shows under each storey where the next body starts above the roof top, with no sky through it in the front, right, left or back views. D2 three-tier stone platform, four cherry trees, sand-bordered pond with lily pads and rocks, red torii, plus lanterns and stepping stones. E2 the camera orbits (OrbitControls autoRotate true, autoRotateSpeed 0.6, controls.update() at line 301) graded from the code as the rubric directs; 60 petals fall and are reset below y 0.1, with their pink cubes visible in every frame; shadows are cast on the ground and platform. 5,090 tokens of 32,000 at 76.1 tok/s, first token 9.7 s, wall 76.6 s. Short one-shot benchmark, not an agent rate.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t6-orcarouter-fn-rusting-r1",
+    "entry": "orcarouter-fn-rusting",
+    "test": 6,
+    "finish": "length",
+    "tokens": 32000.0,
+    "wall_s": 900.5,
+    "tok_s": 38.7,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0: cap hit (finish=length). The page is cut mid-call at line 917, inside a 696-line hand-unrolled spire (V(0, sy+0.25, 0, 0.2, 0.5, ...), with the module's </script> and </html> missing, so the module never parses and the canvas stays black behind the HUD; all 3 frames are identical and console-*.txt is empty. page-truncated.html is 45,339 B; 270 chars of prose before the code fence, 0 reasoning. Blank page scores 0 on every axis by the test6 blank rule. Frames rendered 2026-11-26, seeded, 1.5/5/10 s. Short one-shot benchmark, not an agent rate.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t6-orcarouter-fn-strata-1m-r1",
+    "entry": "orcarouter-fn-strata-1m",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 8374.0,
+    "wall_s": 116.0,
+    "tok_s": 121.8,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0/10 A0B0C0D0E0. RENDERED 2026-11-26, seeded (render seed 123456789), 1.5/5/10 s timed frames plus 5 fixed views; blank-page rule. Uncaught TypeError 'THREE.Reflector is not a constructor' at page.html line 219: the Reflector addon is never imported, so the module stops there, before animate() is even defined, and nothing is ever drawn. Every frame and all five fixed views show only the page's own HUD on a plain dark canvas behind it. 8,374 completion tokens, 0 reasoning chars, finish stop at 116.0 s. Short one-shot benchmark, not an agent rate.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t6-qwen38-27b-pi-r1",
+    "entry": "qwen38-27b-pi",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 8830.0,
+    "wall_s": 359.8,
+    "tok_s": 25.5,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0/10 A0B0C0D0E0. RENDERED 2026-11-26, seeded (Math.random seed 123456789), 1.5/5/10 s timed frames plus 5 fixed views; blank-page rule. Uncaught TypeError '(intermediate value).merge is not a function' at page.html line 157 (console line 158): new THREE.BufferGeometry().merge([...]) - BufferGeometry has no merge() - thrown on the first box() call from slab() at line 269, so the module dies before the platform, pagoda, torii, trees, petals and animate(), and before the loader-hide timeout at line 528. Every frame and all five fixed views show only the opaque #loader overlay (its ta glyph drawn as a tofu box, no CJK font in the container) on a dark radial gradient. 8,830 completion tokens, finish stop, 359.8 s wall, 14.0 s to first token. Short one-shot benchmark, not an agent rate.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t6-orcarouter-fn-rusting-r1-bigcap",
+    "entry": "orcarouter-fn-rusting",
+    "test": 6,
+    "finish": "length",
+    "tokens": 64000.0,
+    "wall_s": 1690.5,
+    "tok_s": 39.1,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0/10 A0B0C0D0E0. RENDERED 2026-11-26, seeded (Math.random seed 123456789), 1.5/5/10 s timed frames; blank-page rule. Cap hit at 64,000 tokens (finish=length) inside the same hand-unrolled spire loop that cut this model's 32,000-token run: page-truncated.html is 86,819 B in 1,707 lines, and 1,482 of those lines are the single line V(0, sy+0.25, 0, 0.2, 0.5, 0.2, gold/goldD) running from line 226 to EOF (77.8 KB, 90% of the file). The file ends mid-call at line 1707 with no </script> and no </html>, so the module fails to parse and nothing executes. All three frames are identical (29,825 B each) and console-*.txt is empty: only the static HUD over a black canvas, no sky, platform or pagoda. Everything after the spire was never emitted at all - the pagoda() call, trees, torii, pond, petals, camera loop and animate(); a scratch render with the last call closed and the tags added is still blank for that reason. 0 reasoning chars, 270 chars of prose before the code fence, 54.4 s to first token. Short one-shot benchmark, not an agent rate.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t6-orcarouter-fn-uncensored-b2-1m-r1",
+    "entry": "orcarouter-fn-uncensored-b2-1m",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 5546.0,
+    "wall_s": 147.3,
+    "tok_s": 67.2,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 1.0,
+     "D": 1.0,
+     "E": 2.0
+    },
+    "total": 8.0,
+    "note": "five red storeys tapering on a stepped granite platform with a gold spire of eight stacked blocks and a cone tip, three cherry trees, a red torii and four lanterns; C1 because each roof is only six separated gold tiles at the eave line plus two side tips, with no raised corners, so the eaves are flat and open sky shows among the tiles; D1 because the pond is built at y -0.41 to -0.27, inside a 120x120 ground slab whose top is y 0, so it is buried and invisible (platform, trees, torii stay); B2 cubes throughout, the single cone finial tip is an ornament that does not carry the scene; E2 drifting petals, autoRotate with controls.update() in the loop, and cast shadows on the platform; no uncaught errors, only Clock and PCFSoftShadowMap deprecation warnings; the view probe framed wide (radius 57) because of the 120-unit ground slab, so A and D were taken from the timed frames. 15,133 B, 5,546 tokens at 67.2 tok/s, first token 64.7 s. Frames rendered 2026-11-26, seeded 123456789. Short one-shot benchmark, not an agent rate.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t6-inkling2-mini-q4kxl-mayaik2-c520-on-3090-r1",
+    "entry": "inkling2-mini-q4kxl-mayaik2-c520-on-3090",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 5081.0,
+    "wall_s": 44.9,
+    "tok_s": 181.4,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 10.0,
+    "note": "five tapering storeys, each a continuous dark roof slab with a second inset slab and four raised corner blocks, a gold and red spire with rings, the tiers resting on each other with no sky gap in any view; stepped granite platform, three cherry trees, a raised blue pond with lily pads, red torii over a stepping-stone path and four lanterns (D2); cubes throughout (B2); camera position recomputed from elapsed time every frame, 26 falling petals and cast shadows on the ground (E2); no uncaught errors, only deprecation warnings; the timed frames barely differ because virtual time hardly advances, so the orbit was graded from the source. 10,240 B, 5,081 tokens at 181.4 tok/s, first token 16.8 s. Frames rendered 2026-11-26, seeded 123456789. Short one-shot benchmark, not an agent rate.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t6-inkling2-mini-abliterated-mix16g-3090-r1",
+    "entry": "inkling2-mini-abliterated-mix16g-3090",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 9489.0,
+    "wall_s": 178.9,
+    "tok_s": 55.8,
+    "points": {
+     "A": 1.0,
+     "B": 2.0,
+     "C": 1.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 8.0,
+    "note": "draws, but one visible defect docks A: the torii's right post (x -5.32..-4.88) stands inside the platform footprint, so its lower 1.2 units are swallowed by the middle stone slab and the gate reads as planted in the stone, and the pond's near edge is cut off by the platform's lowest slab. B2: every block is a box in one InstancedMesh, grass tufts, petals and finial included. C1: five storeys with raised corner blocks as upturned eaves and a gold-tipped spire, but the source leaves every wall 0.28 above the roof beneath it (body 1.35 + eave 0.32 against a 1.95 storey pitch) and the mast 0.55 above the top roof, so no storey rests on the one below; the eave overhang hides all of it in the eight views and a background-only diagnostic render (diag/gap-check.html, sky swapped to magenta) shows no sky through the slits, so C is graded from the source as the C rule directs. D2: three-tier stepped stone platform, two cherry trees, a blue pond ringed with stone blocks, and the red torii. E2: camera position recomputed from clock.getDelta() every frame (angle += dt*0.12, radius 26), 26 falling petals, shadow map on with a valid 48-unit frustum and cast shadows visible on the grass. No uncaught errors, only the Clock and PCFSoftShadowMap deprecation warnings. 7,280 B page, 9,489 tokens of 32,000 at 55.8 tok/s, first token 8.8 s, wall 178.9 s, 426 chars of prose around the code fence. Frames rendered 2026-11-26, seeded 123456789 (Math.random), at 1.5/5/10 s virtual plus the five fixed views. Short one-shot benchmark, not an agent rate.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t6-lfm3-1.7b-q8-3090-r1",
+    "entry": "lfm3-1.7b-q8-3090",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 2120.0,
+    "wall_s": 10.1,
+    "tok_s": 273.6,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "blank page, so 0 on every point by the blank-page rule. The module throws on page.html line 51 (console reports line 53 in the rendered copy): Uncaught TypeError: Cannot read properties of undefined (reading 'color'), from groundMat.diffuse.color.set(0x8b5e3c) - MeshStandardMaterial has no .diffuse. Only the renderer, the 30x30 ground plane and the platform mesh exist before that line; trees, pond, torii, pagoda, petals and animate() all come after it and never run. All three timed frames (1.5/5/10 s) and all five fixed views are a single colour, #1a1a2e, the body CSS background: the canvas is never drawn. The rest of the file would have failed anyway: THREE.TriangleGeometry does not exist in r186 (undefined constructor at line 123), `petals` is declared inside the build loop and read outside it (line 189), scene.enableShadows is not a three.js API, and the ground and pond are plain 30x30 and 20x20 planes rather than boxes. 2,120 tokens of 32,000, finish stop, 273.6 tok/s, first token 2.4 s, wall 10.1 s, 11 chars of prose outside the HTML, 0 reasoning chars. Frames rendered 2026-11-26, seeded 123456789 (Math.random), at 1.5/5/10 s virtual plus the five fixed views. Short one-shot benchmark, not an agent rate.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t6-inkling2-mini-q4kxl-v1181-352k-3090-r1",
+    "entry": "inkling2-mini-q4kxl-v1181-352k-3090",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 6563.0,
+    "wall_s": 59.3,
+    "tok_s": 120.5,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 1.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 9.0,
+    "note": "A2 draws cleanly: no uncaught errors, only the THREE.Clock and PCFSoftShadowMap deprecation warnings, no z-fighting stripes. B2 every body is a BoxGeometry box, grass tufts, petals and lily pads included. C1 five tapering storeys with raised gold-tipped corner blocks as upturned eaves and a gold finial above; the source seats no storey on the one below: each storey pitch is wall + 0.62 while its roof slab tops out at wall + 0.53, so all four interstorey gaps measure 0.09, the tan under-slab sits 0.01 above the wall top and 0.04 below the roof slab, and the drum under the spire floats 0.065 above the top roof (drum bottom 9.225 against roof top 9.16, pagoda-local). The 1.55x roof overhang against the 0.62x body of the storey above hides every one of them: all eight views read as roofs meeting walls and a zoomed front view shows no sky through any slit, so C is graded from the source as the C rule directs. D2 stepped three-slab stone platform, three cherry trees, a stone-rimmed pond with lily pads and a rock, and the red torii standing on the grass. E2 camera position recomputed each frame from clock.getElapsedTime() (angle = t*0.12, radius 17, height 8.5 + sway), and 51% of pixels differ between the 1.5 s and 10 s frames; 40 falling petals with a respawn at the tree canopies; shadow map on the sun with cast shadows across the grass. The orbit camera's own framing crops the spire tip (top at 12.33, camera at 8.5 looking at 3.4); the fixed views show it whole. 13,001 B page, 6,563 tokens of 32,000 at 120.5 tok/s, first token 4.8 s, wall 59.3 s, no prose outside the page. Frames rendered 2026-11-26, seeded 123456789 (Math.random), at 1.5/5/10 s virtual plus the five fixed views. Short one-shot benchmark, not an agent rate.",
+    "frames": [],
+    "live": null
    }
   ],
   "agent-orrery": [
@@ -29250,7 +29510,7 @@
   "models": 157,
   "runs": 410,
   "test3": 87,
-  "oneshots": 401,
+  "oneshots": 414,
   "frames": 472,
   "pass": 306,
   "live": 155
