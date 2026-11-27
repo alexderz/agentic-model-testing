@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
  "generated": "2026-11-25 07:59 CST",
- "built": "2026-11-27 07:01 CST",
+ "built": "2026-11-27 15:01 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -23983,6 +23983,146 @@
     "note": "5/10 A2B1C1D0E1. RENDERED 2026-11-26 with tools/render_svg.sh at 1.5/5/10 s (deterministic SMIL, no RNG; render-seed.txt says so). A2: parses and the three frames draw cleanly - a 3,626 B brass-on-black plate with a sun and four planets on solid orbit rings. B1: the four orbit arms, the planets on them and a dashed base ring all turn, and each planet's shade band pulses, but no gear turns and the planets never spin; orbits and planets move, the train does not. C1: periods 8/20/34/55 s for Mercury-Mars are in the right order but far off - with Earth=12 s they should be 4.8/7.7/12/22.6, so Mercury is 67 % slow and Venus, Earth and Mars 2.6x, 2.8x and 2.4x slow. D0: the only 'gear' is one dashed circle (stroke-dasharray 14 10, r 150) turning under the sun; there is no toothed wheel, no pinion and nothing meshes, so the reply's claim of 'interleaved teeth' is not in the file. E1: each planet carries a dark rect anchored on its sun-facing edge (x 96-124 against a 98-122 body) whose width pulses 4-28, so the shaded side sits toward the sun and never sweeps a turning surface; the radial gradient beneath is the only outward shading. Only 4 of the 8 planets were drawn. Reply carries 1,541 chars of prose around the SVG. Short one-shot benchmark, not an agent rate.",
     "frames": [],
     "live": null
+   },
+   {
+    "case": "t5-standard-3090-r1",
+    "entry": "standard-3090",
+    "test": 5,
+    "finish": "length",
+    "tokens": 32000.0,
+    "wall_s": 657.9,
+    "tok_s": 49.5,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0/10 A0B0C0D0E0. NOTHING TO SCORE: reply.txt is empty (0 B) and no orrery.svg was written - the run spent its entire 32,000-token reply cap inside counted reasoning (finish_reason length, 104,402 chars of reasoning, meta static.svg_found=false), cut mid-plan while still laying out the gear panel; its only <svg> mention is a skeleton sketch inside the reasoning, not an artifact. The no-think flag was requested (meta thinking 'off (chat_template_kwargs)') yet the model reasoned anyway, so this is a capped-under-recorded-conditions zero, not an uncapped inability. Files present: meta.json, reasoning.txt, reply.txt (0 B). A0 no SVG; B to E 0 because nothing is drawn. 32,000 tokens at 49.5 tok/s, first token 11.7 s, wall 657.9 s. Short one-shot benchmark, not an agent rate; no frames rendered (nothing to render, so no render regime applies).",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t5-standard-v100-r1",
+    "entry": "standard-v100",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 30291.0,
+    "wall_s": 1060.4,
+    "tok_s": 28.8,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 1.0,
+     "E": 1.0
+    },
+    "total": 8.0,
+    "note": "A2B2C2D1E1. RENDERED 2026-11-27 with tools/render_svg.sh at 1.5/5/10 s (render-seed.txt: deterministic, time-driven SMIL, no RNG). A2: parses (389 lines, 21,763 B) and all three frames draw cleanly - brass plaque, eight engraved orbit rings, sun, eight planets with bands, rings and moons, 110-tooth frame, two corner wheels, legend; nothing clipped. B2: planets, frame ring, sun corona and both corner wheels all turn; Mercury laps in 8.7 s so its bearing differs in every frame while Neptune barely moves - orbits, wheels and planets all move. C2: Earth 36 s and the other seven 8.7/22.1/67.7/427/1060/3024/5928 s, every ratio within 0.4 % of the sidereal period (Neptune 164.67 against 164.79); the Earth year is 36 s, three times the reference's 12 s clock, which keeps the ratios but not the reference's speed. D1: two toothed wheels centred at the sum of the pitch radii (517.5 px against 470+48) and driven 9.8x faster counter to the 200 s frame ring (20.4 s, 17 s), so direction and speed are right for the radii, but the tooth pitch is 3x too fine - 110 teeth on the ring against 34 on a wheel 9.8x smaller, 26.9 px of arc against 8.4 - so the teeth clash over one another instead of interleaving, and no wheel drives an orbit: the eight planets are independent SMIL groups and the 48 s sun ring mates with nothing. E1: each night half is a rect inside that planet's spinning group, so it turns with the surface rather than staying away from the sun; sampling Jupiter across the three frames puts its darkest sector at 300, 60 and 150 deg, the last toward the sun, and the sunward highlight is a separate static gradient. Not scored: 23,302 chars of reply, 1,551 of them prose outside the SVG; 59,073 chars of reasoning although meta records thinking off (chat_template_kwargs). 30,291 tokens of 32,000 at 28.8 tok/s, first token 7.8 s, wall 1,060.4 s. Short one-shot benchmark, not an agent rate.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t5-standard-3090-r1-bigcap",
+    "entry": "standard-3090",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 59743.0,
+    "wall_s": 1293.3,
+    "tok_s": 46.3,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0/10 A0B0C0D0E0. The reply is an HTML page, not a standalone SVG: 21,647 chars, 21,362 of them prose and page markup outside the artefact, and the only bare <svg> in it is a 285 B empty skeleton (empty <defs> and <g id=\"scene\">; its planet, gear and arm groups are filled at runtime by the page's script). The runner cut that skeleton, so orrery.svg parses but draws nothing: all three frames are the same blank grey field showing only the SVG's own <title>/<desc> text, and it carries 0 animateTransform, 0 animate and 0 script. A0 by what is drawn, so 0 on every point; the JS page behind it is a prompt-following failure, not a rendering one. 59,743 tokens of the 64,000 cap at 46.3 tok/s, first token 3.7 s, wall 1,293.3 s, finish stop, plus 148,892 chars of reasoning with thinking recorded off. Frames rendered 2026-11-27 with tools/render_svg.sh (SVG: deterministic, no RNG). Short one-shot benchmark, not an agent rate.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t5-strata-inkling-v100-0169-r1",
+    "entry": "strata-inkling-v100-0169",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 1371.0,
+    "wall_s": 37.8,
+    "tok_s": 64.7,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "0/10 A0B0C0D0E0. The artefact does not parse: meta records svg_found true, parses false, 'no element found: line 86, column 6', and the renderer's banner reads 'error on line 86 at column 7: Premature end of data in tag animateTransform'. The 2,528 B file is the reply's own prose: it opens with a markdown bullet ('<svg>' with '<animateTransform>') and runs into a plan and an example skeleton, cut mid animateTransform, with 1,622 chars of prose outside the SVG it claims. Below the error banner Chromium draws only the fragment up to the break - a sun disc and one blue planet on an orbit ring, no gears, no motion - so the page is an XML failure rather than an orrery. A0, and 0 on every point by the blank-page rule. 1,371 tokens of 32,000 at 64.7 tok/s, first token 16.6 s, wall 37.8 s, finish stop, 0 reasoning chars. Frames rendered 2026-11-27 with tools/render_svg.sh. Short one-shot benchmark, not an agent rate.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t5-inkling2-mini-q4kxl-v1183-262k-3090-r1",
+    "entry": "inkling2-mini-q4kxl-v1183-262k-3090",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 2011.0,
+    "wall_s": 16.6,
+    "tok_s": 182.7,
+    "points": {
+     "A": 0.0,
+     "B": 0.0,
+     "C": 0.0,
+     "D": 0.0,
+     "E": 0.0
+    },
+    "total": 0.0,
+    "note": "unparseable SVG: xmllint and Chromium both stop at line 47 (</animateTransform> closes the <g> opened at line 44), so the 1500/5000/10000 ms frames show the browser parse-error page with only the first planet drawn; source has 3 planets at arbitrary 10/22/40 s, two dasharray rings that do not mesh with any pinion, and a wedge per planet not locked away from the sun; frames rendered by tools/render_svg.sh, svg regime (deterministic, time-driven SMIL); prose answer, thinking off. short one-shot benchmark, not an agent rate",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t5-inkling2-mini-q4kxl-v1183-262k-p2-3090-r1",
+    "entry": "inkling2-mini-q4kxl-v1183-262k-p2-3090",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 3167.0,
+    "wall_s": 34.3,
+    "tok_s": 110.6,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 1.0,
+     "D": 1.0,
+     "E": 1.0
+    },
+    "total": 7.0,
+    "note": "7/10 A2B2C1D1E1. Rendered 2026-11-27 with tools/render_svg.sh, SMIL regime (deterministic, no RNG). A2 parses and draws without visible defects - dark field, sun glow, four dashed orbits, four shaded planets - though only four of the eight planets exist (B, C and D carry that). B2 the 1.5/5/10 s frames differ by 2.3% of pixels: planets orbit, the sun radius pulses on a 5 s cycle and the background gear turns. C1 four planets on radii 95/145/205/265 with periods 6/9.5/12/17 s, correctly ordered outward but far off the real ratios against a 12 s Earth year (true sidereal: Mercury 2.9 s, Venus 7.4 s, Mars 22.6 s), so Mercury runs 2.1x slow and Mars 0.75x - well outside 5%. D1 one toothed wheel (16 rects on a 28 s rotation) sits behind the sun with only its tooth ring showing; it meshes nothing and drives no orbit. E1 each planet's shade overlay rotates a full turn on a 2.2-3.4 s cycle, so it sweeps the surface but does not stay away from the sun - at 1.5 s the outermost planet's dark half faces it. 6,034 B SVG, 3,167 tokens of 32,000 at 110.6 tok/s, first token 5.7 s, wall 34.3 s, 1,359 chars of prose outside the SVG, thinking off. Short one-shot benchmark, not an agent rate.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t5-inkling2-mini-q4kxl-v1175-262k-p2-v100-r1",
+    "entry": "inkling2-mini-q4kxl-v1175-262k-p2-v100",
+    "test": 5,
+    "finish": "stop",
+    "tokens": 2156.0,
+    "wall_s": 37.5,
+    "tok_s": 74.8,
+    "points": {
+     "A": 1.0,
+     "B": 1.0,
+     "C": 0.0,
+     "D": 1.0,
+     "E": 0.0
+    },
+    "total": 3.0,
+    "note": "3/10 A1B1C0D1E0. Rendered 2026-11-27 with tools/render_svg.sh, CSS-keyframe regime (deterministic, no RNG). A1: the page parses and draws the sun, one central geared hub and two side gears, but none of the three planets is on the canvas at 1.5/5/10 s - the non-background extent (73..926 px) is exactly the outer orbit ring, and no planet-coloured pixels exist anywhere. A diagnostic copy under diag/ (never scored) shows the cause: with the planet groups' .spinDayNight CSS rotation removed all three planets render on their rings, so the transform-origin: center rotation on the nested translated group displaces them out of the 800x800 view box. B1 something moves - the gears turn (frames differ by 3.5%) - but no planet and no orbit is ever seen. C0 three planets on radii 270/200/130 carry 10/14/20 s periods, so the outermost is fastest and the inner ones slowest: the order is inverted, not merely the ratios off. D1 three geared wheels turn (8 s and 5 s reverse) but no pair meshes (bodies 240 and 92 px apart against 78-101 px of combined radius, at most dashed rims overlapping) and none drives an orbit. E0 no planet is drawn in any frame, so no day/night is visible at all; in the source the shade is a half-disc that spins with the planet rather than tracking the sun. 4,329 B SVG, 2,156 tokens of 32,000 at 74.8 tok/s, first token 8.7 s, wall 37.5 s, 836 chars of prose outside the SVG, thinking off. Short one-shot benchmark, not an agent rate.",
+    "frames": [],
+    "live": null
    }
   ],
   "pagoda": [
@@ -27737,6 +27877,86 @@
     "note": "A2 draws cleanly: no uncaught errors, only the THREE.Clock and PCFSoftShadowMap deprecation warnings, no z-fighting stripes. B2 every body is a BoxGeometry box, grass tufts, petals and lily pads included. C1 five tapering storeys with raised gold-tipped corner blocks as upturned eaves and a gold finial above; the source seats no storey on the one below: each storey pitch is wall + 0.62 while its roof slab tops out at wall + 0.53, so all four interstorey gaps measure 0.09, the tan under-slab sits 0.01 above the wall top and 0.04 below the roof slab, and the drum under the spire floats 0.065 above the top roof (drum bottom 9.225 against roof top 9.16, pagoda-local). The 1.55x roof overhang against the 0.62x body of the storey above hides every one of them: all eight views read as roofs meeting walls and a zoomed front view shows no sky through any slit, so C is graded from the source as the C rule directs. D2 stepped three-slab stone platform, three cherry trees, a stone-rimmed pond with lily pads and a rock, and the red torii standing on the grass. E2 camera position recomputed each frame from clock.getElapsedTime() (angle = t*0.12, radius 17, height 8.5 + sway), and 51% of pixels differ between the 1.5 s and 10 s frames; 40 falling petals with a respawn at the tree canopies; shadow map on the sun with cast shadows across the grass. The orbit camera's own framing crops the spire tip (top at 12.33, camera at 8.5 looking at 3.4); the fixed views show it whole. 13,001 B page, 6,563 tokens of 32,000 at 120.5 tok/s, first token 4.8 s, wall 59.3 s, no prose outside the page. Frames rendered 2026-11-26, seeded 123456789 (Math.random), at 1.5/5/10 s virtual plus the five fixed views. Short one-shot benchmark, not an agent rate.",
     "frames": [],
     "live": null
+   },
+   {
+    "case": "t6-standard-3090-r1",
+    "entry": "standard-3090",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 17196.0,
+    "wall_s": 334.3,
+    "tok_s": 52.1,
+    "points": {
+     "A": 1.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 9.0,
+    "note": "A1 draws and animates with no uncaught errors (only the THREE.Clock and PCFSoftShadowMap deprecation warnings; PCFSoftShadowMap was removed in r186 and falls back to PCF), but one visible defect docks A: the corner posts are coplanar with the wall faces - post centres at (w-0.6)/2-0.35 with width 0.7 put their outer face exactly on the wall face - so every storey z-fights and the beige walls show jagged vertical stripes beside the posts in the front, back and three-quarter views. B2 every body is a BoxGeometry box, corner posts, eaves, petal boxes and lily pads included. C2 five storeys 3.1 tall on a 0.55 floor slab with raised corner blocks (1.55 cubes centred 0.65 above the roof slab so the corners visibly rise above the eave line) as upturned eaves, a gold three-tier finial and red-tipped mast above; storeys rest on one another - each storey pitch is 4.80 while its eave stack tops out at 4.90, so the next floor slab starts 0.10 inside the roof below and no sky shows through. D2 a two-slab stone platform with corner blocks and front steps, four cherry trees, a stone-rimmed pond with lily pads and reeds, and a red torii with raised kasagi ends, all present and grounded in the fixed views. E2 camera orbit in the source (autoRotate 0.8 with damping and controls.update() every frame), 46 falling petals integrated from clock.getDelta() with respawn and sway, drifting clouds, and a shadow map on the sun (2048, valid 92-unit frustum) with cast shadows on the grass; the 1.5/5/10 s frames differ by 0.5-1.5 percent of pixels. 13,375 B page, 17,196 tokens of 32,000 at 52.1 tok/s, first token 4.0 s, wall 334.3 s, 998 chars of prose outside the HTML. 23,387 chars of reasoning despite meta recording thinking off (chat_template_kwargs) - the flag is a request, not an observation. Frames rendered 2026-11-27, seeded 123456789 (Math.random), at 1.5/5/10 s virtual plus the five fixed views; the high view is washed out by the page's own fog (75-165), which is scene design, not a defect. Short one-shot benchmark, not an agent rate.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t6-standard-v100-r1",
+    "entry": "standard-v100",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 25577.0,
+    "wall_s": 890.2,
+    "tok_s": 29.0,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 10.0,
+    "note": "10/10 A2B2C2D2E2. RENDERED 2026-11-27, timed frames seeded (render seed 123456789) at 1.5/5/10 s, plus the five fixed views (render_views.sh, unseeded). A2 draws cleanly: no uncaught errors, only the THREE.Clock and PCFSoftShadowMap deprecation warnings; the corner posts are inset 0.125 behind the wall face so there are no coplanar faces, and a tight crop shows no z-fighting. B2 every element is a BoxGeometry box, petals and clouds included. C2 five storeys on a 2.47 pitch (1.95 wall over a 0.52 eave slab), each with four raised corner cubes standing 0.3 above the eave line, a three-slab stone platform, and a gold spire seating on the top roof (the mast bottom sits 0.03 above the roof top); storeys meet their roofs and each other with no sky gaps. D2 stepped stone platform with three front steps, four cherry trees, a stone-rimmed pond with lily pad, red torii with raised kasagi ends, and two lanterns. E2 orbit in the source (angle += dt*0.13 at radius 37), 26 falling petals with respawn, drifting clouds, pond sparkle shimmer, and a shadow map on the sun with cast shadows. 12,736 B page, 25,577 tokens of 32,000 at 29.0 tok/s, first token 8.0 s, wall 890.2 s, 1,089 chars of prose outside the HTML, 44,116 chars of reasoning against the meta's thinking-off flag (a request, not an observation). Short one-shot benchmark, not an agent rate.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t6-strata-inkling-v100-0169-r1",
+    "entry": "strata-inkling-v100-0169",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 7886.0,
+    "wall_s": 130.8,
+    "tok_s": 70.9,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 10.0,
+    "note": "10/10 A2B2C2D2E2. RENDERED 2026-11-27, timed frames seeded (render seed 123456789) at 1.5/5/10 s, plus the five fixed views (render_views.sh, unseeded). A2 draws cleanly: no uncaught errors, only the THREE.Clock and PCFSoftShadowMap deprecation warnings, and no detached part, sky gap or stripe in the frames or the fixed views. B2 every element is a box() cuboid: bodies, eaves, corner tips, windows, pond, stones, lanterns, torii. C2 five storeys on the stone platform at a 0.55 pitch - each body topped by a dark trim band, an eave slab 0.42 thick whose overhang trim sits below it, and four raised corner tips (a 0.62 cube standing 0.25 above the roof surface with a second 0.4 cube above that), the next storey starting 0.02 above the roof top, so nothing floats and no sky shows between storeys; the gold finial's first block seats on the top roof. D2 three-slab stone platform, three cherry trees, a stone-rimmed pond with lily pads and four banks of stones, and a red torii with stepped kasagi ends and base stones, visible at the back-right in view-back. E2 orbit in the source (angle = t*0.12 at radius 21, camera.lookAt every frame), 90 falling petals with sway, spin and respawn, water opacity and height shimmer, and a shadow map on the sun (2048, 50-unit frustum) with cast shadows. 16,121 B page, 7,886 tokens of 32,000 at 70.9 tok/s, first token 19.6 s, wall 130.8 s, no prose outside the page, 0 reasoning chars. Short one-shot benchmark, not an agent rate.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t6-inkling2-mini-q4kxl-v1183-262k-3090-r1",
+    "entry": "inkling2-mini-q4kxl-v1183-262k-3090",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 6036.0,
+    "wall_s": 38.2,
+    "tok_s": 185.7,
+    "points": {
+     "A": 2.0,
+     "B": 2.0,
+     "C": 2.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 10.0,
+    "note": "10/10 A2B2C2D2E2. Rendered 2026-11-27 with tools/render_html.sh, timed frames seeded (Math.random seed 123456789) at 1.5/5/10 s, plus the five fixed views from tools/render_views.sh (unseeded). A2 draws cleanly: no uncaught errors, only the THREE.Clock and PCFSoftShadowMap deprecation warnings, and no detached part, sky gap, stripe or z-fighting in any frame or fixed view. B2 every element is a BoxGeometry cube, petals and lily pads included. C2 five storeys (heights 1.7/1.5/1.35/1.25/1.15 over widths 5.4 down to 2.5), each with a 0.35 eave slab and four raised corner blocks plus tips standing 0.45-0.62 above the eave line, and a gold-tipped mast with red finial on the top roof; each storey body starts 0.29 above the roof block below and the front and high views show that recess as under-eave shadow, not sky. D2 three-slab stone platform, three cherry trees, stone-rimmed pond with lily pads and lotus, red torii with crest and base stones, all present and grounded in the fixed views. E2 orbit graded from the source (autoRotate 0.9 with damping and controls.update() every frame), 60 falling petals integrated from clock.getDelta() with sway, spin and respawn, and a 2048 shadow map on the sun with cast shadows visible on the grass and platform. 11,685 B page, 6,036 tokens of 32,000 at 185.7 tok/s, first token 5.7 s, wall 38.2 s, no prose outside the page, 0 reasoning chars. Short one-shot benchmark, not an agent rate.",
+    "frames": [],
+    "live": null
    }
   ],
   "agent-orrery": [
@@ -29510,7 +29730,7 @@
   "models": 157,
   "runs": 410,
   "test3": 87,
-  "oneshots": 414,
+  "oneshots": 425,
   "frames": 472,
   "pass": 306,
   "live": 155
