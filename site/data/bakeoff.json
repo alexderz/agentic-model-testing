@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
  "generated": "2026-11-25 07:59 CST",
- "built": "2026-11-26 23:00 CST",
+ "built": "2026-11-27 07:01 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -26518,11 +26518,11 @@
      "A": 1.0,
      "B": 2.0,
      "C": 1.0,
-     "D": 2.0,
+     "D": 1.0,
      "E": 1.0
     },
     "total": 6.0,
-    "note": "repair1: draft 0/10 [graded from an unseeded render: frames made before 2026-11-26 seeding, and a same-instant double render of such a page differs by 0.3 % when its animation is time-deterministic and 14-18 % when it draws on Math.random, so an A verdict from one draw is a sample]",
+    "note": "6: A1B2C1D1E1. Repair1 of the b3-512k pagoda, graded 18 November and re-read 2026-11-26. The axes now sum to the published total, and the total was the part that was right. D1 (corrected from D2): the ground loop lays an opaque cube at y=-0.7, spanning -1.2..-0.2, for every cell out to radius 17 with no pond exclusion, while the water plane sits at y=-0.72 inside that layer and its dark bed at -0.78 below it - the pond is buried, and all eight seeded images hold zero water-coloured pixels. Platform, trees and torii read, three of four, so D=1, not 0: the grader's alternative reading (that the total was wrong and D should stay 2) is not supported by the page. A1 the storeys telescope at the base and the spire floats above the roof; C1 for the same structural defect; B2 all voxel. E1: orbit, petals and shadows are dt-based and the orbit does not read in the capture. Frames are unseeded (made before 2026-11-26 seeding) and a same-instant double render of such a page differs by 0.3 % when its animation is time-deterministic and 14-18 % when it draws on Math.random, so the A verdict is a sample of one draw.",
     "frames": [
      "frames/pagoda/t6s215-3x512-p2-r1-orcarouter-fn-uncensored-b3-512k-fix1/frame-1500.webp",
      "frames/pagoda/t6s215-3x512-p2-r1-orcarouter-fn-uncensored-b3-512k-fix1/frame-5000.webp",
@@ -26990,7 +26990,7 @@
      "E": 2.0
     },
     "total": 10.0,
-    "note": "10: 11.5 KB, 21,021 tok. Five storeys with two-slab eaves, raised corner blocks, spire seated on the top roof, all four props, dt orbit + falling petals + shadows. Flaw noted but not scored: the pond basin runs into the platform (water buried for x -4.9..-2.9; the visible part still reads as a pond). 3 timed frames and 5 fixed views now exist in frames/ and views/, from an unseeded render (made before the 2026-11-26 seeding); the frames support A, B and D. E is from the source, not the frames: the loop sets the camera position from an orbit radius (camera.position.set(Math.cos(angle) * ORBIT_R, ORBIT_H, Math.sin(angle) * ORBIT_R), line 295) over a clock.getDelta() step (line 290), and a delta-integrated orbit is not something the virtual-time capture can evidence. The page draws on Math.random, so a same-instant double render differs by 14-18 % and an A verdict from one draw is a sample. Short one-shot benchmark, not an agent rate. [entry from meta.model: inkling2-mini-q4kxl-3090]",
+    "note": "10: A2B2C2D2E2. 11.5 KB, 21,021 tok. Five storeys with two-slab eaves, raised corner blocks, spire seated on the top roof; platform, cherry trees, pond and torii all present; every body a cube; dt-driven orbit, falling petals and cast shadows. A2: the corner posts are 0.24-wide boxes centred at w/2-0.12, so their outer faces are exactly coplanar with the storey walls - and exactly coplanar is not the same as coincident-and-fighting. With GL_LESS and no polygon offset an exact depth tie resolves to the first-drawn fragment, so the face draws clean; striping needs depths that differ by a hair and interleave. The seeded 1280x800 views show no stripe on the posts. An earlier reading of A1 (2026-11-26) inferred the artefact from the coplanarity alone; that inference was a rule applied where its premise did not hold and was withdrawn on the frames, 2026-11-27. B2 all voxel; C2 five storeys, upturned eaves, spire; D2 all four props, with the pond basin running into the platform (water buried for x -4.9..-2.9) noted but not scored as its visible part still reads as a pond; E2 from the source, not the frames - the loop sets the camera from an orbit radius over a clock.getDelta step, and a delta-integrated orbit is invisible to a capture. Frames and views are seeded (seed 123456789, render-seed.txt); the earlier unseeded set is kept in frames-unseeded/. One-shot prompt, not an agent-run rate.",
     "frames": [],
     "live": null
    },
@@ -27010,7 +27010,7 @@
      "E": 0.0
     },
     "total": 0.0,
-    "note": "0: cap hit (finish=length). page-truncated.html is 20,113 B cut inside roof() before the scene is built or the loop starts, so the page is blank behind its loader (A=0, all 0 by the test6 blank rule). The 32,000 tokens split: reasoning.txt 75,795 chars plus a 20,148-char reply. One-shot prompt, not an agent-run rate.",
+    "note": "0: cap hit (finish=length). page-truncated.html is 21,943 B cut inside roof() before the scene is built or the loop starts, so the page is blank behind its loader (A=0, all 0 by the test6 blank rule). The 32,000 tokens split: reasoning.txt 75,795 chars plus a 20,148-char reply. One-shot prompt, not an agent-run rate.",
     "frames": [],
     "live": null
    },
@@ -27023,14 +27023,14 @@
     "wall_s": 93.7,
     "tok_s": 106.9,
     "points": {
-     "A": 2.0,
+     "A": 1.0,
      "B": 2.0,
      "C": 1.0,
-     "D": 2.0,
+     "D": 1.0,
      "E": 1.0
     },
-    "total": 8.0,
-    "note": "8: 16.5 KB, 6,680 tok. C=1: the spire is displaced to x=-2.24 and overhangs the top roof edge (spans -3.24..-0.24 against a roof of -2..2), and every eave sits on a half-voxel grid. E=1: autoRotateSpeed is set but autoRotate is never enabled and the camera never moves, so no orbit (petals and shadows are there). All four props present. 3 timed frames and 5 fixed views now exist in frames/ and views/, from an unseeded render (made before the 2026-11-26 seeding); they agree with A, B, D and E. The page draws on Math.random, so a same-instant double render differs by 14-18 % and an A verdict from one draw is a sample. Short one-shot benchmark, not an agent rate. [entry from meta.model: qwen3.8-flash-next-agent]",
+    "total": 6.0,
+    "note": "6: A1B2C1D1E1. 16.5 KB, 6,680 tok. A1 (corrected from A2): the torii beams are called as addVoxel(g,0,4.9,z,9,1,P.torii) against addVoxel(parent,x,y,z,size,color,o), so size becomes 9 and the colour becomes 1 - three nested near-black cubes stand where the gate should be, visible in view-back. D1 (corrected from D2): buildPond sets its water at y -0.15..-0.3 inside grass cubes at y ~0, so the pond is buried and invisible in every view, and the torii reads as a block rather than a gate; platform and trees are the only two of four that read. B2 all voxel. C1: the spire is displaced to x=-2.24 and overhangs the top roof edge, and every eave sits on a half-voxel grid. E1: autoRotateSpeed is set but autoRotate is never enabled, so there is no orbit; petals and shadows are present. Frames and views seeded (seed 123456789); the earlier unseeded set is in frames-unseeded/. Short one-shot benchmark, not an agent rate.",
     "frames": [],
     "live": null
    },
@@ -27046,11 +27046,11 @@
      "A": 1.0,
      "B": 2.0,
      "C": 1.0,
-     "D": 1.0,
+     "D": 0.0,
      "E": 2.0
     },
-    "total": 7.0,
-    "note": "7: 15.9 KB instanced cubes. addColumn() takes absolute y and the tier offset is never applied, so the five storeys telescope at the base and the spire floats ~18 voxels above the roof (A=1, C=1). The pond is built around the origin (x*x+z*z instead of cx/cz) and is buried under the platform, and both torii posts land at the origin with their beams unsupported at z=+/-8 (D=1, only platform and trees read). Orbit, petals and shadows all dt-based (E=2). 3 timed frames and 5 fixed views now exist in frames/ and views/, from an unseeded render (made before the 2026-11-26 seeding); they agree with A, B, D and E. The render reads worse than the letters on one axis only, C: the telescoped base is visible in the views, and the source reading (C=1) still stands. The page draws on Math.random, so a same-instant double render differs by 14-18 % and an A verdict from one draw is a sample. Short one-shot benchmark, not an agent rate.",
+    "total": 6.0,
+    "note": "6: A1B2C1D0E2. 15.9 KB instanced cubes. addColumn() takes absolute y and the tier offset is never applied, so the five storeys telescope at the base and the spire floats ~18 voxels above the roof - A1, C1. D0 (corrected from D1): buildTree(bx,bz,scale) never uses bx or bz - every canopy cell is placed at x,z within +/-3 of the origin - so all three trees stand inside the tower under the eave rings and no canopy appears in any of the eight views; the pond is built around the origin and buried under the platform; both torii posts land at the origin with unsupported beams. Platform alone, so D=0. B2 all voxel. E2 from the source: orbit, petals and shadows are all dt-based, and a delta-integrated orbit does not show in a capture. Frames and views seeded (seed 123456789); the earlier unseeded set is in frames-unseeded/. One-shot prompt, not an agent-run rate.",
     "frames": [],
     "live": null
    },
