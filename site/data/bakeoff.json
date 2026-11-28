@@ -1,7 +1,7 @@
 {
  "schema": "bakeoff-site/1",
  "generated": "2026-11-25 07:59 CST",
- "built": "2026-11-27 15:01 CST",
+ "built": "2026-11-27 23:01 CST",
  "title": "The Bake-off",
  "tagline": "Which open-weight models can do real agent work on one consumer GPU, how fast, and with what settings.",
  "links": {
@@ -27957,6 +27957,46 @@
     "note": "10/10 A2B2C2D2E2. Rendered 2026-11-27 with tools/render_html.sh, timed frames seeded (Math.random seed 123456789) at 1.5/5/10 s, plus the five fixed views from tools/render_views.sh (unseeded). A2 draws cleanly: no uncaught errors, only the THREE.Clock and PCFSoftShadowMap deprecation warnings, and no detached part, sky gap, stripe or z-fighting in any frame or fixed view. B2 every element is a BoxGeometry cube, petals and lily pads included. C2 five storeys (heights 1.7/1.5/1.35/1.25/1.15 over widths 5.4 down to 2.5), each with a 0.35 eave slab and four raised corner blocks plus tips standing 0.45-0.62 above the eave line, and a gold-tipped mast with red finial on the top roof; each storey body starts 0.29 above the roof block below and the front and high views show that recess as under-eave shadow, not sky. D2 three-slab stone platform, three cherry trees, stone-rimmed pond with lily pads and lotus, red torii with crest and base stones, all present and grounded in the fixed views. E2 orbit graded from the source (autoRotate 0.9 with damping and controls.update() every frame), 60 falling petals integrated from clock.getDelta() with sway, spin and respawn, and a 2048 shadow map on the sun with cast shadows visible on the grass and platform. 11,685 B page, 6,036 tokens of 32,000 at 185.7 tok/s, first token 5.7 s, wall 38.2 s, no prose outside the page, 0 reasoning chars. Short one-shot benchmark, not an agent rate.",
     "frames": [],
     "live": null
+   },
+   {
+    "case": "t6-inkling2-mini-q4kxl-v1175-262k-p2-v100-r1",
+    "entry": "inkling2-mini-q4kxl-v1175-262k-p2-v100",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 3918.0,
+    "wall_s": 61.4,
+    "tok_s": 74.7,
+    "points": {
+     "A": 2.0,
+     "B": 1.0,
+     "C": 1.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 8.0,
+    "note": "8/10 A2B1C1D2E2. Rendered 2026-11-27 with tools/render_html.sh, timed frames seeded (Math.random seed 123456789) at 1.5/5/10 s, plus the five fixed views from tools/render_views.sh (unseeded). A2 draws cleanly: no uncaught errors, only the THREE.Clock and PCFSoftShadowMap deprecation warnings, and no stripe, z-fighting or detached prop in any frame or fixed view. B1 the pagoda, platform, trees, torii, petals and ground are BoxGeometry, but the pond is a 24-segment CylinderGeometry disc (radius 4.2, page.html line 163), so the scene is partly cubes and partly other shapes under the suites/test6/README.md B rule (cylinders do not count as cubes), matching twin row t6-inkling2-mini-q4kxl-v1183-262k-p2-3090-r1. C1 five storeys with raised corner eave blocks 0.55 tall and a gold mast, plate and finial, but the parts do not rest on one another: each body starts 0.32 above the roof slab below and only the 0.55 corner blocks bridge that joint, at the corners; the spire mast stands 0.32 above the top roof with a pale background band under it in view-front (about 6 px). The four interstorey recesses read as shadow rather than sky in the fixed views, but the joint is open across the middle of each face in the source, so C is capped at 1 by the 2026-11-04 rule on storeys, roofs and spire resting on one another. D2 two-slab stone platform, three cherry trees, stone-fringed pond, red torii, all present and grounded in the fixed views. E2 orbit graded from the source (autoRotate 0.6 with damping and controls.update() in the loop), 45 falling petals with sway, spin and respawn, and a 2048 shadow map with cast shadows visible on the grass and platform. 8,133 B page, 3,918 tokens of 32,000 at 74.7 tok/s, first token 9.0 s, wall 61.4 s, no prose outside the page, 0 reasoning chars. Short one-shot benchmark, not an agent rate.",
+    "frames": [],
+    "live": null
+   },
+   {
+    "case": "t6-inkling2-mini-q4kxl-v1183-262k-p2-3090-r1",
+    "entry": "inkling2-mini-q4kxl-v1183-262k-p2-3090",
+    "test": 6,
+    "finish": "stop",
+    "tokens": 4406.0,
+    "wall_s": 49.8,
+    "tok_s": 110.1,
+    "points": {
+     "A": 2.0,
+     "B": 1.0,
+     "C": 1.0,
+     "D": 2.0,
+     "E": 2.0
+    },
+    "total": 8.0,
+    "note": "A2B1C1D2E2 = 8. Rendered 2026-11-27 with tools/render_html.sh, timed frames seeded (Math.random seed 123456789) at 1.5/5/10 s, plus the five fixed views from tools/render_views.sh (unseeded); the views' high camera frames the 70-unit ground and is washed out by the page's Fog(40,90), so nothing was judged from it. A2 draws cleanly: no uncaught errors, only the THREE.Clock and PCFSoftShadowMap deprecation warnings; no stripes, missing face or gap in the stack in any frame or view. B1 the pagoda, trees, torii, petals and ground are BoxGeometry, but the pond and its rim are 24-segment CylinderGeometry discs, so the scene is partly cubes and partly other shapes, the same B1 the t6unc1 row took for a plane ground and plane petals. C1 five storeys (bodies 7/5.8/4.7/3.7/2.8 wide) with each roof seated on its wall and the mast, plate and orb seated on the top roof, but every roof's four raised corner blocks sit at y+0.575 to y+1.125 over a top roof layer ending at y+0.225, so each corner floats 0.35 above its eave with sky underneath: the upturn is attempted and detached. D2 all four props present and visible: stepped stone platform, three cherry trees, round pond with lily pads, red torii. E2 from the source: OrbitControls autoRotate with controls.update() every frame (orbit read from the code; the frames barely move because they advance per frame), 50 petals falling on getDelta, and shadowMap with a 2048 castShadow sun. Short one-shot benchmark, not an agent rate.",
+    "frames": [],
+    "live": null
    }
   ],
   "agent-orrery": [
@@ -29730,7 +29770,7 @@
   "models": 157,
   "runs": 410,
   "test3": 87,
-  "oneshots": 425,
+  "oneshots": 427,
   "frames": 472,
   "pass": 306,
   "live": 155
