@@ -91,6 +91,7 @@ def oneshots(test, key):
         num = lambda x: float(x) if x not in ("", None) and re.fullmatch(r"-?[0-9.]+", x) else None
         rows.append({"case": case, "entry": r["entry"], "test": test, "finish": r.get("finish"),
                      "tokens": num(r.get("tokens")), "wall_s": num(r.get("wall_s")), "tok_s": num(r.get("tok_s")),
+                     "ttft_s": num(r.get("ttft_s")),
                      "points": {k: num(r.get(k)) for k in "ABCDE"}, "total": num(r.get("total")),
                      "note": r.get("note") or "", "frames": frames, "live": live})
     return rows
