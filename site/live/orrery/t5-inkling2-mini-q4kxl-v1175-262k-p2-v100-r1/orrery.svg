@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800">
+  <defs>
+    <radialGradient id="sun" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fff7c2"/>
+      <stop offset="60%" stop-color="#ffd24d"/>
+      <stop offset="100%" stop-color="#c98217"/>
+    </radialGradient>
+
+    <linearGradient id="brass" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#f4d58a"/>
+      <stop offset="50%" stop-color="#b5792a"/>
+      <stop offset="100%" stop-color="#6c4218"/>
+    </linearGradient>
+
+    <radialGradient id="planet1" cx="35%" cy="35%" r="70%">
+      <stop offset="0%" stop-color="#e8d6b0"/>
+      <stop offset="100%" stop-color="#6e5b33"/>
+    </radialGradient>
+
+    <radialGradient id="planet2" cx="35%" cy="35%" r="70%">
+      <stop offset="0%" stop-color="#bde3ff"/>
+      <stop offset="100%" stop-color="#235f86"/>
+    </radialGradient>
+
+    <radialGradient id="planet3" cx="35%" cy="35%" r="70%">
+      <stop offset="0%" stop-color="#ffd0c2"/>
+      <stop offset="100%" stop-color="#8d3323"/>
+    </radialGradient>
+  </defs>
+
+  <style>
+    .orbit { fill: none; stroke: rgba(220,190,120,.35); stroke-width: 2; stroke-dasharray: 4 8; }
+    .gear { transform-origin: center; animation: spin 8s linear infinite; }
+    .gear2 { transform-origin: center; animation: spin 5s linear infinite reverse; }
+    .planet1 { animation: orbit1 10s linear infinite; }
+    .planet2 { animation: orbit2 14s linear infinite; }
+    .planet3 { animation: orbit3 20s linear infinite; }
+    .spinDayNight { animation: spin 6s linear infinite; transform-origin: center; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes orbit1 { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes orbit2 { from { transform: rotate(120deg); } to { transform: rotate(480deg); } }
+    @keyframes orbit3 { from { transform: rotate(240deg); } to { transform: rotate(600deg); } }
+  </style>
+
+  <rect width="800" height="800" fill="#15111f"/>
+
+  <circle cx="400" cy="400" r="340" class="orbit"/>
+  <circle cx="400" cy="400" r="270" class="orbit"/>
+  <circle cx="400" cy="400" r="200" class="orbit"/>
+
+  <g transform="translate(400 400)">
+    <!-- central gear train -->
+    <g class="gear">
+      <circle r="55" fill="url(#brass)" stroke="#4b2e12" stroke-width="5"/>
+      <circle r="34" fill="none" stroke="#3a230d" stroke-width="4"/>
+      <circle r="72" fill="none" stroke="#d9a84f" stroke-width="7" stroke-dasharray="10 9"/>
+    </g>
+
+    <!-- sun -->
+    <circle r="42" fill="url(#sun)"/>
+
+    <!-- planet 1 -->
+    <g class="planet1">
+      <g transform="translate(270 0)">
+        <g class="spinDayNight">
+          <circle r="22" fill="url(#planet1)" stroke="#3d2c12" stroke-width="3"/>
+          <path d="M0,-22 A22,22 0 0 1 0,22 Z" fill="rgba(0,0,0,.45)"/>
+        </g>
+      </g>
+    </g>
+
+    <!-- planet 2 -->
+    <g class="planet2">
+      <g transform="translate(200 0)">
+        <g class="spinDayNight">
+          <circle r="17" fill="url(#planet2)" stroke="#143047" stroke-width="3"/>
+          <path d="M0,-17 A17,17 0 0 0 0,17 Z" fill="rgba(0,0,0,.45)"/>
+        </g>
+      </g>
+    </g>
+
+    <!-- planet 3 -->
+    <g class="planet3">
+      <g transform="translate(130 0)">
+        <g class="spinDayNight">
+          <circle r="13" fill="url(#planet3)" stroke="#45160e" stroke-width="3"/>
+          <path d="M0,-13 A13,13 0 0 1 0,13 Z" fill="rgba(0,0,0,.45)"/>
+        </g>
+      </g>
+    </g>
+
+    <!-- side meshing gears -->
+    <g class="gear2" transform="translate(-170 170) rotate(0)">
+      <circle r="46" fill="url(#brass)" stroke="#2e1d0d" stroke-width="5"/>
+      <circle r="26" fill="none" stroke="#2e1d0d" stroke-width="4"/>
+      <circle r="62" fill="none" stroke="#d7a852" stroke-width="8" stroke-dasharray="9 9"/>
+    </g>
+    <g class="gear" transform="translate(-85 205) rotate(18)">
+      <circle r="32" fill="url(#brass)" stroke="#2e1d0d" stroke-width="5"/>
+      <circle r="44" fill="none" stroke="#d7a852" stroke-width="7" stroke-dasharray="8 8"/>
+    </g>
+    <g class="gear2" transform="translate(170 180) rotate(-15)">
+      <circle r="42" fill="url(#brass)" stroke="#2e1d0d" stroke-width="5"/>
+      <circle r="58" fill="none" stroke="#d7a852" stroke-width="8" stroke-dasharray="8 8"/>
+    </g>
+  </g>
+</svg>

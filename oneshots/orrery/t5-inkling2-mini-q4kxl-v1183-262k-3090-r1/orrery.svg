@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800">
+  <defs>
+    <radialGradient id="sunGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fff2b8"/>
+      <stop offset="60%" stop-color="#e6a23a"/>
+      <stop offset="100%" stop-color="#7a4b12"/>
+    </radialGradient>
+    <linearGradient id="brass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f0d27a"/>
+      <stop offset="50%" stop-color="#b8863a"/>
+      <stop offset="100%" stop-color="#6e4a18"/>
+    </linearGradient>
+    <linearGradient id="disc" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#e9c56a"/>
+      <stop offset="100%" stop-color="#5a3a14"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="800" fill="#131821"/>
+
+  <!-- gear ring around sun -->
+  <g transform="translate(400 400)" opacity="0.85">
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="60s" repeatCount="indefinite"/>
+      <circle r="150" fill="none" stroke="url(#brass)" stroke-width="10" stroke-dasharray="14 8"/>
+    </g>
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="12s" repeatCount="indefinite"/>
+      <circle r="92" fill="none" stroke="url(#brass)" stroke-width="8" stroke-dasharray="10 6"/>
+    </g>
+  </g>
+
+  <!-- sun -->
+  <g transform="translate(400 400)">
+    <circle r="42" fill="url(#sunGrad)"/>
+    <animateTransform attributeName="transform" type="scale" values="1;1.06;1" dur="4s" repeatCount="indefinite"/>
+  </g>
+
+  <!-- inner planet -->
+  <g transform="translate(400 400)">
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="10s" repeatCount="indefinite"/>
+      <circle cx="180" cy="0" r="14" fill="url(#disc)"/>
+      <g transform="translate(180 0)">
+        <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="6s" repeatCount="indefinite"/>
+          <path d="M0,0 L16,-7 A17,17 0 0 1 16,7 Z" fill="rgba(0,0,0,0.55)"/>
+        </animateTransform>
+      </g>
+    </g>
+  </g>
+
+  <!-- middle planet -->
+  <g transform="translate(400 400)">
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="22s" repeatCount="indefinite"/>
+      <circle cx="250" cy="0" r="18" fill="url(#disc)"/>
+      <g transform="translate(250 0)">
+        <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="11s" repeatCount="indefinite"/>
+          <path d="M0,0 L22,-9 A24,24 0 0 1 22,9 Z" fill="rgba(0,0,0,0.55)"/>
+        </animateTransform>
+      </g>
+    </g>
+  </g>
+
+  <!-- outer planet -->
+  <g transform="translate(400 400)">
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="40s" repeatCount="indefinite"/>
+      <circle cx="330" cy="0" r="22" fill="url(#disc)"/>
+      <g transform="translate(330 0)">
+        <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="20s" repeatCount="indefinite"/>
+          <path d="M0,0 L28,-11 A30,30 0 0 1 28,11 Z" fill="rgba(0,0,0,0.55)"/>
+        </animateTransform>
+      </g>
+    </g>
+  </g>
+
+  <!-- orbit guides -->
+  <g fill="none" stroke="#3a4252" stroke-dasharray="2 6">
+    <circle cx="400" cy="400" r="180"/>
+    <circle cx="400" cy="400" r="250"/>
+    <circle cx="400" cy="400" r="330"/>
+  </g>
+</svg>

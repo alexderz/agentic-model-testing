@@ -1,0 +1,86 @@
+<svg>` with `<animateTransform>` or CSS animation
+- Sun: circular gradient with glowing rays
+- Planets: circles with radial gradients
+- Day/night: overlay each planet with a moving dark semi-transparent ellipse or gradient mask
+- Gears: SVG paths/circles with teeth, rotating in opposite directions
+- Orbital speeds: give outer planets slower angular motion:
+  - Mercury fastest
+  - Venus slightly slower
+  - Earth slower
+  - Mars slower
+  - a fictional outer “brass planet” slowest
+
+Simple motion formula for orbit animation:
+
+- angular speed proportional to 1 / orbital period² 
+- Example ratios can be visually tuned:
+  - Mercury: 0.25s-ish relative rotation period
+  - Venus: 0.9s
+  - Earth: 1.5s
+  - Mars: 2.4s
+  - Outer planet: 4s
+
+Day/night effect:
+
+- Give each planet a rotating dark half-plane
+- Use a gradient overlay like:
+  - opaque dark on one side
+  - transparent on the other
+- Animate the planet’s rotation independently from its orbit
+
+Example skeleton:
+
+```html
+<svg viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="sun">
+      <stop offset="0%" stop-color="#fff7c2"/>
+      <stop offset="35%" stop-color="#ffd65a"/>
+      <stop offset="100%" stop-color="#c97a12"/>
+    </radialGradient>
+
+    <radialGradient id="planet">
+      <stop offset="0%" stop-color="#e6e7ef"/>
+      <stop offset="70%" stop-color="#7c8cff"/>
+      <stop offset="100%" stop-color="#25305f"/>
+    </radialGradient>
+
+    <linearGradient id="nightShade" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.85"/>
+      <stop offset="45%" stop-color="#000" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="800" fill="#090b16"/>
+
+  <!-- orbit ring -->
+  <circle cx="400" cy="400" r="180" fill="none" stroke="#6b5322" stroke-width="3"/>
+
+  <!-- sun -->
+  <circle cx="400" cy="400" r="70" fill="url(#sun)"/>
+
+  <!-- planet on orbit -->
+  <g>
+    <animateTransform
+      attributeName="transform"
+      type="rotate"
+      from="0 400 400"
+      to="360 400 400"
+      dur="8s"
+      repeatCount="indefinite"/>
+
+    <g transform="translate(580 400)">
+      <circle r="24" fill="url(#planet)"/>
+      <circle r="24" fill="url(#nightShade)">
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          from="0"
+          to="360"
+          dur="3s"
+          repeatCount="indefinite"/>
+      </circle>
+    </g>
+  </g>
+</svg>

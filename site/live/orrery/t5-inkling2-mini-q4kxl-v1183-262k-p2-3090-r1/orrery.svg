@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800">
+  <defs>
+    <radialGradient id="sunGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fff7c2"/>
+      <stop offset="55%" stop-color="#ffbd4a"/>
+      <stop offset="100%" stop-color="#9a4a00"/>
+    </radialGradient>
+
+    <radialGradient id="metal" cx="35%" cy="30%" r="80%">
+      <stop offset="0%" stop-color="#fff0b8"/>
+      <stop offset="45%" stop-color="#d6a452"/>
+      <stop offset="100%" stop-color="#6d421d"/>
+    </radialGradient>
+
+    <linearGradient id="nightShadow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#000" stop-opacity="0.85"/>
+      <stop offset="45%" stop-color="#000" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </linearGradient>
+
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Tooth-like gear shape via repeated rectangles -->
+    <g id="gear16">
+      <circle r="52" fill="url(#metal)" stroke="#3b2111" stroke-width="3"/>
+      <g fill="#d6a452" stroke="#3b2111" stroke-width="2">
+        <rect x="-8" y="-72" width="16" height="18" rx="3"/>
+        <rect x="-8" y="-72" width="16" height="18" rx="3" transform="rotate(22.5)"/>
+        <rect x="-8" y="-72" width="16" height="18" rx="3" transform="rotate(45)"/>
+        <rect x="-8" y="-72" width="16" height="18" rx="3" transform="rotate(67.5)"/>
+        <rect x="-8" y="-72" width="16" height="18" rx="3" transform="rotate(90)"/>
+        <rect x="-8" y="-72" width="16" height="18" rx="3" transform="rotate(112.5)"/>
+        <rect x="-8" y="-72" width="16" height="18" rx="3" transform="rotate(135)"/>
+        <rect x="-8" y="-72" width="16" height="18" rx="3" transform="rotate(157.5)"/>
+        <rect x="-8" y="-72" width="16" height="18" rx="3" transform="rotate(180)"/>
+        <rect x="-8" y="-72" width="16" height="18" rx="3" transform="rotate(202.5)"/>
+        <rect x="-8" y="-72" width="16" height="18" rx="3" transform="rotate(225)"/>
+        <rect x="-8" y="-72" width="16" height="18" rx="3" transform="rotate(247.5)"/>
+        <rect x="-8" y="-72" width="16" height="18" rx="3" transform="rotate(270)"/>
+        <rect x="-8" y="-72" width="16" height="18" rx="3" transform="rotate(292.5)"/>
+        <rect x="-8" y="-72" width="16" height="18" rx="3" transform="rotate(315)"/>
+        <rect x="-8" y="-72" width="16" height="18" rx="3" transform="rotate(337.5)"/>
+      </g>
+      <circle r="18" fill="#2a160b" stroke="#e8c47a" stroke-width="3"/>
+      <circle r="6" fill="#fff1b5"/>
+    </g>
+  </defs>
+
+  <rect width="800" height="800" fill="#120d0a"/>
+
+  <!-- Orbital guides -->
+  <g fill="none" stroke="#7c5b2e" stroke-opacity="0.35" stroke-width="1.5" stroke-dasharray="4 8">
+    <circle cx="400" cy="400" r="95"/>
+    <circle cx="400" cy="400" r="145"/>
+    <circle cx="400" cy="400" r="205"/>
+    <circle cx="400" cy="400" r="265"/>
+  </g>
+
+  <!-- Gears in the background -->
+  <g opacity="0.38">
+    <g transform="translate(400 400)">
+      <use href="#gear16">
+        <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="28s" repeatCount="indefinite"/>
+      </use>
+    </g>
+  </g>
+
+  <!-- Sun -->
+  <circle cx="400" cy="400" r="62" fill="url(#sunGrad)" filter="url(#softGlow)">
+    <animate attributeName="r" values="62;67;62" dur="5s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="400" cy="400" r="82" fill="none" stroke="#ffd77a" stroke-width="2" stroke-opacity="0.45"/>
+
+  <!-- Helper planet: Mercury -->
+  <g transform="translate(400 400)">
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="6s" repeatCount="indefinite"/>
+      <circle cx="95" cy="0" r="13" fill="#d7b48b" stroke="#2c1a10" stroke-width="2"/>
+      <circle cx="95" cy="0" r="13" fill="url(#nightShadow)">
+        <animateTransform attributeName="transform" type="rotate" from="0 95 0" to="360 95 0" dur="2.2s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+  </g>
+
+  <!-- Venus -->
+  <g transform="translate(400 400)">
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="-360" dur="9.5s" repeatCount="indefinite"/>
+      <circle cx="145" cy="0" r="18" fill="#ffd39a" stroke="#3a2011" stroke-width="2"/>
+      <circle cx="145" cy="0" r="18" fill="url(#nightShadow)">
+        <animateTransform attributeName="transform" type="rotate" from="0 145 0" to="-360 145 0" dur="3.1s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+  </g>
+
+  <!-- Earth -->
+  <g transform="translate(400 400)">
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="12s" repeatCount="indefinite"/>
+      <circle cx="205" cy="0" r="23" fill="#3fa2ff" stroke="#12314b" stroke-width="2"/>
+      <path d="M195 0 a10 7 0 0 1 8 -7 a8 5 0 0 1 11 8 a7 4 0 0 1 -9 6 z" fill="#58c76f"/>
+      <circle cx="205" cy="0" r="23" fill="url(#nightShadow)">
+        <animateTransform attributeName="transform" type="rotate" from="0 205 0" to="360 205 0" dur="2.8s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+  </g>
+
+  <!-- Mars -->
+  <g transform="translate(400 400)">
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="180" to="540" dur="17s" repeatCount="indefinite"/>
+      <circle cx="265" cy="0" r="19" fill="#d96c43" stroke="#34180e" stroke-width="2"/>
+      <circle cx="259" cy="-4" r="4" fill="#9d3f27"/>
+      <circle cx="265" cy="0" r="19" fill="url(#nightShadow)">
+        <animateTransform attributeName="transform" type="rotate" from="0 265 0" to="360 265 0" dur="3.4s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+  </g>
+
+  <!-- Brass arms from sun to planets -->
+  <g stroke="#d6a452" stroke-width="5" stroke-linecap="round" opacity="0.7">
+    <line x1="400" y1="400" x2="495" y2="400"/>
+    <line x1="400" y1="400" x2="545" y2="400"/>
+  </g>
+</svg>
