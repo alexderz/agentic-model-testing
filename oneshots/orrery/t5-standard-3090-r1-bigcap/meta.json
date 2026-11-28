@@ -1,0 +1,46 @@
+{
+ "case": "t5-standard-3090-r1-bigcap",
+ "model": "standard-3090",
+ "test": "test5",
+ "max_tokens": 64000,
+ "timeout_s": 10800,
+ "started": "2026-11-27T12:51:21-0600",
+ "thinking": "off (chat_template_kwargs)",
+ "status": "ok",
+ "finish_reason": "stop",
+ "usage": {
+  "completion_tokens": 59743,
+  "prompt_tokens": 69,
+  "total_tokens": 59812,
+  "prompt_tokens_details": {
+   "cached_tokens": 0
+  }
+ },
+ "timings": {
+  "cache_n": 0,
+  "prompt_n": 69,
+  "prompt_ms": 208.86,
+  "prompt_per_token_ms": 3.0269565217391308,
+  "prompt_per_second": 330.36483769031884,
+  "predicted_n": 59743,
+  "predicted_ms": 1289597.763,
+  "predicted_per_token_ms": 21.586116350306316,
+  "predicted_per_second": 46.32607291518697
+ },
+ "static": {
+  "svg_found": true,
+  "parses": true,
+  "bytes": 285,
+  "animateTransform": 0,
+  "animate": 0,
+  "animateMotion": 0,
+  "keyframes": 0,
+  "script": 0,
+  "prose_chars_outside_svg": 21362
+ },
+ "wall_s": 1293.3,
+ "first_token_s": 3.7,
+ "tok_s": 46.3,
+ "reply_chars": 21647,
+ "reasoning_chars": 148892
+}

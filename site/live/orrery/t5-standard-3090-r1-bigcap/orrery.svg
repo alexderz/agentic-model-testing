@@ -1,0 +1,6 @@
+<svg id="orrery" viewBox="0 0 1200 900" role="img" aria-label="Animated clockwork orrery">
+    <title>Clockwork Orrery</title>
+    <desc>A brass mechanical orrery with planets orbiting the sun at true relative periods.</desc>
+    <defs id="defs"></defs>
+    <g id="scene"></g>
+  </svg>
